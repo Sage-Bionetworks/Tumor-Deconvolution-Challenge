@@ -59,3 +59,24 @@ matrix_to_df <- function(matrix, new_col){
         tibble::as_data_frame()
 }
 
+# misc ------------------------------------------------------------------------
+
+require(magrittr)
+
+get_summary_by_matrix_cols <- function(columns, matrix, fn){
+    m <- matrix[,columns]
+    if(length(columns) == 1) return(m)
+    apply(m, 1, fn)
+}
+
+calculate_cpm <- function(counts){
+    1000000 * (counts/sum(counts))
+}
+
+zscore_matrix <- function(matrix){
+    matrix %>% 
+        apply(1, scale) %>% 
+        t %>% 
+        magrittr::set_colnames(colnames(matrix))
+}
+
