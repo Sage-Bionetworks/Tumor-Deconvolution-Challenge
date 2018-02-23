@@ -23,7 +23,7 @@ activity_obj <- Activity(
     name = "upload",
     description = "upload unziped sanitized annotations after downloading from dropbox",
     used = list("https://www.dropbox.com/s/ky8t1yc17s40qz8/Archive.zip?dl=0"),
-    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE81861/upload_annotation_files_to_synapse.R")
+    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE81861/upload_sanitized_files_to_synapse.R")
 )
 
 synLogin()
