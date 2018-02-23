@@ -26,20 +26,21 @@ activity_obj <- Activity(
 mcpcounter_genes <- mcp_url %>% 
     curl %>% 
     read_tsv %>% 
-    extract2("HUGO symbols")
+    extract2("HUGO symbols") %>% 
+    as.list()
 
 
 synLogin()
 
 cibersort_genes <- cs_id %>% 
     create_df_from_synapse_id %>% 
-    extract2("Gene symbol")
+    extract2("Gene symbol") %>% 
+    as.list()
 
 
 list(
     "mcpcounter_genes" = mcpcounter_genes,
     "cibersort_genes" = cibersort_genes) %>% 
-    as.yaml %>% 
     write_yaml("deonconvolution_genes.yaml")
 
 upload_file_to_synapse("deonconvolution_genes.yaml", upload_id, activity_obj = activity_obj)
