@@ -37,6 +37,8 @@ upload_file_to_synapse <- function(
 
 require(magrittr)
 require(tibble)
+require(plyr)
+require(purrr)
 
 transpose_df <- function(df, id_column, new_col){
     df %>% 
@@ -58,6 +60,38 @@ matrix_to_df <- function(matrix, new_col){
         tibble::rownames_to_column(new_col) %>% 
         tibble::as_data_frame()
 }
+
+
+aggregate_matrix <- function(
+    matrix, grouping_df, group_by, group_accross, 
+    aggregate_fun = mean,
+    split_by_cols = T,
+    apply_margin = 1,
+    combine_fun = cbind,
+    parallel = T){
+    
+    group_list <- create_group_list(grouping_df, group_by, group_accross)
+    matrix %>%
+        split_matrix(group_list, split_by_cols, parallel) %>% 
+        plyr::llply(apply, apply_margin, aggregate_fun, .parallel = parallel) %>% 
+        purrr::invoke(combine_fun, .) 
+}
+
+split_matrix <- function(matrix, lst, by_cols = T, parallel = T){
+    fun <- ifelse(T, 
+                  function(names) matrix[,names, drop = F], 
+                  function(names) matrix[names, drop = F])
+    plyr::llply(lst, fun, .parallel = parallel)
+}
+
+
+create_group_list <- function(df, group_by, group_accross){
+    df %>%
+        magrittr::extract2(group_by) %>% 
+        split(df, .) %>%
+        purrr::map(extract2, group_accross)
+}
+
 
 # misc ------------------------------------------------------------------------
 
