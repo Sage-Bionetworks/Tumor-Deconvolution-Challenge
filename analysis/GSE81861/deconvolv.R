@@ -7,7 +7,7 @@ library(magrittr)
 library(MCPcounter)
 
 home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-tmp_dir  <- "/home/aelamb/tmp/"
+tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE81861/"
 
 annotation_id <- "syn11898281"
 count_id      <- "syn11898217"
@@ -21,7 +21,7 @@ registerDoMC(cores = detectCores())
 
 annotation_df <- create_annotation_df(annotation_id)
 
-count_df <- create_df_from_synapse_id(count_id, "./") 
+count_df <- create_df_from_synapse_id(count_id) 
 
 sample_metadata_df <- count_df %>% 
     .[1:3] %>% 
@@ -45,8 +45,8 @@ mean_cpm_matrix  %>%
     write_tsv("./cpm.tsv")
 
 source("/home/aelamb/repos/irwg/iatlas-tool-cibersort/bin/CIBERSORT.R")
-cs_result <- CIBERSORT("./cpm.tsv", 
-                       "/home/aelamb/repos/irwg/iatlas-tool-cibersort/sample.references.matrix.txt",
+cs_result <- CIBERSORT("/home/aelamb/repos/irwg/iatlas-tool-cibersort/sample.references.matrix.txt",
+                       "./cpm.tsv", 
                        QN = F)
 
 mcp_result %>% 

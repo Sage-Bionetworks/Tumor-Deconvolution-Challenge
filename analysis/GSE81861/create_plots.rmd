@@ -1,5 +1,5 @@
 ---
-title: "deconvolution plots"
+title: "GSE81861 deconvolution plots"
 output: html_document
 ---
 
@@ -10,17 +10,17 @@ library(tidyverse)
 library(synapser)
 library(data.table)
 library(magrittr)
-library(yaml)
-library(ggfortify)
 library(RColorBrewer)
-library(heatmap.plus)
+library(ggfortify)
+library(pheatmap)
+library(knitr)
 
 home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-tmp_dir  <- "/home/aelamb/tmp/"
+tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE81861/"
 
 annotation_id <- "syn11898281"
 count_id      <- "syn11898217"
-yaml_id       <- "syn11898303"
+genes_id       <- "syn11918430"
 
 setwd(home_dir)
 source("scripts/utils.R")
@@ -42,9 +42,15 @@ annotation_df <- annotation_id %>%
 
 count_df <- create_df_from_synapse_id(count_id, "./") 
 
-gene_yaml <- yaml_id %>% 
-    download_from_synapse %>% 
-    read_yaml
+gene_df <-  create_df_from_synapse_id(genes_id)
+
+mcp_genes <- gene_df %>% 
+    filter(Method == "mcpcounter") %>%
+    use_series("Hugo")
+    
+cs_genes <- gene_df %>% 
+    filter(Method == "cibersort") %>%
+    use_series("Hugo")
 
 sample_metadata_df <- count_df %>% 
     .[1:3] %>% 
@@ -66,47 +72,74 @@ mean_cpm_matrix <- sample_metadata_df %>%
     .[!rowSums(.) == 0,]
 
 mcp_zscore_matrix <- mean_cpm_matrix %>% 
-    .[rownames(.) %in% gene_yaml$mcpcounter_genes,] %>% 
+    .[rownames(.) %in% mcp_genes,] %>% 
     zscore_matrix
     
 cs_zscore_matrix <- mean_cpm_matrix %>% 
-    .[rownames(.) %in% gene_yaml$cibersort_genes,] %>% 
+    .[rownames(.) %in% cs_genes,] %>% 
     zscore_matrix
 
+mcp_heatmap_row_df <- gene_df %>% 
+    filter(Method == "mcpcounter") %>% 
+    filter(Hugo %in% rownames(mcp_zscore_matrix)) %>% 
+    select(-Method) %>% 
+    arrange(Hugo) %>% 
+    data.frame %>% 
+    column_to_rownames("Hugo") %>% 
+    set_names("Reference cell type")
 
-
-color_df1 <- data_frame(
-    "cell_type" = unique(sample_metadata_df$cell_type),
-    "color_cell_type" = brewer.pal(nlevels(as.factor(sample_metadata_df$cell_type)), name = 'Dark2'))
-
-color_df2 <- data_frame(
-    "person" = unique(sample_metadata_df$person),
-    "color_person" = brewer.pal(nlevels(as.factor(sample_metadata_df$person)), name = 'Set3'))
-
-person_metadata_df <- sample_metadata_df %>% 
-    select(-cell_id) %>% 
+mcp_heatmap_col_df <- sample_metadata_df %>%
+    select(combined_name, person, cell_type) %>% 
     distinct %>% 
-    arrange(person, cell_type) %>% 
-    left_join(color_df1) %>% 
-    left_join(color_df2)
+    arrange(combined_name) %>% 
+    data.frame %>% 
+    column_to_rownames("combined_name") %>% 
+    set_names(c("Sample", "Mixture cell type"))
 
-color_matrix <- person_metadata_df %>% 
-    select(color_cell_type, color_person) %>% 
-    set_colnames(c("Cell_Type", "Person")) %>% 
-    as.matrix
+
+person_metadata_df <- sample_metadata_df %>%
+    select(-cell_id) %>%
+    distinct %>%
+    arrange(person, cell_type) 
+
+cs_result_df <- "cs_results.tsv" %>% 
+    read_tsv %>% 
+    transpose_df("cell_type", "cell_type")
+
+mcp_result_df <- read_tsv("mcp_results.tsv")
+
+
 ```
 
-```{r plots}
-autoplot(prcomp(t(mcp_zscore_matrix)), data = person_metadata_df, colour = 'person')
-autoplot(prcomp(t(mcp_zscore_matrix)), data = person_metadata_df, colour = 'cell_type')
-autoplot(prcomp(t(cs_zscore_matrix)), data = person_metadata_df, colour = 'person')
-autoplot(prcomp(t(cs_zscore_matrix)), data = person_metadata_df, colour = 'cell_type')
 
 
-heatmap.plus(mcp_zscore_matrix, ColSideColors = color_matrix, scale = "none")
-heatmap.plus(cs_zscore_matrix, ColSideColors = color_matrix, scale = "none")
+```{r PCA plots}
+autoplot(prcomp(t(mcp_zscore_matrix)), data = person_metadata_df, colour = 'person', main = "MCPCounter")
+autoplot(prcomp(t(mcp_zscore_matrix)), data = person_metadata_df, colour = 'cell_type', main = "MCPCounter")
+autoplot(prcomp(t(cs_zscore_matrix)), data = person_metadata_df, colour = 'person', main = "Cibersort")
+autoplot(prcomp(t(cs_zscore_matrix)), data = person_metadata_df, colour = 'cell_type', main = "Cibersort")
 ```
 
+```{r, fig.align = "center", fig.height = 20, fig.width = 16}
+pheatmap(
+    mcp_zscore_matrix, 
+    main = "MCPCounter", 
+    annotation_row = mcp_heatmap_row_df,
+    annotation_col = mcp_heatmap_col_df,
+    scale = "none")
+```
 
+```{r, fig.align = "center", fig.height = 60, fig.width = 16}
+pheatmap(
+    cs_zscore_matrix,
+    main = "Cibersort", 
+    annotation_col = mcp_heatmap_col_df,
+    scale = "none")
+```
+
+```{r, results}
+kable(mcp_result_df)
+kable(cs_result_df)
+```
 
 
