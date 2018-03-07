@@ -96,6 +96,7 @@ create_group_list <- function(df, group_by, group_accross){
 # misc ------------------------------------------------------------------------
 
 require(magrittr)
+require(preprocessCore)
 
 get_summary_by_matrix_cols <- function(columns, matrix, fn){
     m <- matrix[,columns]
@@ -112,5 +113,12 @@ zscore_matrix <- function(matrix){
         apply(1, scale) %>% 
         t %>% 
         magrittr::set_colnames(colnames(matrix))
+}
+
+quantile_normalize_matrix <- function(matrix){
+    matrix %>% 
+        preprocessCore::normalize.quantiles() %>% 
+        magrittr::set_colnames(colnames(matrix)) %>% 
+        magrittr::set_rownames(rownames(matrix))
 }
 
