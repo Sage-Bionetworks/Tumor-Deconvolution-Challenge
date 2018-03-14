@@ -61,23 +61,32 @@ sample_metadata_df <- count_df %>%
 cpm_matrix <- count_df %>% 
     select(-c(sample_id, cell_type)) %>% 
     df_to_matrix("cell_id") %>% 
+    .[,colSums(.) > 0] %>%  
     t %>% 
     apply(2, calculate_cpm)
 
-mean_cpm_matrix <- sample_metadata_df %>%
-    split(.$combined_name) %>%
-    map(use_series, cell_id) %>%
-    map(get_summary_by_matrix_cols, cpm_matrix, mean) %>%
-    do.call("cbind", .) %>% 
-    .[!rowSums(.) == 0,]
+# mean_cpm_matrix <- sample_metadata_df %>%
+#     split(.$combined_name) %>%
+#     map(use_series, cell_id) %>%
+#     map(get_summary_by_matrix_cols, cpm_matrix, mean) %>%
+#     do.call("cbind", .) %>% 
+#     .[!rowSums(.) == 0,]
 
-mcp_zscore_matrix <- mean_cpm_matrix %>% 
+mcp_zscore_matrix <- cpm_matrix %>% 
     .[rownames(.) %in% mcp_genes,] %>% 
     zscore_matrix
     
-cs_zscore_matrix <- mean_cpm_matrix %>% 
+cs_zscore_matrix <- cpm_matrix %>% 
     .[rownames(.) %in% cs_genes,] %>% 
     zscore_matrix
+
+# mcp_mean_zscore_matrix <- mean_cpm_matrix %>% 
+#     .[rownames(.) %in% mcp_genes,] %>% 
+#     zscore_matrix
+#     
+# cs_mean_zscore_matrix <- mean_cpm_matrix %>% 
+#     .[rownames(.) %in% cs_genes,] %>% 
+#     zscore_matrix
 
 mcp_heatmap_row_df <- gene_df %>% 
     filter(Method == "mcpcounter") %>% 
@@ -88,7 +97,15 @@ mcp_heatmap_row_df <- gene_df %>%
     column_to_rownames("Hugo") %>% 
     set_names("Reference cell type")
 
-mcp_heatmap_col_df <- sample_metadata_df %>%
+heatmap_col_df <- sample_metadata_df %>%
+    select(cell_id, person, cell_type) %>% 
+    distinct %>% 
+    arrange(cell_id) %>% 
+    data.frame %>% 
+    column_to_rownames("cell_id") %>% 
+    set_names(c("Sample", "Mixture cell type"))
+
+mean_heatmap_col_df <- sample_metadata_df %>%
     select(combined_name, person, cell_type) %>% 
     distinct %>% 
     arrange(combined_name) %>% 
@@ -97,16 +114,19 @@ mcp_heatmap_col_df <- sample_metadata_df %>%
     set_names(c("Sample", "Mixture cell type"))
 
 
-person_metadata_df <- sample_metadata_df %>%
-    select(-cell_id) %>%
-    distinct %>%
-    arrange(person, cell_type) 
-
-cs_result_df <- "cs_results.tsv" %>% 
-    read_tsv %>% 
-    transpose_df("cell_type", "cell_type")
-
-mcp_result_df <- read_tsv("mcp_results.tsv")
+# person_metadata_df <- sample_metadata_df %>%
+#     select(-cell_id) %>%
+#     distinct %>%
+#     arrange(person, cell_type) 
+# 
+# cs_result_df <- "cs_results.tsv" %>% 
+#     str_c(tmp_dir, .) %>% 
+#     read_tsv %>% 
+#     transpose_df("cell_type", "cell_type")
+# 
+# mcp_result_df <- "mcp_results.tsv" %>% 
+#     str_c(tmp_dir, .) %>% 
+#     read_tsv
 
 
 ```
@@ -114,32 +134,51 @@ mcp_result_df <- read_tsv("mcp_results.tsv")
 
 
 ```{r PCA plots}
-autoplot(prcomp(t(mcp_zscore_matrix)), data = person_metadata_df, colour = 'person', main = "MCPCounter")
-autoplot(prcomp(t(mcp_zscore_matrix)), data = person_metadata_df, colour = 'cell_type', main = "MCPCounter")
-autoplot(prcomp(t(cs_zscore_matrix)), data = person_metadata_df, colour = 'person', main = "Cibersort")
-autoplot(prcomp(t(cs_zscore_matrix)), data = person_metadata_df, colour = 'cell_type', main = "Cibersort")
+# autoplot(prcomp(t(mcp_zscore_matrix)), data = person_metadata_df, colour = 'person', main = "MCPCounter")
+# autoplot(prcomp(t(mcp_zscore_matrix)), data = person_metadata_df, colour = 'cell_type', main = "MCPCounter")
+# autoplot(prcomp(t(cs_zscore_matrix)), data = person_metadata_df, colour = 'person', main = "Cibersort")
+# autoplot(prcomp(t(cs_zscore_matrix)), data = person_metadata_df, colour = 'cell_type', main = "Cibersort")
+```
+
+```{r, fig.align = "center", fig.height = 20, fig.width = 40}
+pheatmap(
+    mcp_zscore_matrix, 
+    main = "MCPCounter genes", 
+    annotation_row = mcp_heatmap_row_df,
+    annotation_col = heatmap_col_df,
+    scale = "none")
+```
+
+```{r, fig.align = "center", fig.height = 60, fig.width = 40}
+pheatmap(
+    cs_zscore_matrix,
+    main = "Cibersort genes", 
+    annotation_col = heatmap_col_df,
+    scale = "none")
 ```
 
 ```{r, fig.align = "center", fig.height = 20, fig.width = 16}
-pheatmap(
-    mcp_zscore_matrix, 
-    main = "MCPCounter", 
-    annotation_row = mcp_heatmap_row_df,
-    annotation_col = mcp_heatmap_col_df,
-    scale = "none")
+# pheatmap(
+#     mcp_mean_zscore_matrix, 
+#     main = "MCPCounter genes, collapsed by sample/celltype", 
+#     annotation_row = mcp_mean_heatmap_row_df,
+#     annotation_col = mean_heatmap_col_df,
+#     scale = "none")
 ```
 
 ```{r, fig.align = "center", fig.height = 60, fig.width = 16}
-pheatmap(
-    cs_zscore_matrix,
-    main = "Cibersort", 
-    annotation_col = mcp_heatmap_col_df,
-    scale = "none")
+# pheatmap(
+#     cs_mean_zscore_matrix,
+#     main = "Cibersort genes, collapsed by sample/celltype", 
+#     annotation_col = mean_heatmap_col_df,
+#     scale = "none")
 ```
 
+
+
 ```{r, results}
-kable(mcp_result_df)
-kable(cs_result_df)
+# kable(mcp_result_df)
+# kable(cs_result_df)
 ```
 
 

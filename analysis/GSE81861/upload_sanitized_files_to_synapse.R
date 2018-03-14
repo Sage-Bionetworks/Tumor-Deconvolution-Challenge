@@ -7,7 +7,7 @@ library(magrittr)
 home_dir      <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
 tmp_dir       <- "/home/aelamb/tmp/"
 download_path <- "/tmp/mozilla_aelamb0/sanitized_annotations/"
-upload_id     <- "syn11867744"
+upload_id     <- "syn11958124"
 
 
 setwd(home_dir)

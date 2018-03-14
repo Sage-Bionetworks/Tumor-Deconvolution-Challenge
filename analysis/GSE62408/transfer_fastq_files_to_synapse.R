@@ -5,7 +5,7 @@ library(synapser)
 home_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
 tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE62408/"
 sra_id    <- "SRP048971"
-upload_id <- "syn11953213"
+upload_id <- "syn11958138"
 
 setwd(home_dir)
 source("scripts/utils.R")
