@@ -43,3 +43,13 @@ cs_result %>%
     matrix_to_df("cell_type") %>% 
     write_tsv("cs_results.tsv")
 
+activity_obj <- Activity(
+    name = "create",
+    description = "create and upload deconvolution results using cibersort and mcpcounter cwl files",
+    used = list(count_id),
+    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE62408/deconvolve.R")
+)
+
+upload_file_to_synapse("cs_results.tsv", "syn11968719", activity_obj = activity_obj)
+upload_file_to_synapse("mcp_results.tsv", "syn11968719", activity_obj = activity_obj)
+
