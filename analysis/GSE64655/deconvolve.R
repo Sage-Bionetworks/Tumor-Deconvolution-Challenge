@@ -8,8 +8,7 @@ library(magrittr)
 home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
 tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE64655/"
 
-expr_id      <- "syn11969378"
-hugo_id       <- "syn11536071"
+expr_id      <- "syn11973634"
 
 upload_id  <- "syn11969392"
 
@@ -20,22 +19,18 @@ setwd(tmp_dir)
 synLogin()
 registerDoMC(cores = detectCores())
 
-hugo_df <-  create_df_from_synapse_id(hugo_id)
-
 expr_df <- expr_id %>%
-    create_df_from_synapse_id(unzip = T, skip = 3) %>% 
-    select(-c(`Gene Type`, Description, `Gene Symbol`)) %>% 
-    left_join(hugo_df, by = c("Gene ID" = "ensembl_gene_id")) %>% 
-    select(-`Gene ID`) %>% 
-    group_by(hgnc_symbol) %>% 
+    create_df_from_synapse_id() %>% 
+    select(- Ensembl) %>% 
+    group_by(Hugo) %>% 
     summarise_all(sum) %>% 
     ungroup %>% 
-    filter(hgnc_symbol != "")
+    filter(Hugo != "")
 
 write_tsv(expr_df, "expr.tsv")
 
 expr_df %>% 
-    df_to_matrix("hgnc_symbol") %>% 
+    df_to_matrix("Hugo") %>% 
     write.table("expr_matrix.tsv", sep = "\t", quote = F)
 
 system(str_c(
@@ -56,7 +51,7 @@ system(str_c(
 activity_obj <- Activity(
     name = "create",
     description = "create and upload deconvolution results using cibersort and mcpcounter cwl files",
-    used = list(expr_id, hugo_id),
+    used = list(expr_id),
     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE64655/deconvolve.R")
 )
 
