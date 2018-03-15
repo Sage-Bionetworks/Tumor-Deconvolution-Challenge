@@ -6,6 +6,7 @@ library(data.table)
 library(magrittr)
 library(pheatmap)
 library(preprocessCore)
+library(ggfortify)
 
 home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
 tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/E-MTAB-2319/"
@@ -53,7 +54,7 @@ hugo_df <-  create_df_from_synapse_id(hugo_id)
 
 
 
-zscore_matrix <- count_id %>%
+log_mat <- count_id %>%
     create_df_from_synapse_id(unzip = T) %>% 
     select(-c(Chr, Start, End, Strand, Length)) %>% 
     df_to_matrix("Geneid") %>% 
@@ -69,15 +70,17 @@ zscore_matrix <- count_id %>%
     summarise_all(.funs = sum) %>% 
     ungroup %>% 
     df_to_matrix("hgnc_symbol") %>% 
-    log10 %>% 
+    log10 
+    
+zscore_mat <- log_mat
     quantile_normalize_matrix %>% 
     zscore_matrix
 
 
-mcp_zscore_matrix <- zscore_matrix %>% 
+mcp_zscore_matrix <- zscore_mat %>% 
     .[rownames(.) %in% mcp_genes,]
 
-cs_zscore_matrix <- zscore_matrix %>% 
+cs_zscore_matrix <- zscore_mat %>% 
     .[rownames(.) %in% cs_genes,]
 
 mcp_heatmap_row_df <- gene_df %>% 
@@ -172,84 +175,17 @@ ggplot(mcp_result_df, aes(x = mcpcounter_cell_type, y = predicted_score)) +
     ggtitle("MCPCounter E-MTAB-2319")
 dev.off()
 
+# pca plots -------------------------------------------------------------------
 
+pca_matrix <- t(log_mat)
 
-# cs_translation_df <-  create_df_from_synapse_id(cs_trans_id)
-# mcp_translation_df <-  create_df_from_synapse_id(mcp_trans_id)   
-
-# 
-# 
-# mcp_result_df <- mcp_results_id %>%
-#     download_from_synapse %>% 
-#     read.table %>% 
-#     t %>% 
-#     matrix_to_df("sample") %>% 
-#     set_colnames(str_replace_all(colnames(.), "\\.", " ")) %>% 
-#     gather("mcpcounter_cell_type", "predicted_score", `T cells`:Fibroblasts) %>% 
-#     left_join(mcp_translation_df) %>% 
-#     .[complete.cases(.),] %>% 
-#     split(.$sample) %>% 
-#     map(group_by, sample, translated_mpcounter_cell_type) %>% 
-#     map(dplyr::summarise, predicted_score = sum(predicted_score)) %>% 
-#     bind_rows %>% 
-#     ungroup %>% 
-#     full_join(annotation_df, by = c("sample")) %>% 
-#     mutate(annotated_fraction = ifelse(cell_type == translated_mpcounter_cell_type, 1.0, 0.0)) 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# cs_result_df <- cs_results_id %>%
-#     create_df_from_synapse_id %>% 
-#     select(-c(`P-value`, `RMSE`, Correlation)) %>% 
-#     gather("cibersort_cell_type", "predicted_fraction", `B cells naive`:Neutrophils) %>% 
-#     # left_join(cs_translation_df) %>% 
-#     # .[complete.cases(.),] %>% 
-#     # split(.$sample) %>% 
-#     # map(group_by, sample, translated_cibersort_cell_type) %>% 
-#     # map(dplyr::summarise, predicted_fraction = sum(result_percentage)) %>% 
-#     # bind_rows %>% 
-#     # ungroup %>% 
-#     full_join(annotation_df, by = c("sample"))
-# # %>% 
-# #     mutate(annotated_fraction = ifelse(cell_type == translated_cibersort_cell_type, 1.0, 0.0)) 
-# 
-# 
-# png('E-MTAB-2319_cibersort_scatterplot.png')
-# ggplot(cs_result_df, aes(y = predicted_fraction, x = as.factor(annotated_fraction))) +
-#     geom_boxplot(outlier.shape = NA) +
-#     geom_jitter(
-#         aes(color = actual_cell_type, 
-#             shape = translated_cibersort_cell_type,
-#             size = as.factor(annotated_fraction))) +
-#     scale_shape_manual(values = 0:6) +
-#     ylab("Cibersort predicted fraction") +
-#     xlab("Annotated raction") +
-#     theme_bw() +
-#     ggtitle("Cibersort E-MTAB-2319")
-# dev.off()
-# 
-# 
-# png('E-MTAB-2319_mcpcounter_scatterplot.png')
-# ggplot(mcp_result_df, aes(y = nomalized_predicted_score, x = as.factor(annotated_fraction))) +
-#     geom_boxplot(outlier.shape = NA) +
-#     geom_jitter(
-#         aes(color = mcpcounter_cell_type, 
-#             shape = translated_mpcounter_cell_type,
-#             size = as.factor(annotated_fraction))) +
-#     scale_shape_manual(values = 0:6) +
-#     ylab("Cibersort predicted fraction") +
-#     xlab("Annotated fraction") +
-#     theme_bw() +
-#     ggtitle("MCPCounter E-MTAB-2319")
-# dev.off()
-# 
-# 
-# 
-# 
-# 
+png('E-MTAB-2319_PCA.png', height = 1000)
+autoplot(
+    prcomp(pca_matrix), 
+    data = annotation_df, 
+    shape = "cell_type", 
+    size = 3,
+    main = "E-MTAB-2319") +
+    scale_shape_manual(values = 1:13) +
+    theme_bw()
+dev.off()

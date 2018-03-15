@@ -12,7 +12,7 @@ tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/E-MTAB-2319/"
 count_id      <- "syn11958709"
 hugo_id       <- "syn11536071"
 
-upload_id  <- "syn11958707"
+upload_id  <- "syn11968722"
 
 
 setwd(home_dir)

@@ -11,7 +11,6 @@ cs_id           <- "syn11898291"
 mcp_url         <- "http://raw.githubusercontent.com/ebecht/MCPcounter/master/Signatures/genes.txt"
 script_url      <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/E-MTAB-2319/create_annotation_tables.R"
 
-upload_id  <- "syn11958707"
 
 setwd(home_dir)
 source("scripts/utils.R")
@@ -110,7 +109,7 @@ activity_obj <- Activity(
     executed = list(script_url)
 )
 
-upload_file_to_synapse("annotation_df.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("annotation_df.tsv", "syn11958707", activity_obj = activity_obj)
 
 activity_obj <- Activity(
     name = "upload",
@@ -119,7 +118,7 @@ activity_obj <- Activity(
     executed = list(script_url)
 )
 
-upload_file_to_synapse("mcpcounter_translation_table.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("mcpcounter_translation_table.tsv", "syn11958705", activity_obj = activity_obj)
 
 activity_obj <- Activity(
     name = "upload",
@@ -128,4 +127,4 @@ activity_obj <- Activity(
     executed = list(script_url)
 )
 
-upload_file_to_synapse("cibersort_translation_table.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("cibersort_translation_table.tsv", "syn11958705", activity_obj = activity_obj)
