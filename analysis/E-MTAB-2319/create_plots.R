@@ -18,9 +18,6 @@ count_id       <- "syn11958709"
 genes_id       <- "syn11918430"
 cs_results_id  <- "syn11968347"
 mcp_results_id <- "syn11968348"
-cs_trans_id    <- "syn11968319"
-mcp_trans_id   <- "syn11968318"
-
 
 setwd(home_dir)
 source("scripts/utils.R")
@@ -34,7 +31,8 @@ annotation_df <- annotation_id %>%
     as_data_frame %>% 
     set_colnames(c("sample", "cell_type")) %>% 
     mutate(sample = str_c(sample, ".bam")) %>% 
-    distinct 
+    distinct %>% 
+    arrange(sample)
 
 
 
@@ -177,7 +175,9 @@ dev.off()
 
 # pca plots -------------------------------------------------------------------
 
-pca_matrix <- t(log_mat)
+pca_matrix <- log_mat %>% 
+    t %>% 
+    .[order(rownames(.)),]
 
 png('E-MTAB-2319_PCA.png', height = 1000)
 autoplot(
