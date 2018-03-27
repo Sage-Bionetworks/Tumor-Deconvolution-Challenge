@@ -9,14 +9,11 @@ library(preprocessCore)
 library(ggfortify)
 
 home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE64655/"
+tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE103322/"
 
-expr_id        <- "syn11973634"
-annotation_id  <- "syn11973635"
+expr_id        <- "syn11990376"
+anno_id        <- "syn11990378"
 genes_id       <- "syn11918430"
-cs_results_id  <- "syn11969430"
-mcp_results_id <- "syn11969431"
-
 
 
 setwd(home_dir)
@@ -25,20 +22,13 @@ setwd(tmp_dir)
 synLogin()
 registerDoMC(cores = detectCores())
 
-annotation_df <- create_df_from_synapse_id(annotation_id)
-gene_df <-  create_df_from_synapse_id(genes_id)
+annotation_df <- create_df_from_synapse_id(anno_id) %>% 
+    filter(cell_source != "Lymph node") %>% 
+    group_by(cell_type) %>% 
+    slice(1:15) %>% 
+    ungroup
 
-log_mat <- expr_id %>%
-    create_df_from_synapse_id() %>% 
-    select(- Ensembl) %>% 
-    group_by(Hugo) %>% 
-    summarise_all(sum) %>% 
-    ungroup %>% 
-    filter(Hugo != "") %>% 
-    df_to_matrix("Hugo") %>% 
-    .[rowSums(.) > 0,] %>% 
-    add(1) %>% 
-    log10
+gene_df <-  create_df_from_synapse_id(genes_id)
 
 mcp_genes <- gene_df %>% 
     filter(Method == "mcpcounter") %>%
@@ -48,6 +38,40 @@ cs_genes <- gene_df %>%
     filter(Method == "cibersort") %>%
     use_series("Hugo")
 
+expr_mat <- expr_id %>%
+    create_df_from_synapse_id() %>%
+    df_to_matrix("Hugo") %>% 
+    .[,colnames(.) %in% anno_df$sample] %>% 
+    .[rownames(.) %in% mcp_genes,]
+
+mcp_heatmap_row_df <- gene_df %>% 
+    filter(Method == "mcpcounter") %>% 
+    filter(Hugo %in% rownames(expr_mat)) %>% 
+    select(-Method) %>% 
+    arrange(cell_type) %>% 
+    data.frame %>% 
+    column_to_rownames("Hugo") %>% 
+    set_names("Cell Type")
+
+heatmap_col_df <- annotation_df %>% 
+    data.frame %>% 
+    column_to_rownames("sample")
+
+expr_mat <- expr_mat %>% 
+    .[rownames(mcp_heatmap_row_df),] %>% 
+    .[,rownames(heatmap_col_df)]
+
+
+png('GSE103322_mcpcounter_genes_heatmap.png', width = 4000, height = 4000)
+pheatmap(
+    expr_mat,
+    main = "MCPCounter GSE103322",
+    annotation_row = mcp_heatmap_row_df,
+    annotation_col = heatmap_col_df,
+    cluster_rows = F,
+    cluster_cols = F,
+    scale = "none")
+dev.off()
 
 # heatmaps --------------------------------------------------------------------
 
@@ -61,44 +85,27 @@ mcp_zscore_matrix <- zscore_mat %>%
 cs_zscore_matrix <- zscore_mat %>% 
     .[rownames(.) %in% cs_genes,]
 
-mcp_heatmap_row_df <- gene_df %>% 
-    filter(Method == "mcpcounter") %>% 
-    filter(Hugo %in% rownames(mcp_zscore_matrix)) %>% 
-    select(-Method) %>% 
-    arrange(cell_type) %>% 
-    data.frame %>% 
-    column_to_rownames("Hugo") %>% 
-    set_names("Cell Type")
+
 
 mcp_zscore_matrix <-  mcp_zscore_matrix[rownames(mcp_heatmap_row_df),]
 
-heatmap_col_df <- annotation_df %>% 
-    data.frame %>% 
-    column_to_rownames("sample")
 
-png('GSE64655_mcpcounter_genes_heatmap.png', width = 4000, height = 4000)
+
+
+
+png('GSE103322_mcpcounter_genes_rows_clustered_heatmap.png', width = 4000, height = 4000)
 pheatmap(
     mcp_zscore_matrix,
-    main = "MCPCounter GSE64655",
-    annotation_row = mcp_heatmap_row_df,
-    annotation_col = heatmap_col_df,
-    cluster_rows = F,
-    scale = "none")
-dev.off()
-
-png('GSE64655_mcpcounter_genes_rows_clustered_heatmap.png', width = 4000, height = 4000)
-pheatmap(
-    mcp_zscore_matrix,
-    main = "MCPCounter GSE64655",
+    main = "MCPCounter GSE103322",
     annotation_row = mcp_heatmap_row_df,
     annotation_col = heatmap_col_df,
     scale = "none")
 dev.off()
 
-png('GSE64655_cibersort_genes_heatmap.png', width = 4000, height = 4000)
+png('GSE103322_cibersort_genes_heatmap.png', width = 4000, height = 4000)
 pheatmap(
     cs_zscore_matrix,
-    main = "Cibersort GSE64655",
+    main = "Cibersort GSE103322",
     annotation_col = heatmap_col_df,
     scale = "none")
 dev.off()
@@ -112,7 +119,7 @@ cs_result_df <- cs_results_id %>%
     .[,colSums(.) > 0] %>% 
     matrix_to_df("sample") %>% 
     set_colnames(str_replace_all(colnames(.), "\\.", " ")) %>% 
-    gather("cibersort_cell_type", "predicted_fraction", `B cells naive`:Neutrophils) %>% 
+    gather("cibersort_cell_type", "predicted_fraction", `B cells naive`:Eosinophils) %>% 
     full_join(annotation_df, by = c("sample"))
 
 mcp_result_df <- mcp_results_id %>%
@@ -125,7 +132,7 @@ mcp_result_df <- mcp_results_id %>%
     gather("mcpcounter_cell_type", "predicted_score", `T cells`:Fibroblasts) %>% 
     full_join(annotation_df, by = c("sample")) 
 
-png('GSE64655_cibersort_facet_scatterplot.png', height = 1000)
+png('GSE103322_cibersort_facet_scatterplot.png', height = 1000)
 ggplot(cs_result_df, aes(x = cibersort_cell_type, y = predicted_fraction)) +
     geom_point() +
     facet_grid(cell_type ~ .) +
@@ -135,10 +142,10 @@ ggplot(cs_result_df, aes(x = cibersort_cell_type, y = predicted_fraction)) +
     theme(axis.text.x = element_text(angle = 90, size = 12)) +
     theme(axis.text.y = element_text(size = 12)) +
     theme(strip.text.y = element_text(size = 10, angle = 0)) +
-    ggtitle("Cibersort GSE64655")
+    ggtitle("Cibersort GSE103322")
 dev.off()
 
-png('GSE64655_mcpcounter_facet_scatterplot.png', height = 1000)
+png('GSE103322_mcpcounter_facet_scatterplot.png', height = 1000)
 ggplot(mcp_result_df, aes(x = mcpcounter_cell_type, y = predicted_score)) +
     geom_point() +
     facet_grid(cell_type ~ .) +
@@ -148,7 +155,7 @@ ggplot(mcp_result_df, aes(x = mcpcounter_cell_type, y = predicted_score)) +
     theme(axis.text.x = element_text(angle = 90, size = 12)) +
     theme(axis.text.y = element_text(size = 12)) +
     theme(strip.text.y = element_text(size = 10, angle = 0)) +
-    ggtitle("MCPCounter GSE64655")
+    ggtitle("MCPCounter GSE103322")
 dev.off()
 
 
@@ -156,15 +163,15 @@ dev.off()
 
 pca_matrix <- t(log_mat)
 
-png('GSE64655_PCA.png')
+png('GSE103322_PCA.png')
 autoplot(
     prcomp(pca_matrix), 
     data = annotation_df, 
     shape = "cell_type", 
-    colour = "patient",
+    colour = "batch",
     size = 3,
-    main = "GSE64655") +
-    scale_shape_manual(values = 16:22) +
+    main = "GSE103322") +
+    scale_shape_manual(values = 16:19) +
     theme_bw()
 dev.off()
 

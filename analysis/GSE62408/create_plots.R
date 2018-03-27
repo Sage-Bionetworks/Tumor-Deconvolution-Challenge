@@ -145,7 +145,7 @@ annotation_df <- pca_matrix %>%
     select(sample)
 
 
-png('GSE62408_PCA.png', height = 1000)
+png('GSE62408_PCA.png')
 autoplot(
     prcomp(pca_matrix), 
     data = annotation_df, 

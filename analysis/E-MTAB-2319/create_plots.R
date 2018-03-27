@@ -13,8 +13,7 @@ tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/E-MTAB-2319/"
 
 count_id       <- "syn11958709"
 annotation_id  <- "syn11968317"
-hugo_id        <- "syn11536071"
-count_id       <- "syn11958709"
+count_id       <- "syn12031262"
 genes_id       <- "syn11918430"
 cs_results_id  <- "syn11968347"
 mcp_results_id <- "syn11968348"
@@ -25,18 +24,7 @@ setwd(tmp_dir)
 synLogin()
 registerDoMC(cores = detectCores())
 
-annotation_df <- annotation_id %>% 
-    download_from_synapse %>% 
-    fread(select = c("Comment[ENA_RUN]", "Factor Value[cell type]")) %>% 
-    as_data_frame %>% 
-    set_colnames(c("sample", "cell_type")) %>% 
-    mutate(sample = str_c(sample, ".bam")) %>% 
-    distinct %>% 
-    arrange(sample)
-
-
-
-
+annotation_df <- create_df_from_synapse_id(annotation_id)
 gene_df <-  create_df_from_synapse_id(genes_id)
 
 
@@ -48,32 +36,23 @@ cs_genes <- gene_df %>%
     filter(Method == "cibersort") %>%
     use_series("Hugo")
 
-hugo_df <-  create_df_from_synapse_id(hugo_id)
 
-
-
-log_mat <- count_id %>%
-    create_df_from_synapse_id(unzip = T) %>% 
-    select(-c(Chr, Start, End, Strand, Length)) %>% 
-    df_to_matrix("Geneid") %>% 
-    .[rowSums(.) > 0,] %>%  
-    add(1) %>% 
-    apply(2, calculate_cpm) %>% 
-    matrix_to_df("ensembl_gene_id") %>% 
-    inner_join(hugo_df) %>% 
-    select(hgnc_symbol, everything()) %>% 
-    filter(hgnc_symbol != "") %>% 
+log_mat <-  count_id %>%
+    create_df_from_synapse_id %>% 
     select(-ensembl_gene_id) %>% 
+    filter(hgnc_symbol != "") %>% 
     group_by(hgnc_symbol) %>% 
     summarise_all(.funs = sum) %>% 
     ungroup %>% 
     df_to_matrix("hgnc_symbol") %>% 
+    .[rowSums(.) > 0,] %>%  
+    add(1) %>% 
+    apply(2, calculate_cpm) %>% 
     log10 
     
-zscore_mat <- log_mat
+zscore_mat <- log_mat %>% 
     quantile_normalize_matrix %>% 
     zscore_matrix
-
 
 mcp_zscore_matrix <- zscore_mat %>% 
     .[rownames(.) %in% mcp_genes,]
@@ -179,7 +158,7 @@ pca_matrix <- log_mat %>%
     t %>% 
     .[order(rownames(.)),]
 
-png('E-MTAB-2319_PCA.png', height = 1000)
+png('E-MTAB-2319_PCA.png')
 autoplot(
     prcomp(pca_matrix), 
     data = annotation_df, 
