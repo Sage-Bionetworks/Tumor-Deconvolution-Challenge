@@ -29,26 +29,15 @@ registerDoMC(cores = detectCores())
 gene_df <- create_df_from_synapse_id(genes_id)
 anno_df <- create_df_from_synapse_id(anno_id)
 
-expr_mat <- expr_id %>%
+log_matrix <- expr_id %>%
     create_df_from_synapse_id() %>% 
-    select(- Ensembl) %>% 
     group_by(Hugo) %>% 
     summarise_all(sum) %>% 
-    ungroup %>% 
-    filter(Hugo != "") %>% 
-    df_to_matrix("Hugo") 
-
-log_mat <- expr_mat %>% 
+    df_to_matrix("Hugo") %>% 
+    calculate_cpm %>% 
     .[rowSums(.) > 0,] %>% 
     add(1) %>% 
     log10
-
-annotation_df <- expr_mat %>% 
-    t %>% 
-    matrix_to_df("sample") %>% 
-    select(sample) %>% 
-    mutate(cell_type = str_sub(sample, end = -5)) %>% 
-    mutate(batch = str_sub(sample, start = -3))
 
 mcp_genes <- gene_df %>% 
     filter(Method == "mcpcounter") %>%
@@ -61,7 +50,7 @@ cs_genes <- gene_df %>%
 
 # heatmaps --------------------------------------------------------------------
 
-zscore_mat <- log_mat %>% 
+zscore_mat <- log_matrix %>% 
     quantile_normalize_matrix %>% 
     zscore_matrix
 
@@ -82,11 +71,11 @@ mcp_heatmap_row_df <- gene_df %>%
 
 mcp_zscore_matrix <-  mcp_zscore_matrix[rownames(mcp_heatmap_row_df),]
 
-heatmap_col_df <- annotation_df %>% 
+heatmap_col_df <- anno_df %>% 
     data.frame %>% 
     column_to_rownames("sample")
 
-png('GSE76371_mcpcounter_genes_heatmap.png', width = 4000, height = 4000)
+png('GSE76371_mcpcounter_genes_heatmap.png', width = 800, height = 1000)
 pheatmap(
     mcp_zscore_matrix,
     main = "MCPCounter GSE76371",
@@ -96,7 +85,7 @@ pheatmap(
     scale = "none")
 dev.off()
 
-png('GSE76371_mcpcounter_genes_rows_clustered_heatmap.png', width = 4000, height = 4000)
+png('GSE76371_mcpcounter_genes_rows_clustered_heatmap.png', width = 800, height = 1000)
 pheatmap(
     mcp_zscore_matrix,
     main = "MCPCounter GSE76371",
@@ -105,12 +94,14 @@ pheatmap(
     scale = "none")
 dev.off()
 
-png('GSE76371_cibersort_genes_heatmap.png', width = 4000, height = 4000)
+png('GSE76371_cibersort_genes_heatmap.png', width = 800, height = 3000)
 pheatmap(
     cs_zscore_matrix,
     main = "Cibersort GSE76371",
     annotation_col = heatmap_col_df,
-    scale = "none")
+    scale = "none",
+    fontsize = 15,
+    fontsize_row = 5)
 dev.off()
 
 # scatter plots ---------------------------------------------------------------
@@ -123,7 +114,7 @@ cs_result_df <- cs_results_id %>%
     matrix_to_df("sample") %>% 
     set_colnames(str_replace_all(colnames(.), "\\.", " ")) %>% 
     gather("cibersort_cell_type", "predicted_fraction", `B cells naive`:Eosinophils) %>% 
-    full_join(annotation_df, by = c("sample"))
+    full_join(anno_df, by = c("sample"))
 
 mcp_result_df <- mcp_results_id %>%
     download_from_synapse %>% 
@@ -133,7 +124,7 @@ mcp_result_df <- mcp_results_id %>%
     matrix_to_df("sample") %>% 
     set_colnames(str_replace_all(colnames(.), "\\.", " ")) %>% 
     gather("mcpcounter_cell_type", "predicted_score", `T cells`:Fibroblasts) %>% 
-    full_join(annotation_df, by = c("sample")) 
+    full_join(anno_df, by = c("sample")) 
 
 png('GSE76371_cibersort_facet_scatterplot.png', height = 1000)
 ggplot(cs_result_df, aes(x = cibersort_cell_type, y = predicted_fraction)) +
@@ -164,17 +155,17 @@ dev.off()
 
 # pca plots -------------------------------------------------------------------
 
-pca_matrix <- t(log_mat)
+pca_matrix <- t(log_matrix)
 
-png('GSE76371_PCA.png')
+png('GSE76371_PCA.png', width = 800, height = 800)
 autoplot(
     prcomp(pca_matrix), 
-    data = annotation_df, 
+    data = anno_df, 
     shape = "cell_type", 
-    colour = "batch",
+    colour = "cdna_method",
     size = 3,
     main = "GSE76371") +
-    scale_shape_manual(values = 16:19) +
+    scale_shape_manual(values = 1:9) +
     theme_bw()
 dev.off()
 
