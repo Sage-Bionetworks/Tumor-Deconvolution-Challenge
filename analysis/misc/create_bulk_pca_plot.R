@@ -32,8 +32,8 @@ MTAB_cpm_df <- MTAB_count_id %>%
     df_to_matrix("hgnc_symbol") %>% 
     add(1) %>% 
     apply(2, calculate_cpm) %>% 
-    matrix_to_df("Hugo") %>% 
-    .comple
+    matrix_to_df("Hugo")
+
 
 # GSE62408 --------------------------------------------------------------------
 
