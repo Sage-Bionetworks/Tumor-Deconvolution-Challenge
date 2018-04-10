@@ -37,16 +37,10 @@ MTAB_cpm_df <- MTAB_count_id %>%
 
 # GSE62408 --------------------------------------------------------------------
 
-GSE62408_id <- "syn11915424"
+GSE62408_id <- "syn12083635"
 
 GSE62408_rpkm_df <- GSE62408_id %>% 
-    create_df_from_synapse_id(unzip = T) %>% 
-    dplyr::rename("Hugo" = `-`) %>% 
-    group_by(Hugo) %>% 
-    summarise_all(.funs = sum) %>% 
-    ungroup %>% 
-    .[,order(colnames(.))] %>% 
-    select(Hugo, everything())
+    create_df_from_synapse_id
 
 GSE62408_anno_df <- data_frame(
     "sample" = colnames(GSE62408_rpkm_df)[-1],

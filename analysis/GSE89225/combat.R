@@ -1,54 +1,259 @@
-library(plyr)
-library(doMC)
 library(tidyverse)
 library(synapser)
 library(data.table)
 library(magrittr)
-library(pheatmap)
 library(preprocessCore)
 library(ggfortify)
+library(sva)
+library(BiocParallel)
 
 home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
 tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE89225/"
 
 expr_id        <- "syn12063105"
 anno_id        <- "syn12063109"
-genes_id       <- "syn11918430"
-cs_results_id  <- "syn12063824"
-mcp_results_id <- "syn12063825"
-
 
 
 setwd(home_dir)
 source("scripts/utils.R")
 setwd(tmp_dir)
 synLogin()
-registerDoMC(cores = detectCores())
 
-
-gene_df <- create_df_from_synapse_id(genes_id)
 anno_df <- create_df_from_synapse_id(anno_id) %>% 
     arrange(sample)
 
-log_matrix <- expr_id %>%
+gene_matrix <- expr_id %>%
     create_df_from_synapse_id() %>% 
     group_by(Hugo) %>% 
     summarise_all(sum) %>% 
     ungroup %>% 
     df_to_matrix("Hugo") %>% 
     .[,order(colnames(.))] %>% 
+    .[!rowSums(.) == 0,] %>% 
     calculate_cpm %>% 
-    .[rowSums(.) > 0,] %>% 
     add(1) %>% 
-    log10
+    log10 
 
-mcp_genes <- gene_df %>% 
-    filter(Method == "mcpcounter") %>%
-    use_series("Hugo")
+par <- MulticoreParam(workers = 7)
 
-cs_genes <- gene_df %>% 
-    filter(Method == "cibersort") %>%
-    use_series("Hugo")
+combat_platform <-  ComBat(
+    gene_matrix,
+    batch = anno_df$platform, 
+    mod = model.matrix(~1, data = anno_df),
+    BPPARAM = par)
+
+combat_source <-  ComBat(
+    gene_matrix,
+    batch = anno_df$source, 
+    mod = model.matrix(~1, data = anno_df),
+    BPPARAM = par)
+
+autoplot(
+    prcomp(t(gene_matrix)), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "platform",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 21:25) +
+    theme_bw()
+
+autoplot(
+    prcomp(t(combat_platform)), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "platform",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 1:19) +
+    theme_bw()
+
+autoplot(
+    prcomp(t(combat_source)), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "platform",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 1:19) +
+    theme_bw()
+
+
+
+
+
+
+
+
+combat_platform_patient <-  ComBat(
+    combat_platform,
+    batch = anno_df$patient, 
+    mod = model.matrix(~1, data = anno_df),
+    BPPARAM = par)
+
+
+
+
+
+log_matrix_platform <- combat_platform %>% 
+    calculate_cpm %>% 
+    add(1) %>% 
+    log10 %>% 
+    t
+
+log_matrix_platform[is.nan(log_matrix_platform)] <- 0
+
+
+# pc_obj <- prcomp(log_matrix)
+# 
+# pc_df <- pc_obj %>%
+#     use_series(x) %>%
+#     matrix_to_df("sample") %>%
+#     select(sample, PC1, PC2) %>%
+#     left_join(anno_df)
+# 
+# x %>% ggplot() +
+#     aes(x = PC1, y = PC2) +
+#     geom_point(size = 5, aes(color = platform, shape = patient)) +
+#     geom_point(size = 2, aes(color = source)) +
+#     theme_bw() +
+#     scale_shape_manual(values = 0:20) +
+#     scale_colour_manual(values = c("red", "purple", "black", "blue", "orange"))
+    
+
+autoplot(
+    prcomp(log_matrix), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "platform",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 21:25) +
+    theme_bw()
+
+autoplot(
+    prcomp(log_matrix_platform), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "platform",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 1:19) +
+    theme_bw()
+
+autoplot(
+    prcomp(log_matrix), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "source",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 1:19) +
+    theme_bw()
+
+autoplot(
+    prcomp(log_matrix_platform), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "source",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 1:19) +
+    theme_bw()
+
+autoplot(
+    prcomp(log_matrix), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "patient",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 1:19) +
+    theme_bw()
+
+autoplot(
+    prcomp(log_matrix_platform), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "patient",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 1:19) +
+    theme_bw()
+
+
+
+
+
+log_matrix_platform_patient <- combat_platform_patient %>% 
+    calculate_cpm %>% 
+    add(1) %>% 
+    log10 %>% 
+    t
+
+log_matrix_platform_patient[is.nan(log_matrix_platform_patient)] <- 0
+
+autoplot(
+    prcomp(log_matrix_platform_patient), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "platform",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 21:25) +
+    theme_bw()
+
+autoplot(
+    prcomp(log_matrix_platform), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "platform",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 1:19) +
+    theme_bw()
+
+autoplot(
+    prcomp(log_matrix), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "source",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 1:19) +
+    theme_bw()
+
+autoplot(
+    prcomp(log_matrix_platform), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "source",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 1:19) +
+    theme_bw()
+
+autoplot(
+    prcomp(log_matrix), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "patient",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 1:19) +
+    theme_bw()
+
+autoplot(
+    prcomp(log_matrix_platform), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "patient",
+    size = 3,
+    main = "GSE89225") +
+    scale_shape_manual(values = 1:19) +
+    theme_bw()
+
+
 
 
 # heatmaps --------------------------------------------------------------------
