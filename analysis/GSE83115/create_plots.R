@@ -9,7 +9,7 @@ library(preprocessCore)
 library(ggfortify)
 
 home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE76371/"
+tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
 
 expr_id        <- "syn11977964"
 genes_id       <- "syn11918430"
@@ -84,29 +84,29 @@ heatmap_col_df <- annotation_df %>%
     data.frame %>% 
     column_to_rownames("sample")
 
-png('GSE76371_mcpcounter_genes_heatmap.png', width = 4000, height = 4000)
+png('GSE83115_mcpcounter_genes_heatmap.png', width = 1000, height = 1000)
 pheatmap(
     mcp_zscore_matrix,
-    main = "MCPCounter GSE76371",
+    main = "MCPCounter GSE83115",
     annotation_row = mcp_heatmap_row_df,
     annotation_col = heatmap_col_df,
     cluster_rows = F,
     scale = "none")
 dev.off()
 
-png('GSE76371_mcpcounter_genes_rows_clustered_heatmap.png', width = 4000, height = 4000)
+png('GSE83115_mcpcounter_genes_rows_clustered_heatmap.png', width = 1000, height = 1000)
 pheatmap(
     mcp_zscore_matrix,
-    main = "MCPCounter GSE76371",
+    main = "MCPCounter GSE83115",
     annotation_row = mcp_heatmap_row_df,
     annotation_col = heatmap_col_df,
     scale = "none")
 dev.off()
 
-png('GSE76371_cibersort_genes_heatmap.png', width = 4000, height = 4000)
+png('GSE83115_cibersort_genes_heatmap.png', width = 1000, height = 1000)
 pheatmap(
     cs_zscore_matrix,
-    main = "Cibersort GSE76371",
+    main = "Cibersort GSE83115",
     annotation_col = heatmap_col_df,
     scale = "none")
 dev.off()
@@ -133,7 +133,7 @@ mcp_result_df <- mcp_results_id %>%
     gather("mcpcounter_cell_type", "predicted_score", `T cells`:Fibroblasts) %>% 
     full_join(annotation_df, by = c("sample")) 
 
-png('GSE76371_cibersort_facet_scatterplot.png', height = 1000)
+png('GSE83115_cibersort_facet_scatterplot.png', height = 1000)
 ggplot(cs_result_df, aes(x = cibersort_cell_type, y = predicted_fraction)) +
     geom_point() +
     facet_grid(cell_type ~ .) +
@@ -143,10 +143,10 @@ ggplot(cs_result_df, aes(x = cibersort_cell_type, y = predicted_fraction)) +
     theme(axis.text.x = element_text(angle = 90, size = 12)) +
     theme(axis.text.y = element_text(size = 12)) +
     theme(strip.text.y = element_text(size = 10, angle = 0)) +
-    ggtitle("Cibersort GSE76371")
+    ggtitle("Cibersort GSE83115")
 dev.off()
 
-png('GSE76371_mcpcounter_facet_scatterplot.png', height = 1000)
+png('GSE83115_mcpcounter_facet_scatterplot.png', height = 1000)
 ggplot(mcp_result_df, aes(x = mcpcounter_cell_type, y = predicted_score)) +
     geom_point() +
     facet_grid(cell_type ~ .) +
@@ -156,7 +156,7 @@ ggplot(mcp_result_df, aes(x = mcpcounter_cell_type, y = predicted_score)) +
     theme(axis.text.x = element_text(angle = 90, size = 12)) +
     theme(axis.text.y = element_text(size = 12)) +
     theme(strip.text.y = element_text(size = 10, angle = 0)) +
-    ggtitle("MCPCounter GSE76371")
+    ggtitle("MCPCounter GSE83115")
 dev.off()
 
 
@@ -164,14 +164,14 @@ dev.off()
 
 pca_matrix <- t(log_mat)
 
-png('GSE76371_PCA.png')
+png('GSE83115_PCA.png', height = 700, width = 700)
 autoplot(
     prcomp(pca_matrix), 
     data = annotation_df, 
     shape = "cell_type", 
     colour = "batch",
     size = 3,
-    main = "GSE76371") +
+    main = "GSE83115") +
     scale_shape_manual(values = 16:19) +
     theme_bw()
 dev.off()
