@@ -1,0 +1,320 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE, warnings = F}
+library(tidyverse)
+library(synapser)
+library(data.table)
+library(magrittr)
+library(preprocessCore)
+library(ggfortify)
+library(sva)
+library(BiocParallel)
+
+home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+
+expr_id        <- "syn12063105"
+anno_id        <- "syn12063109"
+
+
+setwd(home_dir)
+source("scripts/utils.R")
+synLogin()
+par <- MulticoreParam(workers = 7)
+```
+
+```{r data, warnings = F}
+anno_df <- create_df_from_synapse_id(anno_id) %>% 
+    arrange(sample) %>% 
+    mutate(source = str_sub(source, start = 8)) %>% 
+    mutate(group = str_c(platform, ":", source))
+
+hiseq_anno_df <- filter(anno_df, platform == "Illumina HiSeq 2500")
+ion_anno_df <- filter(anno_df, platform == "Ion Torrent Proton")
+
+lcpm_matrix <- expr_id %>%
+    create_df_from_synapse_id() %>% 
+    group_by(Hugo) %>% 
+    summarise_all(sum) %>% 
+    ungroup %>% 
+    df_to_matrix("Hugo") %>% 
+    .[,order(colnames(.))] %>% 
+    .[!rowSums(.) == 0,] %>% 
+    calculate_cpm %>% 
+    add(1) %>% 
+    log10 
+
+hiseq_lcpm_matrix <- lcpm_matrix[,hiseq_anno_df$sample] %>% 
+    .[apply(., 1, var) != 0, ]
+
+# sum(apply(hiseq_lcpm_matrix, 1, var) == 0)
+
+ion_lcpm_matrix <- lcpm_matrix[,ion_anno_df$sample] %>% 
+     .[apply(., 1, var) != 0, ]
+```
+
+# No combat
+
+
+## By group
+``` {r plots2, warnings = F}
+autoplot(
+    prcomp(t(lcpm_matrix)), 
+    data = anno_df, 
+    colour = "cell_type", 
+    shape = "group",
+    size = 3,
+    main = "all samples") +
+    scale_shape_manual(values = 21:25) +
+    theme_bw()
+
+autoplot(
+    prcomp(t(hiseq_lcpm_matrix)), 
+    data = hiseq_anno_df, 
+    colour = "cell_type", 
+    shape = "group",
+    size = 3,
+    main = "hiseq samples") +
+    scale_shape_manual(values = 21:25) +
+    theme_bw()
+
+autoplot(
+    prcomp(t(ion_lcpm_matrix)), 
+    data = ion_anno_df, 
+    colour = "cell_type", 
+    shape = "group",
+    size = 3,
+    main = "ion samples") +
+    scale_shape_manual(values = 21:25) +
+    theme_bw()
+```
+
+## By patient
+
+``` {r plots3, warnings = F}
+autoplot(
+    prcomp(t(lcpm_matrix)), 
+    data = anno_df, 
+    shape = "patient", 
+    colour = "cell_type",
+    size = 3,
+    main = "all samples") +
+    scale_shape_manual(values = 1:20) +
+    theme_bw()
+
+
+autoplot(
+    prcomp(t(hiseq_lcpm_matrix)), 
+    data = hiseq_anno_df, 
+    shape = "patient", 
+    colour = "cell_type",
+    size = 3,
+    main = "hiseq samples") +
+    scale_shape_manual(values = 1:20) +
+    theme_bw()
+
+autoplot(
+    prcomp(t(ion_lcpm_matrix)), 
+    data = ion_anno_df, 
+    shape = "patient", 
+    colour = "cell_type",
+    size = 3,
+    main = "ion samples") +
+    scale_shape_manual(values = 1:20) +
+    theme_bw()
+```
+
+
+# combat all samples
+```{r data2, warnings = F}
+
+lcpm_corrected_by_platform <-  ComBat(
+    lcpm_matrix,
+    batch = anno_df$platform, 
+    mod = model.matrix(~1, data = anno_df),
+    BPPARAM = par)
+
+lcpm_corrected_by_source <-  ComBat(
+    lcpm_matrix,
+    batch = anno_df$source, 
+    mod = model.matrix(~1, data = anno_df),
+    BPPARAM = par)
+
+lcpm_corrected_by_platform_source  <-  ComBat(
+    lcpm_corrected_by_platform,
+    batch = anno_df$source, 
+    mod = model.matrix(~1, data = anno_df),
+    BPPARAM = par)
+
+lcpm_corrected_by_source_platform <-  ComBat(
+    lcpm_corrected_by_source,
+    batch = anno_df$platform, 
+    mod = model.matrix(~1, data = anno_df),
+    BPPARAM = par)
+
+```
+
+## corrected for platform
+``` {r plots4, warnings = F}
+autoplot(
+    prcomp(t(lcpm_corrected_by_platform)), 
+    data = anno_df, 
+    shape = "group", 
+    colour = "cell_type",
+    size = 3,
+    main = "by group") +
+    scale_shape_manual(values = c(17,18,21,22)) +
+    theme_bw()
+
+autoplot(
+    prcomp(t(lcpm_corrected_by_platform)), 
+    data = anno_df, 
+    shape = "patient", 
+    colour = "cell_type",
+    size = 3,
+    main = "by samples") +
+    scale_shape_manual(values = c(1:15, 16, 17, 20, 21)) +
+    theme_bw()
+```
+
+## corrected for source
+``` {r plots5, warnings = F}
+autoplot(
+    prcomp(t(lcpm_corrected_by_source)), 
+    data = anno_df, 
+    shape = "group", 
+    colour = "cell_type",
+    size = 3,
+    main = "by group") +
+    scale_shape_manual(values = c(17,18,21,22)) +
+    theme_bw()
+
+
+autoplot(
+    prcomp(t(lcpm_corrected_by_source)), 
+    data = anno_df, 
+    shape = "patient", 
+    colour = "cell_type",
+    size = 3,
+    main = "by samples") +
+    scale_shape_manual(values = c(1:15, 16, 17, 20, 21)) +
+    theme_bw()
+```
+
+## corrected for platform, then source
+
+``` {r plots6, warnings = F}
+autoplot(
+    prcomp(t(lcpm_corrected_by_platform_source)), 
+    data = anno_df, 
+    shape = "group", 
+    colour = "cell_type",
+    size = 3,
+    main = "by group") +
+    scale_shape_manual(values = c(17,18,21,22)) +
+    theme_bw()
+
+autoplot(
+    prcomp(t(lcpm_corrected_by_platform_source)), 
+    data = anno_df, 
+    shape = "patient", 
+    colour = "cell_type",
+    size = 3,
+    main = "by samples") +
+    scale_shape_manual(values = c(1:15, 16, 17, 20, 21)) +
+    theme_bw()
+```
+
+## corrected for source, then platform
+
+``` {r plots7, warnings = F}
+autoplot(
+    prcomp(t(lcpm_corrected_by_source_platform)), 
+    data = anno_df, 
+    shape = "group", 
+    colour = "cell_type",
+    size = 3,
+    main = "by group") +
+    scale_shape_manual(values = c(17,18,21,22)) +
+    theme_bw()
+
+autoplot(
+    prcomp(t(lcpm_corrected_by_source_platform)), 
+    data = anno_df, 
+    shape = "patient", 
+    colour = "cell_type",
+    size = 3,
+    main = "by samples") +
+    scale_shape_manual(values = c(1:15, 16, 17, 20, 21)) +
+    theme_bw()
+```
+
+# combat hiseq samples
+
+```{r data3, warnings = F}
+
+hiseq_lcpm_corrected_by_source <-  ComBat(
+    hiseq_lcpm_matrix,
+    batch = hiseq_anno_df$source, 
+    mod = model.matrix(~1, data = hiseq_anno_df),
+    BPPARAM = par)
+
+
+autoplot(
+    prcomp(t(hiseq_lcpm_corrected_by_source)), 
+    data = hiseq_anno_df, 
+    shape = "group", 
+    colour = "cell_type",
+    size = 3,
+    main = "by group") +
+    scale_shape_manual(values = c(17,18,21,22)) +
+    theme_bw()
+
+autoplot(
+    prcomp(t(hiseq_lcpm_corrected_by_source)), 
+    data = hiseq_anno_df, 
+    shape = "patient", 
+    colour = "cell_type",
+    size = 3,
+    main = "by samples") +
+    scale_shape_manual(values = c(1:15, 16, 17, 20, 21)) +
+    theme_bw()
+
+
+```
+
+
+
+# combat ion samples
+
+```{r data4, warnings = F}
+
+ion_lcpm_corrected_by_source <-  ComBat(
+    ion_lcpm_matrix,
+    batch = ion_anno_df$source, 
+    mod = model.matrix(~1, data = ion_anno_df),
+    BPPARAM = par)
+
+autoplot(
+    prcomp(t(ion_lcpm_corrected_by_source)), 
+    data = ion_anno_df, 
+    shape = "group", 
+    colour = "cell_type",
+    size = 3,
+    main = "by group") +
+    scale_shape_manual(values = c(17,18,21,22)) +
+    theme_bw()
+
+autoplot(
+    prcomp(t(ion_lcpm_corrected_by_source)), 
+    data = ion_anno_df, 
+    shape = "patient", 
+    colour = "cell_type",
+    size = 3,
+    main = "by samples") +
+    scale_shape_manual(values = c(1:15, 16, 17, 20, 21)) +
+    theme_bw()
+
+```

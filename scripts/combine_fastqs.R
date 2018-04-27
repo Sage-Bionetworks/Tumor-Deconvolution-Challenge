@@ -1,6 +1,12 @@
 require(tidyverse)
 require(magrittr)
 
+# Requires fastq-tools to be instaled and added to the env path to be called by
+# this script:
+# https://github.com/dcjones/fastq-tools
+
+# All files will be written to the current working directory
+
 ## df
 # must be a data_frame with the columns:
 # -fraction
@@ -31,17 +37,20 @@ combine_paired_fastq_files <- function(df, other_args = ""){
     
     df2 <- df %>% 
         mutate(n_reads = map_int(p1_fastq_file, find_fastq_n_reads)) %>% 
+        mutate(n_reads2 = map_int(p2_fastq_file, find_fastq_n_reads)) %>% 
         mutate(n_samples = as.integer(mean(n_reads) * fraction)) %>% 
         mutate(prefix = str_c("tmp", 1:n())) %>% 
         mutate(p1_sample_file = str_c(prefix, ".1.fastq")) %>% 
         mutate(p2_sample_file = str_c(prefix, ".2.fastq")) %>% 
         mutate(sample_command = create_fastq_sample_commands(., other_args))
+    if(any(df2$n_reads != df2$nreads2)) stop("reads per pair don't match")
     walk(df2$sample_command, system)
     create_fastq_merge_command(df2$p1_sample_file, "p1") %>%
         system
     create_fastq_merge_command(df2$p1_sample_file, "p2") %>%
         system
 }
+
 
 find_fastq_n_reads <- function(fastq){
     fastq %>% 

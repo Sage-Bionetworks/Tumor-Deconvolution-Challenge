@@ -18,6 +18,7 @@ setwd(home_dir)
 source("scripts/utils.R")
 setwd(tmp_dir)
 synLogin()
+par <- MulticoreParam(workers = 7)
 
 anno_df <- create_df_from_synapse_id(anno_id) %>% 
     arrange(sample)
@@ -34,7 +35,7 @@ gene_matrix <- expr_id %>%
     add(1) %>% 
     log10 
 
-par <- MulticoreParam(workers = 7)
+
 
 combat_platform <-  ComBat(
     gene_matrix,
