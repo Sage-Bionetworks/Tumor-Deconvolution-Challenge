@@ -6,12 +6,13 @@ library(DBI)
 library(synapser)
 
 # local
-home_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
+#home_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+#tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
 
 #ec2
-# home_dir  <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
-# tmp_dir   <- "/home/ubuntu/tmp/"
+home_dir  <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
+tmp_dir   <- "/home/ubuntu/tmp/"
+sra_db    <- "/home/ubuntu/tmp/SRAmetadb.sqlite"
 
 manifest_id <- "syn12177468"
 upload_id <- "syn12177447"
@@ -30,6 +31,11 @@ activity_obj <- Activity(
 
 df <- create_df_from_synapse_id(manifest_id)
 
+if(!file.exists(sra_db)){
+    sra_db <- getSRAdbFile()
+}
+
+con <- dbConnect(RSQLite::SQLite(), sra_db)
 
 transfer_to_synapse <- function(sra){
     getFASTQfile(sra, con)
