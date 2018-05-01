@@ -49,6 +49,7 @@ create_pure_samples <- function(df){
         "p1_fastq_file" = c(new_paths[[1]]),
         "p2_fastq_file" = c(new_paths[[2]]))
     output_files <- combine_paired_fastq_files_by_n(combine_df, 3, df$sample_name[[1]])
+    walk(new_paths, file.remove)
     output_files %>% 
         str_c("gzip ", .) %>% 
         walk(system)
