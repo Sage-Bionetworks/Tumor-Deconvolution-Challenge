@@ -29,25 +29,56 @@ require(magrittr)
 # p1_fastq_file: path to the first fastq file for this sample
 # p2_fastq_file: path to the second fastq file for this sample
 
+## n_results: how many times to create an output file with the parameters in the
+# df
+
+# output_file_prefix: prefix for each output file
+
 ## other_args 
 # must be a string of other args that will get sent to fastq-sample
 # https://homes.cs.washington.edu/~dcjones/fastq-tools/fastq-sample.html
 
-combine_paired_fastq_files <- function(df, other_args = ""){
+combine_paired_fastq_files_by_n <- function(
+    df, n_results = 3, output_file_prefix = "result", other_args = ""){
     
-    df2 <- df %>% 
+    output_file_prefixes <- str_c(output_file_prefix, "_output", as.character(1:n_results))
+    output_files = map(output_file_prefixes, function(prefix) 
+        combine_paired_fastq_files(df, prefix, other_args)) %>% 
+        unlist
+}
+
+combine_paired_fastq_files <- function(
+    df, output_prefix = "result", other_args = ""){
+    
+    parameter_df <- create_parameter_df(df, other_args)
+    walk(parameter_df$sample_command, system)
+    output_file1 <- str_c(output_prefix, "_p1.fastq")
+    output_file2 <- str_c(output_prefix, "_p2.fastq")
+    merge_input_files(parameter_df$p1_sample_file, output_file1)
+    merge_input_files(parameter_df$p2_sample_file, output_file2)
+    return(c(output_file1, output_file2))
+}
+
+merge_input_files <- function(input_files, output_file){
+    command <- input_files %>% 
+        str_c(collapse = " ") %>% 
+        str_c("cat ", ., " > ", output_file)
+    system(command)
+    walk(input_files, file.remove)
+}
+
+
+create_parameter_df <- function(df, other_args = ""){
+    df %>% 
         mutate(n_reads = map_int(p1_fastq_file, find_fastq_n_reads)) %>%
         mutate(n_samples = as.integer(mean(n_reads) * fraction)) %>% 
-        mutate(prefix = str_c("tmp", 1:n())) %>% 
+        mutate(prefix = str_c("tmp", 1:nrow(df))) %>% 
         mutate(p1_sample_file = str_c(prefix, ".1.fastq")) %>% 
         mutate(p2_sample_file = str_c(prefix, ".2.fastq")) %>% 
         mutate(sample_command = create_fastq_sample_commands(., other_args))
-    walk(df2$sample_command, system)
-    create_fastq_merge_command(df2$p1_sample_file, "p1") %>%
-        system
-    create_fastq_merge_command(df2$p1_sample_file, "p2") %>%
-        system
 }
+
+
 
 find_fastq_n_reads <- function(fastq){
     fastq %>% 
@@ -84,10 +115,4 @@ create_fastq_sample_command <- function(
         fastq_file1,
         fastq_file2,
         sep = " ")
-}
-
-create_fastq_merge_command <- function(files, prefix){
-    files %>% 
-        str_c(collapse = " ") %>% 
-        str_c("cat ", ., " > ", prefix, ".fastq")
 }
