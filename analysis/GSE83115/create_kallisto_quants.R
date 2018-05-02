@@ -90,7 +90,9 @@ create_and_upload_quant_file <- function(df){
     walk(c(abundance_file, "abundance.h5", "run_info.json"), file.remove)
 }
 
-
+file_df %>% 
+    split(.$sample_name) %>% 
+    walk(create_and_upload_quant_file)
 
 
 
