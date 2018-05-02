@@ -10,7 +10,7 @@ library(doMC)
 #ec2
 home_dir  <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
 tmp_dir   <- "/home/ubuntu/tmp/"
-kallisto_cwl_file <- "/home/ubuntu/kallisto_cwl/"
+kallisto_dir <- "/home/ubuntu/kallisto_cwl/"
 
 
 manifest_id          <- "syn12177468"
