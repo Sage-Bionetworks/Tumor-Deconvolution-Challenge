@@ -61,9 +61,9 @@ file_df <- list(raw_file_df, sampled_file_df) %>%
     bind_rows %>% 
     select(-parentId) 
 
-paths <- l_ply(file_df$id, download_from_synapse, .parallel = T)
+paths <- llply(file_df$id, download_from_synapse, .parallel = T)
 
-file_df$paths <- paths
+file_df$paths <- unlist(paths)
 
 write_tsv(file_df, "fastq.tsv")
 
