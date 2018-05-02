@@ -3,14 +3,14 @@ library(synapser)
 library(doMC)
 
 # local
-# home_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-# tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
-# kallisto_dir <- "/home/aelamb/repos/kallisto_cwl/"
+home_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
+kallisto_dir <- "/home/aelamb/repos/kallisto_cwl/"
 
 #ec2
-home_dir  <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
-tmp_dir   <- "/home/ubuntu/tmp/"
-kallisto_cwl_file <- "/home/ubuntu/kallisto_cwl/"
+# home_dir  <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
+# tmp_dir   <- "/home/ubuntu/tmp/"
+# kallisto_cwl_file <- "/home/ubuntu/kallisto_cwl/"
 
 
 manifest_id          <- "syn12177468"
@@ -58,7 +58,7 @@ sampled_file_df <- file_view_df %>%
 
 file_df <- list(raw_file_df, sampled_file_df) %>% 
     bind_rows %>% 
-    select(-parentId) %>% 
+    select(-parentId)
     
 
 
