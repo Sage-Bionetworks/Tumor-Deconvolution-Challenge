@@ -27,7 +27,10 @@ kallisto_dir <- "/home/ubuntu/kallisto_cwl/"
 fastq_file <- "fastq.tsv"
 index_file <- "../GRCH38.idx"    
 
+setwd(home_dir)
+source("scripts/utils.R")
 setwd(tmp_dir)
+synLogin()
 registerDoMC(cores = detectCores() - 1)
 
 
