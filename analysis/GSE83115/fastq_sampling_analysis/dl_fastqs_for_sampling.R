@@ -30,7 +30,7 @@ SRR_ids<- manifest_id %>%
     filter(sample_name %in% cell_lines_to_sample) %>% 
     use_series(run)
 
-paths <- file_view_id %>% 
+file_view_id %>% 
     str_c("select id, name, parentId from ", .) %>% 
     synTableQuery %>% 
     as.data.frame %>% 
@@ -39,7 +39,7 @@ paths <- file_view_id %>%
     mutate(SRR_id = str_sub(name, end = 10)) %>% 
     filter(SRR_id %in% SRR_ids) %>% 
     use_series(id) %>% 
-    l_ply(download_from_synapse, .parallel = T) %>% 
-    str_c("gunzip ", .) %>% 
+    llply(download_from_synapse, .parallel = T) %>% 
+    str_c("gunzip ", .) %>%
     l_ply(system, .parallel = T)
 
