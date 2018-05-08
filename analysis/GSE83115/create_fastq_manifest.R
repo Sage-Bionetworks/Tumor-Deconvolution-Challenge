@@ -1,3 +1,5 @@
+# created manifest for getting raw fastq files form geo
+
 library(plyr)
 library(doMC)
 library(tidyverse)
