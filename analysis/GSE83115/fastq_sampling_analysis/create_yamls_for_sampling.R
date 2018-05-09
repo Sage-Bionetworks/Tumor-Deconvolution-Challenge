@@ -11,7 +11,7 @@ library(yaml)
 
 #ec2
 home_dir         <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
-tmp_dir          <- "/home/ubuntu/tmp/"
+tmp_dir          <- "/home/ubuntu/"
 cache_dir        <- "/home/ubuntu/.synapseCache/"
 fastq_mixer_repo <- "/home/ubuntu/fastq_mixer/"
    
@@ -47,6 +47,8 @@ fastq_df <- cache_dir %>%
     inner_join(manifest_df) %>% 
     mutate(pair = str_match(file_name, "[:alnum:]+_([12]{1}).fastq$")[,2]) %>% 
     arrange(sample_name, pair)
+
+print(fastq_df)
 
 create_yaml_by_sample <- function(df){
     map(1:3, function(run_number) create_yaml_by_seed(df, run_number))
