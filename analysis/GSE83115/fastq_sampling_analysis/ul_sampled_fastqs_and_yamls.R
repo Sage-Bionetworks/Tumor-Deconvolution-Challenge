@@ -77,11 +77,9 @@ yaml_activity_obj <- Activity(
 l_ply(file_df$yaml, upload_file_to_synapse, upload_id, activity_obj = yaml_activity_obj, .parallel = T)
 
 gzip_commands <- str_c("gzip ", c(file_df$p1_fastq, file_df$p2_fastq))
-#l_ply(gzip_commands, system, .parallel = T) 
+l_ply(gzip_commands, system, .parallel = T) 
  
 upload_fastqs_by_sample <- function(df){
-    
-    print(df)
     activity_obj <- Activity(
         name = "create and upload",
         description = "sample from fastq files",
@@ -90,7 +88,9 @@ upload_fastqs_by_sample <- function(df){
             "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SE83115/fastq_sampling_analysis/create_yamls_for_sampling.R",
             "https://github.com/Sage-Bionetworks/fastq_mixer",
             "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SE83115/fastq_sampling_analysis/ul_sampled_fastqs_and_yamls.R"),
-        used = c(manifest_id, file_view_id))
+        used = c(manifest_id, file_view_id, df$p1_source_id, df$p2_source_id))
+    upload_file_to_synapse(df$p1_fastq_gz, upload_id, activity_obj = activity_obj)
+    upload_file_to_synapse(df$p2_fastq_gz, upload_id, activity_obj = activity_obj)
 }
 
 file_df %>% 
