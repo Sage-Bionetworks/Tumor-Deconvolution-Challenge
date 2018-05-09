@@ -49,10 +49,10 @@ fastq_df <- cache_dir %>%
     arrange(sample_name, pair)
 
 create_yaml_by_sample <- function(df){
-    map(1:3, function(run_number) create_yaml(df, run_number))
+    map(1:3, function(run_number) create_yaml_by_seed(df, run_number))
 }
 
-create_yaml <- function(df, seed){
+create_yaml_by_seed <- function(df, seed){
     output_prefix  <- str_c(fastq_df$sample_name[[1]], "_output", as.character(seed))
     
     create_fastq_mixer_yaml(
