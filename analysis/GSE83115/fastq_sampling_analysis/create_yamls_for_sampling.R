@@ -48,19 +48,17 @@ fastq_df <- cache_dir %>%
     mutate(pair = str_match(file_name, "[:alnum:]+_([12]{1}).fastq$")[,2]) %>% 
     arrange(sample_name, pair)
 
-print(fastq_df)
-
 create_yaml_by_sample <- function(df){
-    map(1:3, function(run_number) create_yaml_by_seed(df, run_number))
+    walk(1:3, function(run_number) create_yaml_by_seed(df, run_number))
 }
 
 create_yaml_by_seed <- function(df, seed){
-    output_prefix  <- str_c(fastq_df$sample_name[[1]], "_output", as.character(seed))
+    output_prefix  <- str_c(df$sample_name[[1]], "_output", as.character(seed))
     
     create_fastq_mixer_yaml(
-        yaml_file = str_c( output_prefix , ".yaml"),
-        fastq_files_p1 = fastq_df$path[[1]], 
-        fastq_files_p2 = fastq_df$path[[2]], 
+        yaml_file = str_c(output_prefix, ".yaml"),
+        fastq_files_p1 = df$path[[1]], 
+        fastq_files_p2 = df$path[[2]], 
         sample_fractions = 1.0,
         seed = seed,
         output_prefix = output_prefix)
