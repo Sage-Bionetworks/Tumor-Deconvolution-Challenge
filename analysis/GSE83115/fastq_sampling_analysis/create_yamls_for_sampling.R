@@ -4,16 +4,16 @@ library(tidyverse)
 library(yaml)
 
 # local
-# home_dir         <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-# tmp_dir          <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
-# cache_dir        <- "/home/aelamb/.synapseCache/"
-# fastq_mixer_repo <- "/home/aelamb/repos/fastq_mixer/"
+home_dir         <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+tmp_dir          <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
+cache_dir        <- "/home/aelamb/.synapseCache/"
+fastq_mixer_repo <- "/home/aelamb/repos/fastq_mixer/"
 
 #ec2
-home_dir         <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
-tmp_dir          <- "/home/ubuntu/"
-cache_dir        <- "/home/ubuntu/.synapseCache/"
-fastq_mixer_repo <- "/home/ubuntu/fastq_mixer/"
+# home_dir         <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
+# tmp_dir          <- "/home/ubuntu/"
+# cache_dir        <- "/home/ubuntu/.synapseCache/"
+# fastq_mixer_repo <- "/home/ubuntu/fastq_mixer/"
    
 manifest_id  <- "syn12177468"
 file_view_id <- "syn12179146"
@@ -36,7 +36,8 @@ manifest_df <- manifest_id %>%
     create_df_from_synapse_id %>% 
     filter(sample_name %in% cell_lines_to_sample) %>% 
     select(run, sample_name) %>% 
-    rename("SRR_id" = run)
+    rename("SRR_id" = run) %>% 
+    mutate(sample_name = str_remove(sample_name, "\\+"))
 
 fastq_df <- cache_dir %>% 
     list.files(recursive = T, full.names = T) %>% 
