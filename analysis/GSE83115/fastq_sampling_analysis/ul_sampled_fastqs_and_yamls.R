@@ -64,17 +64,17 @@ file_df <- list.files() %>%
 
 
 
-# 
-# yaml_activity_obj <- Activity(
-#     name = "create and upload",
-#     description = "create yaml file for doing fastq sampling",
-#     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SE83115/fastq_sampling_analysis/ul_sampled_fastqs_and_yamls.R",
-#                     "https://github.com/Sage-Bionetworks/fastq_mixer"),
-#     used = c(manifest_id, file_view_id)
-# )
-# 
-# 
-# l_ply(file_df$yaml, upload_file_to_synapse, upload_id, activity_obj = yaml_activity_obj, .parallel = T)
+
+yaml_activity_obj <- Activity(
+    name = "create and upload",
+    description = "create yaml file for doing fastq sampling",
+    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SE83115/fastq_sampling_analysis/ul_sampled_fastqs_and_yamls.R",
+                    "https://github.com/Sage-Bionetworks/fastq_mixer"),
+    used = c(manifest_id, file_view_id)
+)
+ 
+ 
+l_ply(file_df$yaml, upload_file_to_synapse, upload_id, activity_obj = yaml_activity_obj, .parallel = T)
 # 
 # gzip_commands <- str_c("gzip ", c(file_df$p1_fasta, file_df$p2_fasta))
 # l_ply(gzip_commands, system, .parallel = T) 
