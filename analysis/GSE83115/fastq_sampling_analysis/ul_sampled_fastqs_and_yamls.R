@@ -34,7 +34,8 @@ manifest_df <- manifest_id %>%
     create_df_from_synapse_id %>% 
     select(run, sample_name) %>% 
     set_names(c("SRR_id", "cell_line")) %>% 
-    filter(cell_line %in% cell_lines_to_sample)
+    filter(cell_line %in% cell_lines_to_sample) %>%
+    mutate(cell_line = str_remove(cell_line, "\\+"))
 
 file_view_df <- file_view_id %>% 
     str_c("select id, name, parentId from ", .) %>% 
@@ -53,15 +54,13 @@ file_view_df <- file_view_id %>%
 file_df <- list.files() %>% 
     keep(str_detect(., ".yaml$")) %>% 
     data_frame("yaml" = .) %>% 
-    mutate(sample = str_match(yaml, "([:print:]+).yaml$")) %>% 
-    mutate(cell_line = str_match(sample, "([:print:]+)_output[0-9]{1}$")) %>% 
+    mutate(sample = str_match(yaml, "([:print:]+).yaml$")[,2]) %>% 
+    mutate(cell_line = str_match(sample, "([:print:]+)_output[0-9]{1}$")[,2]) %>% 
     mutate(p1_fastq = str_c(sample, "_p1.fastq")) %>% 
     mutate(p2_fastq = str_c(sample, "_p2.fastq")) %>% 
     mutate(p1_fastq_gz = str_c(p1_fastq, ".gz")) %>% 
     mutate(p2_fastq_gz = str_c(p2_fastq, ".gz")) %>% 
     inner_join(file_view_df)
-
-print(file_df)
 
 
 
