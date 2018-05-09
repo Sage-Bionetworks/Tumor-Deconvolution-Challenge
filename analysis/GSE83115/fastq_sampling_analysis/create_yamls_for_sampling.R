@@ -57,9 +57,9 @@ create_yaml_by_seed <- function(df, seed){
     
     create_fastq_mixer_yaml(
         yaml_file = str_c(output_prefix, ".yaml"),
-        fastq_files_p1 = df$path[[1]], 
-        fastq_files_p2 = df$path[[2]], 
-        sample_fractions = 1.0,
+        fastq_files_p1 = list(df$path[[1]]), 
+        fastq_files_p2 = list(df$path[[2]]), 
+        sample_fractions = list(1.0),
         seed = seed,
         output_prefix = output_prefix)
 }
