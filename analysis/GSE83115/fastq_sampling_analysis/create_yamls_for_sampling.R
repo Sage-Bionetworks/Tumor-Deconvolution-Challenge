@@ -39,7 +39,7 @@ manifest_df <- manifest_id %>%
     rename("SRR_id" = run)
 
 fastq_df <- cache_dir %>% 
-    list.files(recursive = T) %>% 
+    list.files(recursive = T, full.names = T) %>% 
     keep(str_detect(., ".fastq$")) %>% 
     data_frame("path" = .) %>% 
     mutate(file_name = basename(path)) %>% 
