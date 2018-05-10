@@ -21,8 +21,6 @@ source(str_c(kallisto_dir, "utils/write_yaml.R"))
 setwd(work_dir)
 synLogin()
 
-
-
 manifest_df <- read_tsv(fastq_file) 
 
 df1 <- manifest_df %>% 
@@ -36,8 +34,10 @@ df2 <- manifest_df %>%
     set_names(c("sample_name", "p1_path", "p2_path"))
 
 manifest_df <- left_join(df1, df2) %>% 
-    mutate("yaml" = str_c(sample_name, ".yaml")) %>% 
-    mutate("log" = str_c(sample_name, ".log")) 
+    mutate(sample_name = str_remove(sample_name, "\\+")) %>% 
+    mutate(yaml = str_c(sample_name, ".yaml")) %>% 
+    mutate(log = str_c(sample_name, ".log")) %>% 
+    mutate(h5 = str_c(sample_name, ".h5")) 
 
 n_cores    <- detectCores() - 1
 index_file <- download_from_synapse(index_id)
@@ -55,4 +55,4 @@ manifest_df %>%
     split(1:nrow(.)) %>% 
     walk(create_yaml_per_row)
 
-write_tsv(manifest_df, fastq_file)
+write_tsv(manifest_df, "fastq2.tsv")
