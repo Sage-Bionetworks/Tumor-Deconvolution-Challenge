@@ -22,14 +22,18 @@ download_from_synapse <- function(syn_id, location = NULL){
 }
 
 upload_file_to_synapse <- function(
-    path, synapse_id, annotation_list = NULL, activity_obj = NULL){
+    path, synapse_id, 
+    annotation_list = NULL, 
+    activity_obj = NULL, 
+    return = "entity"){
     
     entity <- synapser::File(
         path = path, 
         parent = synapse_id, 
         annotations = annotation_list)
     entity <- synapser::synStore(entity, activity = activity_obj)
-    return(entity)
+    if(return == "entity") return(entity)
+    if(return == "syn_id") return(entity$properties$id)
 }
 
 
