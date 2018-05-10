@@ -55,4 +55,4 @@ manifest_df %>%
     split(1:nrow(.)) %>% 
     walk(create_yaml_per_row)
 
-
+write_tsv(manifest_df, fastq_file)
