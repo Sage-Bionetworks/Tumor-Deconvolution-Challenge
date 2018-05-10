@@ -22,7 +22,7 @@ cwl     <- "https://github.com/Sage-Bionetworks/kallisto_cwl/kallisto_index.cwl"
 
 setwd(home_dir)
 source("scripts/utils.R")
-setwd(tmp_dir)
+setwd(work_dir)
 synLogin()
 
 
