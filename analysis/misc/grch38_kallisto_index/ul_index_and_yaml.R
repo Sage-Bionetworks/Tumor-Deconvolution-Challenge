@@ -1,8 +1,12 @@
 library(synapser)
 
+# local
+# home_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+# work_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
 
-home_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
+# ec2
+home_dir  <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
+work_dir   <- "/home/ubuntu/"
 
 upload_id  <- "syn12212845"
 index_file <- "GRCH38.idx"
@@ -36,6 +40,9 @@ yaml_id <- upload_file_to_synapse(
     return = "syn_id"
 )
 
+gziped_index_file <- str_c(index_file, ".gz")
+system(str_c("gzip ", index_file))
+
 index_activity_obj <- Activity(
     name = "create and upload",
     description = "create GRCH38 kallisto index",
@@ -44,7 +51,7 @@ index_activity_obj <- Activity(
 )
 
 upload_file_to_synapse(
-    index_file,
+    gziped_index_file,
     upload_id,
     activity_obj = index_activity_obj
 )
