@@ -3,16 +3,16 @@ library(synapser)
 library(doMC)
 
 # local
-# home_dir     <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-# kallisto_dir <- "/home/aelamb/repos/kallisto_cwl/"
-# work_dir     <- "/home/aelamb//tmp/tumor_deconvolution/GSE83115/"
+home_dir     <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+kallisto_dir <- "/home/aelamb/repos/kallisto_cwl/"
+work_dir     <- "/home/aelamb//tmp/tumor_deconvolution/GSE83115/"
 
 # ec2
-home_dir     <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
-kallisto_dir <- "/home/ubuntu/kallisto_cwl/"
-work_dir     <- "/home/ubuntu/"
+# home_dir     <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
+# kallisto_dir <- "/home/ubuntu/kallisto_cwl/"
+# work_dir     <- "/home/ubuntu/"
 
-fastq_file <- "fastq.tsv"
+fastq_file <- "fastq2.tsv"
 index_id   <- "syn12213028"
 
 setwd(home_dir)
@@ -37,8 +37,7 @@ manifest_df <- left_join(df1, df2) %>%
     mutate(sample_name = str_remove(sample_name, "\\+")) %>% 
     mutate(yaml = str_c(sample_name, ".yaml")) %>% 
     mutate(log = str_c(sample_name, ".log")) %>% 
-    mutate(h5 = str_c(sample_name, ".h5")) %>% 
-    mutate(tsv = str_c(sample_name, ".tsv")) 
+    mutate(h5 = str_c(sample_name, ".h5")) 
 
 n_cores    <- detectCores() - 1
 index_file <- download_from_synapse(index_id)
