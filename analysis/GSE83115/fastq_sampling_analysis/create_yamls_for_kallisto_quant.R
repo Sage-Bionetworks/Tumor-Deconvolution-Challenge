@@ -42,6 +42,8 @@ manifest_df <- left_join(df1, df2) %>%
 
 n_cores    <- detectCores() - 1
 index_file <- download_from_synapse(index_id)
+system(str_c("gunzip ", index_file))
+index_file <- str_sub(index_file, end = -4)
 
 create_yaml_per_row <- function(row){
     create_kallisto_quant_yaml(
