@@ -43,7 +43,7 @@ ids <- llply(
     upload_file_to_synapse, 
     upload_id, 
     activity_obj = yaml_activity_obj, 
-    ret == "syn_id", 
+    ret = "syn_id", 
     .parallel = T)
 
 manifest_df$yaml_id <- ids
@@ -58,7 +58,7 @@ upload_tsvs_by_sample <- function(df){
             "https://github.com/Sage-Bionetworks/fastq_mixer",
             "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SE83115/fastq_sampling_analysis/ul_sampled_fastqs_and_yamls.R"),
         used = c(manifest_id, file_view_id, df$p1_id, df$p2_id, df$yaml_id))
-    id <- upload_file_to_synapse(df$tsv, upload_id, activity_obj = activity_obj, return == "syn_id")
+    id <- upload_file_to_synapse(df$tsv, upload_id, activity_obj = activity_obj, ret = "syn_id")
     return(id)
 }
 
