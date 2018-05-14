@@ -25,15 +25,15 @@ upload_file_to_synapse <- function(
     path, synapse_id, 
     annotation_list = NULL, 
     activity_obj = NULL, 
-    return = "entity"){
+    ret = "entity"){
     
     entity <- synapser::File(
         path = path, 
         parent = synapse_id, 
         annotations = annotation_list)
     entity <- synapser::synStore(entity, activity = activity_obj)
-    if(return == "entity") return(entity)
-    if(return == "syn_id") return(entity$properties$id)
+    if(ret == "entity") return(entity)
+    if(ret == "syn_id") return(entity$properties$id)
 }
 
 
