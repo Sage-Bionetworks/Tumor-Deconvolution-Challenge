@@ -46,7 +46,7 @@ system(str_c("gunzip ", index_file))
 index_file <- str_sub(index_file, end = -4)
 
 create_yaml_per_row <- function(row){
-    create_kallisto_quant_yaml(
+    create_kallisto_workflow_yaml(
         yaml_file = row$yaml, 
         fastq1 = row$p1_path, 
         fastq2 = row$p2_path, 
