@@ -30,7 +30,7 @@ registerDoMC(cores = detectCores() - 1)
 
 yaml_df  <- yaml_file %>% 
     read_tsv %>% 
-    mutate(tsv_name = str_c(str_remove(yaml, ".yaml"), ".tsv")) 
+    mutate(tsv = str_c(str_remove(yaml, ".yaml"), ".tsv")) 
 
 fastq_df <- read_tsv(fastq_file)
 
