@@ -5,12 +5,12 @@ library(magrittr)
 library(synapser)
 
 # local
-# home_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-# tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
+# home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+# work_dir <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
 
 #ec2
-home_dir  <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
-tmp_dir   <- "/home/ubuntu/tmp/"
+home_dir <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
+work_dir <- "/home/ubuntu/"
 
 manifest_id  <- "syn12177468"
 file_view_id <- "syn12179146"
@@ -22,7 +22,7 @@ cell_lines_to_sample <- c("CD4+_T_cells_BGI",
 
 setwd(home_dir)
 source("scripts/utils.R")
-setwd(tmp_dir)
+setwd(work_dir)
 synLogin()
 registerDoMC(cores = detectCores() - 1)
 
