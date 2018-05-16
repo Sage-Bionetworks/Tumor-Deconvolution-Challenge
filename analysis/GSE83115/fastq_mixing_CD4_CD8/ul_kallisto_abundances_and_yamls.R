@@ -42,7 +42,7 @@ yaml_activity_obj <- Activity(
 )
  
 yaml_ids <- llply(
-    manifest_df$yaml, 
+    yaml_df$yaml, 
     upload_file_to_synapse, 
     upload_id, 
     activity_obj = yaml_activity_obj, 
@@ -67,7 +67,7 @@ upload_tsvs_by_sample <- function(df){
     return(id)
 }
 
-tsv_ids <- manifest_df %>% 
+tsv_ids <- yaml_df %>% 
     split(.$yaml) %>% 
     llply(upload_tsvs_by_sample, .parallel = F)
 
