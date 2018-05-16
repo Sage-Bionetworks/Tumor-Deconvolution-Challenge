@@ -49,7 +49,11 @@ yaml_ids <- llply(
     ret = "syn_id", 
     .parallel = T)
 
+print(yaml_df)
+
 yaml_df$yaml_id <- yaml_ids
+
+print(yaml_df)
 
 upload_tsvs_by_sample <- function(df){
     activity_obj <- Activity(
@@ -67,11 +71,16 @@ upload_tsvs_by_sample <- function(df){
     return(id)
 }
 
+print(yaml_df)
+
+
 tsv_ids <- yaml_df %>% 
     split(.$yaml) %>% 
     llply(upload_tsvs_by_sample, .parallel = F)
 
 yaml_df$tsv_id <- tsv_ids
+
+print(yaml_df)
 
 yaml_df %>% 
     select(CD8_fractions, CD4_fractions, seed1, seed2, seed3, yaml, yaml_id, tsv_id) %>% 
