@@ -1,0 +1,109 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE, warning=FALSE}
+library(plyr)
+library(doMC)
+library(tidyverse)
+library(synapser)
+library(data.table)
+library(magrittr)
+library(ggfortify)
+library(corrplot)
+
+home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
+
+setwd(home_dir)
+source("scripts/utils.R")
+setwd(tmp_dir)
+synLogin()
+registerDoMC(cores = detectCores())
+```
+
+
+```{r load data, warning =FALSE}
+
+tpm_id <- "syn12223748"
+
+tpm_df <- tpm_id %>% 
+    create_df_from_synapse_id 
+
+tpm_m <- tpm_df %>% 
+    df_to_matrix("Hugo") %>% 
+    .[,order(colnames(.))]
+
+ltpm_df <- tpm_m %>% 
+    add(1) %>% 
+    log10 %>% 
+    matrix_to_df("Hugo")
+
+ltpm_matrix_tranpose <- ltpm_df %>% 
+    df_to_matrix("Hugo") %>% 
+    t
+
+annotation_df <- ltpm_matrix_tranpose %>% 
+    matrix_to_df("sample") %>% 
+    select(sample) %>% 
+    mutate(cell_type = str_match(sample, "([:print:]*)_BGI[:print:]*")[,2]) %>% 
+    mutate(sample_n = str_match(sample, "[:print:]*_BGI_([:print:]*)")[,2]) %>% 
+    as.data.frame %>% 
+    column_to_rownames("sample") 
+
+```
+
+
+
+```{r density plot}
+annotation_df2 <- annotation_df %>% 
+    rownames_to_column("sample") %>% 
+    as_data_frame %>% 
+    select(-sample_n)
+
+density_df <- ltpm_df %>% 
+    select(-Hugo) %>% 
+    gather(key = "sample", value = "value", CD4_T_cells_BGI:Monocytes_BGI_output3) %>% 
+    left_join(annotation_df2)
+
+
+p <- density_df %>% 
+    ggplot(aes_string(x = "value", linetype = "sample", color = "cell_type")) +
+    geom_density() +
+    theme_bw() +
+    xlab("Log10 Gene TPM") 
+
+print(p)
+
+```
+
+```{r pca plot}
+
+autoplot(
+    prcomp(ltpm_matrix_tranpose), 
+    data = annotation_df, 
+    shape = "cell_type", 
+    colour = "sample_n",
+    size = 6,
+    main = "PCA") +
+    scale_shape_manual(values = 22:24) +
+    theme_bw() 
+    
+
+```
+
+```{r corr plot}
+cor_matrix <- cor(tpm_m)
+corrplot(cor_matrix, method = "ellipse")
+```
+
+```{r cluster plot}
+tpm_m_transpose <- t(tpm_m)
+clusters <- hclust(dist(tpm_m_transpose))
+plot(clusters)
+
+```
+
+
+
