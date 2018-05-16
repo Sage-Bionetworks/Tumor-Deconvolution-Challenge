@@ -28,7 +28,7 @@ setwd(work_dir)
 synLogin()
 registerDoMC(cores = detectCores() - 1)
 
-yaml_df <- read_tsv(manifest_file) 
+yaml_df  <- read_tsv(yaml_file) 
 fastq_df <- read_tsv(fastq_file)
 
 yaml_activity_obj <- Activity(
