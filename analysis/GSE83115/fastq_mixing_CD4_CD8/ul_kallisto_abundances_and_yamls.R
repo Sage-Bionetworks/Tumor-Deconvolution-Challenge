@@ -28,7 +28,10 @@ setwd(work_dir)
 synLogin()
 registerDoMC(cores = detectCores() - 1)
 
-yaml_df  <- read_tsv(yaml_file) 
+yaml_df  <- yaml_file %>% 
+    read_tsv %>% 
+    mutate(tsv_name = str_c(str_remove(yaml, ".yaml"), ".tsv")) 
+
 fastq_df <- read_tsv(fastq_file)
 
 yaml_activity_obj <- Activity(
@@ -69,16 +72,14 @@ upload_tsvs_by_sample <- function(df){
 
 
 tsv_ids <- yaml_df %>% 
-    split(.$yaml) %>% 
+    split(1:nrow(.)) %>% 
     llply(upload_tsvs_by_sample, .parallel = F)
 
 yaml_df$tsv_id <- unlist(tsv_ids)
 
 
 yaml_df %>% 
-    select(CD8_fractions, CD4_fractions, seed1, seed2, seed3, yaml, yaml_id, tsv_id) %>% 
-    mutate(abundance_name = str_c(str_remove(yaml, ".yaml"), ".tsv")) %>% 
-    select(CD8_fractions, CD4_fractions, seed1, seed2, seed3, yaml, yaml_id, abundance_name, tsv_id) %>% 
+    select(CD8_fractions, CD4_fractions, seed1, seed2, seed3, yaml, yaml_id, tsv, tsv_id) %>% 
     set_colnames(c("CD8_fraction", "CD4_fraction", "seed1", "seed2", "seed3", "yaml_name", "yaml_id", "abundance_name", "abundance_id")) %>% 
     write_tsv("manifest.tsv")
 
