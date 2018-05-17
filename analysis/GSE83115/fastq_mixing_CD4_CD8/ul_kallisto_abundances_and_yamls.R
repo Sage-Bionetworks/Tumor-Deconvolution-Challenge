@@ -5,13 +5,13 @@ library(magrittr)
 library(synapser)
 
 # local
-home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-work_dir <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
+# home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+# work_dir <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
 
 
 #ec2
-# home_dir <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
-# work_dir <- "/home/ubuntu/"
+home_dir <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
+work_dir <- "/home/ubuntu/"
 
 upload_id  <- "syn12231588"
 yaml_file  <- "yaml.tsv"
