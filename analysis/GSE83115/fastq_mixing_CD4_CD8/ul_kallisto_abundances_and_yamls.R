@@ -5,13 +5,13 @@ library(magrittr)
 library(synapser)
 
 # local
-# home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-# work_dir <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
+home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+work_dir <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
 
 
 #ec2
-home_dir <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
-work_dir <- "/home/ubuntu/"
+# home_dir <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
+# work_dir <- "/home/ubuntu/"
 
 upload_id  <- "syn12231588"
 yaml_file  <- "yaml.tsv"
@@ -30,9 +30,15 @@ registerDoMC(cores = detectCores() - 1)
 
 yaml_df  <- yaml_file %>% 
     read_tsv %>% 
-    mutate(tsv = str_c(str_remove(yaml, ".yaml"), ".tsv")) 
-
-fastq_df <- read_tsv(fastq_file)
+    mutate(prefix = str_remove(yaml, ".yaml")) %>% 
+    mutate(output_name1 = str_c(prefix, "_rep1.tsv")) %>%
+    mutate(output_name2 = str_c(prefix, "_rep2.tsv")) %>% 
+    mutate(output_name3 = str_c(prefix, "_rep3.tsv")) %>% 
+    select(- c(log, prefix))
+              
+fastq_df <- fastq_file %>% 
+    read_tsv %>% 
+    select(-path)
 
 yaml_activity_obj <- Activity(
     name = "create and upload",
@@ -66,21 +72,23 @@ upload_tsvs_by_sample <- function(df){
             "https://github.com/Sage-Bionetworks/fastq_mixer",
             "https://github.com/Sage-Bionetworks/kallisto_cwl"),
         used = c(df$yaml_id, fastq_df$id))
-    id <- upload_file_to_synapse(df$tsv, upload_id, activity_obj = activity_obj, ret = "syn_id")
-    return(id)
+    id1 <- upload_file_to_synapse(df$output_name1, upload_id, activity_obj = activity_obj, ret = "syn_id")
+    id2 <- upload_file_to_synapse(df$output_name2, upload_id, activity_obj = activity_obj, ret = "syn_id")
+    id3 <- upload_file_to_synapse(df$output_name3, upload_id, activity_obj = activity_obj, ret = "syn_id")
+    return(c(id1, id2, id3))
 }
 
 
-tsv_ids <- yaml_df %>% 
+output_ids <- yaml_df %>% 
     split(1:nrow(.)) %>% 
-    llply(upload_tsvs_by_sample, .parallel = F)
+    llply(upload_tsvs_by_sample, .parallel = T)
 
-yaml_df$tsv_id <- unlist(tsv_ids)
+yaml_df$output_id1 <- map_chr(output_ids, function(ids) ids[[1]])
+yaml_df$output_id2 <- map_chr(output_ids, function(ids) ids[[2]])
+yaml_df$output_id3 <- map_chr(output_ids, function(ids) ids[[3]])
 
 
 yaml_df %>% 
-    select(CD8_fractions, CD4_fractions, seed1, seed2, seed3, yaml, yaml_id, tsv, tsv_id) %>% 
-    set_colnames(c("CD8_fraction", "CD4_fraction", "seed1", "seed2", "seed3", "yaml_name", "yaml_id", "abundance_name", "abundance_id")) %>% 
     write_tsv("manifest.tsv")
 
 manifest_activity_obj <- Activity(
