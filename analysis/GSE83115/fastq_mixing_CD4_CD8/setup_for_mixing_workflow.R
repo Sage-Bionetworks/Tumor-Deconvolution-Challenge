@@ -3,14 +3,14 @@ library(synapser)
 library(doMC)
 
 # local
-# home_dir     <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-# workflow_dir <- "/home/aelamb/repos/fastq_mixing_workflow_cwl/"
-# work_dir     <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
+home_dir     <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+workflow_dir <- "/home/aelamb/repos/fastq_mixing_workflow_cwl/"
+work_dir     <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
 
 # ec2
-home_dir     <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
-workflow_dir <- "/home/ubuntu/fastq_mixing_workflow_cwl/"
-work_dir     <- "/home/ubuntu/"
+# home_dir     <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
+# workflow_dir <- "/home/ubuntu/fastq_mixing_workflow_cwl/"
+# work_dir     <- "/home/ubuntu/"
 
 
 manifest_id  <- "syn12177468"
@@ -36,6 +36,8 @@ source(str_c(workflow_dir, "utils/write_yaml.R"))
 setwd(work_dir)
 synLogin()
 n_cores <- detectCores() - 1
+
+kallisto_threads <- as.integer(n_cores)
 
 
 yaml_df <-
@@ -85,7 +87,7 @@ create_synapse_workflow_yaml_by_row <- function(row){
         kallisto_index_synapse_id = kallisto_index_synapse_id,
         mixer_seed = row$mixer_seed,
         mixer_total_reads = mixer_total_reads,
-        kallisto_threads = n_cores,
+        kallisto_threads = kallisto_threads,
         annotations = list(
             "seed" = row$mixer_seed,
             "run" = row$rep))
