@@ -12,6 +12,14 @@ home_dir     <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
 workflow_dir <- "/home/ubuntu/fastq_mixing_workflow_cwl/"
 work_dir     <- "/home/ubuntu/"
 
+cwl_repos <- c(
+    "https://github.com/Sage-Bionetworks/fastq_mixing_workflow_cwl",
+    "https://github.com/Sage-Bionetworks/fastq_mixer",
+    "https://github.com/Sage-Bionetworks/kallisto_cwl",
+    "https://github.com/Sage-Bionetworks/synapse_python_client_cwl",
+    "https://github.com/Sage-Bionetworks/misc_cwl")
+
+
 
 manifest_id  <- "syn12177468"
 file_view_id <- "syn12179146"
@@ -31,15 +39,23 @@ replicates <- 3
 CD8_fractions <- c(0.005, 0.01, 0.02, 0.05, 0.10, 0.25, 0.50)
 
 setwd(home_dir)
+
+
+
+
 source("scripts/utils.R")
-source(str_c(workflow_dir, "utils/write_yaml.R"))
 setwd(work_dir)
 synLogin()
 n_cores <- detectCores() - 1
 
 kallisto_threads <- as.integer(n_cores)
 
+# dl repos
+cwl_repos %>% 
+    str_c("git clone ", cwl_repos) %>% 
+    walk(system)
 
+# run specific parameters
 yaml_df <-
     data_frame("CD8_fractions" = CD8_fractions) %>%
     mutate(CD4_fractions = 1 - CD8_fractions) %>% 
@@ -75,6 +91,9 @@ fastq_p2_synapse_ids <- file_view_df %>%
     filter(pair == 2) %>% 
     use_series(id)
 
+source(str_c(workflow_dir, "utils/write_yaml.R"))
+
+# create yamls
 create_synapse_workflow_yaml_by_row <- function(row){
     create_synapse_workflow_yaml(
         yaml_file = row$yaml,
