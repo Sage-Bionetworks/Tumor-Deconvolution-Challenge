@@ -1,0 +1,266 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE, warning=FALSE}
+library(plyr)
+library(doMC)
+library(tidyverse)
+library(synapser)
+library(data.table)
+library(magrittr)
+library(ggfortify)
+library(corrplot)
+library(biomaRt)
+library(GSVA)
+
+home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE83115/"
+
+setwd(home_dir)
+source("scripts/utils.R")
+setwd(tmp_dir)
+synLogin()
+registerDoMC(cores = detectCores())
+```
+
+
+```{r load data, warning =FALSE}
+
+tpm_id <- "syn12298400"
+
+tpm_df <- tpm_id %>% 
+    create_df_from_synapse_id 
+
+tpm_m <- tpm_df %>% 
+    df_to_matrix("Hugo") %>% 
+    .[,order(colnames(.))]
+
+ltpm_df <- tpm_m %>% 
+    add(1) %>% 
+    log10 %>% 
+    matrix_to_df("Hugo")
+
+ltpm_matrix_tranpose <- ltpm_df %>% 
+    df_to_matrix("Hugo") %>% 
+    t
+
+sample_df <- ltpm_matrix_tranpose %>% 
+    matrix_to_df("sample") %>% 
+    dplyr::select(sample) %>% 
+    mutate(CD8_fraction = str_match(sample, "CD4_CD8_([:print:]+)_rep_[:digit:]+")[,2]) %>% 
+    mutate(sample_n = str_match(sample, "CD4_CD8_[:print:]+_rep_([:digit:]+)")[,2]) 
+
+
+annotation_df <- sample_df %>% 
+    as.data.frame %>% 
+    column_to_rownames("sample") 
+
+
+```
+
+
+
+```{r density plot}
+annotation_df2 <- annotation_df %>% 
+    rownames_to_column("sample") %>% 
+    as_data_frame %>% 
+    dplyr::select(-sample_n)
+
+offset_df <- annotation_df2 %>% 
+    dplyr::select(CD8_fraction) %>% 
+    distinct %>% 
+    inset("offset", value = seq(from = 0, to = 1, length.out = 7))
+
+
+
+density_df <- ltpm_df %>% 
+    dplyr::select(-Hugo) %>% 
+    gather(key = "sample", value = "value", CD4_CD8_0.005_rep_1:CD4_CD8_0.5_rep_3) %>% 
+    left_join(annotation_df2) %>% 
+    left_join(offset_df) %>% 
+    mutate(value = value + offset)
+
+
+p <- density_df %>% 
+    ggplot(aes_string(x = "value", color = "CD8_fraction")) +
+    geom_density() +
+    theme_bw() +
+    xlab("Log10 Gene TPM") 
+
+print(p)
+
+```
+
+```{r pca plot}
+
+autoplot(
+    prcomp(ltpm_matrix_tranpose), 
+    data = annotation_df, 
+    shape = "CD8_fraction", 
+    colour = "sample_n",
+    size = 6,
+    main = "PCA") +
+    scale_shape_manual(values = 0:6) +
+    theme_bw() 
+    
+
+```
+
+```{r corr plot}
+cor_matrix <- cor(tpm_m)
+corrplot(cor_matrix, method = "ellipse")
+```
+
+```{r cluster plot}
+tpm_m_transpose <- t(tpm_m)
+clusters <- hclust(dist(tpm_m_transpose))
+plot(clusters)
+
+```
+
+```{r gsva}
+gene_id  <- "syn11918430"
+ensembl_mart <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+
+query_df <- getBM(attributes = 
+                      c('ensembl_transcript_id',
+                        'ensembl_gene_id', 
+                        'hgnc_symbol'), 
+                  mart = ensembl_mart)
+
+gene_df <- create_df_from_synapse_id(gene_id) 
+
+
+mcp_genes <- gene_df %>% 
+    filter(Method == "mcpcounter") %>% 
+    split(.$cell_type) %>% 
+    map(use_series, Hugo)
+
+gsva_df <- gsva(tpm_m, mcp_genes, rnaseq = FALSE, method = "gsva") %>% 
+    matrix_to_df("MCP_cell_type") %>% 
+    gather(key = "sample", value = "enrichment", CD4_CD8_0.005_rep_1:CD4_CD8_0.5_rep_3) %>% 
+    left_join(sample_df) %>% 
+    group_by(MCP_cell_type, CD8_fraction) %>% 
+    summarise(stdev = sd(enrichment), mean = mean(enrichment))
+
+
+ggplot(gsva_df, aes(x = CD8_fraction, y = mean, group = as.factor(MCP_cell_type), color = MCP_cell_type)) +
+    geom_line() +
+    geom_point() +
+    theme_bw() +
+    xlab("CD8+ fraction") +
+    ylab("MCPcounter cell type enrichment score") +
+    ggtitle("CD4+ cells with CD8+ cell spike in gsva enrichment scores") +
+    geom_errorbar(aes(ymin = mean - stdev, 
+                      ymax = mean + stdev),
+                  width = 1,
+                  position = position_dodge(0.05))
+
+
+
+ssgsea_df <- gsva(tpm_m, mcp_genes, rnaseq = FALSE, method = "ssgsea") %>% 
+    matrix_to_df("MCP_cell_type") %>% 
+    gather(key = "sample", value = "enrichment", CD4_CD8_0.005_rep_1:CD4_CD8_0.5_rep_3) %>% 
+    left_join(sample_df) %>% 
+    group_by(MCP_cell_type, CD8_fraction) %>% 
+    summarise(stdev = sd(enrichment), mean = mean(enrichment))
+
+
+ggplot(ssgsea_df, aes(x = CD8_fraction, y = mean, group = as.factor(MCP_cell_type), color = MCP_cell_type)) +
+    geom_line() +
+    geom_point() +
+    theme_bw() +
+    xlab("CD8+ fraction") +
+    ylab("MCPcounter cell type enrichment score") +
+    ggtitle("CD4+ cells with CD8+ cell spike in ssgsea enrichment scores") +
+    geom_errorbar(aes(ymin = mean - stdev, 
+                      ymax = mean + stdev),
+                  width = 1,
+                  position = position_dodge(0.05))
+```
+
+```{r deconvolution, fig.height = 8}
+
+cs_results_id  <- "syn12298908"
+mcp_results_id <- "syn12298910"
+
+
+cs_result_df <- cs_results_id %>%
+    create_df_from_synapse_id %>% 
+    dplyr::select(-c(`P-value`, `RMSE`, Correlation)) %>% 
+    df_to_matrix("sample") %>% 
+    .[,colSums(.) > 0] %>% 
+    matrix_to_df("sample") %>% 
+    set_colnames(str_replace_all(colnames(.), "\\.", " ")) %>% 
+    gather("cibersort_cell_type", "predicted_fraction", `B cells naive`:Eosinophils) %>% 
+    full_join(sample_df, by = c("sample"))
+
+mcp_result_df <- mcp_results_id %>%
+    download_from_synapse %>% 
+    read.table %>% 
+    t %>% 
+    .[,colSums(.) > 0] %>% 
+    matrix_to_df("sample") %>% 
+    set_colnames(str_replace_all(colnames(.), "\\.", " ")) %>% 
+    gather("mcpcounter_cell_type", "predicted_score", `T cells`:Fibroblasts) %>% 
+    full_join(sample_df, by = c("sample"))
+
+
+ggplot(cs_result_df, aes(x = cibersort_cell_type, y = predicted_fraction)) +
+    geom_point() +
+    facet_grid(vars(CD8_fraction)) +
+    ylab("Predicted fraction") +
+    xlab("Cibersort cell type") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("Cibersort CD4+ with CD8+ spike in")
+
+
+
+ggplot(mcp_result_df, aes(x = mcpcounter_cell_type, y = predicted_score)) +
+    geom_point() +
+    facet_grid(vars(CD8_fraction)) +
+    ylab("Predicted score") +
+    xlab("MCPCounter cell type") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("MCPCounter CD4+ with CD8+ spike in")
+
+cs_result_df %>% 
+    group_by(cibersort_cell_type, CD8_fraction) %>% 
+    summarise(stdev = sd(predicted_fraction), mean = mean(predicted_fraction)) %>% 
+    ggplot(aes(x = CD8_fraction, y = mean,  color = cibersort_cell_type)) +
+    geom_line() +
+    geom_point() +
+    theme_bw() +
+    xlab("CD8+ fraction") +
+    ylab("Cibersort fractions") +
+    ggtitle("CD4+ cells with CD8+ cell spike in ssgsea enrichment scores") +
+    geom_errorbar(aes(ymin = mean - stdev, 
+                      ymax = mean + stdev),
+                  width = 1,
+                  position = position_dodge(0.05))
+
+mcp_result_df %>% 
+    group_by(mcpcounter_cell_type, CD8_fraction) %>% 
+    summarise(stdev = sd(predicted_score), mean = mean(predicted_score)) %>% 
+    ggplot(aes(x = CD8_fraction, y = mean,  color = mcpcounter_cell_type)) +
+    geom_line() +
+    geom_point() +
+    theme_bw() +
+    xlab("CD8+ fraction") +
+    ylab("MCPcounter scores") +
+    ggtitle("CD4+ cells with CD8+ cell spike in ssgsea enrichment scores") +
+    geom_errorbar(aes(ymin = mean - stdev, 
+                      ymax = mean + stdev),
+                  width = 1,
+                  position = position_dodge(0.05))
+
+
+```
