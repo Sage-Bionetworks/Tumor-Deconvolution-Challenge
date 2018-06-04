@@ -22,7 +22,7 @@ cell_lines_to_sample <- c("CD4+_T_cells_BGI",
 
 kallisto_index_synapse_id <- "syn12213028"
 synapse_config_file       <- ".synapseConfig"
-upload_id                 <- "syn12231588"
+upload_id                 <- "syn12369867"
 mixer_total_reads         <- 25000000L
 
 
