@@ -17,11 +17,6 @@ source("scripts/utils.R")
 setwd(tmp_dir)
 synLogin()
 
-expr_df <- create_df_from_synapse_id(expr_id, unzip = T) %>% 
-    select(-CLASS) %>% 
-    rename("Hugo" = GENE) %>% 
-    filter(!str_detect(Hugo, "^[0-9]{1,2}-[:alnum:]{3}"))
-
 
 anno_df <- anno_id %>% 
     create_df_from_synapse_id(unzip = T, skip = 20, nrows = 30) %>% 
@@ -29,9 +24,15 @@ anno_df <- anno_id %>%
     inset("attribute", value = c("cell_type", "patient")) %>% 
     transpose_df("attribute", "sample") %>% 
     mutate(cell_type = str_remove_all(cell_type, "cell type: ")) %>% 
-    mutate(patient = str_remove_all(patient, "patient identifier: "))
+    mutate(patient = str_remove_all(patient, "patient identifier: ")) %>% 
+    filter(cell_type != "CD45- non-immune cells") %>% 
+    arrange(sample)
 
-
+expr_df <- create_df_from_synapse_id(expr_id, unzip = T) %>% 
+    select(-CLASS) %>% 
+    rename("Hugo" = GENE) %>% 
+    filter(!str_detect(Hugo, "^[0-9]{1,2}-[:alnum:]{3}")) %>% 
+    select(c("Hugo", anno_df$sample))
 
 activity_obj <- Activity(
     name = "create",

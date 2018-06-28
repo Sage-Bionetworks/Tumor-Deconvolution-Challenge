@@ -1,3 +1,9 @@
+---
+title: "GSE84697"
+output: html_document
+---
+
+```{r setup, include=FALSE, warning=FALSE}
 library(plyr)
 library(doMC)
 library(tidyverse)
@@ -7,9 +13,9 @@ library(magrittr)
 library(pheatmap)
 library(preprocessCore)
 library(ggfortify)
+library(GSVA)
 
 home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE84697/"
 
 expr_id        <- "syn12299856"
 anno_id        <- "syn12299857"
@@ -22,10 +28,11 @@ mcp_results_id <- "syn12299863"
 
 setwd(home_dir)
 source("scripts/utils.R")
-setwd(tmp_dir)
 synLogin()
 registerDoMC(cores = detectCores())
+```
 
+```{r load data, warning =FALSE}
 
 mcp_gene_df <- create_df_from_synapse_id(mcp_genes_id)
 cs_gene_df <- create_df_from_synapse_id(cs_genes_id)
@@ -45,15 +52,16 @@ cs_genes <- cs_gene_df %>%
 anno_df <- create_df_from_synapse_id(anno_id) %>% 
     arrange(sample)
 
-log_matrix <- expr_id %>%
-    create_df_from_synapse_id() %>% 
+log_expr_df <- create_df_from_synapse_id(expr_id) 
+
+log_matrix <- log_expr_df %>% 
     df_to_matrix("Hugo") %>% 
     .[,order(colnames(.))] %>% 
     .[rowSums(.) > 0,]
 
+```
 
-# heatmaps --------------------------------------------------------------------
-
+```{r heatmaps1, fig.height = 14,  fig.width = 12}
 zscore_mat <- log_matrix %>% 
     quantile_normalize_matrix %>% 
     zscore_matrix
@@ -64,7 +72,7 @@ mcp_zscore_matrix <- zscore_mat %>%
 cs_zscore_matrix <- zscore_mat %>% 
     .[rownames(.) %in% cs_genes,]
 
-mcp_heatmap_row_df <- gene_df %>% 
+mcp_heatmap_row_df <- mcp_gene_df %>% 
     filter(Method == "mcpcounter") %>% 
     filter(Hugo %in% rownames(mcp_zscore_matrix)) %>% 
     select(-Method) %>% 
@@ -79,37 +87,33 @@ heatmap_col_df <- anno_df %>%
     data.frame %>% 
     column_to_rownames("sample")
 
-png('GSE84697_mcpcounter_genes_heatmap.png', width = 800, height = 1000)
 pheatmap(
     mcp_zscore_matrix,
-    main = "MCPCounter GSE84697",
+    main = "MCPCounter genes",
     annotation_row = mcp_heatmap_row_df,
     annotation_col = heatmap_col_df,
     cluster_rows = F,
     scale = "none")
-dev.off()
 
-png('GSE84697_mcpcounter_genes_rows_clustered_heatmap.png', width = 800, height = 1000)
 pheatmap(
     mcp_zscore_matrix,
-    main = "MCPCounter GSE84697",
+    main = "MCPCounter gennes",
     annotation_row = mcp_heatmap_row_df,
     annotation_col = heatmap_col_df,
     scale = "none")
-dev.off()
+```
 
-png('GSE84697_cibersort_genes_heatmap.png', width = 800, height = 3000)
+```{r heatmaps2, fig.height = 36,  fig.width = 14}
 pheatmap(
     cs_zscore_matrix,
-    main = "Cibersort GSE84697",
+    main = "Cibersort genes",
     annotation_col = heatmap_col_df,
     scale = "none",
     fontsize = 15,
     fontsize_row = 5)
-dev.off()
+```
 
-# scatter plots ---------------------------------------------------------------
-
+```{r deconvolution plots, fig.height = 12,  fig.width = 12}
 cs_result_df <- cs_results_id %>%
     create_df_from_synapse_id %>% 
     select(-c(`P-value`, `RMSE`, Correlation)) %>% 
@@ -130,7 +134,6 @@ mcp_result_df <- mcp_results_id %>%
     gather("mcpcounter_cell_type", "predicted_score", `T cells`:Fibroblasts) %>% 
     full_join(anno_df, by = c("sample")) 
 
-png('GSE84697_cibersort_facet_scatterplot.png', height = 1000)
 ggplot(cs_result_df, aes(x = cibersort_cell_type, y = predicted_fraction)) +
     geom_point() +
     facet_grid(cell_type ~ .) +
@@ -140,10 +143,8 @@ ggplot(cs_result_df, aes(x = cibersort_cell_type, y = predicted_fraction)) +
     theme(axis.text.x = element_text(angle = 90, size = 12)) +
     theme(axis.text.y = element_text(size = 12)) +
     theme(strip.text.y = element_text(size = 10, angle = 0)) +
-    ggtitle("Cibersort GSE84697")
-dev.off()
+    ggtitle("Cibersort Results")
 
-png('GSE84697_mcpcounter_facet_scatterplot.png', height = 1000)
 ggplot(mcp_result_df, aes(x = mcpcounter_cell_type, y = predicted_score)) +
     geom_point() +
     facet_grid(cell_type ~ .) +
@@ -153,27 +154,23 @@ ggplot(mcp_result_df, aes(x = mcpcounter_cell_type, y = predicted_score)) +
     theme(axis.text.x = element_text(angle = 90, size = 12)) +
     theme(axis.text.y = element_text(size = 12)) +
     theme(strip.text.y = element_text(size = 10, angle = 0)) +
-    ggtitle("MCPCounter GSE84697")
-dev.off()
+    ggtitle("MCPCounter results")
 
+```
 
-# pca plots -------------------------------------------------------------------
-
+```{r pca plots, fig.height = 8,  fig.width = 8}
 pca_matrix <- t(log_matrix)
 
-png('GSE84697_PCA.png', width = 800, height = 800)
 autoplot(
     prcomp(pca_matrix), 
     data = anno_df, 
     shape = "cell_type", 
     colour = "patient",
     size = 3,
-    main = "GSE84697") +
+    main = "PC 1 vs 2") +
     scale_shape_manual(values = 1:19) +
     theme_bw()
-dev.off()
 
-png('GSE84697_PCA_2_3.png', width = 800, height = 800)
 autoplot(
     prcomp(pca_matrix), 
     x = 3,
@@ -182,8 +179,58 @@ autoplot(
     shape = "cell_type", 
     colour = "patient",
     size = 3,
-    main = "GSE84697") +
+    main = "PC 2 vs 3") +
     scale_shape_manual(values = 1:19) +
     theme_bw()
-dev.off()
+
+```
+
+```{r gsea, fig.height = 8,  fig.width = 8}
+mcp_genes <- mcp_gene_df %>%  
+    filter(Method == "mcpcounter") %>%
+    split(.$cell_type) %>%
+    map(use_series, Hugo)
+
+mcp_ssgsea_df <- gsva(log_matrix, mcp_genes, rnaseq = FALSE, method = "ssgsea", verbose = F) %>%
+    matrix_to_df("MCP_cell_type") %>%
+    gather(key = "sample", value = "enrichment" , -MCP_cell_type) %>%
+    left_join(anno_df) 
+
+ggplot(mcp_ssgsea_df, aes(x = MCP_cell_type, y = enrichment)) +
+    geom_point() +
+    facet_grid(cell_type ~ .) +
+    ylab("GSEA enrichment score") +
+    xlab("MCPCounter cell type") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("GSEA with MCPCounter genes")
+    
+cs_genes <- cs_gene_df %>%  
+    filter(Method == "cibersort") %>%
+    split(.$cell_type) %>%
+    map(use_series, Hugo)
+
+cs_ssgsea_df <- gsva(log_matrix, cs_genes, rnaseq = FALSE, method = "ssgsea", verbose = F) %>%
+    matrix_to_df("CS_cell_type") %>%
+    gather(key = "sample", value = "enrichment" , -CS_cell_type) %>%
+    left_join(anno_df) 
+
+ggplot(cs_ssgsea_df, aes(x = CS_cell_type, y = enrichment)) +
+    geom_point() +
+    facet_grid(cell_type ~ .) +
+    ylab("GSEA enrichment score") +
+    xlab("Cibersort cell type") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("GSEA with Cibersort genes")
+
+
+
+
+```
+
 

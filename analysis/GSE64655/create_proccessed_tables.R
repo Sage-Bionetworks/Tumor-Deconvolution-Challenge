@@ -9,9 +9,9 @@ home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
 tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE64655/"
 
 
-hugo_id          <- "syn11536071"
-GSE64655_expr_id <- "syn11969378"
-GSE64655_anno_id <- "syn11969387"
+hugo_id <- "syn11536071"
+expr_id <- "syn11969378"
+anno_id <- "syn11969387"
 
 upload_id  <- "syn11969377"
 
@@ -23,7 +23,7 @@ synLogin()
 
 hugo_df <-  create_df_from_synapse_id(hugo_id)
 
-GSE64655_expr_df <- GSE64655_expr_id %>%
+expr_df <- expr_id %>%
     create_df_from_synapse_id(unzip = T, skip = 3) %>% 
     select(-c(`Gene Type`, Description, `Gene Symbol`)) %>% 
     left_join(hugo_df, by = c("Gene ID" = "ensembl_gene_id")) %>% 
@@ -32,7 +32,7 @@ GSE64655_expr_df <- GSE64655_expr_id %>%
     .[,order(colnames(.))] %>% 
     select(Ensembl, Hugo, everything())
 
-GSE64655_anno_df <- GSE64655_anno_id %>% 
+anno_df <- anno_id %>% 
     create_df_from_synapse_id(unzip = T, skip = 30, nrow = 7) %>%
     rename("title" = `!Sample_title`) %>% 
     filter(title == "!Sample_source_name_ch1") %>% 
@@ -52,12 +52,12 @@ GSE64655_anno_df <- GSE64655_anno_id %>%
 activity_obj <- Activity(
     name = "create",
     description = "process GEO files into usable tables",
-    used = list(hugo_id, GSE64655_anno_id, GSE64655_expr_id),
+    used = list(hugo_id, anno_id, expr_id),
     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE64655/create_processed_tables.R")
 )
 
-write_tsv(GSE64655_expr_df, "expression.tsv")
-write_tsv(GSE64655_anno_df, "annotation.tsv")
+write_tsv(expr_df, "expression.tsv")
+write_tsv(anno_df, "annotation.tsv")
 
 upload_file_to_synapse("expression.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)
