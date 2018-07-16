@@ -17,7 +17,7 @@ cwl_file <- "/home/ubuntu/kallisto_cwl/fastq_abundances_workflow.cwl"
 manifest_id <- "syn12663606"
 file_dir_id <- "syn12649849"
 upload_id   <- "syn13841771" 
-index_id    <- "syn12213028"
+index_id    <- "syn13874268"
 
 synapseCacheDir(tmp_dir)
 n_cores <- detectCores() -1
