@@ -20,7 +20,8 @@ upload_id   <- "syn13841771"
 index_id    <- "syn12213028"
 
 synapseCacheDir(tmp_dir)
-registerDoMC(cores = 4)
+n_cores <- detectCores() -1
+registerDoMC(n_cores)
 synapseClient::synapseLogin()
 setwd(tmp_dir)
 
@@ -55,14 +56,16 @@ activity_obj <- Activity(
 upload_file_to_synapse("manifest.tsv", upload_id, activity_obj = activity_obj)
 
 do_kallisto_by_row <- function(args){
-    fastq_file1 <- download_from_synapse(args$synapse_id1)
-    fastq_file2 <- download_from_synapse(args$synapse_id2)
+    fastq_files <- llply(c(args$synapse_id1, args$synapse_id2),
+                         download_from_synapse,
+                         .parallel = T)
     command <- str_c(
         "cwltool", 
-        "cwl_file",
+        cwl_file,
         "--index_file", index_file,
-        "--fastq_file1", fastq_file1,
-        "--fastq_file2", fastq_file2, 
+        "--threads", n_cores,
+        "--fastq_file1", fastq_files[[1]],
+        "--fastq_file2", fastq_files[[2]], 
         sep = " ")
     system(command)
     activity_obj <- Activity(
@@ -71,13 +74,12 @@ do_kallisto_by_row <- function(args){
         executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE64655/do_kallisto.R"))
     file.rename("out/abundance.tsv", args$output_name)
     upload_file_to_synapse(args$output_name, upload_id, activity_obj = activity_obj)
-    file.remove(fastq_file1)
-    file.remove(fastq_file2)
+    l_ply(fastq_files, file.remove, .parallel = T)
 }
 
 manifest_df %>% 
     split(1:nrow(.)) %>% 
-    l_ply(do_kallisto_by_row, .parallel = T)
+    walk(do_kallisto_by_row)
 
 
 
