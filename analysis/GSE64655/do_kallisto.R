@@ -62,7 +62,8 @@ do_kallisto_by_row <- function(args){
         "cwl_file",
         "--index_file", index_file,
         "--fastq_file1", fastq_file1,
-        "--fastq_file2", fastq_file2)
+        "--fastq_file2", fastq_file2, 
+        sep = " ")
     system(command)
     activity_obj <- Activity(
         name = "run kallisto",
