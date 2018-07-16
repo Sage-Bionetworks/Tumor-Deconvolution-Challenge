@@ -8,7 +8,7 @@ library(synapser)
 # local
 # home_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
 # tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE64655/"
-# sra_db    <- "/home/aelamb/SRAmetadb.sqlite"
+# sra_db    <- "/home/aelamb/SRAmetadb.sqlite/"
 
 #ec2
 home_dir  <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
