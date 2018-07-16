@@ -41,7 +41,9 @@ manifest_df <- manifest_id %>%
     create_df_from_synapse_id %>% 
     filter(day == 0) %>% 
     left_join(file_df) %>% 
-    select(cell_type, patient, synapse_id1, synapse_id2)
+    select(cell_type, patient, synapse_id1, synapse_id2) %>% 
+    mutate(cell_type = str_replace_all(cell_type, " ", "_")) %>% 
+    mutate(output_name = str_c(patient, cell_type, "abundance.tsv", sep = "_")) 
 
 write_tsv(manifest_df, "manifest.tsv")
 
@@ -66,7 +68,8 @@ do_kallisto_by_row <- function(args){
         name = "run kallisto",
         used = list(args$synapse_id1, args$synapse_id2, index_id),
         executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE64655/do_kallisto.R"))
-    upload_file_to_synapse("out/abundance.tsv", upload_id, activity_obj = activity_obj)
+    file.rename("out/abundance.tsv", args$output_name)
+    upload_file_to_synapse(args$output_name, upload_id, activity_obj = activity_obj)
     file.remove(fastq_file1)
     file.remove(fastq_file2)
 }
