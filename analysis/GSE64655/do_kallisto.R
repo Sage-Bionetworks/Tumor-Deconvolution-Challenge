@@ -11,7 +11,7 @@ library(magrittr)
 # cwl_file <- "/home/aelamb/repos/kallisto_cwl/fastq_abundances_workflow.cwl"
 
 home_dir <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
-tmp_dir  <- "/home/ubuntu/"
+tmp_dir  <- "/home/ubuntu/tmp/"
 cwl_file <- "/home/ubuntu/kallisto_cwl/fastq_abundances_workflow.cwl"
 
 manifest_id <- "syn12663606"
@@ -19,6 +19,7 @@ file_dir_id <- "syn12649849"
 upload_id   <- "syn13841771" 
 index_id    <- "syn12213028"
 
+synapseCacheDir(tmp_dir)
 registerDoMC(cores = 4)
 synapseClient::synapseLogin()
 setwd(tmp_dir)
