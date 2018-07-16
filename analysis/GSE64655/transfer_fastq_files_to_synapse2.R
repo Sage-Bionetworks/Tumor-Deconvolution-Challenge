@@ -6,14 +6,14 @@ library(DBI)
 library(synapser)
 
 # local
-home_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE64655/"
-sra_db    <- "/home/aelamb/SRAmetadb.sqlite"
+# home_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+# tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE64655/"
+# sra_db    <- "/home/aelamb/SRAmetadb.sqlite"
 
 #ec2
-# home_dir  <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
-# tmp_dir   <- "/home/ubuntu/tmp/"
-# sra_db    <- "/home/ubuntu/tmp/SRAmetadb.sqlite"
+home_dir  <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
+tmp_dir   <- "/home/ubuntu/tmp/"
+sra_db    <- "/home/ubuntu/tmp/SRAmetadb.sqlite"
 
 study_id   <- "SRP051688"
 upload_id  <- "syn12649849"
