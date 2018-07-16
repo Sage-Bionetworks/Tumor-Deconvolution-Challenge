@@ -6,14 +6,14 @@ library(DBI)
 library(synapser)
 
 # local
-# home_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-# tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE64655/"
-# sra_db    <- "/home/aelamb/SRAmetadb.sqlite"
+home_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE64655/"
+sra_db    <- "/home/aelamb/SRAmetadb.sqlite"
 
 #ec2
-home_dir  <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
-tmp_dir   <- "/home/ubuntu/tmp/"
-sra_db    <- "/home/ubuntu/tmp/SRAmetadb.sqlite"
+# home_dir  <- "/home/ubuntu/Tumor-Deconvolution-Challenge/"
+# tmp_dir   <- "/home/ubuntu/tmp/"
+# sra_db    <- "/home/ubuntu/tmp/SRAmetadb.sqlite"
 
 study_id   <- "SRP051688"
 upload_id  <- "syn12649849"
@@ -79,15 +79,18 @@ transfer_to_synapse <- function(sra){
     walk(fastqs, file.remove)
 }
 
+file_df <- upload_id %>% 
+    get_file_df_from_synapse_dir_id %>% 
+    filter(str_detect(file.name, ".fastq.gz$")) %>% 
+    mutate(SRR_id = str_match(file.name, "(SRR[0-9]*)_[0-9]{1}.fastq.gz")[,2]) %>% 
+    mutate(pair = str_match(file.name, "SRR[0-9]*_([0-9]{1}).fastq.gz")[,2])
+
 manifest_df %>% 
-    filter(cell_type != "PBMC") %>%
     filter(day == "0") %>% 
+    filter(!SRR_id %in% file_df$SRR_id) %>% 
     use_series(SRR_id) %>% 
     walk(transfer_to_synapse)
 
-
-write_tsv(manifest_df, "manifest.tsv")
-upload_file_to_synapse("manifest.tsv", upload_id, activity_obj = activity_obj)
 
 
 

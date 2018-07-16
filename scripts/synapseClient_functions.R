@@ -31,3 +31,8 @@ upload_file_to_synapse <- function(
     if(ret == "entity") return(entity)
     if(ret == "syn_id") return(entity$properties$id)
 }
+
+get_file_df_from_synapse_dir_id <- function(syn_id){
+    str_c('select id, name from file where parentId=="', syn_id, '"') %>% 
+        synapseClient::synQuery()
+}
