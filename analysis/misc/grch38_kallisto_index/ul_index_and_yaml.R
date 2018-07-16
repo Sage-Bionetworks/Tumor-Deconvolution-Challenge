@@ -26,34 +26,17 @@ setwd(work_dir)
 synLogin()
 
 
-yaml_activity_obj <- Activity(
+activity_obj <- Activity(
     name = "create and upload",
     description = "create GRCH38 kallisto index",
     executed = list(script1, script2, cwl),
     used = c(fasta_url)
 )
 
-yaml_id <- upload_file_to_synapse(
-    kallisto_yaml,
-    upload_id,
-    activity_obj = yaml_activity_obj,
-    return = "syn_id"
-)
-
-gziped_index_file <- str_c(index_file, ".gz")
-system(str_c("gzip ", index_file))
-
-index_activity_obj <- Activity(
-    name = "create and upload",
-    description = "create GRCH38 kallisto index",
-    executed = list(script1, script2, cwl),
-    used = c(fasta_url, yaml_id)
-)
-
 upload_file_to_synapse(
-    gziped_index_file,
+    index_file,
     upload_id,
-    activity_obj = index_activity_obj
+    activity_obj = activity_obj
 )
 
 
