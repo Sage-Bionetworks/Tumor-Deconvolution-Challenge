@@ -1,0 +1,35 @@
+synapse_ids:
+  cibersort_results: "syn13363406"
+  mcpcounter_results: "syn13363407"
+  ground_truth: "syn13363402"
+  log_tpm_expression: "syn13363401"
+  cibersort_genes: "syn12184137"
+  mcpcounter_genes: "syn11918430"
+  annotations: "syn13363403"
+cibersort_common_groups:
+ - "B_cells"
+ - "T_cells"
+ - "NK_cells"
+ - "CD4_T_cells"
+ - "CD8_T_cells"
+gt_cs_groups:
+cs_gt_groups: 
+  - {new_col: "B_cells", old_cols: ["B_cells_naive", "B_cells_memory"]}
+  - {new_col: "T_cells", old_cols: ["T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated",
+  "T_cells_CD8", "T_cells_follicular_helper", "T_cells_gamma_delta"]}
+  - {new_col: "NK_cells", old_cols: ["NK_cells_resting",  "NK_cells_activated"]}
+  - {new_col: "CD4_T_cells", old_cols: ["T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated"]}
+  - {new_col: "CD8_T_cells", old_cols: "T_cells_CD8"}
+mcpcounter_common_groups:
+ - "B_cells"
+ - "NK_cells"
+ - "T_cells"
+gt_mcp_groups:
+mcp_gt_groups: 
+  - {new_col: "B_cells", old_cols: "B_lineage"}
+pca_plot_aes:
+  color: "gender"
+  shape: "race"
+  size: "age"
+  
+  

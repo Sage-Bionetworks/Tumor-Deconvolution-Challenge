@@ -36,6 +36,15 @@ upload_file_to_synapse <- function(
     if(ret == "syn_id") return(entity$properties$id)
 }
 
+get_file_df_from_synapse_dir_id <- function(syn_id){
+    str_c('select id, name from file where parentId=="', syn_id, '"') %>% 
+        synapser::synQuery() %>%
+        magrittr::use_series("results") %>% 
+        purrr::map(data.frame) %>% 
+        dplyr::bind_rows() %>% 
+        tibble::as_data_frame() 
+}
+
 
 # data_frame / matrix ---------------------------------------------------------
 

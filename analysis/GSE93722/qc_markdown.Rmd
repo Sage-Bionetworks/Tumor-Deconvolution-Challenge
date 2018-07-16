@@ -1,0 +1,47 @@
+
+
+```{r setup, echo = FALSE, include = F}
+library(knitr)
+library(yaml)
+library(tidyverse)
+library(synapser)
+library(magrittr)
+library(pheatmap)
+library(ggfortify)
+library(GSVA)
+
+config <- read_yaml("qc_markdown_config.yaml")
+read_chunk('/home/aelamb/repos/Tumor-Deconvolution-Challenge/scripts/qc_knitr_chunks.R')
+source("/home/aelamb/repos/Tumor-Deconvolution-Challenge/scripts/utils.R")
+synLogin()
+```
+
+```{r functions, echo = FALSE, include = F}
+```
+
+```{r cibersort_vs_ground_truth, fig.height = 14,  fig.width = 12}
+```
+
+```{r mcpcounter_vs_ground_truth, fig.height = 14,  fig.width = 12}
+```
+
+```{r cibersort gene heatmaps, fig.height = 36,  fig.width = 14}
+```
+
+```{r mcpcounter gene heatmaps, fig.height = 14,  fig.width = 12}
+```
+
+```{r cibersort_results, fig.height = 12,  fig.width = 12}
+```
+ 
+```{r mcpcounter_results, fig.height = 12,  fig.width = 12}
+```
+
+```{r pca_plots, fig.height = 8,  fig.width = 8}
+```
+
+```{r cibersort_gsea, fig.height = 8,  fig.width = 8}
+```
+
+```{r mcpcounter_gsea, fig.height = 8,  fig.width = 8}
+```

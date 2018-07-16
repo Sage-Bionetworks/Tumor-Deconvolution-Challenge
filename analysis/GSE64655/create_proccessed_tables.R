@@ -13,7 +13,7 @@ hugo_id <- "syn11536071"
 expr_id <- "syn11969378"
 anno_id <- "syn11969387"
 
-upload_id  <- "syn11969377"
+upload_id  <- "syn12667653"
 
 
 setwd(home_dir)
@@ -21,16 +21,6 @@ source("scripts/utils.R")
 setwd(tmp_dir)
 synLogin()
 
-hugo_df <-  create_df_from_synapse_id(hugo_id)
-
-expr_df <- expr_id %>%
-    create_df_from_synapse_id(unzip = T, skip = 3) %>% 
-    select(-c(`Gene Type`, Description, `Gene Symbol`)) %>% 
-    left_join(hugo_df, by = c("Gene ID" = "ensembl_gene_id")) %>% 
-    rename("Ensembl" = `Gene ID`) %>% 
-    rename("Hugo" = hgnc_symbol) %>% 
-    .[,order(colnames(.))] %>% 
-    select(Ensembl, Hugo, everything())
 
 anno_df <- anno_id %>% 
     create_df_from_synapse_id(unzip = T, skip = 30, nrow = 7) %>%
@@ -47,7 +37,34 @@ anno_df <- anno_id %>%
                                        ifelse(ABV1 == "PMBC", "PBMC", ABV1))))) %>% 
     mutate(sample = str_c(patient, "_", ABV2, "_d", days)) %>% 
     select(-c(ABV1, ABV2)) %>% 
-    arrange(sample)
+    arrange(sample) %>% 
+    filter(days == 0) %>% 
+    select(-days)
+
+
+
+hugo_df <-  create_df_from_synapse_id(hugo_id)
+
+
+tpm_df <- expr_id %>%
+    create_df_from_synapse_id(unzip = T, skip = 3) %>% 
+    select(-c(`Gene Type`, Description, `Gene Symbol`)) %>% 
+    left_join(hugo_df, by = c("Gene ID" = "ensembl_gene_id")) %>% 
+    rename("Hugo" = hgnc_symbol) %>% 
+    select(one_of(c("Hugo", anno_df$sample))) %>% 
+    group_by(Hugo) %>% 
+    summarise_all(sum) %>% 
+    filter(!Hugo == "") %>% 
+    ungroup 
+
+log_tpm_df <- tpm_df %>% 
+    df_to_matrix("Hugo") %>% 
+    add(1) %>% 
+    log10 %>% 
+    matrix_to_df("Hugo")
+    
+
+
 
 activity_obj <- Activity(
     name = "create",
@@ -56,9 +73,11 @@ activity_obj <- Activity(
     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE64655/create_processed_tables.R")
 )
 
-write_tsv(expr_df, "expression.tsv")
+write_tsv(tpm_df, "expression_tpm.tsv")
+write_tsv(log_tpm_df, "expression_log_tpm.tsv")
 write_tsv(anno_df, "annotation.tsv")
 
-upload_file_to_synapse("expression.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("expression_tpm.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("expression_log_tpm.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)
 

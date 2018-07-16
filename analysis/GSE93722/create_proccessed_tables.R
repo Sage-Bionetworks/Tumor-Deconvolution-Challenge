@@ -52,8 +52,21 @@ tpm_df <-
     set_colnames(c("ensembl_gene_id", samples)) %>% 
     left_join(hugo_df) %>% 
     select(hgnc_symbol, everything()) %>% 
-    set_colnames(c("Hugo", "Ensembl", samples))
+    select(-ensembl_gene_id) %>% 
+    set_colnames(c("Hugo", samples)) %>% 
+    group_by(Hugo) %>% 
+    summarise_all(sum) %>% 
+    filter(!Hugo == "") %>% 
+    ungroup %>% 
+    .[,order(colnames(.))] %>% 
+    select(Hugo, everything()) %>% 
+    arrange(Hugo)
 
+log_tpm_df <- tpm_df %>% 
+    df_to_matrix("Hugo") %>% 
+    add(1) %>% 
+    log10 %>% 
+    matrix_to_df("Hugo")
 
 activity_obj <- Activity(
     name = "create",
@@ -62,9 +75,11 @@ activity_obj <- Activity(
     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE93722/create_processed_tables.R")
 )
 
-write_tsv(tpm_df, "expression.tsv")
+write_tsv(tpm_df, "expression_tpm.tsv")
+write_tsv(log_tpm_df, "expression_log_tpm.tsv")
 write_tsv(anno_df, "annotation.tsv")
 
-upload_file_to_synapse("expression.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("expression_tpm.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("expression_log_tpm.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)
 

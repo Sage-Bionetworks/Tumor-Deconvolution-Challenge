@@ -1,0 +1,417 @@
+---
+title: "GSE64655"
+output: html_document
+---
+
+```{r setup, include=FALSE, warning=FALSE}
+library(plyr)
+library(doMC)
+library(tidyverse)
+library(synapser)
+library(data.table)
+library(magrittr)
+library(pheatmap)
+library(preprocessCore)
+library(ggfortify)
+library(GSVA)
+
+home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+
+expr_id         <- "syn12971000"
+anno_id         <- "syn12971001"
+mcp_genes_id    <- "syn11918430"
+cs_genes_id     <- "syn12184137"
+cs_results_id   <- "syn11969430"
+mcp_results_id  <- "syn11969431"
+ground_truth_id <- "syn12650217"
+
+
+setwd(home_dir)
+source("scripts/utils.R")
+synLogin()
+registerDoMC(cores = detectCores())
+```
+
+```{r ground_truth_vs_cs, fig.height = 14,  fig.width = 12}
+
+cs_result_df2 <- cs_results_id %>%
+    create_df_from_synapse_id %>% 
+    select(-c(`P-value`, `RMSE`, Correlation)) %>% 
+    separate(sample, sep = "_", into = c("sample", "cell_type", "day")) %>% 
+    filter(day == "d0") %>% 
+    filter(cell_type == "PBMC") %>% 
+    select(-c(cell_type, day)) %>% 
+    df_to_matrix("sample") %>% 
+    matrix_to_df("sample") %>% 
+    set_colnames(str_replace_all(colnames(.), "\\.", " ")) %>% 
+    mutate(
+        `B cells` =
+            `B cells naive` +
+            `B cells memory`) %>% 
+    mutate(
+        `T cells` = 
+            `T cells CD4 memory resting` + 
+            `T cells CD4 memory activated` +
+            `T cells CD8` +
+            `T cells follicular helper` + 
+            `T cells gamma delta`) %>% 
+    mutate(
+        `NK cells` = 
+            `NK cells resting` + 
+            `NK cells activated`) %>% 
+     mutate(
+        `NK cells` = 
+            `NK cells resting` + 
+            `NK cells activated`) %>% 
+    mutate(
+        `Other cells` = 
+            `Plasma cells` +
+            `Macrophages M0` +           
+            `Macrophages M1` +        
+            `Macrophages M2` + 
+            `Dendritic cells resting` + 
+            `Dendritic cells activated` + 
+            `Mast cells resting` + 
+            `Mast cells activated` + 
+            `Eosinophils` + 
+            `Neutrophils`) %>% 
+    select(sample, `B cells`, `Monocytes`, `T cells`, `NK cells`, `Other cells`) %>% 
+    gather("cell_type", "predicted_fraction", `B cells`:`Other cells`)
+
+
+ground_truth_cs_df <- ground_truth_id %>% 
+    create_df_from_synapse_id %>% 
+    gather("cell_type", "fraction", `B cells`:`Other cells`) %>% 
+    mutate(fraction = fraction / 100) %>% 
+    dplyr::rename(sample = `donor ID`)
+
+cs_plot_df <- 
+    inner_join(cs_result_df2, ground_truth_cs_df) 
+
+
+ggplot(
+    cs_plot_df, aes(x = fraction, y = predicted_fraction)) +
+    geom_point(size = 4, aes(color = sample, shape = cell_type)) +
+    geom_smooth(method = 'lm') +
+    geom_abline() +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("Ground truth vs Cibersort predicted fractions") +
+    xlab("Fraction") +
+    ylab("Cibersort prediction fraction")
+
+```
+
+
+```{r ground_truth_vs_mcp, fig.height = 14,  fig.width = 12}
+
+mcp_result_df2 <- mcp_results_id %>%
+    download_from_synapse %>% 
+    read.table %>% 
+    t %>% 
+    .[,colSums(.) > 0] %>% 
+    matrix_to_df("sample") %>% 
+    set_colnames(str_replace_all(colnames(.), "\\.", " ")) %>% 
+    mutate(
+        `B cells` =
+            `B lineage`) %>%
+    mutate(
+        `Other cells` = 
+            `Cytotoxic lymphocytes` + 
+            `Monocytic lineage` +
+            `Myeloid dendritic cells` +
+            `Neutrophils` + 
+            `Endothelial cells` + 
+            `Fibroblasts`) %>% 
+    select(sample, `B cells`, `T cells`, `CD8 T cells`, `NK cells`, `Other cells`) %>% 
+    gather("cell_type", "predicted_score", `B cells`:`Other cells`)
+
+
+ground_truth_mcp_df <- ground_truth_id %>% 
+    create_df_from_synapse_id %>% 
+    mutate(
+        `T cells` = 
+            `CD4 T cells` +
+            `CD8 T cells`) %>% 
+    dplyr::rename(sample = `donor ID`) %>% 
+    gather("cell_type", "fraction", `B cells`:`T cells`) %>% 
+    mutate(fraction = fraction / 100)
+
+mcp_plot_df <- 
+    inner_join(mcp_result_df2, ground_truth_mcp_df)
+
+
+mcp_plot_df %>% 
+    filter(cell_type == "B cells") %>% 
+    ggplot(aes(x = fraction, y = predicted_score)) +
+    geom_point(size = 4, aes(color = sample, shape = cell_type)) +
+    geom_smooth(method = 'lm') +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("B cells, ground truth vs MCPcounter scores") + 
+    xlab("Fraction") +
+    ylab("MCPCounter score")
+
+mcp_plot_df %>% 
+    filter(cell_type == "T cells") %>% 
+    ggplot(aes(x = fraction, y = predicted_score)) +
+    geom_point(size = 4, aes(color = sample, shape = cell_type)) +
+    geom_smooth(method = 'lm') +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("T cells, ground truth vs MCPcounter scores") + 
+    xlab("Fraction") +
+    ylab("MCPCounter score")
+    
+mcp_plot_df %>% 
+    filter(cell_type == "CD8 T cells") %>% 
+    ggplot(aes(x = fraction, y = predicted_score)) +
+    geom_point(size = 4, aes(color = sample, shape = cell_type)) +
+    geom_smooth(method = 'lm') +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("CD8 T cells, ground truth vs MCPcounter scores") + 
+    xlab("Fraction") +
+    ylab("MCPCounter score")
+
+mcp_plot_df %>% 
+    filter(cell_type == "NK cells") %>% 
+    ggplot(aes(x = fraction, y = predicted_score)) +
+    geom_point(size = 4, aes(color = sample, shape = cell_type)) +
+    geom_smooth(method = 'lm') +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("NK cells, ground truth vs MCPcounter scores") + 
+    xlab("Fraction") +
+    ylab("MCPCounter score")
+
+mcp_plot_df %>% 
+    filter(cell_type == "Other cells") %>% 
+    ggplot(aes(x = fraction, y = predicted_score)) +
+    geom_point(size = 4, aes(color = sample, shape = cell_type)) +
+    geom_smooth(method = 'lm') +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("Other cells, ground truth vs MCPcounter scores") + 
+    xlab("Fraction") +
+    ylab("MCPCounter score")
+
+```
+
+
+```{r load data, warning =FALSE}
+
+mcp_gene_df <- create_df_from_synapse_id(mcp_genes_id)
+cs_gene_df <- create_df_from_synapse_id(cs_genes_id)
+
+mcp_genes <- mcp_gene_df %>% 
+    filter(Method == "mcpcounter") %>%
+    use_series("Hugo") %>% 
+    unique %>% 
+    sort
+
+cs_genes <- cs_gene_df %>% 
+    filter(Method == "cibersort") %>%
+    use_series("Hugo") %>% 
+    unique %>% 
+    sort
+
+anno_df <- create_df_from_synapse_id(anno_id) %>% 
+    arrange(sample) %>% 
+    filter(days == 0) %>% 
+    arrange(sample) %>% 
+    select(-days)
+
+expr_df <- expr_id %>% 
+    create_df_from_synapse_id %>% 
+    select(one_of(c("Hugo", anno_df$sample))) %>% 
+    group_by(Hugo) %>% 
+    summarise_all(sum) %>% 
+    filter(!Hugo == "") %>% 
+    ungroup %>% 
+    .[,order(colnames(.))] %>% 
+    select(Hugo, everything())
+    
+
+log_matrix <- expr_df %>% 
+    df_to_matrix("Hugo") %>% 
+    .[rowSums(.) > 0,] %>% 
+    add(1) %>% 
+    log10
+
+```
+
+```{r heatmaps1, fig.height = 14,  fig.width = 12}
+zscore_mat <- log_matrix %>% 
+    quantile_normalize_matrix %>% 
+    zscore_matrix
+
+mcp_zscore_matrix <- zscore_mat %>% 
+    .[rownames(.) %in% mcp_genes,]
+
+mcp_heatmap_row_df <- mcp_gene_df %>% 
+    filter(Method == "mcpcounter") %>% 
+    filter(Hugo %in% rownames(mcp_zscore_matrix)) %>% 
+    select(-Method) %>% 
+    arrange(cell_type) %>% 
+    data.frame %>% 
+    column_to_rownames("Hugo") %>% 
+    set_names("Cell Type")
+
+mcp_zscore_matrix <-  mcp_zscore_matrix[rownames(mcp_heatmap_row_df),]
+
+heatmap_col_df <- anno_df %>% 
+    data.frame %>% 
+    column_to_rownames("sample")
+
+pheatmap(
+    mcp_zscore_matrix,
+    main = "MCPCounter genes",
+    annotation_row = mcp_heatmap_row_df,
+    annotation_col = heatmap_col_df,
+    cluster_rows = F,
+    scale = "none")
+
+pheatmap(
+    mcp_zscore_matrix,
+    main = "MCPCounter genes",
+    annotation_row = mcp_heatmap_row_df,
+    annotation_col = heatmap_col_df,
+    scale = "none")
+```
+
+```{r heatmaps2, fig.height = 36,  fig.width = 14}
+
+cs_zscore_matrix <- zscore_mat %>% 
+    .[rownames(.) %in% cs_genes,]
+
+pheatmap(
+    cs_zscore_matrix,
+    main = "Cibersort genes",
+    annotation_col = heatmap_col_df,
+    scale = "none",
+    fontsize = 15,
+    fontsize_row = 5)
+```
+
+```{r deconvolution plots, fig.height = 12,  fig.width = 12}
+cs_result_df <- cs_results_id %>%
+    create_df_from_synapse_id %>% 
+    select(-c(`P-value`, `RMSE`, Correlation)) %>% 
+    df_to_matrix("sample") %>% 
+    .[,colSums(.) > 0] %>% 
+    matrix_to_df("sample") %>% 
+    set_colnames(str_replace_all(colnames(.), "\\.", " ")) %>% 
+    gather("cibersort_cell_type", "predicted_fraction", `B cells naive`:Neutrophils) %>% 
+    inner_join(anno_df, by = c("sample"))
+
+mcp_result_df <- mcp_results_id %>%
+    download_from_synapse %>% 
+    read.table %>% 
+    t %>% 
+    .[,colSums(.) > 0] %>% 
+    matrix_to_df("sample") %>% 
+    set_colnames(str_replace_all(colnames(.), "\\.", " ")) %>% 
+    gather("mcpcounter_cell_type", "predicted_score", `T cells`:Fibroblasts) %>% 
+    inner_join(anno_df, by = c("sample")) 
+
+ggplot(cs_result_df, aes(x = cibersort_cell_type, y = predicted_fraction)) +
+    geom_point() +
+    facet_grid(cell_type ~ .) +
+    ylab("Predicted fraction") +
+    xlab("Cibersort cell type") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("Cibersort Results")
+
+ggplot(mcp_result_df, aes(x = mcpcounter_cell_type, y = predicted_score)) +
+    geom_point() +
+    facet_grid(cell_type ~ .) +
+    ylab("Predicted score") +
+    xlab("MCPCounter cell type") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("MCPCounter results")
+
+```
+
+```{r pca plots, fig.height = 8,  fig.width = 8}
+pca_matrix <- t(log_matrix)
+
+autoplot(
+    prcomp(pca_matrix), 
+    data = anno_df, 
+    shape = "cell_type", 
+    colour = "patient",
+    size = 3,
+    main = "PC 1 vs 2") +
+    scale_shape_manual(values = 1:19) +
+    theme_bw()
+
+```
+
+```{r gsea, fig.height = 8,  fig.width = 8}
+mcp_genes <- mcp_gene_df %>%  
+    filter(Method == "mcpcounter") %>%
+    split(.$cell_type) %>%
+    map(use_series, Hugo)
+
+mcp_ssgsea_df <- gsva(log_matrix, mcp_genes, rnaseq = FALSE, method = "ssgsea", verbose = F) %>%
+    matrix_to_df("MCP_cell_type") %>%
+    gather(key = "sample", value = "enrichment" , -MCP_cell_type) %>%
+    left_join(anno_df) 
+
+ggplot(mcp_ssgsea_df, aes(x = MCP_cell_type, y = enrichment)) +
+    geom_point() +
+    facet_grid(cell_type ~ .) +
+    ylab("GSEA enrichment score") +
+    xlab("MCPCounter cell type") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("GSEA with MCPCounter genes")
+    
+cs_genes <- cs_gene_df %>%  
+    filter(Method == "cibersort") %>%
+    split(.$cell_type) %>%
+    map(use_series, Hugo)
+
+cs_ssgsea_df <- gsva(log_matrix, cs_genes, rnaseq = FALSE, method = "ssgsea", verbose = F) %>%
+    matrix_to_df("CS_cell_type") %>%
+    gather(key = "sample", value = "enrichment" , -CS_cell_type) %>%
+    left_join(anno_df) 
+
+ggplot(cs_ssgsea_df, aes(x = CS_cell_type, y = enrichment)) +
+    geom_point() +
+    facet_grid(cell_type ~ .) +
+    ylab("GSEA enrichment score") +
+    xlab("Cibersort cell type") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, size = 12)) +
+    theme(axis.text.y = element_text(size = 12)) +
+    theme(strip.text.y = element_text(size = 10, angle = 0)) +
+    ggtitle("GSEA with Cibersort genes")
+
+
+
+
+```
+
+

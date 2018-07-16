@@ -1,0 +1,6 @@
+library(synapseClient)
+library(knit2synapse)
+setwd("/home/aelamb/repos/Tesla-Analysis/bigquery/")
+synapseLogin()
+# knitfile2synapse("/home/aelamb/repos/Tesla-Analysis/bigquery/from_bigquery/bigquery_round1_report.Rmd", owner = 'syn8082860', parentWikiId = 486326, wikiName = "Round 1 report", overwrite = FALSE)
+knitfile2synapse("/home/aelamb/repos/Tesla-Analysis/bigquery/from_bigquery/test.Rmd", owner = 'syn11738103',  parentWikiId = 513651)
