@@ -57,9 +57,12 @@ anno_df <- geo_anno_df %>%
     select(-data_accession)
 
 ground_truth_df <- gt_pbmc_df %>% 
+    select(-c(age, race, gender)) 
+    
+ground_truth_sd_df <- gt_pbmc_df %>% 
     select(-c(age, race, gender)) %>% 
     group_by(sample) %>% 
-    summarise_all(mean, na.rm = T) %>% 
+    summarise_all(sd, na.rm = T) %>% 
     ungroup
 
 expr_df <- expr_pbmc_df %>% 
@@ -83,8 +86,10 @@ activity_obj <- Activity(
 
 write_tsv(expr_df, "expression_microarray.tsv")
 write_tsv(ground_truth_df, "ground_truth.tsv")
+write_tsv(ground_truth_sd_df, "ground_truth_sd.tsv")
 write_tsv(anno_df, "annotation.tsv")
 
 upload_file_to_synapse("expression_microarray.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("ground_truth.tsv", gt_upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("ground_truth_sd.tsv", gt_upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)

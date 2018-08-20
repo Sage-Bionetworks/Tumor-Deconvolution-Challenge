@@ -1,25 +1,47 @@
+library(synapser)
 library(data.table)
 library(magrittr)
 library(tidyverse)
 
-studies <- c("SDY212", "SDY311", "SDY312", "SDY314", "SDY315", "SDY404")
+sdy_ids <- c("SDY112", "SDY311", "SDY312", "SDY314", "SDY315")
 
-setwd("/home/aelamb/Downloads/SDY")
+home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE41080/"
 
-cytof_pbmc_df <- "10KImmunomes.CyTOF_ PBMC.2018-06-25.csv" %>% 
-    fread %>% 
-    as_data_frame %>% 
-    filter(study_accession %in% studies)
+fc_wb_id      <- "syn13363370"
+expr_wb_id    <- "syn13363367"
 
-flow_pbmc_df <- "10KImmunomes.Flow Cytometry_ PBMC.2018-06-25.csv" %>% 
-    fread %>% 
-    as_data_frame %>% 
-    filter(study_accession %in% studies)
 
-flow_whole_blood_df <- "10KImmunomes.Flow Cytometry_ Whole Blood.2018-06-25.csv" %>% 
-    fread %>% 
-    as_data_frame %>% 
-    filter(study_accession %in% studies)
+setwd(home_dir)
+source("scripts/utils.R")
+setwd(tmp_dir)
+synLogin()
+
+
+expr_wb_df <- expr_wb_id %>%
+    download_from_synapse %>%
+    fread %>%
+    data.frame %>%
+    inset("expression_source", value = "whole_blood") %>% 
+    filter(study_accession %in% sdy_ids) 
+
+
+ground_truth_flow_wb_df <- fc_wb_id %>% 
+    create_df_from_synapse_id %>% 
+    filter(study_accession %in% sdy_ids) %>% 
+    .[, colSums(is.na(.)) < nrow(.)] %>% 
+    dplyr::rename(sample = subject_accession)
+
+
+ground_truth_cytof_pbmc_df <- "syn13363372" %>% 
+    create_df_from_synapse_id %>% 
+    filter(study_accession %in% sdy_ids) 
+
+
+
+
+
+
 
 cell_type_df <- bind_rows(cytof_pbmc_df, flow_pbmc_df, flow_whole_blood_df)
 

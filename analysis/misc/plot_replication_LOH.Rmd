@@ -1,0 +1,351 @@
+---
+title: "Untitled"
+output: pdf_document
+---
+
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE}
+library(plyr)
+library(doMC)
+library(tidyverse)
+library(synapser)
+library(data.table)
+library(magrittr)
+library(pheatmap)
+library(knitr)
+library(feather)
+
+
+home_dir <- "/home/aelamb/repos/swi_gene_analysis/"
+tmp_dir  <- "/home/aelamb/tmp/swi_gene_analysis/"
+
+setwd(home_dir)
+source("scripts/utils.R")
+setwd(tmp_dir)
+synLogin()
+registerDoMC(cores = 7)
+
+tcga_expr_id <- "syn11924499"
+tcga_pat_id  <- "syn11924167"
+tcga_mut_id  <- "syn11924339"
+
+selected_genes <- c(
+    "ACTB", 
+    "ARID1A", 
+    "ARID1B", 
+    "ARID2", 
+    "BCL11A", 
+    "BCL11B",
+    "BRD7", 
+    "BRD9", 
+    "PBRM1", 
+    "PHF10", 
+    "SMARCA2",
+    "SMARCA4", 
+    "SMARCB1", 
+    "SMARCC2", 
+    "SMARCD1", 
+    "SMARCD2", 
+    "SMARCD3", 
+    "SMARCE1", 
+    "SS18",
+    "ERCC1")
+
+selected_cancers = c(
+    "BRCA",
+    "COAD",
+    "CHOL",
+    "DLBC",
+    "KIRC",
+    "OV",
+    "PAAD",
+    "READ",
+    "STAD",
+    "THCA", 
+    "THYM",
+    "UCEC"
+)
+
+
+
+
+mut_df <- tcga_mut_id %>% 
+    download_from_synapse %>% 
+    fread(select = c("patient", "Hugo_Symbol")) %>% 
+    as_data_frame 
+    
+swi_mut_df <- mut_df %>% 
+    filter(Hugo_Symbol %in% selected_genes) %>% 
+    distinct
+
+add_mutant_status_cols <- function(df, genes){
+    map(genes, add_mutant_status_col, df)  %>% 
+        reduce(left_join)
+}
+
+add_mutant_status_col <- function(col, df){
+    df %>% 
+        select(patient) %>% 
+        distinct %>% 
+        inset(col, value = ifelse(col %in% df$Hugo_Symbol, "Mut", "WT"))
+}
+
+swi_status_df <- swi_mut_df %>% 
+    split(.$patient) %>% 
+    llply(add_mutant_status_cols, selected_genes, .parallel = T) %>% 
+    bind_rows 
+
+
+loh_df <- 
+    read_feather("/home/aelamb/repos/irwg/shiny-prototyping/data/fmx_df.feather") %>% 
+    select(ParticipantBarcode, LOH_n_seg) %>% 
+    mutate(LOH_n_seg = as.integer(LOH_n_seg)) %>% 
+    .[complete.cases(.),]
+
+
+pat_df <- tcga_pat_id %>% 
+    create_df_from_synapse_id %>% 
+    select(sample_name, patient, tumor) %>% 
+    arrange(sample_name) %>% 
+    inner_join(loh_df, by = c("patient" = "ParticipantBarcode")) %>% 
+    left_join(swi_status_df)
+
+pat_df[is.na(pat_df)] <- "WT"
+
+swi_expr_df <- tcga_expr_id %>% 
+    create_df_from_synapse_id %>% 
+    select(c("patient", selected_genes))
+
+swi_df <- inner_join(pat_df, swi_expr_df, by = c("patient"))
+
+remove(mut_burden_df, mut_df, swi_mut_df, swi_status_df, loh_df)
+
+cancers = pat_df %>% 
+    use_series(tumor) %>% 
+    unique %>% 
+    sort
+
+
+make_groups <- function(df){
+    n_samples <- nrow(df)
+    df %>% 
+        arrange(expression) %>% 
+        mutate(num = 1:n_samples) %>% 
+        mutate(group = ifelse(num < (n_samples / 2), "low",
+                              ifelse(num > ((3 * n_samples) / 4 ), "high", "med")))
+}
+
+df_by_groups <- 
+    left_join(gather(swi_expr_df, key = "swi_gene", value = "expression", - patient),
+              select(pat_df, patient, tumor, LOH_n_seg)) %>% 
+    mutate(gene_tumor = str_c(swi_gene, ":", tumor)) %>%
+    split(.$gene_tumor) %>% 
+    llply(make_groups, .parallel = T) %>% 
+    bind_rows %>% 
+    filter(group != "med")
+
+
+
+```
+
+
+```{r box plots, warning=F}
+
+boxplot_df <- pat_df %>% 
+    gather(
+        key = "swi_gene", 
+        "value" = status, 
+        - c(sample_name, patient, tumor, LOH_n_seg))
+
+do_wilcox_test <- function(df){
+    wt_vals <- df %>% 
+        filter(status == "WT") %>% 
+        use_series(LOH_n_seg)
+    mut_vals <- df %>% 
+        filter(status == "Mut") %>% 
+        use_series(LOH_n_seg)
+    if(min(length(wt_vals), length(mut_vals)) < 2){
+        pvalue <-  NA
+    } else {
+        pvalue = wilcox.test(wt_vals, mut_vals)$p.value
+    }
+    data_frame(
+        "tumor" = df$tumor[[1]],
+        "swi_gene" = df$swi_gene[[1]],
+        "wilcox_pvalue" = pvalue)
+}
+
+pvalue_df <- boxplot_df %>% 
+    select(tumor, swi_gene, LOH_n_seg, status) %>% 
+    group_by(tumor, swi_gene) %>% 
+    do(do_wilcox_test(.))
+
+boxplot_df2 <- boxplot_df %>% 
+    left_join(pvalue_df) %>% 
+    mutate(sig = ifelse(is.na(wilcox_pvalue), 
+                        "no",
+                        ifelse(wilcox_pvalue > 0.01, 
+                              "no",
+                              "yes"))) %>% 
+    mutate(tumor_label = ifelse(sig == "no", tumor, str_c("\\* ", tumor)))
+
+create_mut_burden_box_plots <- function(df){
+    p <- df %>% 
+        ggplot(aes_string(x = "tumor_label", y = "LOH_n_seg", fill = "status")) +
+        geom_boxplot() +
+        theme_bw() +
+        theme(axis.text.x = element_text(angle = 90, size = 12)) +
+        theme(axis.text.y = element_text(size = 12)) +
+        theme(strip.text.y = element_text(size = 10, angle = 0)) +
+        ggtitle(df$swi_gene[[1]]) + 
+        ylab("LOH events per tumor") +
+        xlab("TCGA cancer type")
+    print(p)
+}
+
+plot_dfs <- split(boxplot_df2, boxplot_df2$swi_gene)
+
+l_ply(plot_dfs, create_mut_burden_box_plots, .parallel = F)
+```
+
+```{r box plots2}
+
+
+make_mut_burden_boxplot_by_expr_group <- function(df){
+    p <- df %>% 
+        ggplot(aes_string(x = "group", y = "LOH_n_seg")) +
+        geom_boxplot() +
+        theme_bw() +
+        theme(axis.text.x = element_text(angle = 90, size = 12)) +
+        theme(axis.text.y = element_text(size = 12)) +
+        theme(strip.text.y = element_text(size = 10, angle = 0)) +
+        ggtitle(df$gene_tumor[[1]]) + 
+        ylab("LOH events per tumor") +
+        xlab("Expression group")
+    print(p)
+}
+
+
+
+df_by_groups %>%
+    filter(swi_gene == "PBRM1") %>%
+    filter(tumor %in% selected_cancers) %>% 
+    split(.$gene_tumor) %>%
+    walk(make_mut_burden_boxplot_by_expr_group)
+
+df_by_groups %>%
+    filter(swi_gene == "ERCC1") %>%
+    filter(tumor %in% selected_cancers) %>% 
+    split(.$gene_tumor) %>%
+    walk(make_mut_burden_boxplot_by_expr_group)
+
+```
+
+
+```{r scatter plots}
+create_mut_burden_expr_scatter_plots <- function(df){
+    p <- df %>%
+        ggplot(aes_string(x = "expression", y = "LOH_n_seg")) +
+        geom_point() +
+        geom_smooth(method = 'lm') +
+        theme_bw() +
+        theme(axis.text.x = element_text(angle = 90, size = 12)) +
+        theme(axis.text.y = element_text(size = 12)) +
+        theme(strip.text.y = element_text(size = 10, angle = 0)) +
+        ggtitle(df$gene_tumor[[1]]) +
+        ylab("LOH events per tumor") +
+        xlab("Expression")
+    print(p)
+}
+
+
+scatter_plot_dfs <-
+    left_join(gather(swi_expr_df, key = "swi_gene", value = "expression", - patient),
+              select(pat_df, patient, tumor, LOH_n_seg)) %>%
+    filter(tumor %in% selected_cancers) %>%
+    filter(swi_gene == "PBRM1") %>%
+    mutate(gene_tumor = str_c(swi_gene, ":", tumor)) %>%
+    split(.$gene_tumor) %>%
+    walk(create_mut_burden_expr_scatter_plots)
+
+scatter_plot_dfs <-
+    left_join(gather(swi_expr_df, key = "swi_gene", value = "expression", - patient),
+              select(pat_df, patient, tumor, LOH_n_seg)) %>%
+    filter(tumor %in% selected_cancers) %>%
+    filter(swi_gene == "ERCC1") %>%
+    mutate(gene_tumor = str_c(swi_gene, ":", tumor)) %>%
+    split(.$gene_tumor) %>%
+    walk(create_mut_burden_expr_scatter_plots)
+```
+
+```{r heatmaps, warning=F}
+do_wilcox <- function(df){
+    low_values <- df %>% 
+        filter(group == "low") %>% 
+        use_series(LOH_n_seg)
+    high_values <- df %>% 
+        filter(group == "high") %>% 
+        use_series(LOH_n_seg)
+    p_value <- wilcox.test(low_values, high_values)$p.value
+    neg_log10_pvalue <- p_value %>% 
+        log10 %>% 
+        multiply_by(-1)
+    if(median(low_values) > median(high_values)){
+        neg_log10_pvalue <- neg_log10_pvalue * -1
+    }
+    data_frame("swi_gene" = df$swi_gene[[1]],
+               "tumor" = df$tumor[[1]],
+               "neg_log10_pvalue" = neg_log10_pvalue)
+}
+
+make_heatmap <- function(mat, main = ""){
+    color <- colorRampPalette(c("red", "white", "blue"))(50)
+    breaks <- c(seq(min(mat), 
+                    0, 
+                    length.out=ceiling(25) + 1), 
+                seq(max(mat)/50, 
+                    max(mat), 
+                    length.out=floor(25)))
+    pheatmap(mat, color=color, breaks=breaks, main=main) 
+}
+
+wilcox_df <- df_by_groups %>% 
+    group_by(swi_gene, tumor) %>% 
+    do(do_wilcox(.)) 
+
+wilcox_matrix <- wilcox_df %>% 
+    spread(key = "tumor", value = "neg_log10_pvalue") %>% 
+    df_to_matrix("swi_gene")
+
+make_heatmap(wilcox_matrix, main = "Wilcox test -log10 pvalues")
+
+expr_cor_df <- 
+    inner_join(gather(swi_expr_df, key = "swi_gene", value = "expression", - patient),
+              select(pat_df, patient, tumor, LOH_n_seg)) %>% 
+    group_by(swi_gene, tumor) %>% 
+    dplyr::summarise(correlation = cor(LOH_n_seg, expression)) 
+
+expr_cor_matrix <- expr_cor_df %>% 
+    spread(key = "tumor", value = "correlation") %>% 
+    df_to_matrix("swi_gene")
+
+make_heatmap(expr_cor_matrix, main = "Pearson correlation")
+
+wilcox_df %>% 
+    filter(swi_gene == "PBRM1") %>% 
+    kable
+
+expr_cor_df %>% 
+    filter(swi_gene == "PBRM1") %>% 
+    kable
+
+wilcox_df %>% 
+    filter(swi_gene == "ERCC1") %>% 
+    kable
+
+expr_cor_df %>% 
+    filter(swi_gene == "ERCC1") %>% 
+    kable
+
+
+
+```

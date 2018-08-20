@@ -1,0 +1,53 @@
+---
+title: "Untitled"
+output: pdf_document
+---
+
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE}
+library(plyr)
+library(doMC)
+library(tidyverse)
+library(synapser)
+library(data.table)
+library(magrittr)
+
+source("/home/aelamb/repos/Tumor-Deconvolution-Challenge/scripts/utils.R")
+synLogin()
+registerDoMC(cores = 7)
+
+ids <- list(
+    gse64655_tmm = "syn12979150",
+    gse41080_ma  = "syn14718622",
+    gse59654_ma  = "syn13363401",
+    sdy112_ma    = "syn15588642")
+
+dfs <- llply(ids, create_df_from_synapse_id, .parallel = T)
+
+
+
+```
+
+
+```{r plots}
+
+tmm <- dfs[[1]][,1:2] %>% 
+    set_colnames(c("Hugo", "TMM")) 
+
+tmm %>% 
+    ggplot(aes(x = TMM)) + 
+    geom_histogram() 
+
+ma1 <- dfs[[2]][,c(1,3)] %>% 
+    set_colnames(c("Hugo", "Exp")) %>% 
+    mutate(log10_Exp = log10(Exp))
+    
+ma1 %>%  
+    ggplot(aes(x = Exp)) + 
+    geom_histogram() 
+
+ma1 %>%  
+    ggplot(aes(x = log10_Exp)) + 
+    geom_histogram(bins = 60) 
+
+``` 
+

@@ -41,8 +41,26 @@ dowload_and_format_cibersort_df <- function(synapse_id){
 }
 
 
-
 ## @knitr cibersort_vs_ground_truth
+
+create_cs_scatter_plot <- function(type, plot_df){
+    p <- plot_df %>% 
+        ggplot(aes(x = predicted_fraction, y = mean_fraction)) +
+        geom_point(size = 4, aes(color = sample, shape = cell_type)) +
+        geom_smooth(method = 'lm') +
+        geom_abline() +
+        geom_errorbar(aes(ymin = mean_fraction - sd_fraction,
+                          ymax = mean_fraction + sd_fraction),
+                      width = sd(plot_df$predicted_fraction) / 8) +
+        theme_bw() +
+        theme(axis.text.x = element_text(angle = 90, size = 12)) +
+        theme(axis.text.y = element_text(size = 12)) +
+        theme(strip.text.y = element_text(size = 10, angle = 0)) +
+        ggtitle(str_c(type, ", ground truth vs Cibersort predictions")) + 
+        ylab("Ground truth fraction") +
+        xlab("Cibersort predicted fraction")
+    print(p)
+}
 
 make_cibersort_vs_ground_truth_plots <- function(config){
     
@@ -60,45 +78,49 @@ make_cibersort_vs_ground_truth_plots <- function(config){
         group_cell_types(config$gt_cs_groups) %>% 
         select(c("sample", config$cibersort_common_groups)) %>% 
         gather("cell_type", "fraction", -sample) %>%
-        mutate(fraction = fraction / 100) 
+        mutate(fraction = fraction / 100) %>% 
+        .[complete.cases(.),] %>% 
+        group_by(sample, cell_type) %>% 
+        dplyr::summarise(sd_fraction = sd(fraction), mean_fraction = mean(fraction))
     
     plot_df <-
         inner_join(results_df, ground_truth_df)
     
+    create_cs_scatter_plot("All_cells", plot_df)
+    cell_types <- plot_df %>% 
+        use_series(cell_type) %>% 
+        unique %>% 
+        sort
+    plot_dfs <- plot_df %>% 
+        split(.$cell_type)
+    walk2(cell_types, plot_dfs, create_cs_scatter_plot)
     
-    ggplot(
-        plot_df, aes(x = fraction, y = predicted_fraction)) +
-        geom_point(size = 4, aes(color = sample, shape = cell_type)) +
-        geom_smooth(method = 'lm') +
-        geom_abline() +
-        theme_bw() +
-        theme(axis.text.x = element_text(angle = 90, size = 12)) +
-        theme(axis.text.y = element_text(size = 12)) +
-        theme(strip.text.y = element_text(size = 10, angle = 0)) +
-        ggtitle("Ground truth vs Cibersort predicted fractions") +
-        xlab("Fraction") +
-        ylab("Cibersort prediction fraction")
 }
 
 make_cibersort_vs_ground_truth_plots(config)
+
+
+
 
 ## @knitr mcpcounter_vs_ground_truth
 
 create_mcp_scatter_plot <- function(type, plot_df){
     p <- plot_df %>% 
-        filter(cell_type == type) %>% 
-        ggplot(aes(x = fraction, y = score)) +
+        ggplot(aes(x = score, y = mean_fraction)) +
         geom_point(size = 4, aes(color = sample, shape = cell_type)) +
         geom_smooth(method = 'lm') +
-        theme_bw() +
+        geom_errorbar(aes(ymin = mean_fraction - sd_fraction,
+                          ymax = mean_fraction + sd_fraction),
+                      width = sd(plot_df$score) / 8) +
         theme(axis.text.x = element_text(angle = 90, size = 12)) +
         theme(axis.text.y = element_text(size = 12)) +
         theme(strip.text.y = element_text(size = 10, angle = 0)) +
         ggtitle(str_c(type, ", ground truth vs MCPcounter scores")) + 
-        xlab("Fraction") +
-        ylab("MCPCounter score")
+        ylab("Ground truth fraction") +
+        xlab("MCPcounter score")
     print(p)
 }
+
 
 make_mcpcounter_vs_ground_truth_plots <- function(config){
     
@@ -115,11 +137,20 @@ make_mcpcounter_vs_ground_truth_plots <- function(config){
         group_cell_types(config$gt_mcp_groups) %>% 
         select(c("sample", config$mcpcounter_common_groups)) %>% 
         gather("cell_type", "fraction", -sample) %>%
-        mutate(fraction = fraction / 100) 
+        mutate(fraction = fraction / 100) %>% 
+        .[complete.cases(.),] %>% 
+        group_by(sample, cell_type) %>% 
+        dplyr::summarise(sd_fraction = sd(fraction), mean_fraction = mean(fraction))
+    
     
     plot_df <- inner_join(results_df, ground_truth_df)
-    walk(config$mcpcounter_common_groups, create_mcp_scatter_plot, plot_df)
-    
+    cell_types <- plot_df %>% 
+        use_series(cell_type) %>% 
+        unique %>% 
+        sort
+    plot_dfs <- plot_df %>% 
+        split(.$cell_type)
+    walk2(cell_types, plot_dfs, create_mcp_scatter_plot)
 }
 
 make_mcpcounter_vs_ground_truth_plots(config)

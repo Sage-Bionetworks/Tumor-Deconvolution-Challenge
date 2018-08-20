@@ -2,6 +2,7 @@ synapse_ids:
   cibersort_results: "syn13363406"
   mcpcounter_results: "syn13363407"
   ground_truth: "syn13363402"
+  ground_truth_sd: "syn14068733"
   log_tpm_expression: "syn13363401"
   cibersort_genes: "syn12184137"
   mcpcounter_genes: "syn11918430"

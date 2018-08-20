@@ -1,0 +1,28 @@
+synapse_ids:
+  cibersort_results: "syn15588652"
+  mcpcounter_results: "syn15588653"
+  ground_truth: "syn15588644"
+  log_tpm_expression: "syn15588642"
+  cibersort_genes: "syn12184137"
+  mcpcounter_genes: "syn11918430"
+  annotations: "syn15588643"
+cibersort_common_groups:
+ - "T_cells"
+ - "CD4_T_cells"
+ - "CD8_T_cells"
+gt_cs_groups:
+cs_gt_groups: 
+  - {new_col: "T_cells", old_cols: ["T_cells_CD8", "T_cells_CD4_naive",
+  "T_cells_CD4_memory_activated", "T_cells_follicular_helper",
+  "T_cells_gamma_delta"]}
+  - {new_col: "CD4_T_cells", old_cols: ["T_cells_CD4_memory_activated"]}
+  - {new_col: "CD8_T_cells", old_cols: "T_cells_CD8"}
+mcpcounter_common_groups:
+ - "T_cells"
+gt_mcp_groups:
+mcp_gt_groups: 
+pca_plot_aes:
+  color: "gender"
+  shape: "race"
+  size: "age"
+  
