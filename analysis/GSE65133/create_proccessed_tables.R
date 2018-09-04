@@ -3,7 +3,8 @@ library(synapser)
 library(data.table)
 library(magrittr)
 library(GEOquery)
-library(biomaRt)
+library(AnnotationDbi)
+library(illuminaHumanv4.db)
 
 
 home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
@@ -39,18 +40,18 @@ series_df <-
 anno_df <-         dplyr::select(series_df, sample, id)
 ground_truth_df <- dplyr::select(series_df, -id)
 
-
-ensembl <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
-
 query_df <- 
-    getBM(attributes = c('illumina_humanht_12_v4', 'hgnc_symbol'), 
-          mart = ensembl) %>% 
+    AnnotationDbi::select(
+        illuminaHumanv4.db, 
+        keys=keys(illuminaHumanv4.db,keytype="PROBEID"),
+        columns=c("SYMBOL"), 
+        keytype="PROBEID") %>% 
+    as_data_frame() %>% 
     set_colnames(c("Illum", "Hugo")) %>% 
-    filter("Illum" != "") %>% 
-    filter("Hugo" != "")
-    
+    drop_na()
 
-expr_df1 <- 
+
+log_expr_df <- 
     assayDataElement(gse$GSE65133_series_matrix.txt.gz@assayData, 'exprs') %>% 
     matrix_to_df("Illum") %>% 
     inner_join(query_df) %>% 
@@ -59,7 +60,9 @@ expr_df1 <-
     group_by(Hugo) %>% 
     summarise_all(max) %>% 
     drop_na() %>% 
-    filter(Hugo != "") %>% 
+    filter(Hugo != "")
+
+expr_df <- log_expr_df %>% 
     gather(key = "sample", value = "expr", -Hugo) %>% 
     mutate(expr = 2^expr) %>% 
     spread(key = "sample", value = "expr")
@@ -71,10 +74,12 @@ activity_obj <- Activity(
     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE65133/create_processed_tables.R")
 )
 
-write_tsv(expr_df2, "expression_illumina.tsv")
+write_tsv(log_expr_df, "log_expression_illumina.tsv")
+write_tsv(expr_df, "expression_illumina.tsv")
 write_tsv(anno_df, "annotation.tsv")
 write_tsv(ground_truth_df, "ground_truth.tsv")
 
+upload_file_to_synapse("log_expression_illumina.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("expression_illumina.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("ground_truth.tsv", gt_upload_id, activity_obj = activity_obj)

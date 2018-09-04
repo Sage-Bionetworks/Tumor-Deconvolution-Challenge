@@ -1,0 +1,310 @@
+---
+title: "Untitled"
+output:
+  html_document:
+    df_print: paged
+    toc: true
+---
+
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE}
+library(tidyverse)
+library(synapser)
+library(data.table)
+library(magrittr)
+library(preprocessCore)
+
+home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE65135/"
+
+
+setwd(home_dir)
+source("scripts/utils.R")
+setwd(tmp_dir)
+synLogin()
+
+
+create_scatter_plot1 <- function(df, cell_type){
+    obj <- cor.test(df$cibersort_predicted_fraction, df$ground_truth_fraction)
+    p <- obj$p.value %>% 
+        round(4)
+    r <- obj$estimate %>% 
+        round(4)
+    title <- str_c(cell_type, " R=", r, " P=", p)
+    p <- df %>% 
+        ggplot(aes(x = ground_truth_fraction, y = cibersort_predicted_fraction)) +
+        geom_point(size = 2) +
+        geom_smooth(method = 'lm') +
+        geom_abline() +
+        theme_bw() +
+        ggtitle(title) +
+        ylab("Cibersort predicted fraction") +
+        xlab("Flow cytometry fraction")
+    print(p)
+}
+
+create_scatter_plot2 <- function(df, cell_type){
+    obj <- cor.test(df$mcpcounter_score, df$ground_truth_fraction)
+    p <- obj$p.value %>% 
+        round(4)
+    r <- obj$estimate %>% 
+        round(4)
+    title <- str_c(cell_type, " R=", r, " P=", p)
+    p <- df %>% 
+        ggplot(aes(x = ground_truth_fraction, y = mcpcounter_score)) +
+        geom_point(size = 2) +
+        geom_smooth(method = 'lm') +
+        theme_bw() +
+        ggtitle(title) +
+        ylab("MCPCounter score") +
+        xlab("Flow cytometry fraction")
+    print(p)
+}
+```
+
+# GSE65133
+```{r plots mcp1, fig.height = 10, fig.width = 10}
+gt_mcp_1 <- create_df_from_synapse_id("syn15664977") %>% 
+    mutate(T_cells = Activated_memory_CD4_T_cells, CD8_T_cells,
+           Gamma_delta_T_cells, Naive_CD4_T_cells, Resting_memory_CD4_T_cells) %>% 
+    mutate(B_cells = Memory_B_cells + Naive_B_cells) %>% 
+    gather(key = "cell_type", value = "ground_truth_fraction", -sample) %>% 
+    mutate(ground_truth_fraction = ground_truth_fraction / 100)
+    
+mcp_1 <- "syn15665005" %>% 
+    download_from_synapse %>% 
+    read.table %>% 
+    t %>% 
+    matrix_to_df("sample") %>% 
+    set_colnames(str_replace_all(colnames(.), "\\.", "_")) %>% 
+    set_colnames(str_replace_all(colnames(.), "[:space:]", "_")) %>% 
+    dplyr::rename(Monocytes = Monocytic_lineage) %>% 
+    dplyr::rename(B_cells = B_lineage) %>% 
+    gather(key = "cell_type", value = "mcpcounter_score", -sample)
+
+combined_mcp_df_1 <- inner_join(gt_mcp_1, mcp_1)
+
+cell_types_mcp_1 <- combined_mcp_df_1 %>% 
+    use_series(cell_type) %>% 
+    unique %>% 
+    sort 
+
+combined_mcp_df_1 %>%
+    split(.$cell_type) %>%
+    walk2(cell_types_mcp_1, create_scatter_plot2)
+```
+    
+```{r plots cs1, fig.height = 10, fig.width = 10}    
+gt_cs_1  <- create_df_from_synapse_id("syn15664977") %>% 
+    gather(key = "cell_type", value = "ground_truth_fraction", -sample) %>% 
+    mutate(ground_truth_fraction = ground_truth_fraction / 100)
+
+cs_1 <- create_df_from_synapse_id("syn15665004") %>% 
+    select(-c(`P-value`, Correlation, RMSE)) %>%
+    set_colnames(., str_replace_all(colnames(.), " ", "_")) %>% 
+    select(-c(`T_cells_regulatory_(Tregs)`)) %>% 
+    mutate(NK_cells = NK_cells_resting + NK_cells_activated) %>% 
+    select(-c(NK_cells_resting,NK_cells_activated)) %>% 
+    dplyr::rename(Gamma_delta_T_cells = T_cells_gamma_delta) %>% 
+    dplyr::rename(Naive_B_cells = B_cells_naive) %>% 
+    dplyr::rename(Memory_B_cells = B_cells_memory) %>% 
+    dplyr::rename(CD8_T_cells = T_cells_CD8) %>% 
+    dplyr::rename(Activated_memory_CD4_T_cells = T_cells_CD4_memory_activated) %>% 
+    dplyr::rename(Naive_CD4_T_cells = T_cells_CD4_naive) %>% 
+    dplyr::rename(Resting_memory_CD4_T_cells = T_cells_CD4_memory_resting) %>% 
+    select(-c(Plasma_cells, Macrophages_M0, Macrophages_M1, Macrophages_M2, 
+              Dendritic_cells_resting, Dendritic_cells_activated, 
+              Mast_cells_resting, Mast_cells_activated, Eosinophils,
+              Neutrophils, T_cells_follicular_helper)) %>% 
+    gather(key = "cell_type", value = "cibersort_predicted_fraction", -sample)
+
+
+combined_cs_df_1 <- inner_join(gt_cs_1, cs_1)
+
+
+cell_types_cs_1 <- combined_cs_df_1 %>% 
+    use_series(cell_type) %>% 
+    unique %>% 
+    sort 
+
+combined_cs_df_1 %>%
+    split(.$cell_type) %>%
+    walk2(cell_types_cs_1, create_scatter_plot1)
+
+
+```
+
+
+# GSE65134
+```{r plots cs2, fig.height = 10, fig.width = 10}
+gt_cs_2 <- create_df_from_synapse_id("syn15664984") %>% 
+    gather(key = "cell_type", value = "ground_truth_fraction", -sample) %>% 
+    mutate(ground_truth_fraction = ground_truth_fraction / 100)
+
+cs_2 <- create_df_from_synapse_id("syn15665021") %>% 
+    select(-c(`P-value`, Correlation, RMSE)) %>%
+    set_colnames(., str_replace_all(colnames(.), " ", "_")) %>% 
+    dplyr::rename(Tregs = `T_cells_regulatory_(Tregs)`) %>% 
+    select(sample, Tregs) %>% 
+    gather(key = "cell_type", value = "cibersort_predicted_fraction", -sample)
+
+
+combined_cs_df_2 <- inner_join(gt_cs_2, cs_2)
+
+
+cell_types_cs_2 <- combined_cs_df_2 %>% 
+    use_series(cell_type) %>% 
+    unique %>% 
+    sort 
+
+combined_cs_df_2 %>%
+    split(.$cell_type) %>%
+    walk2(cell_types_cs_2, create_scatter_plot1)
+```
+
+# GSE65135
+```{r plots mcp3, fig.height = 10, fig.width = 10}
+gt_mcp_3 <- create_df_from_synapse_id("syn15664994") %>% 
+    gather(key = "cell_type", value = "ground_truth_fraction", -sample) %>% 
+    mutate(ground_truth_fraction = ground_truth_fraction / 100)
+    
+mcp_3 <- "syn15665024" %>% 
+    download_from_synapse %>% 
+    read.table %>% 
+    t %>% 
+    matrix_to_df("sample") %>% 
+    set_colnames(str_replace_all(colnames(.), "\\.", "_")) %>% 
+    set_colnames(str_replace_all(colnames(.), "[:space:]", "_")) %>% 
+    dplyr::rename(B_cells = B_lineage) %>% 
+    gather(key = "cell_type", value = "mcpcounter_score", -sample)
+
+combined_mcp_df_3 <- inner_join(gt_mcp_3, mcp_3)
+
+cell_types_mcp_3 <- combined_mcp_df_3 %>% 
+    use_series(cell_type) %>% 
+    unique %>% 
+    sort 
+
+combined_mcp_df_3 %>%
+    split(.$cell_type) %>%
+    walk2(cell_types_mcp_3, create_scatter_plot2)
+```
+
+```{r plots cs3, fig.height = 10, fig.width = 10}
+gt_cs_3 <- create_df_from_synapse_id("syn15664994") %>% 
+    gather(key = "cell_type", value = "ground_truth_fraction", -sample) %>% 
+    mutate(ground_truth_fraction = ground_truth_fraction / 100)
+
+cs_3 <- create_df_from_synapse_id("syn15665023") %>% 
+    select(-c(`P-value`, Correlation, RMSE)) %>%
+    set_colnames(., str_replace_all(colnames(.), " ", "_")) %>% 
+    mutate(B_cells = B_cells_naive + B_cells_naive) %>% 
+    mutate(CD4_T_cells = T_cells_CD4_naive + T_cells_CD4_memory_resting + T_cells_CD4_memory_activated) %>% 
+    mutate(CD8_T_cells = T_cells_CD8) %>% 
+    select(sample, B_cells, CD4_T_cells, CD8_T_cells) %>% 
+    gather(key = "cell_type", value = "cibersort_predicted_fraction", -sample)
+
+
+combined_cs_df_3 <- inner_join(gt_cs_3, cs_3)
+
+cell_types_cs_3 <- combined_cs_df_3 %>% 
+    use_series(cell_type) %>% 
+    unique %>% 
+    sort 
+
+combined_cs_df_3 %>%
+    split(.$cell_type) %>%
+    walk2(cell_types_cs_3, create_scatter_plot1)
+```
+
+# distributions
+```{r distributions}
+
+get_mean_expr <- function(df){
+    df %>% 
+        df_to_matrix("Hugo") %>% 
+        rowMeans() %>% 
+        data.frame() %>% 
+        as_data_frame() %>% 
+        set_colnames("mean_expr")
+}
+
+expr_gse65133 <- create_df_from_synapse_id("syn15664975")
+expr_gse65134 <- create_df_from_synapse_id("syn15664995")
+expr_gse65135 <- create_df_from_synapse_id("syn15665001")
+
+log_expr_gse65133 <- create_df_from_synapse_id("syn15667753")
+log_expr_gse65134 <- create_df_from_synapse_id("syn15667757")
+log_expr_gse65135 <- create_df_from_synapse_id("syn15667761")
+
+expr_gse65133 %>%  
+    get_mean_expr %>% 
+    ggplot(aes(x = mean_expr)) + 
+    geom_histogram(bins = 60) +
+    ggtitle("GSE65133 expr")
+
+expr_gse65134 %>%  
+    get_mean_expr %>% 
+    ggplot(aes(x = mean_expr)) + 
+    geom_histogram(bins = 60) +
+    ggtitle("GSE65134 expr")
+
+expr_gse65135 %>%  
+    get_mean_expr %>% 
+    ggplot(aes(x = mean_expr)) + 
+    geom_histogram(bins = 60) +
+    ggtitle("GSE65135 expr")
+
+
+log_expr_gse65133 %>%  
+    get_mean_expr %>% 
+    ggplot(aes(x = mean_expr)) + 
+    geom_histogram(bins = 60) +
+    ggtitle("GSE65133 log expr")
+
+log_expr_gse65134 %>%  
+    get_mean_expr %>% 
+    ggplot(aes(x = mean_expr)) + 
+    geom_histogram(bins = 60) +
+    ggtitle("GSE65134 log expr")
+
+log_expr_gse65135 %>%  
+    get_mean_expr %>% 
+    ggplot(aes(x = mean_expr)) + 
+    geom_histogram(bins = 60) +
+    ggtitle("GSE65135 log expr")
+
+m_expr_gse65133_v <- expr_gse65133 %>% 
+    df_to_matrix("Hugo") %>% 
+    rowMeans() 
+    
+
+expr_gse65134 %>% 
+    df_to_matrix("Hugo") %>% 
+    normalize.quantiles.use.target(m_expr_gse65133_v) %>% 
+    set_rownames(expr_gse65134$Hugo) %>% 
+    set_colnames(colnames(expr_gse65134[-1])) %>% 
+    log2 %>% 
+    matrix_to_df("Hugo") %>% 
+    get_mean_expr %>% 
+    ggplot(aes(x = mean_expr)) + 
+    geom_histogram(bins = 60) +
+    ggtitle("GSE65134 normalized log expr")
+    
+
+expr_gse65135 %>% 
+    df_to_matrix("Hugo") %>% 
+    normalize.quantiles.use.target(m_expr_gse65133_v) %>% 
+    set_rownames(expr_gse65135$Hugo) %>% 
+    set_colnames(colnames(expr_gse65135[-1])) %>% 
+    log2 %>% 
+    matrix_to_df("Hugo") %>% 
+    get_mean_expr %>% 
+    ggplot(aes(x = mean_expr)) + 
+    geom_histogram(bins = 60) +
+    ggtitle("GSE65135 normalized log expr")
+
+
+
+
+
+```

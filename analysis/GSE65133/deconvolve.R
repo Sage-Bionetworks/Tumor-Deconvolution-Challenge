@@ -5,7 +5,7 @@ library(magrittr)
 
 repo_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
 tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE65133/"
-expr_id   <- "syn15664975"
+expr_id   <- "syn15667753"
 upload_id <- "syn15664996"
 
 
@@ -32,6 +32,14 @@ system(str_c(
     sep = " "))
 
 system(str_c(
+    "cwltool /home/aelamb/repos/irwg/iatlas-tool-cibersort/Dockstore.cwl", 
+    "--mixture_file expr.tsv", 
+    "--sig_matrix_file /home/aelamb/repos/irwg/iatlas-tool-cibersort/sample.references.matrix.txt", 
+    "--output_file_string cibersort_abs_results.tsv",
+    "--absolute",
+    sep = " "))
+
+system(str_c(
     "cwltool /home/aelamb/repos/irwg/iatlas-tool-mcpcounter/Dockstore.cwl",
     "--input_expression_file expr_matrix.tsv",
     "--output_file_string mcpcounter_results.tsv",
@@ -46,4 +54,5 @@ activity_obj <- Activity(
 )
 
 upload_file_to_synapse("cibersort_results.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("cibersort_abs_results.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("mcpcounter_results.tsv", upload_id, activity_obj = activity_obj)

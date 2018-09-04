@@ -1,1 +1,4 @@
 analysis/*/qc_markdown_cache/*
+*.pdf
+*.html
+*.Rhistory

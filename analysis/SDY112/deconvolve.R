@@ -29,7 +29,6 @@ system(str_c(
     "cwltool /home/aelamb/repos/irwg/iatlas-tool-cibersort/Dockstore.cwl", 
     "--mixture_file expr.tsv", 
     "--sig_matrix_file /home/aelamb/repos/irwg/iatlas-tool-cibersort/sample.references.matrix.txt", 
-    "--QN",
     "--output_file_string cibersort_results.tsv",
     sep = " "))
 

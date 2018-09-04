@@ -71,7 +71,7 @@ expr_df <- expr_wb_df %>%
     rownames_to_column("Hugo") %>%
     as_data_frame %>%
     group_by(Hugo) %>% 
-    summarise_all(sum) %>% 
+    summarise_all(max) %>% 
     ungroup %>% 
     .[complete.cases(.), ]
 

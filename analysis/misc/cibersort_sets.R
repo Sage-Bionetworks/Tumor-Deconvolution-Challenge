@@ -2,9 +2,10 @@ library(tidyverse)
 library(synapser)
 library(data.table)
 library(magrittr)
+library(preprocessCore)
 
 home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE65135/"
+tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE65135/plots/"
 
 
 setwd(home_dir)
@@ -13,15 +14,29 @@ setwd(tmp_dir)
 synLogin()
 
 
-create_scatter_plot <- function(df, title){
+save_scatter_plot <- function(df, cell_type, dataset, width = 5, height = 5){
+    path <- str_c(dataset, "_", cell_type, ".svg")
+    svg(path, width, height)
+    create_scatter_plot(df, cell_type)
+    dev.off()
+}
+
+create_scatter_plot <- function(df, cell_type){
+    obj <- cor.test(df$cibersort_predicted_fraction, df$ground_truth_fraction)
+    p <- obj$p.value %>% 
+        round(4)
+    r <- obj$estimate %>% 
+        round(4)
+    title <- str_c(cell_type, " R=", r, " P=", p)
     p <- df %>% 
         ggplot(aes(x = ground_truth_fraction, y = cibersort_predicted_fraction)) +
-        geom_point(size = 2, aes(shape = cell_type, color = sample )) +
+        geom_point(size = 2) +
         geom_smooth(method = 'lm') +
         geom_abline() +
         theme_bw() +
-        scale_shape_manual(values = 0:9) +
-        ggtitle(df$cell_type[[1]])
+        ggtitle(title) +
+        ylab("Cibersort predicted fraction") +
+        xlab("Flow cytometry fraction")
     print(p)
 }
 
@@ -58,20 +73,15 @@ cor_df1 <- combined_df1 %>%
     group_by(cell_type) %>%
     dplyr::summarise(c = cor(ground_truth_fraction, cibersort_predicted_fraction)) 
 
-# combined_df1 %>%
-#     split(.$cell_type) %>% 
-#     walk(create_scatter_plot)
 
-combined_df1 %>% 
-    ggplot(aes(x = ground_truth_fraction, y = cibersort_predicted_fraction)) +
-    geom_point(size = 2, aes(color = sample, shape = cell_type)) +
-    geom_smooth(method = 'lm') +
-    geom_abline() +
-    theme_bw() +
-    scale_shape_manual(values = 0:9) +
-    ggtitle("GSE65133")
+cell_types1 <- combined_df1 %>% 
+    use_series(cell_type) %>% 
+    unique %>% 
+    sort 
 
-
+combined_df1 %>%
+    split(.$cell_type) %>%
+    walk2(cell_types1, save_scatter_plot, dataset = "GSE65133")
 
 
 # ---------------------------------------
@@ -94,19 +104,14 @@ cor_df2 <- combined_df2 %>%
     group_by(cell_type) %>%
     dplyr::summarise(c = cor(ground_truth_fraction, cibersort_predicted_fraction)) 
 
-combined_df2 %>% 
-    ggplot(aes(x = ground_truth_fraction, y = cibersort_predicted_fraction)) +
-    geom_point(size = 2, aes(shape = cell_type, color = sample )) +
-    geom_smooth(method = 'lm') +
-    geom_abline() +
-    theme_bw() +
-    scale_shape_manual(values = 0:9) +
-    ggtitle("GSE65134")
+cell_types2 <- combined_df2 %>% 
+    use_series(cell_type) %>% 
+    unique %>% 
+    sort 
 
-
-
-    
-
+combined_df2 %>%
+    split(.$cell_type) %>%
+    walk2(cell_types2, save_scatter_plot, dataset = "GSE65134")
 
 
 # ---------------------------------------
@@ -131,11 +136,59 @@ cor_df3 <- combined_df3 %>%
     group_by(cell_type) %>%
     dplyr::summarise(c = cor(ground_truth_fraction, cibersort_predicted_fraction)) 
 
-combined_df3 %>% 
-    ggplot(aes(x = ground_truth_fraction, y = cibersort_predicted_fraction)) +
-    geom_point(size = 2, aes(shape = cell_type, color = sample )) +
-    geom_smooth(method = 'lm') +
-    geom_abline() +
-    theme_bw() +
-    scale_shape_manual(values = 0:9) +
-    ggtitle("GSE65135")
+
+cell_types3 <- combined_df3 %>% 
+    use_series(cell_type) %>% 
+    unique %>% 
+    sort 
+
+combined_df3 %>%
+    split(.$cell_type) %>%
+    walk2(cell_types3, save_scatter_plot, dataset = "GSE65135")
+
+# -----
+
+get_mean_expr <- function(df){
+    df %>% 
+        df_to_matrix("Hugo") %>% 
+        rowMeans() %>% 
+        data.frame() %>% 
+        as_data_frame() %>% 
+        set_colnames("mean_expr")
+}
+
+save_hist_plot <- function(df, title, width = 3, height = 5){
+    path <- str_c(title, ".svg")
+    svg(path, width, height)
+    create_hist_plot(df, title)
+    dev.off()
+}
+
+create_hist_plot <- function(df, title){
+    title <- str_replace_all(title, "_", " ")
+    p <- df %>%  
+        get_mean_expr %>% 
+        ggplot(aes(x = mean_expr)) + 
+        geom_histogram(bins = 60) +
+        theme_bw() +
+        ggtitle(title) +
+        xlab("Expression")
+    print(p)
+}
+
+expr_gse65133 <- create_df_from_synapse_id("syn15664975")
+expr_gse65134 <- create_df_from_synapse_id("syn15664995")
+expr_gse65135 <- create_df_from_synapse_id("syn15665001")
+
+save_hist_plot(expr_gse65133, "GSE65133_expression")
+save_hist_plot(expr_gse65134, "GSE65134_expression")
+save_hist_plot(expr_gse65135, "GSE65135_expression")
+
+log_expr_gse65133 <- create_df_from_synapse_id("syn15667753")
+log_expr_gse65134 <- create_df_from_synapse_id("syn15667757")
+log_expr_gse65135 <- create_df_from_synapse_id("syn15667761")
+
+save_hist_plot(log_expr_gse65133, "GSE65133_log2_expression")
+save_hist_plot(log_expr_gse65134, "GSE65134_log2_expression")
+save_hist_plot(log_expr_gse65135, "GSE65135_log2_expression")
+

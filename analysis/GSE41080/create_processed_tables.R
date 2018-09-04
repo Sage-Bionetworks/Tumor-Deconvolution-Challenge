@@ -65,7 +65,7 @@ expr_df <- expr_df %>%
     rownames_to_column("Hugo") %>%
     as_data_frame %>%
     group_by(Hugo) %>% 
-    summarise_all(sum) %>% 
+    summarise_all(max) %>% 
     ungroup %>% 
     select(c("Hugo", anno_df$sample))
 

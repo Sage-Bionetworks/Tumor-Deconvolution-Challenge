@@ -74,7 +74,7 @@ expr_df <- expr_pbmc_df %>%
     rownames_to_column("Hugo") %>% 
     as_data_frame %>% 
     group_by(Hugo) %>% 
-    summarise_all(sum) %>% 
+    summarise_all(max) %>% 
     ungroup
 
 activity_obj <- Activity(

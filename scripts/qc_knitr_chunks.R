@@ -44,6 +44,13 @@ dowload_and_format_cibersort_df <- function(synapse_id){
 ## @knitr cibersort_vs_ground_truth
 
 create_cs_scatter_plot <- function(type, plot_df){
+    obj <- cor.test(
+        plot_df$predicted_fraction, 
+        plot_df$mean_fraction)
+    p <- obj$p.value %>% 
+        round(4)
+    r <- obj$estimate %>% 
+        round(4)
     p <- plot_df %>% 
         ggplot(aes(x = predicted_fraction, y = mean_fraction)) +
         geom_point(size = 4, aes(color = sample, shape = cell_type)) +
@@ -56,7 +63,7 @@ create_cs_scatter_plot <- function(type, plot_df){
         theme(axis.text.x = element_text(angle = 90, size = 12)) +
         theme(axis.text.y = element_text(size = 12)) +
         theme(strip.text.y = element_text(size = 10, angle = 0)) +
-        ggtitle(str_c(type, ", ground truth vs Cibersort predictions")) + 
+        ggtitle(str_c(type, ", ground truth vs Cibersort predictions, R=", r, " P=", p)) + 
         ylab("Ground truth fraction") +
         xlab("Cibersort predicted fraction")
     print(p)
@@ -105,6 +112,13 @@ make_cibersort_vs_ground_truth_plots(config)
 ## @knitr mcpcounter_vs_ground_truth
 
 create_mcp_scatter_plot <- function(type, plot_df){
+    obj <- cor.test(
+        plot_df$score, 
+        plot_df$mean_fraction)
+    p <- obj$p.value %>% 
+        round(4)
+    r <- obj$estimate %>% 
+        round(4)
     p <- plot_df %>% 
         ggplot(aes(x = score, y = mean_fraction)) +
         geom_point(size = 4, aes(color = sample, shape = cell_type)) +
@@ -115,7 +129,7 @@ create_mcp_scatter_plot <- function(type, plot_df){
         theme(axis.text.x = element_text(angle = 90, size = 12)) +
         theme(axis.text.y = element_text(size = 12)) +
         theme(strip.text.y = element_text(size = 10, angle = 0)) +
-        ggtitle(str_c(type, ", ground truth vs MCPcounter scores")) + 
+        ggtitle(str_c(type, ", ground truth vs MCPcounter scores, R=", r, " P=", p)) + 
         ylab("Ground truth fraction") +
         xlab("MCPcounter score")
     print(p)

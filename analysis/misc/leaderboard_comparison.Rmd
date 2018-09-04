@@ -16,7 +16,6 @@ synLogin()
 registerDoMC(cores = 7)
 
 ids <- list(
-    gse64655_tmm = "syn12979150",
     gse41080_ma  = "syn14718622",
     gse59654_ma  = "syn13363401",
     sdy112_ma    = "syn15588642")
