@@ -206,8 +206,8 @@ mcp_ssgsea_df %>%
 
 ```{r deconvolution data, message = F, error = F, warning = F}
 
-cs_results_id  <- "syn12385636"
-mcp_results_id <- "syn12385637"
+cs_results_id  <- "syn16801065"
+mcp_results_id <- "syn16801066"
 
 cs_result_df <- cs_results_id %>%
     create_df_from_synapse_id %>%

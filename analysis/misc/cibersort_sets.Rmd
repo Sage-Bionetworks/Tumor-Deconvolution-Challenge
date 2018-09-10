@@ -189,6 +189,33 @@ combined_mcp_df_3 %>%
     walk2(cell_types_mcp_3, create_scatter_plot2)
 ```
 
+```{r plots mcp4, fig.height = 10, fig.width = 10}
+gt_mcp_4 <- create_df_from_synapse_id("syn15664994") %>% 
+    gather(key = "cell_type", value = "ground_truth_fraction", -sample) %>% 
+    mutate(ground_truth_fraction = ground_truth_fraction / 100)
+    
+mcp_4 <- "syn16784405" %>% 
+    download_from_synapse %>% 
+    read.table %>% 
+    t %>% 
+    matrix_to_df("sample") %>% 
+    set_colnames(str_replace_all(colnames(.), "\\.", "_")) %>% 
+    set_colnames(str_replace_all(colnames(.), "[:space:]", "_")) %>% 
+    dplyr::rename(B_cells = B_lineage) %>% 
+    gather(key = "cell_type", value = "mcpcounter_score", -sample)
+
+combined_mcp_df_4 <- inner_join(gt_mcp_4, mcp_4)
+
+cell_types_mcp_4 <- combined_mcp_df_4 %>% 
+    use_series(cell_type) %>% 
+    unique %>% 
+    sort 
+
+combined_mcp_df_4 %>%
+    split(.$cell_type) %>%
+    walk2(cell_types_mcp_4, create_scatter_plot2)
+```
+
 ```{r plots cs3, fig.height = 10, fig.width = 10}
 gt_cs_3 <- create_df_from_synapse_id("syn15664994") %>% 
     gather(key = "cell_type", value = "ground_truth_fraction", -sample) %>% 
@@ -215,6 +242,34 @@ combined_cs_df_3 %>%
     split(.$cell_type) %>%
     walk2(cell_types_cs_3, create_scatter_plot1)
 ```
+
+```{r plots cs4, fig.height = 10, fig.width = 10}
+gt_cs_4 <- create_df_from_synapse_id("syn15664994") %>% 
+    gather(key = "cell_type", value = "ground_truth_fraction", -sample) %>% 
+    mutate(ground_truth_fraction = ground_truth_fraction / 100)
+
+cs_4 <- create_df_from_synapse_id("syn16784404") %>% 
+    select(-c(`P-value`, Correlation, RMSE)) %>%
+    set_colnames(., str_replace_all(colnames(.), " ", "_")) %>% 
+    mutate(B_cells = B_cells_naive + B_cells_naive) %>% 
+    mutate(CD4_T_cells = T_cells_CD4_naive + T_cells_CD4_memory_resting + T_cells_CD4_memory_activated) %>% 
+    mutate(CD8_T_cells = T_cells_CD8) %>% 
+    select(sample, B_cells, CD4_T_cells, CD8_T_cells) %>% 
+    gather(key = "cell_type", value = "cibersort_predicted_fraction", -sample)
+
+
+combined_cs_df_4 <- inner_join(gt_cs_4, cs_4)
+
+cell_types_cs_4 <- combined_cs_df_4 %>% 
+    use_series(cell_type) %>% 
+    unique %>% 
+    sort 
+
+combined_cs_df_4 %>%
+    split(.$cell_type) %>%
+    walk2(cell_types_cs_4, create_scatter_plot1)
+```
+
 
 # distributions
 ```{r distributions}

@@ -38,6 +38,19 @@ n_cores <- detectCores() - 1
 
 kallisto_threads <- as.integer(n_cores)
 
+
+# existng files
+
+existing_files <- str_c('select id, name from file where parentId=="', upload_id, '"') %>% 
+    synQuery %>%
+    use_series("results") %>% 
+    map(data.frame) %>% 
+    bind_rows %>% 
+    as_data_frame %>% 
+    filter(str_detect(file.name, "CD4_CD8")) %>% 
+    use_series(file.name)
+
+
 # run specific parameters
 yaml_df <-
     data_frame("CD8_fractions" = CD8_fractions) %>%
@@ -45,7 +58,8 @@ yaml_df <-
     merge(data_frame("rep" = 1:replicates)) %>% 
     mutate(prefix = str_c("CD4_CD8_", CD8_fractions, "_rep_", rep)) %>% 
     mutate(yaml = str_c(prefix, ".yaml")) %>% 
-    inset("mixer_seed", value = sample(1:10000, nrow(.)))
+    inset("mixer_seed", value = sample(1:10000, nrow(.))) %>% 
+    filter(!prefix %in% existing_files)
 
 # fastq files
 manifest_df <- manifest_id %>% 

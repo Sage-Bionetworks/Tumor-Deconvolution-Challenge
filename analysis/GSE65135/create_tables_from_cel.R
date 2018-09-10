@@ -62,13 +62,13 @@ expr_df <- ematrix %>%
 
 expr_df %>% 
     spread(key = "sample", value = "expr") %>% 
-    write_tsv("expression_affy.tsv")
+    write_tsv("expression_affy_from_cel.tsv")
 
 
 expr_df %>% 
     mutate(expr = log2(expr)) %>% 
     spread(key = "sample", value = "expr") %>% 
-    write_tsv("log_expression_affy.tsv")
+    write_tsv("log_expression_affy_from_cel.tsv")
 
 activity_obj <- Activity(
     name = "create",
@@ -77,5 +77,5 @@ activity_obj <- Activity(
     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE65135/create_tables_from_cel.R")
 )
 
-upload_file_to_synapse("log_expression_affy.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("expression_affy.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("log_expression_affy_from_cel.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("expression_affy_from_cel.tsv", upload_id, activity_obj = activity_obj)
