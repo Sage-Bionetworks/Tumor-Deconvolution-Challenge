@@ -13,7 +13,9 @@ anno_id      <- "syn13363390"
 
 sdy_id <- "SDY404"
 home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
+home_dir <- "../../../Tumor-Deconvolution-Challenge/"
 tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE59654/"
+tmp_dir <- tempdir()
 
 setwd(home_dir)
 source("scripts/utils.R")
@@ -81,7 +83,7 @@ activity_obj <- Activity(
     name = "create",
     description = "process GEO files into usable tables",
     used = list(gt_pbmc_id, expr_pbmc_id, anno_id),
-    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE64655/create_processed_tables.R")
+    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE59654/create_processed_tables.R")
 )
 
 write_tsv(expr_df, "expression_microarray.tsv")
