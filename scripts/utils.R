@@ -10,7 +10,9 @@ require(stringr)
 
 create_df_from_synapse_id <- function(syn_id, location = NULL, unzip = F, ...){
     path <- download_from_synapse(syn_id, location)
-    if(unzip) path <- stringr::str_c("zcat ", path)
+    ## This doesn't work on OSX, where zcat expects the file to have .Z suffix
+    ##    if(unzip) path <- stringr::str_c("zcat ", path)
+    if(unzip) path <- stringr::str_c("zcat < ", path)
     path %>% 
         data.table::fread(...) %>% 
         dplyr::as_data_frame() 
