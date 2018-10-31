@@ -1,0 +1,34 @@
+synapse_ids:
+  cibersort_results: "syn17014468"
+  mcpcounter_results: "syn17014469"
+  ground_truth: "syn17014449"
+  log_tpm_expression: "syn13363401"
+  cibersort_genes: "syn12184137"
+  mcpcounter_genes: "syn11918430"
+  annotations: "syn17014476"
+cibersort_common_groups:
+ - "CD3_IHC"
+ - "CD8_IHC"
+ - "Macrophages_IHC"
+gt_cs_groups:
+cs_gt_groups: 
+  - {new_col: "CD3_IHC", old_cols: ["T_cells_CD4_naive",
+  "T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated",
+  "T_cells_follicular_helper", "T_cells_regulatory__Tregs_",
+  "T_cells_CD8", "T_cells_gamma_delta"]}
+  - {new_col: "CD8_IHC", old_cols: "T_cells_CD8"}
+  - {new_col: "Macrophages_IHC", old_cols: ["Macrophages_M0", "Macrophages_M1", "Macrophages_M2"]}
+mcpcounter_common_groups:
+ - "CD3_IHC"
+ - "CD8_IHC"
+ - "Macrophages_IHC"
+gt_mcp_groups:
+mcp_gt_groups: 
+  - {new_col: "CD3_IHC", old_cols: "T_cells"}
+  - {new_col: "CD8_IHC", old_cols: "Cytotoxic_lymphocytes"}
+  - {new_col: "Macrophages_IHC", old_cols: "Monocytic_lineage"}  
+pca_plot_aes:
+  color: "gender"
+  size: "age"
+  
+  
