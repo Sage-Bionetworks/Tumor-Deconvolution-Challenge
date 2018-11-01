@@ -16,10 +16,14 @@ cibersort_common_groups:
 gt_cs_groups:
 cs_gt_groups: 
   - {new_col: "B_cells", old_cols: ["B_cells_naive", "B_cells_memory"]}
-  - {new_col: "T_cells", old_cols: ["T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated",
-  "T_cells_CD8", "T_cells_follicular_helper", "T_cells_gamma_delta"]}
+  - {new_col: "T_cells", old_cols: ["T_cells_CD4_naive",
+  "T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated",
+  "T_cells_follicular_helper", "T_cells_regulatory__Tregs_",
+  "T_cells_CD8", "T_cells_gamma_delta"]}
   - {new_col: "NK_cells", old_cols: ["NK_cells_resting",  "NK_cells_activated"]}
-  - {new_col: "CD4_T_cells", old_cols: ["T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated"]}
+  - {new_col: "CD4_T_cells", old_cols: ["T_cells_CD4_naive",
+  "T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated",
+  "T_cells_follicular_helper", "T_cells_regulatory__Tregs_"]}
   - {new_col: "CD8_T_cells", old_cols: "T_cells_CD8"}
 mcpcounter_common_groups:
  - "B_cells"

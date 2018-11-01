@@ -93,7 +93,7 @@ make_cibersort_vs_ground_truth_plots <- function(config){
     plot_df <-
         inner_join(results_df, ground_truth_df)
     
-    create_cs_scatter_plot("All_cells", plot_df)
+    ## create_cs_scatter_plot("All_cells", plot_df)
     cell_types <- plot_df %>% 
         use_series(cell_type) %>% 
         unique %>% 
