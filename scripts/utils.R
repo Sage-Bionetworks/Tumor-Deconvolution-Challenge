@@ -92,6 +92,19 @@ aggregate_matrix <- function(
         purrr::invoke(combine_fun, .) 
 }
 
+library(plyr)
+## Translate/compress genes from one name space (e.g., probe ids) to another (e.g., symbols)
+compressGenes <- function(e, mapping, from.col = "from", to.col = "to", fun = mean)
+{
+  e$to    <- mapping[match(rownames(e), mapping[, from.col]), to.col]
+  e           <- e[!is.na(e$to),]
+  e           <- ddply(.data = e, .variables = "to", .fun = function(x){apply(x[,-ncol(x)],2,fun)},.parallel = T)
+  rownames(e) <- e$to
+  e           <- e[,-1]
+  return(e)
+}
+	    
+
 split_matrix <- function(matrix, lst, by_cols = T, parallel = T){
     fun <- ifelse(T, 
                   function(names) matrix[,names, drop = F], 

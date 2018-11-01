@@ -22,6 +22,26 @@ source("scripts/utils.R")
 setwd(tmp_dir)
 synLogin()
 
+library(GEOquery)
+gse <- getGEO("GSE59654", GSEMatrix = TRUE)
+
+## Get the annotation for this platform, which includes the mapping
+gpl <- getGEO(gse[[1]]@annotation, destdir=".")
+
+mapping <- Table(gpl)[, c("ID", "Symbol")]
+colnames(mapping) <- c("probe_id", "gene_symbol")
+if(!all(rownames(exprs(gse[[1]])) %in% mapping$probe_id)) {
+  stop("Some probes could not be mapped!\n")
+}
+
+e <- as.data.frame(exprs(gse[[1]]))
+e <- compressGenes(e, mapping, from.col = "probe_id", to.col = "gene_symbol", fun = max)
+
+##series_df <-
+##    pData(phenoData(gse[[1]])) %>%
+##    rownames_to_column("sample") %>%
+##    as_data_frame
+
 gt_pbmc_df <- gt_pbmc_id %>% 
     create_df_from_synapse_id %>% 
     filter(study_accession == sdy_id) %>% 
@@ -36,10 +56,22 @@ expr_pbmc_df <- expr_pbmc_id %>%
     select(-study_accession) %>% 
     dplyr::rename(sample = subject_accession)
 
+## 10KImmunones expression data includes mapping from GEO GSM ids to SUB ids used in 10KImmunomes
 anno_pbmc_df <- expr_pbmc_df %>% 
     as_data_frame %>% 
     select(sample, data_accession, age, gender, race)
 
+## Rename the GEO ids to 10KImmunomes IDs
+if(!(all(anno_pbmc_df$data_accession %in% colnames(e)))) {
+  stop("Some samples from 10KImmunomes are not in the GEO expression data\n")
+}
+
+e <- e[, colnames(e) %in% anno_pbmc_df$data_accession]
+ids <- anno_pbmc_df$sample
+names(ids) <- anno_pbmc_df$data_accession
+colnames(e) <- as.vector(ids[colnames(e)])
+e$Hugo <- rownames(e)
+e <- e[, c("Hugo", (colnames(e)[colnames(e) != "Hugo"]))]
 
 geo_anno_df <- anno_id %>% 
     create_df_from_synapse_id(unzip = T, skip = 34, nrow = 30) %>%
@@ -90,8 +122,10 @@ write_tsv(expr_df, "expression_microarray.tsv")
 write_tsv(ground_truth_df, "ground_truth.tsv")
 write_tsv(ground_truth_sd_df, "ground_truth_sd.tsv")
 write_tsv(anno_df, "annotation.tsv")
+write_tsv(e, "geo_expression_microarray.tsv")
 
 upload_file_to_synapse("expression_microarray.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("geo_expression_microarray.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("ground_truth.tsv", gt_upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("ground_truth_sd.tsv", gt_upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)
