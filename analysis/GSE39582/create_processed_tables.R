@@ -13,11 +13,11 @@ source("scripts/utils.R")
 setwd(tmp_dir)
 synLogin()
 
-## Folder: leaderboard_datasets/GSE39572/
+## Folder: leaderboard_datasets/GSE39582/
 dataset_upload_id <- "syn17014395"
-## Folder: leaderboard_datasets/GSE39572/pre-processed
+## Folder: leaderboard_datasets/GSE39582/pre-processed
 preprocessed_upload_id <- "syn17014396"
-## Folder: leaderboard_datasets/GSE39572/raw
+## Folder: leaderboard_datasets/GSE39582/raw
 raw_upload_id <- "syn17014401"
 
 ## ground truth: IHC_MCP.TXT (sent by Aurelien)

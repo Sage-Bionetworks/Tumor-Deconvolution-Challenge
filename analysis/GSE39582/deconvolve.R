@@ -8,10 +8,10 @@ repo_dir  <- "../../../Tumor-Deconvolution-Challenge/"
 tmp_dir   <- tempdir()
 tmp_dir <- "."
 
-## leaderboard_datasets/GSE39572/pre-processed/expression_microarray.tsv
+## leaderboard_datasets/GSE39582/pre-processed/expression_microarray.tsv
 expr_id   <- "syn17014418"
 
-## leaderboard_datasets/GSE39572/deconvolution_results/
+## leaderboard_datasets/GSE39582/deconvolution_results/
 upload_id <- "syn17014457"
 
 source(str_c(repo_dir, "scripts/synapseClient_functions.R"))
