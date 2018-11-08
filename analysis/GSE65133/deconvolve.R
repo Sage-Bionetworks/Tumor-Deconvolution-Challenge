@@ -3,8 +3,9 @@ library(tidyverse)
 library(data.table)
 library(magrittr)
 
-repo_dir  <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-tmp_dir   <- "/home/aelamb/tmp/tumor_deconvolution/GSE65133/"
+repo_dir  <- "../../../Tumor-Deconvolution-Challenge/"
+tmp_dir   <- tempdir()
+tmp_dir <- "."
 expr_id   <- "syn15667753"
 upload_id <- "syn15664996"
 
@@ -14,6 +15,23 @@ source(str_c(repo_dir, "scripts/matrix_functions.R"))
 setwd(tmp_dir)
 synapseLogin()
 
+cs.cwltool.url <- "https://raw.githubusercontent.com/CRI-iAtlas/iatlas-tool-cibersort/master/Dockstore.cwl?token=AE4r2kVqI149gsoBR0izIReUJrMPUVwkks5b14pZwA%3D%3D"
+cs.ref.matrix.url <- "https://raw.githubusercontent.com/CRI-iAtlas/iatlas-tool-cibersort/master/sample.references.matrix.txt?token=AE4r2jd69jitwyGzi7oMfmYSrvkRqraoks5b14xPwA%3D%3D"
+mcp.cwltool.url <- "https://raw.githubusercontent.com/CRI-iAtlas/iatlas-tool-mcpcounter/master/Dockstore.cwl?token=AE4r2iOJ9rWrdgPc5ogjS1k850vvK6I8ks5b14ynwA%3D%3D"
+
+cs.cwltool <- "cs-Dockerstore.cwl"
+cs.ref.matrix <- "sample.references.matrix.txt"
+mcp.cwltool <- "mcp-Dockerstore.cwl"
+
+urls <- c(cs.cwltool.url, cs.ref.matrix.url, mcp.cwltool.url)
+files <- c(cs.cwltool, cs.ref.matrix, mcp.cwltool)
+for(i in 1:length(urls)) {
+  if(!file.exists(files[i])) {
+    library(RCurl)
+    cat(paste0("Downloading ", files[i], "\n"))
+    download.file(urls[i], destfile=files[i], method="libcurl")
+  }
+}
 
 expr_df <- expr_id %>% 
     create_df_from_synapse_id 
@@ -36,6 +54,7 @@ system(str_c(
     "--mixture_file expr.tsv", 
     "--sig_matrix_file /home/aelamb/repos/irwg/iatlas-tool-cibersort/sample.references.matrix.txt", 
     "--output_file_string cibersort_abs_results.tsv",
+    "--abs_method no.sumto1",
     "--absolute",
     sep = " "))
 
