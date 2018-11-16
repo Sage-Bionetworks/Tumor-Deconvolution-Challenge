@@ -3,12 +3,10 @@ library(synapser)
 library(data.table)
 library(magrittr)
 library(ImmuneSpaceR)
-library(GEOquery)
 
 upload_id     <- "syn17026017"
 gt_upload_id  <- "syn17026016"
 sdy_id        <- "SDY144"
-geo_id        <- "GSE52005"
 
 source("../../scripts/utils.R")
 synLogin()
