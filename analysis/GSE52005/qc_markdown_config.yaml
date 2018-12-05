@@ -1,0 +1,25 @@
+synapse_ids:
+  cibersort_results: "syn17086856"
+  mcpcounter_results: "syn17086857"
+  ground_truth: "syn17052693"
+  log_tpm_expression: "syn17052691"
+  cibersort_genes: "syn12184137"
+  mcpcounter_genes: "syn11918430"
+  annotations: "syn15664976"
+cibersort_common_groups:
+ - "B_cells_memory"
+ - "B_cells_naive"
+ - "Plasma_cells"
+gt_cs_groups:
+  - {new_col: "B_cells_memory", old_cols: ["Memory_B_cell,Freq__of,Q2:_CD19+,_CD20+"]}
+  - {new_col: "B_cells_naive", old_cols: ["Naive_B_cell,Freq__of,Q2:_CD19+,_CD20+"]}
+  - {new_col: "Plasma_cells", old_cols: ["Plasma_cells,Freq__of,B_lym_CD27+"]}
+cs_gt_groups: 
+mcpcounter_common_groups:
+ - "B_lineage"
+gt_mcp_groups:
+  - {new_col: "B_lineage", old_cols: ["B_lym_CD19+,Freq__of,WBC_CD45+"]}
+mcp_gt_groups:
+pca_plot_aes:
+  
+  
