@@ -12,6 +12,10 @@ group_cell_types <- function(df, cell_groupings){
 
 
 group_by_cell_type <- function(df, cell_grouping){
+    if(!(all(unlist(cell_grouping$old_cols) %in% colnames(df)))) {
+        stop(paste0("Could not find ", paste(unlist(cell_grouping$old_cols), collapse=", "), " in:\n",
+                    "columns ", paste(colnames(df), collapse=", "), "\n"))
+    }
     df <- df %>%
         select(unlist(cell_grouping$old_cols)) %>%
         rowSums %>%
