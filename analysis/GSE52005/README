@@ -1,0 +1,11 @@
+## General steps:
+## Assume study is GSEXXX
+## sudo pip install cwlref-runner
+## sudo pip install cwltool
+## curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
+## sudo apt-get install -y nodejs
+## 1. Create GSEXXX; GSEXXX/pre-processed; and GSEXXX/deconvolution_results
+## 2. Create a create_processed_tables.R file; upload_id here should point to GSEXXX/pre-processed;
+##    source create_processed_tables.R
+## 2. Create a deconvolve.R file by copying over from GSE65133/deconvolve.R and updating expr_id and upload_id;
+##    upload_id should point to GSEXXX/deconvolution_results; source deconvolve.R
