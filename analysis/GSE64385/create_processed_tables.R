@@ -103,9 +103,11 @@ if(!all(rownames(expr) %in% mapping$from)) {
     cat("All probes in mapping\n")
 }
 
-expr_symbols <- expr %>% compressGenes(mapping, fun = max) %>% matrix_to_df("Hugo")
+compressed <- expr %>% compressGenes(mapping, fun = max) 
+expr_symbols <- compressed %>% matrix_to_df("Hugo")
 
-write_tsv(expr_symbols, "expression_microarray.tsv")
+## NB: according to the annotations, these data are output by RMA, which is in log space.
+write_tsv(expr_symbols, "log_expression_microarray.tsv")
 
 ## Get the Synapse ID of the raw file we saved above
 children <- synGetChildren(raw_upload_id)
@@ -120,7 +122,7 @@ activity_obj <- Activity(
     used = list(raw_expr_id),
     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE64385/create_processed_tables.R")
 )
-upload_file_to_synapse("expression_microarray.tsv", preprocessed_upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("log_expression_microarray.tsv", preprocessed_upload_id, activity_obj = activity_obj)
 
 ## Process the ground truth file
 gt_df <- anno_df
