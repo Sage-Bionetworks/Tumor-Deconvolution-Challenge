@@ -11,27 +11,33 @@ cibersort_common_groups:
  - "Neutrophils"
  - "NK_cells"
  - "T_cells"
+ - "B_cells" 
 gt_cs_groups:
  - {new_col: "Monocytes", old_cols: ["monocytes_mrna_percent"]}
  - {new_col: "Neutrophils", old_cols: ["neutrophils_mrna_percent"]}
  - {new_col: "NK_cells", old_cols: ["nk_cells_mrna_percent"]}
- - {new_col: "T_cells", old_cols: ["t_cells_mrna_percent"]} 
+ - {new_col: "T_cells", old_cols: ["t_cells_mrna_percent"]}
+ - {new_col: "B_cells", old_cols: ["b_cells_mrna_percent"]}  
 cs_gt_groups:
   - {new_col: "NK_cells", old_cols: ["NK_cells_resting", "NK_cells_activated"]}
   - {new_col: "T_cells", old_cols: ["T_cells_CD4_naive", "T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated",
               "T_cells_regulatory__Tregs_", "T_cells_CD8", "T_cells_gamma_delta"]}
+  - {new_col: "B_cells", old_cols: ["B_cells_memory", "B_cells_naive"]}
 mcpcounter_common_groups:
  - "Monocytes"
  - "Neutrophils"
  - "NK_cells"
  - "T_cells"
+ - "B_cells" 
 gt_mcp_groups:
  - {new_col: "Monocytes", old_cols: ["monocytes_mrna_percent"]}
  - {new_col: "Neutrophils", old_cols: ["neutrophils_mrna_percent"]}
  - {new_col: "NK_cells", old_cols: ["nk_cells_mrna_percent"]}
- - {new_col: "T_cells", old_cols: ["t_cells_mrna_percent"]} 
+ - {new_col: "T_cells", old_cols: ["t_cells_mrna_percent"]}
+ - {new_col: "B_cells", old_cols: ["b_cells_mrna_percent"]}   
 mcp_gt_groups:
   - {new_col: "Monocytes", old_cols: ["Monocytic_lineage"]}
+  - {new_col: "B_cells", old_cols: ["B_lineage"]}  
 pca_plot_aes:
   
   
