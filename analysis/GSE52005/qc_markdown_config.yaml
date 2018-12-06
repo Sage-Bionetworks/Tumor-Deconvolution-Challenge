@@ -7,19 +7,25 @@ synapse_ids:
   mcpcounter_genes: "syn11918430"
   annotations: "syn15664976"
 cibersort_common_groups:
- - "B_cells_memory"
- - "B_cells_naive"
- - "Plasma_cells"
+ - "LYMPHOCYTE_percent"
+ - "MONOCYTE_percent"
+ - "NEUTROPHIL_percent"
 gt_cs_groups:
-  - {new_col: "B_cells_memory", old_cols: ["Memory_B_cell,Freq__of,Q2:_CD19+,_CD20+"]}
-  - {new_col: "B_cells_naive", old_cols: ["Naive_B_cell,Freq__of,Q2:_CD19+,_CD20+"]}
-  - {new_col: "Plasma_cells", old_cols: ["Plasma_cells,Freq__of,B_lym_CD27+"]}
 cs_gt_groups: 
+  - {new_col: "LYMPHOCYTE_percent", old_cols: ["B_cells_naive", "B_cells_memory",
+  "T_cells_CD4_naive",
+  "T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated",
+  "T_cells_regulatory__Tregs_",
+  "T_cells_CD8", "T_cells_gamma_delta",
+  "NK_cells_resting",  "NK_cells_activated"]}
+  - {new_col: "MONOCYTE_percent", old_cols: ["Monocytes"]}
+  - {new_col: "NEUTROPHIL_percent", old_cols: ["Neutrophils"]}
 mcpcounter_common_groups:
- - "B_lineage"
+ - "MONOCYTE_percent"
+ - "NEUTROPHIL_percent"
 gt_mcp_groups:
-  - {new_col: "B_lineage", old_cols: ["B_lym_CD19+,Freq__of,WBC_CD45+"]}
 mcp_gt_groups:
+  - {new_col: "MONOCYTE_percent", old_cols: ["Monocytic_lineage"]}
+  - {new_col: "NEUTROPHIL_percent", old_cols: ["Neutrophils"]}
 pca_plot_aes:
-  
   

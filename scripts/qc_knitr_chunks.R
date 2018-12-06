@@ -2,7 +2,7 @@
 ## @knitr functions
 
 group_cell_types <- function(df, cell_groupings){
-    if(!is.null(cell_groupings)){
+    if(!is.null(cell_groupings)){ 
         for(cell_grouping in cell_groupings){
             df <- group_by_cell_type(df, cell_grouping)
         }
@@ -13,7 +13,8 @@ group_cell_types <- function(df, cell_groupings){
 
 group_by_cell_type <- function(df, cell_grouping){
     if(!(all(unlist(cell_grouping$old_cols) %in% colnames(df)))) {
-        stop(paste0("Could not find ", paste(unlist(cell_grouping$old_cols), collapse=", "), " in:\n",
+        cells <- unlist(cell_grouping$old_cols)
+        stop(paste0("Could not find ", paste(cells[!(cells %in% colnames(df))], collapse=", "), " in:\n",
                     "columns ", paste(colnames(df), collapse=", "), "\n"))
     }
     df <- df %>%
