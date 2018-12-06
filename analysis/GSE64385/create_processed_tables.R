@@ -43,31 +43,36 @@ anno_df <- annotations %>%
     dplyr::rename("neutrophils.mrna.mass" = "neutrophils mrna mass (ng):ch1") %>%
     dplyr::rename("nk.cells.mrna.mass" = "nk cells mrna mass (ng):ch1") %>%
     dplyr::rename("t.cells.mrna.mass" = "t cells mrna mass (ng):ch1") %>%
+    dplyr::rename("b.cells.mrna.mass" = "b cells mrna mass (ng):ch1") %>%    
     dplyr::mutate(hct116.mrna.mass = as.numeric(hct116.mrna.mass)) %>%
     dplyr::mutate(monocytes.mrna.mass = as.numeric(monocytes.mrna.mass)) %>%
     dplyr::mutate(neutrophils.mrna.mass = as.numeric(neutrophils.mrna.mass)) %>%
     dplyr::mutate(nk.cells.mrna.mass = as.numeric(nk.cells.mrna.mass)) %>%
     dplyr::mutate(t.cells.mrna.mass = as.numeric(t.cells.mrna.mass)) %>%
+    dplyr::mutate(b.cells.mrna.mass = as.numeric(b.cells.mrna.mass)) %>%    
     dplyr::mutate(hct116.mrna.percent = hct116.mrna.mass /
                   (hct116.mrna.mass + monocytes.mrna.mass + neutrophils.mrna.mass +
-		   nk.cells.mrna.mass + t.cells.mrna.mass) ) %>%
+		   nk.cells.mrna.mass + t.cells.mrna.mass + b.cells.mrna.mass) ) %>%
     dplyr::mutate(monocytes.mrna.percent = monocytes.mrna.mass /
                   (hct116.mrna.mass + monocytes.mrna.mass + neutrophils.mrna.mass +
-		   nk.cells.mrna.mass + t.cells.mrna.mass) ) %>%
+		   nk.cells.mrna.mass + t.cells.mrna.mass + b.cells.mrna.mass) ) %>%
     dplyr::mutate(neutrophils.mrna.percent = neutrophils.mrna.mass /
                   (hct116.mrna.mass + monocytes.mrna.mass + neutrophils.mrna.mass +
-		   nk.cells.mrna.mass + t.cells.mrna.mass) ) %>%
+		   nk.cells.mrna.mass + t.cells.mrna.mass + b.cells.mrna.mass) ) %>%
     dplyr::mutate(nk.cells.mrna.percent = nk.cells.mrna.mass /
                   (hct116.mrna.mass + monocytes.mrna.mass + neutrophils.mrna.mass +
-		   nk.cells.mrna.mass + t.cells.mrna.mass) ) %>%
+		   nk.cells.mrna.mass + t.cells.mrna.mass + b.cells.mrna.mass) ) %>%
     dplyr::mutate(t.cells.mrna.percent = t.cells.mrna.mass /
                   (hct116.mrna.mass + monocytes.mrna.mass + neutrophils.mrna.mass +
-		   nk.cells.mrna.mass + t.cells.mrna.mass) ) %>%
+		   nk.cells.mrna.mass + t.cells.mrna.mass + b.cells.mrna.mass) ) %>%
+    dplyr::mutate(b.cells.mrna.percent = b.cells.mrna.mass /
+                  (hct116.mrna.mass + monocytes.mrna.mass + neutrophils.mrna.mass +
+		   nk.cells.mrna.mass + t.cells.mrna.mass + b.cells.mrna.mass) ) %>%
     select(sample,
            "hct116.mrna.mass", "monocytes.mrna.mass", "neutrophils.mrna.mass",
-           "nk.cells.mrna.mass", "t.cells.mrna.mass",
+           "nk.cells.mrna.mass", "t.cells.mrna.mass", "b.cells.mrna.mass",
            "hct116.mrna.percent", "monocytes.mrna.percent", "neutrophils.mrna.percent",
-           "nk.cells.mrna.percent", "t.cells.mrna.percent")
+           "nk.cells.mrna.percent", "t.cells.mrna.percent", "b.cells.mrna.percent")
 
 activity_obj <- Activity(
     name = "download-annotations",
