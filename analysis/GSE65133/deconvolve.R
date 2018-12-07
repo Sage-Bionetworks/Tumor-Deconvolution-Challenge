@@ -7,7 +7,9 @@ library(stringr)
 repo_dir  <- "../../../Tumor-Deconvolution-Challenge/"
 tmp_dir   <- tempdir()
 tmp_dir <- "."
+## expr_id is GSEXXX/pre-processed/<expr-file>.tsv
 expr_id   <- "syn15667753"
+## upload_id is GSEXXX/deconvolution_results/
 upload_id <- "syn15664996"
 
 

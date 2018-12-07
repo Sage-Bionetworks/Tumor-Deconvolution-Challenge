@@ -1,0 +1,35 @@
+## General steps:
+## Assume study is GSEXXX
+## sudo pip install cwlref-runner
+## sudo pip install cwltool
+## curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
+## sudo apt-get install -y nodejs
+## 1. Create GSEXXX; GSEXXX/pre-processed, GSEXXX/deconvolution_results, and GSEXXX/raw
+## 2. Create a create_processed_tables.R file; upload_id here should point to GSEXXX/pre-processed;
+##    gt_upload_id should point to GSEXXX; source create_processed_tables.R
+## 3. Create a deconvolve.R file by copying over from GSE64385/deconvolve.R and updating expr_id and upload_id;
+##    upload_id should point to GSEXXX/deconvolution_results; source deconvolve.R
+## 4. Create a qc_markdown_config.yaml file.  Copy from GSE64385/qc_markdown_config.yaml.
+##    Edit cibersort_results and mcpcounter_results (these will be in GSEXXX/deconvolution_results)
+##    Edit log_tpm_expression (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
+##    Edit ground_truth (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
+##    Edit annotations (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
+##    Edit cibersort_common_groups (describing the populations that will be compared between CIBERSORT and ground truth)
+##    Edit gt_cs_groups [defining new population (new_col) as sum of columns (old_cols) in ground truth.
+##                       Every column in cibersort_common_groups should either already exist in ground truth (by the same name)
+##                       or be defined here.]
+##    Edit cs_gt_groups [defining new population (new_col) as sum of columns (old_cols) in CIBERSORT output.
+##                       Every column in cibersort_common_groups should either already exist in the CIBERSORT output (by the same name)
+##                       or be defined here.]
+##    Edit mcpcounter_common_groups (describing the populations that will be compared between MCP-counter and ground truth)
+##    Edit gt_mcp_groups [defining new population (new_col) as sum of columns (old_cols) in ground truth.
+##                       Every column in mcpcounter_common_groups should either already exist in ground truth (by the same name)
+##                       or be defined here.]
+##    Edit cs_mcp_groups [defining new population (new_col) as sum of columns (old_cols) in MCP-counter output.
+##                       Every column in mcpcounter_common_groups should either already exist in the CIBERSORT output (by the same name)
+##                       or be defined here.]
+## 5. Copy qc_markdown.Rmd from GSE64385/qc_markdown.Rmd
+## 6. Create qc_markdown_to_synapse.R by copying from GSE64385/qc_markdown_to_synapse.R and editing
+##    owner to point to GSEXXX; source qc_markdown_to_synapse.R
+
+gt_cs_groups:

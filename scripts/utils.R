@@ -103,7 +103,6 @@ compressGenes <- function(e, mapping, from.col = "from", to.col = "to", fun = me
   e           <- e[,-1]
   return(e)
 }
-	    
 
 split_matrix <- function(matrix, lst, by_cols = T, parallel = T){
     fun <- ifelse(T, 
