@@ -6,8 +6,8 @@ library(GEOquery)
 library(AnnotationDbi)
 library(hugene11sttranscriptcluster.db)
 
-# upload_id     <- "syn17091816"
-# gt_upload_id  <- "syn17091815"
+upload_id     <- "syn17091857"
+gt_upload_id  <- "syn17091856"
 
 source("../../scripts/utils.R")
 synLogin()
