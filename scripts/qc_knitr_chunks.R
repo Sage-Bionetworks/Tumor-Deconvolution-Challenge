@@ -76,13 +76,25 @@ create_cs_scatter_plot <- function(type, plot_df){
 
 make_cibersort_vs_ground_truth_plots <- function(config){
     
-    results_df <- config$synapse_ids$cibersort_results%>%
+    results_df <- config$synapse_ids$cibersort_results %>%
         dowload_and_format_cibersort_df %>%  
         group_cell_types(config$cs_gt_groups) %>% 
         select(c("sample", config$cibersort_common_groups)) %>% 
-        gather("cell_type", "predicted_fraction", -"sample")
+        gather("cell_type", "predicted_fraction", -"sample") 
+
     
+    if(!is.null(config$sum_cibersort_results_to_one) && config$sum_cibersort_results_to_one){
+        total_df <- results_df %>% 
+            group_by(sample) %>% 
+            dplyr::summarise(total = sum(predicted_fraction))
+        
+        results_df <- results_df %>% 
+            inner_join(total_df) %>% 
+            mutate(predicted_fraction = predicted_fraction / total) %>% 
+            select(-total)
+    }
     
+    print(results_df)
     ground_truth_df <- config$synapse_ids$ground_truth %>%
         create_df_from_synapse_id %>%
         set_colnames(str_replace_all(colnames(.), "\\.", "_")) %>% 
