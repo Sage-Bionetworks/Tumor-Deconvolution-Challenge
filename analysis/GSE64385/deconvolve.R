@@ -7,8 +7,8 @@ library(stringr)
 repo_dir  <- "../../../Tumor-Deconvolution-Challenge/"
 tmp_dir   <- tempdir()
 tmp_dir <- "."
-## expr_id is GSEXXX/pre-processed/<log-expr-file>.tsv
-## This expression file should be in log space!
+## expr_id is GSEXXX/pre-processed/
+## This expression file should be in non log space!
 expr_id   <- "syn17088619"
 ## upload_id is GSEXXX/deconvolution_results/
 upload_id <- "syn17088610"
