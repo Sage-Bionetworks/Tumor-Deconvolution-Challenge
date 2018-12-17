@@ -7,8 +7,11 @@
 ## 1. Create GSEXXX; GSEXXX/pre-processed, GSEXXX/deconvolution_results, and GSEXXX/raw
 ## 2. Create a create_processed_tables.R file; upload_id here should point to GSEXXX/pre-processed;
 ##    gt_upload_id should point to GSEXXX; source create_processed_tables.R
-## 3. Create a deconvolve.R file by copying over from GSE64385/deconvolve.R and updating expr_id and upload_id;
-##    upload_id should point to GSEXXX/deconvolution_results; source deconvolve.R
+## 3. Create a deconvolve.R file by copying over from GSE64385/deconvolve.R
+##    update expr_id, upload_id, and github.path
+##    expr_id should point to a log normal expression file
+##    upload_id should point to GSEXXX/deconvolution_results
+##    source deconvolve.R
 ## 4. Create a qc_markdown_config.yaml file.  Copy from GSE64385/qc_markdown_config.yaml.
 ##    Edit cibersort_results and mcpcounter_results (these will be in GSEXXX/deconvolution_results)
 ##    Edit log_tpm_expression (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
