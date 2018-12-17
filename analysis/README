@@ -9,7 +9,7 @@
 ##    gt_upload_id should point to GSEXXX; source create_processed_tables.R
 ## 3. Create a deconvolve.R file by copying over from GSE64385/deconvolve.R
 ##    update expr_id, upload_id, and github.path
-##    expr_id should point to a log normal expression file
+##    expr_id should point to a non-log and normalized (e.g., cpm, tmp, FPKM) expression file
 ##    upload_id should point to GSEXXX/deconvolution_results
 ##    source deconvolve.R
 ## 4. Create a qc_markdown_config.yaml file.  Copy from GSE64385/qc_markdown_config.yaml.
