@@ -48,6 +48,32 @@ dowload_and_format_cibersort_df <- function(synapse_id){
 
 ## @knitr cibersort_vs_ground_truth
 
+create_cs_scatter_plot_all<- function(plot_df){
+    obj <- cor.test(
+        plot_df$predicted_fraction, 
+        plot_df$mean_fraction)
+    p <- obj$p.value %>% 
+        round(4)
+    r <- obj$estimate %>% 
+        round(4)
+    p <- plot_df %>% 
+        ggplot(aes(x = predicted_fraction, y = mean_fraction)) +
+        geom_point(size = 4, aes(color = sample, shape = cell_type)) +
+        geom_smooth(method = 'lm') +
+        geom_abline() +
+        geom_errorbar(aes(ymin = mean_fraction - sd_fraction,
+                          ymax = mean_fraction + sd_fraction),
+                      width = sd(plot_df$predicted_fraction) / 8) +
+        theme_bw() +
+        theme(axis.text.x = element_text(angle = 90, size = 12)) +
+        theme(axis.text.y = element_text(size = 12)) +
+        theme(strip.text.y = element_text(size = 10, angle = 0)) +
+        ggtitle(str_c("Ground truth vs Cibersort predictions, R=", r, " P=", p)) + 
+        ylab("Ground truth fraction") +
+        xlab("Cibersort predicted fraction")
+    print(p)
+}
+
 create_cs_scatter_plot <- function(type, plot_df){
     obj <- cor.test(
         plot_df$predicted_fraction, 
@@ -93,8 +119,8 @@ make_cibersort_vs_ground_truth_plots <- function(config){
             mutate(predicted_fraction = predicted_fraction / total) %>% 
             select(-total)
     }
-    
-    print(results_df)
+
+##    write.table(file="results_df.tsv", results_df, sep="\t", row.names=FALSE, col.names=TRUE)
     ground_truth_df <- config$synapse_ids$ground_truth %>%
         create_df_from_synapse_id %>%
         set_colnames(str_replace_all(colnames(.), "\\.", "_")) %>% 
@@ -106,6 +132,7 @@ make_cibersort_vs_ground_truth_plots <- function(config){
         .[complete.cases(.),] %>% 
         group_by(sample, cell_type) %>% 
         dplyr::summarise(sd_fraction = sd(fraction), mean_fraction = mean(fraction))
+##    write.table(file="ground_truth_df.tsv", ground_truth_df, sep="\t", row.names=FALSE, col.names=TRUE)
     
     plot_df <-
         inner_join(results_df, ground_truth_df)
@@ -117,6 +144,7 @@ make_cibersort_vs_ground_truth_plots <- function(config){
         sort
     plot_dfs <- plot_df %>% 
         split(.$cell_type)
+    create_cs_scatter_plot_all(plot_df)
     walk2(cell_types, plot_dfs, create_cs_scatter_plot)
     
 }
