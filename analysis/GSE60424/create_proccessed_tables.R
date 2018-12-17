@@ -64,15 +64,37 @@ annotation_df <- series_df %>%
 samples_in_common <- 
     reduce(list(counts_df$sample, ground_truth_df$sample, annotation_df$sample), intersect)
 
-counts_df <- counts_df %>%
-    filter(sample %in% samples_in_common) %>%
-    spread(key = "sample", value = "counts")
-
-ground_truth_df <- ground_truth_df %>%
-    filter(sample %in% samples_in_common)
-
 annotation_df <- annotation_df %>% 
     filter(sample %in% samples_in_common)
+
+ground_truth_df <- ground_truth_df %>%
+    filter(sample %in% samples_in_common) %>% 
+    gather(key = "cell_type", value = "count", -sample) %>% 
+    mutate(count = as.numeric(count)) %>% 
+    split(.$sample) %>% 
+    map(mutate, total = sum(count)) %>% 
+    bind_rows %>% 
+    mutate(fraction = count / total) %>% 
+    select(-c(count, total)) %>% 
+    spread(key = "cell_type", value = "fraction")
+    
+
+
+counts_df <- counts_df %>%
+    filter(sample %in% samples_in_common) %>%
+    spread(key = "sample", value = "counts") 
+
+cpm_m <- counts_df %>% 
+    df_to_matrix("Hugo") %>% 
+    calculate_cpm()
+
+cpm_df <- cpm_m %>% 
+    matrix_to_df("Hugo")
+    
+log_cpm_df <- cpm_m %>% 
+    add(1) %>% 
+    log10 %>% 
+    matrix_to_df("Hugo")
 
 
 activity_obj <- Activity(
@@ -82,11 +104,13 @@ activity_obj <- Activity(
     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE60424/create_processed_tables.R")
 )
 
-write_tsv(counts_df, "counts.tsv")
+write_tsv(cpm_df, "cpm.tsv")
+write_tsv(log_cpm_df, "log_cpm.tsv")
 write_tsv(ground_truth_df, "ground_truth.tsv")
 write_tsv(annotation_df, "annotation.tsv")
 
-upload_file_to_synapse("counts.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("cpm.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("log_cpm.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("ground_truth.tsv", gt_upload_id, activity_obj = activity_obj)
 
