@@ -127,8 +127,16 @@ make_cibersort_vs_ground_truth_plots <- function(config){
         set_colnames(str_replace_all(colnames(.), "[:space:]", "_")) %>% 
         group_cell_types(config$gt_cs_groups) %>% 
         select(c("sample", config$cibersort_common_groups)) %>% 
-        gather("cell_type", "fraction", -sample) %>%
-        mutate(fraction = fraction / 100) %>% 
+        gather("cell_type", "fraction", -sample)
+
+    if(!is.null(config$dont_normalize_ground_truth_to_one) && config$dont_normalize_ground_truth_to_one) {
+        ;
+    } else {
+        ground_truth_df <- ground_truth_df %>%
+            mutate(fraction = fraction / 100)
+    }
+    
+    ground_truth_df <- ground_truth_df %>%
         .[complete.cases(.),] %>% 
         group_by(sample, cell_type) %>% 
         dplyr::summarise(sd_fraction = sd(fraction), mean_fraction = mean(fraction))
@@ -195,8 +203,16 @@ make_mcpcounter_vs_ground_truth_plots <- function(config){
         set_colnames(str_replace_all(colnames(.), "[:space:]", "_")) %>% 
         group_cell_types(config$gt_mcp_groups) %>% 
         select(c("sample", config$mcpcounter_common_groups)) %>% 
-        gather("cell_type", "fraction", -sample) %>%
-        mutate(fraction = fraction / 100) %>% 
+        gather("cell_type", "fraction", -sample)
+
+    if(!is.null(config$dont_normalize_ground_truth_to_one) && config$dont_normalize_ground_truth_to_one) {
+        ;
+    } else {
+        ground_truth_df <- ground_truth_df %>%
+            mutate(fraction = fraction / 100)
+    }
+    
+    ground_truth_df <- ground_truth_df %>%
         .[complete.cases(.),] %>% 
         group_by(sample, cell_type) %>% 
         dplyr::summarise(sd_fraction = sd(fraction), mean_fraction = mean(fraction))
