@@ -1,0 +1,24 @@
+synapse_ids:
+  cibersort_results: "syn17098953"
+  mcpcounter_results: "syn17098955"
+  ground_truth: "syn17091416"
+  log_tpm_expression: "syn17091415"
+  cibersort_genes: "syn12184137"
+  mcpcounter_genes: "syn11918430"
+  annotations: "syn17091416"
+dont_normalize_ground_truth_to_one: true
+cibersort_common_groups:
+ - "Naive_CD4_T_cells"
+gt_cs_groups:
+  - {new_col: "Naive_CD4_T_cells", old_cols: ["Naive"]}
+cs_gt_groups:
+  - {new_col: "Naive_CD4_T_cells", old_cols: ["T_cells_CD4_naive"]}
+mcpcounter_common_groups:
+ - "CD4_T_cells"
+gt_mcp_groups:
+ - {new_col: "CD4_T_cells", old_cols: ["Central_memory", "Effector_memory", "Naive"]}
+mcp_gt_groups:
+  - {new_col: "CD4_T_cells", old_cols: ["T_cells"]}
+pca_plot_aes:
+  
+  
