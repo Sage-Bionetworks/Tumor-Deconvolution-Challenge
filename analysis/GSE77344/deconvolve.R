@@ -9,12 +9,12 @@ tmp_dir   <- tempdir()
 tmp_dir <- "."
 ## expr_id is GSEXXX/pre-processed/
 ## This expression file should be in non log space!
-expr_id   <- "syn17088619"
+expr_id   <- "syn17866629"
 ## upload_id is GSEXXX/deconvolution_results/
-upload_id <- "syn17088610"
+upload_id <- "syn17868220"
 
 github.path <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/"
-dataset.path <- paste0(github.path, "GSE64385/")
+dataset.path <- paste0(github.path, "GSE77344/")
 deconvolve.url <- paste0(dataset.path, "deconvolve.R")
 
 source(str_c(repo_dir, "scripts/synapseClient_functions.R"))

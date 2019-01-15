@@ -1,0 +1,42 @@
+synapse_ids:
+  cibersort_results: "syn17868328"
+  mcpcounter_results: "syn17868336"
+  ground_truth: "syn17091860"
+  log_expression: "syn17866625"
+  cibersort_genes: "syn12184137"
+  mcpcounter_genes: "syn11918430"
+  annotations: "syn17091859"
+cibersort_common_groups:
+ - "CD4_T_cells"
+ - "CD8_T_cells"
+ - "Granulocytes"
+ - "Monocytes"
+ - "NK_cells" 
+gt_cs_groups:
+ - {new_col: "CD4_T_cells", old_cols: ["cd4_t_lymphocyte"]}
+ - {new_col: "CD8_T_cells", old_cols: ["cd8_t_lymphocyte"]}
+ - {new_col: "Granulocytes", old_cols: ["granulocyte"]}
+ - {new_col: "Monocytes", old_cols: ["monocyte"]}
+ - {new_col: "NK_cells", old_cols: ["nk_lymphocyte"]}
+cs_gt_groups:
+ - {new_col: "CD4_T_cells", old_cols: ["T_cells_CD4_naive", "T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated",
+             "T_cells_regulatory__Tregs_", "T_cells_CD8", "T_cells_gamma_delta"]}
+ - {new_col: "CD8_T_cells", old_cols: ["T_cells_CD8"]}
+ - {new_col: "Granulocytes", old_cols: ["Eosinophils", "Neutrophils"]}
+ - {new_col: "NK_cells", old_cols: ["NK_cells_resting", "NK_cells_activated"]}
+mcpcounter_common_groups:
+ - "CD8_T_cells"
+ - "Granulocytes"
+ - "Monocytes"
+ - "NK_cells" 
+gt_mcp_groups:
+ - {new_col: "CD8_T_cells", old_cols: ["cd8_t_lymphocyte"]}
+ - {new_col: "Granulocytes", old_cols: ["granulocyte"]}
+ - {new_col: "Monocytes", old_cols: ["monocyte"]}
+ - {new_col: "NK_cells", old_cols: ["nk_lymphocyte"]}
+mcp_gt_groups:
+ - {new_col: "Granulocytes", old_cols: ["Neutrophils"]}
+ - {new_col: "Monocytes", old_cols: ["Monocytic_lineage"]}
+pca_plot_aes:
+  
+  

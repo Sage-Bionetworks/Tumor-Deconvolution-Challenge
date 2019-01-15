@@ -23,23 +23,23 @@ group_by_cell_type <- function(df, cell_grouping){
         inset(df, cell_grouping$new_col, value = .)
 }
 
-dowload_and_format_mcpcounter_df <- function(synapse_id){
+download_and_format_mcpcounter_df <- function(synapse_id){
     synapse_id %>% 
         download_from_synapse %>% 
         read.table %>% 
         t %>% 
-        .[,colSums(.) > 0] %>% 
+##        .[,colSums(.) > 0] %>% 
         matrix_to_df("sample") %>% 
         set_colnames(str_replace_all(colnames(.), "\\.", "_")) %>% 
         set_colnames(str_replace_all(colnames(.), "[:space:]", "_")) 
 }
 
-dowload_and_format_cibersort_df <- function(synapse_id){
+download_and_format_cibersort_df <- function(synapse_id){
     config$synapse_ids$cibersort_results %>% 
         create_df_from_synapse_id %>% 
         select(-c(`P-value`, `RMSE`, Correlation)) %>% 
         df_to_matrix("sample") %>% 
-        .[,colSums(.) > 0] %>% 
+##        .[,colSums(.) > 0] %>% 
         matrix_to_df("sample") %>% 
         set_colnames(str_replace_all(colnames(.), "\\.", "_")) %>% 
         set_colnames(str_replace_all(colnames(.), "[:space:]", "_")) 
@@ -65,6 +65,7 @@ create_cs_scatter_plot_all<- function(plot_df){
                           ymax = mean_fraction + sd_fraction),
                       width = sd(plot_df$predicted_fraction) / 8) +
         theme_bw() +
+        guides(color = FALSE) +
         theme(axis.text.x = element_text(angle = 90, size = 12)) +
         theme(axis.text.y = element_text(size = 12)) +
         theme(strip.text.y = element_text(size = 10, angle = 0)) +
@@ -91,6 +92,7 @@ create_cs_scatter_plot <- function(type, plot_df){
                           ymax = mean_fraction + sd_fraction),
                       width = sd(plot_df$predicted_fraction) / 8) +
         theme_bw() +
+        theme(legend.position="none") +
         theme(axis.text.x = element_text(angle = 90, size = 12)) +
         theme(axis.text.y = element_text(size = 12)) +
         theme(strip.text.y = element_text(size = 10, angle = 0)) +
@@ -103,7 +105,7 @@ create_cs_scatter_plot <- function(type, plot_df){
 make_cibersort_vs_ground_truth_plots <- function(config){
     
     results_df <- config$synapse_ids$cibersort_results %>%
-        dowload_and_format_cibersort_df %>%  
+        download_and_format_cibersort_df %>%  
         group_cell_types(config$cs_gt_groups) %>% 
         select(c("sample", config$cibersort_common_groups)) %>% 
         gather("cell_type", "predicted_fraction", -"sample") 
@@ -179,6 +181,7 @@ create_mcp_scatter_plot <- function(type, plot_df){
         geom_errorbar(aes(ymin = mean_fraction - sd_fraction,
                           ymax = mean_fraction + sd_fraction),
                       width = sd(plot_df$score) / 8) +
+        theme(legend.position="none") +        
         theme(axis.text.x = element_text(angle = 90, size = 12)) +
         theme(axis.text.y = element_text(size = 12)) +
         theme(strip.text.y = element_text(size = 10, angle = 0)) +
@@ -192,7 +195,7 @@ create_mcp_scatter_plot <- function(type, plot_df){
 make_mcpcounter_vs_ground_truth_plots <- function(config){
     
     results_df <- config$synapse_ids$mcpcounter_results %>%
-        dowload_and_format_mcpcounter_df %>% 
+        download_and_format_mcpcounter_df %>% 
         group_cell_types(config$mcp_gt_groups) %>% 
         select(c("sample", config$mcpcounter_common_groups)) %>% 
         gather("cell_type", "score", -"sample")
@@ -251,7 +254,7 @@ create_cibersort_gene_heatmaps <- function(config){
         unique %>% 
         sort
     
-    zscore_m <- config$synapse_ids$log_tpm_expression %>% 
+    zscore_m <- config$synapse_ids$log_expression %>% 
         create_df_from_synapse_id %>% 
         df_to_matrix("Hugo") %>% 
         .[rowSums(.) > 0,] %>% 
@@ -276,7 +279,7 @@ create_cibersort_gene_heatmaps(config)
 ## @knitr mcpcounter gene heatmaps
 
 create_mcpcounter_gene_heatmaps <- function(
-    annotations, mcpcounter_genes, log_tpm_expression){
+    annotations, mcpcounter_genes, log_expression){
     
     mcp_heatmap_col_df <- annotations %>% 
         create_df_from_synapse_id %>% 
@@ -293,7 +296,7 @@ create_mcpcounter_gene_heatmaps <- function(
         unique %>% 
         sort
     
-    mcp_zscore_matrix <- log_tpm_expression %>% 
+    mcp_zscore_matrix <- log_expression %>% 
         create_df_from_synapse_id %>% 
         df_to_matrix("Hugo") %>% 
         .[rowSums(.) > 0,] %>% 
@@ -332,7 +335,7 @@ create_mcpcounter_gene_heatmaps <- function(
 create_mcpcounter_gene_heatmaps(
     config$synapse_ids$annotations,
     config$synapse_ids$mcpcounter_genes,
-    config$synapse_ids$log_tpm_expression
+    config$synapse_ids$log_expression
 )
 
 
@@ -345,7 +348,7 @@ create_cibersort_scatterplots <- function(annotations, cibersort_results){
         arrange(sample) 
     
     cs_result_df <- cibersort_results %>%
-        dowload_and_format_cibersort_df %>% 
+        download_and_format_cibersort_df %>% 
         gather("cibersort_cell_type", "predicted_fraction", -sample) %>% 
         inner_join(anno_df, by = c("sample"))
     
@@ -379,7 +382,7 @@ create_mcpcounter_scatterplots <- function(annotations, mcpcounter_results){
         arrange(sample) 
     
     mcp_result_df <- mcpcounter_results %>%
-        dowload_and_format_mcpcounter_df %>% 
+        download_and_format_mcpcounter_df %>% 
         gather("mcpcounter_cell_type", "predicted_score", -sample) %>% 
         inner_join(anno_df, by = c("sample")) 
     
@@ -411,7 +414,7 @@ create_pca_plot <- function(config){
         create_df_from_synapse_id %>% 
         arrange(sample) 
     
-    pca_matrix <- config$synapse_ids$log_tpm_expression %>% 
+    pca_matrix <- config$synapse_ids$log_expression %>% 
         create_df_from_synapse_id %>% 
         df_to_matrix("Hugo") %>% 
         .[rowSums(.) > 0,] %>% 
@@ -449,7 +452,7 @@ create_cibersort_gsea_plot <- function(config){
         split(.$cell_type) %>%
         map(use_series, Hugo)
     
-    cs_ssgsea_df <- config$synapse_ids$log_tpm_expression %>% 
+    cs_ssgsea_df <- config$synapse_ids$log_expression %>% 
         create_df_from_synapse_id %>% 
         df_to_matrix("Hugo") %>% 
         .[rowSums(.) > 0,] %>% 
@@ -486,7 +489,7 @@ create_mcpcounter_gsea_plot <- function(config){
         split(.$cell_type) %>%
         map(use_series, Hugo)
     
-    mcp_ssgsea_df <- config$synapse_ids$log_tpm_expression %>% 
+    mcp_ssgsea_df <- config$synapse_ids$log_expression %>% 
         create_df_from_synapse_id %>% 
         df_to_matrix("Hugo") %>% 
         .[rowSums(.) > 0,] %>% 
