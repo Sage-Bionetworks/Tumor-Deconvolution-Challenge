@@ -42,6 +42,7 @@ query_df <-
     set_colnames(c("Probe", "Hugo")) %>%
     drop_na()
 
+## These are RMA-normalized data--i.e., in log2 space
 expr_df <- gse_object$GSE77343_series_matrix.txt.gz@assayData %>% 
     assayDataElement('exprs') %>%
     matrix_to_df("Probe") %>%
@@ -61,6 +62,11 @@ expr_df <- expr_df %>%
     filter(sample %in% samples_in_common) %>% 
     spread(key = "sample", value = "expr")
 
+linear_expr_df <- expr_df %>%
+    df_to_matrix("Hugo") %>%
+    raise_to_power(x=2, power=.) %>%
+    matrix_to_df("Hugo")
+
 ground_truth_df <- geo_df %>%
     dplyr::select(-c(age, gender)) %>% 
     filter(sample %in% samples_in_common)
@@ -76,11 +82,13 @@ activity_obj <- Activity(
     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE77343/create_processed_tables.R")
 )
 
-write_tsv(expr_df, "expression_affy.tsv")
+write_tsv(expr_df, "expression_affy_log.tsv")
+write_tsv(linear_expr_df, "expression_affy_linear.tsv")
 write_tsv(ground_truth_df, "ground_truth.tsv")
 write_tsv(annotation_df, "annotation.tsv")
 
-upload_file_to_synapse("expression_affy.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("expression_affy_log.tsv", upload_id, activity_obj = activity_obj)
+upload_file_to_synapse("expression_affy_linear.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("ground_truth.tsv", gt_upload_id, activity_obj = activity_obj)
 
