@@ -114,12 +114,12 @@ make_cibersort_vs_ground_truth_plots <- function(config){
     if(!is.null(config$sum_cibersort_results_to_one) && config$sum_cibersort_results_to_one){
         total_df <- results_df %>% 
             group_by(sample) %>% 
-            dplyr::summarise(total = sum(predicted_fraction))
+            dplyr::summarise(predicted_total = sum(predicted_fraction))
         
         results_df <- results_df %>% 
             inner_join(total_df) %>% 
-            mutate(predicted_fraction = predicted_fraction / total) %>% 
-            select(-total)
+            mutate(predicted_fraction = predicted_fraction / predicted_total) %>% 
+            select(-predicted_total)
     }
 
 ##    write.table(file="results_df.tsv", results_df, sep="\t", row.names=FALSE, col.names=TRUE)
@@ -134,8 +134,14 @@ make_cibersort_vs_ground_truth_plots <- function(config){
     if(!is.null(config$dont_normalize_ground_truth_to_one) && config$dont_normalize_ground_truth_to_one) {
         ;
     } else {
-        ground_truth_df <- ground_truth_df %>%
-            mutate(fraction = fraction / 100)
+        total_df <- ground_truth_df %>% 
+            group_by(sample) %>% 
+            dplyr::summarise(total = sum(fraction))
+        
+        ground_truth_df <- ground_truth_df %>% 
+            inner_join(total_df) %>% 
+            mutate(fraction = fraction / total) %>% 
+            select(-total)
     }
     
     ground_truth_df <- ground_truth_df %>%
