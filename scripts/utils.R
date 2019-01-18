@@ -15,7 +15,7 @@ create_df_from_synapse_id <- function(syn_id, location = NULL, unzip = F, ...){
     if(unzip) path <- stringr::str_c("zcat < ", path)
     path %>% 
         data.table::fread(...) %>% 
-        dplyr::as_data_frame() 
+        dplyr::as_tibble() 
 }
 
 download_from_synapse <- function(syn_id, location = NULL){
