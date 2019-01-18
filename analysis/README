@@ -14,7 +14,7 @@
 ##    source deconvolve.R
 ## 4. Create a qc_markdown_config.yaml file.  Copy from GSE64385/qc_markdown_config.yaml.
 ##    Edit cibersort_results and mcpcounter_results (these will be in GSEXXX/deconvolution_results)
-##    Edit log_tpm_expression (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
+##    Edit log_expression (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
 ##    Edit ground_truth (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
 ##    Edit annotations (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
 ##    Edit cibersort_common_groups (describing the populations that will be compared between CIBERSORT and ground truth)
