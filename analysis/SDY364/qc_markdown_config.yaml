@@ -1,0 +1,67 @@
+synapse_ids:
+  cibersort_results: "syn17975441"
+  mcpcounter_results: "syn17975448"
+  ground_truth: "syn17974330"
+  log_expression: "syn17974202"
+  cibersort_genes: "syn12184137"
+  mcpcounter_genes: "syn11918430"
+  annotations: "syn17974329"
+  
+cibersort_common_groups:
+ - "Eosinophils"
+ - "Lymphocytes"
+ - "Monocytes"
+ - "Neutrophils"
+
+gt_cs_groups:
+ - {new_col: "Eosinophils", old_cols: ["EOSINOPHIL"]}
+ - {new_col: "Lymphocytes", old_cols: ["LYMPHOCYTE"]}
+ - {new_col: "Monocytes", old_cols: ["MONOCYTE"]}
+ - {new_col: "Neutrophils", old_cols: ["NEUTROPHIL"]}
+ 
+cs_gt_groups:
+ - {new_col: "Eosinophils", old_cols: ["Eosinophils"]}
+ - {new_col: "Neutrophils", old_cols: ["Neutrophils"]}
+ - {new_col: "Lymphocytes", 
+    old_cols: [
+        "T_cells_CD4_naive",
+        "T_cells_CD4_memory_resting", 
+        "T_cells_CD4_memory_activated", 
+        "T_cells_regulatory__Tregs_", 
+        "T_cells_CD8", 
+        "T_cells_gamma_delta", 
+        "B_cells_naive",
+        "B_cells_memory",
+        "Plasma_cells", 
+        "NK_cells_resting",
+        "NK_cells_activated"]}
+ - {new_col: "Monocytes", 
+    old_cols: [
+        "Monocytes",
+        "Macrophages_M0",
+        "Macrophages_M1",
+        "Macrophages_M2"]}
+
+mcpcounter_common_groups:
+ - "Lymphocytes"
+ - "Monocytes"
+ - "Neutrophils"
+ 
+gt_mcp_groups:
+ - {new_col: "Lymphocytes", old_cols: ["LYMPHOCYTE"]}
+ - {new_col: "Monocytes", old_cols: ["MONOCYTE"]}
+ - {new_col: "Neutrophils", old_cols: ["NEUTROPHIL"]}
+ 
+mcp_gt_groups:
+ - {new_col: "Neutrophils", old_cols: ["Neutrophils"]}
+ - {new_col: "Monocytes", old_cols: ["Monocytic_lineage"]}
+ - {new_col: "Lymphocytes", 
+    old_cols: [
+        "T_cells", 
+        "Cytotoxic_lymphocytes",
+        "NK_cells",
+        "B_lineage"]}
+
+
+  
+  

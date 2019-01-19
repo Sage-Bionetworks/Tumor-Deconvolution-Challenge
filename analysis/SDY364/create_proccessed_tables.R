@@ -58,6 +58,7 @@ ground_truth_df <- blood_count_df %>%
     mutate(fraction = percent / 100) %>% 
     mutate(celltype = str_remove_all(celltype, "_percent")) %>% 
     select(-percent) %>% 
+    drop_na() %>% 
     spread(key = "celltype", value = "fraction")
     
 
@@ -75,27 +76,25 @@ expr_df <- expr_id  %>%
     dplyr::select(-c(study_accession, data_accession, age, gender, race)) %>% 
     dplyr::rename(sample = subject_accession) %>% 
     as_tibble() %>% 
-    gather(key = "gene", value = "expr", - sample) %>% 
+    gather(key = "Hugo", value = "expr", - sample) %>% 
     drop_na()
 
+samples_in_common <- intersect(ground_truth_df$sample, expr_df$sample)
+
+
 linear_expr_df <- expr_df %>% 
-    spread(key = "gene", value = "expr")
+    filter(sample %in% samples_in_common) %>% 
+    spread(key = "sample", value = "expr")
 
 log_expr_df <- expr_df %>% 
+    filter(sample %in% samples_in_common) %>% 
     mutate(expr = log2(expr +1)) %>% 
-    spread(key = "gene", value = "expr")
+    spread(key = "sample", value = "expr")
+    
+
 
 remove(expr_df)
 
-
-samples_in_common <- intersect(ground_truth_df$sample, log_expr_df$sample)
-
-
-log_expr_df <- log_expr_df %>%
-    filter(sample %in% samples_in_common)
-
-linear_expr_df <- linear_expr_df %>%
-    filter(sample %in% samples_in_common)
 
 ground_truth_df <- ground_truth_df %>%
     filter(sample %in% samples_in_common)
