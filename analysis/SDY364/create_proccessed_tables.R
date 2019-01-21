@@ -99,26 +99,13 @@ remove(expr_df)
 ground_truth_df <- ground_truth_df %>%
     filter(sample %in% samples_in_common)
 
-annotation_df <- ground_truth_df %>%
+annotation_df <- annotation_df %>%
     filter(sample %in% samples_in_common)
 
 fcs_df <- fcs_df %>% 
     filter(sample %in% samples_in_common)
 
-manifest_df <- tibble(
-    path = c("expression_log.tsv",
-             "expression_linear.tsv",
-             "annotation.tsv",
-             "fcs.tsv",
-             "ground_truth.tsv"),
-    parent = c(rep(upload_id, 4), gt_upload_id),
-    used = str_c(blood_count_id, expr_id, sep = ";"),
-    executed = "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SDY364/create_processed_tables.R",
-    activityName = "Process files from 10kimmunome.",
-    expression_type = c(rep("microarray", 2), rep(NA, 3)),
-    microarray_type = c(rep("unknown", 2), rep(NA, 3)),
-    expression_space = c("log2", "linear", rep(NA, 3))
-)
+
 
 manifest_df1 <- tibble(
     path = c("expression_log.tsv",
@@ -127,31 +114,45 @@ manifest_df1 <- tibble(
     used = str_c(blood_count_id, expr_id, sep = ";"),
     executed = "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SDY364/create_processed_tables.R",
     activityName = "Process files from 10kimmunome.",
+    file_type = c(rep("expression", 2)),
     expression_type = c(rep("microarray", 2)),
     microarray_type = c(rep("unknown", 2)),
     expression_space = c("log2", "linear")
 )
 
 manifest_df2 <- tibble(
-    path = c("annotation.tsv",
-             "fcs.tsv",
-             "ground_truth.tsv"),
-    parent = c(rep(upload_id, 2), gt_upload_id),
+    path = c("annotation.tsv"),
+    parent = upload_id,
     used = str_c(blood_count_id, expr_id, sep = ";"),
     executed = "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SDY364/create_processed_tables.R",
-    activityName = "Process files from 10kimmunome."
+    activityName = "Process files from 10kimmunome.",
+    file_type = "annotations",
+    annotations = "age;race;gender"
+)
+
+manifest_df3 <- tibble(
+    path = c("ground_truth.tsv", "ground_truth2.tsv"),
+    parent = gt_upload_id,
+    used = str_c(blood_count_id, expr_id, sep = ";"),
+    executed = "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SDY364/create_processed_tables.R",
+    activityName = "Process files from 10kimmunome.",
+    file_type = "ground truth",
+    unit = c("fraction", "ul"),
+    cell_types = c("BASOPHIL;EOSINOPHIL;LYMPHOCYTE;MONOCYTE;NEUTROPHIL", "various")
 )
 
 
-write_tsv(manifest_df, "manifest1.tsv")
+write_tsv(manifest_df1, "manifest1.tsv")
 write_tsv(manifest_df2, "manifest2.tsv")
+write_tsv(manifest_df3, "manifest3.tsv")
 
 write_tsv(log_expr_df, "expression_log.tsv")
 write_tsv(linear_expr_df, "expression_linear.tsv")
 write_tsv(annotation_df, "annotation.tsv")
-write_tsv(fcs_df, "fcs.tsv")
+write_tsv(fcs_df, "ground_truth2.tsv")
 write_tsv(ground_truth_df, "ground_truth.tsv")
 
 syncToSynapse("manifest1.tsv")
 syncToSynapse("manifest2.tsv")
+syncToSynapse("manifest3.tsv")
 
