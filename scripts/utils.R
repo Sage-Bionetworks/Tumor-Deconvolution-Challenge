@@ -44,7 +44,7 @@ get_file_df_from_synapse_dir_id <- function(syn_id){
         magrittr::use_series("results") %>% 
         purrr::map(data.frame) %>% 
         dplyr::bind_rows() %>% 
-        tibble::as_data_frame() 
+        tibble::as_tibble() 
 }
 
 
@@ -73,7 +73,7 @@ matrix_to_df <- function(matrix, new_col){
     matrix %>% 
         data.frame() %>% 
         tibble::rownames_to_column(new_col) %>% 
-        tibble::as_data_frame()
+        tibble::as_tibble()
 }
 
 
