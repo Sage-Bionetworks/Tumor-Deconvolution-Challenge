@@ -3,6 +3,10 @@ library(data.table)
 library(magrittr)
 library(tidyverse)
 
+dataset       <- "GSE64385"
+script_url    <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE64385/create_processed_tables.R"
+
+
 home_dir <- "../../../Tumor-Deconvolution-Challenge/"
 tmp_dir <- tempdir()
 
@@ -37,7 +41,7 @@ annotations <- pData(phenoData(gse[[1]]))
 annotations$sample <- rownames(annotations)
 
 anno_df <- annotations %>% 
-    as_data_frame %>%
+    as_tibble %>%
     dplyr::rename("hct116.mrna.mass" = "hct116 mrna mass (ng):ch1") %>%
     dplyr::rename("monocytes.mrna.mass" = "monocytes mrna mass (ng):ch1") %>%    
     dplyr::rename("neutrophils.mrna.mass" = "neutrophils mrna mass (ng):ch1") %>%
@@ -74,15 +78,7 @@ anno_df <- annotations %>%
            "hct116.mrna.percent", "monocytes.mrna.percent", "neutrophils.mrna.percent",
            "nk.cells.mrna.percent", "t.cells.mrna.percent", "b.cells.mrna.percent")
 
-activity_obj <- Activity(
-    name = "download-annotations",
-    description = "download GEO annotations",
-    used = list("https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE64385"),
-    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE64385/create_processed_tables.R")
-)
 
-write_tsv(anno_df, "annotation.tsv")
-upload_file_to_synapse("annotation.tsv", preprocessed_upload_id, activity_obj = activity_obj)
 
 expr <- as.data.frame(exprs(gse[[1]]))
 
@@ -108,11 +104,24 @@ if(!all(rownames(expr) %in% mapping$from)) {
     cat("All probes in mapping\n")
 }
 
-compressed <- expr %>% compressGenes(mapping, fun = max) 
-expr_symbols <- compressed %>% matrix_to_df("Hugo")
+expr_df <- expr %>% 
+    compressGenes(mapping, fun = max) %>%  
+    matrix_to_df("Hugo") %>% 
+    gather(key = "sample", value = "expr", - Hugo) %>% 
+    filter(Hugo != "")
+
+linear_expr_df <- expr_df %>% 
+    mutate(expr = (2 ** expr)) %>% 
+    spread(key = "sample", value = "expr")
+
+log_expr_df <- expr_df %>% 
+    spread(key = "sample", value = "expr")
+
 
 ## NB: according to the annotations, these data are output by RMA, which is in log space.
 write_tsv(expr_symbols, "log_expression_microarray.tsv")
+
+
 
 ## Get the Synapse ID of the raw file we saved above
 children <- synGetChildren(raw_upload_id)
@@ -121,25 +130,59 @@ df <- do.call(rbind.data.frame, l)
 
 raw_expr_id <- as.character(df$id[df$name == "GSE64385-expr-probes.tsv"])
 
+## Process the ground truth file
+gt_df <- anno_df
+
+
+write_tsv(anno_df, "annotation.tsv")
+
+upload_file_to_synapse("annotation.tsv", preprocessed_upload_id, activity_obj = activity_obj)
+
 activity_obj <- Activity(
     name = "create",
     description = "process GEO expression files",
     used = list(raw_expr_id),
     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE64385/create_processed_tables.R")
 )
-upload_file_to_synapse("log_expression_microarray.tsv", preprocessed_upload_id, activity_obj = activity_obj)
 
-## Process the ground truth file
-gt_df <- anno_df
 
+
+
+write_tsv(log_expr_df, "expression_log.tsv")
+write_tsv(linear_expr_df, "expression_linear.tsv")
 write_tsv(gt_df, "ground_truth.tsv")
 
-activity_obj <- Activity(
-    name = "create",
-    description = "standardize format of raw ground truth file",
-    used = list("https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE64385"),
-    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE64385/create_processed_tables.R")
+
+expression_manifest_df <- tibble(
+    path = c("expression_log.tsv", "expression_linear.tsv"),
+    parent = preprocessed_upload_id,
+    used = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE64385", 
+    executed = script_url,
+    activityName = "download GEO annotations",
+    dataset = dataset,
+    file_type = "expression",
+    expression_type = "microarray", 
+    microarray_type = "Affymetrix HG-U133 Plus 2.0",
+    expression_space = c("log2", "linear")
 )
 
-upload_file_to_synapse("ground_truth.tsv", preprocessed_upload_id, activity_obj = activity_obj)
+
+ground_truth_manifest_df <- tibble(
+    path = "ground_truth.tsv",
+    parent = preprocessed_upload_id,
+    used = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE64385", 
+    executed = script_url,
+    activityName = "standardize format of raw ground truth file",
+    dataset = dataset,
+    file_type = "ground truth",
+    unit = "mass;percent",
+    cell_types = str_c(colnames(gt_df)[-1], collapse = ";")
+)
+
+
+write_tsv(expression_manifest_df, "expression_manifest.tsv")
+write_tsv(ground_truth_manifest_df, "ground_truth_manifest.tsv")
+
+syncToSynapse("expression_manifest.tsv")
+syncToSynapse("ground_truth_manifest.tsv")
 
