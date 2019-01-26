@@ -1,5 +1,6 @@
 library(tidyverse)
 library(synapser)
+library(synapserutils)
 library(data.table)
 library(magrittr)
 library(ImmuneSpaceR)
@@ -8,6 +9,10 @@ upload_id     <- "syn17026017"
 gt_upload_id  <- "syn17026016"
 sdy_id        <- "SDY144"
 lt_id         <- "syn13363369"
+dataset       <- "GSE52005"
+script_url    <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE52005/create_processed_tables.R"
+activity_name <- "process_files_from_ImmuneSpace"
+
 
 source("../../scripts/utils.R")
 synLogin()
@@ -34,7 +39,7 @@ expr_obj <- connection$getGEMatrix("SDY144_Other_TIV_Geo")
 
 translation_df <- expr_obj@phenoData@data %>% 
     rownames_to_column("expr_id") %>% 
-    as_data_frame() %>%
+    as_tibble() %>%
     filter(study_time_collected == 0) %>% 
     dplyr::select(expr_id, participant_id) %>% 
     dplyr::rename(sample = participant_id) 
@@ -47,10 +52,6 @@ expr_df <- expr_obj@assayData$exprs %>%
 
 samples_in_common <- intersect(expr_df$sample, ground_truth_lab_tests_df$sample)
 
-expr_df <- expr_df %>% 
-    filter(sample %in% samples_in_common) %>% 
-    transpose_df("sample", "Hugo")
-
 ground_truth_df <- ground_truth_lab_tests_df %>% 
     filter(sample %in% samples_in_common) %>% 
     dplyr::select(sample, !!cell.pheno.cols)
@@ -60,19 +61,66 @@ anno_df <- ground_truth_lab_tests_df %>%
     dplyr::select(sample, age, gender, race) %>% 
     distinct
 
+expr_df2 <- expr_df %>%
+    filter(sample %in% samples_in_common) %>%
+    gather(key = "gene", value = "expr", -sample)
 
-activity_obj <- Activity(
-    name = "create",
-    description = "process GEO data into usable tables",
-    used = list(),
-    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE52005/create_processed_tables.R")
+linear_expr_df <- expr_df2 %>% 
+    spread(key = "sample", value = "expr")
+
+log_expr_df <- expr_df2 %>% 
+    mutate(expr = log2(expr +1)) %>% 
+    spread(key = "sample", value = "expr")
+
+remove(expr_obj, expr_df, expr_df2)
+
+write_tsv(log_expr_df, "expression_log.tsv")
+write_tsv(linear_expr_df, "expression_linear.tsv")
+write_tsv(ground_truth_df, "ground_truth.tsv")
+write_tsv(anno_df, "annotation.tsv")
+
+
+expression_manifest_df <- tibble(
+    path = c("expression_log.tsv", "expression_linear.tsv"),
+    parent = upload_id,
+    used = lt_id, 
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    file_type = "expression",
+    expression_type = "microarray", 
+    microarray_type = "Illumina BeadArray Reader 500X",
+    expression_space = c("log2", "linear")
 )
 
-write_tsv(expr_df, "expression_illumina.tsv")
-write_tsv(anno_df, "annotation.tsv")
-write_tsv(ground_truth_df, "ground_truth.tsv")
+annotation_manifest_df <- tibble(
+    path = "annotation.tsv",
+    parent = upload_id,
+    used = lt_id, 
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    file_type = "annotations",
+    annotations = "age;race;gender"
+)
 
-upload_file_to_synapse("expression_illumina.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("ground_truth.tsv", gt_upload_id, activity_obj = activity_obj)
+ground_truth_manifest_df <- tibble(
+    path = "ground_truth.tsv",
+    parent = gt_upload_id,
+    used = lt_id, 
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    file_type = "ground truth",
+    unit = "percent",
+    cell_types = str_c(colnames(ground_truth_df)[-1], collapse = ";")
+)
 
+
+write_tsv(expression_manifest_df, "expression_manifest.tsv")
+write_tsv(annotation_manifest_df, "annotation_manifest.tsv")
+write_tsv(ground_truth_manifest_df, "ground_truth_manifest.tsv")
+
+syncToSynapse("expression_manifest.tsv")
+syncToSynapse("annotation_manifest.tsv")
+syncToSynapse("ground_truth_manifest.tsv")
