@@ -24,7 +24,7 @@ geo_df <- gse_object %>%
     phenoData() %>% 
     pData() %>%
     rownames_to_column("sample") %>%
-    as_data_frame %>% 
+    as_tibble %>% 
     dplyr::select(sample, title, `fractional abundance:ch1`) %>% 
     set_colnames(c("sample", "title", "fraction")) %>% 
     separate(col = title, into = c("cell_type", "donor"), sep = ", donor ")
@@ -46,7 +46,7 @@ query_df <-
         keys=keys(hgu133plus2.db,keytype="PROBEID"),
         columns=c("SYMBOL"),
         keytype="PROBEID") %>%
-    as_data_frame() %>%
+    as_tibble() %>%
     set_colnames(c("Probe", "Hugo")) %>%
     drop_na()
 
@@ -86,9 +86,9 @@ manifest_df1 <- tibble(
     executed = script_url,
     activityName = activity_name,
     dataset = dataset,
-    file_type = c(rep("expression", 2)),
-    expression_type = c(rep("microarray", 2)),
-    microarray_type = c(rep("hgu133plus2", 2)),
+    file_type = "expression",
+    expression_type = "microarray",
+    microarray_type = "Affymetrix HG-U133 Plus 2.0"
     expression_space = c("log2", "linear")
 )
 
