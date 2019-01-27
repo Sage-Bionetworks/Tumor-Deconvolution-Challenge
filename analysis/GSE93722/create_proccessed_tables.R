@@ -2,11 +2,9 @@ library(plyr)
 library(doMC)
 library(tidyverse)
 library(synapser)
+library(synapserutils)
 library(data.table)
 library(magrittr)
-
-home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE93722/"
 
 
 hugo_id <- "syn11536071"
@@ -16,15 +14,18 @@ anno_id <- "syn12667068"
 upload_id  <- "syn12667035"
 
 
-setwd(home_dir)
-source("scripts/utils.R")
-setwd(tmp_dir)
+script_url <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE93722/create_processed_tables.R"
+dataset <- "GSE93722"
+activity_name <- "process GEO files into usable tables"
+
+
+source("../../scripts/utils.R")
 synLogin()
 
 hugo_df <-  create_df_from_synapse_id(hugo_id)
 
 anno_df <- anno_id %>% 
-    create_df_from_synapse_id(unzip = T, skip = 17, nrow = 33) %>%
+    create_df_from_synapse_id(unzip = T, skip = 31, nrow = 33) %>%
     rename("title" = `!Sample_title`) %>% 
     .[c(7,9,10),] %>% 
     mutate(title = c("tissue", "gender", "age")) %>% 
@@ -68,18 +69,39 @@ log_tpm_df <- tpm_df %>%
     log10 %>% 
     matrix_to_df("Hugo")
 
-activity_obj <- Activity(
-    name = "create",
-    description = "process GEO files into usable tables",
-    used = list(hugo_id, anno_id, expr_id),
-    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE93722/create_processed_tables.R")
-)
-
-write_tsv(tpm_df, "expression_tpm.tsv")
-write_tsv(log_tpm_df, "expression_log_tpm.tsv")
+write_tsv(tpm_df, "expression_linear.tsv")
+write_tsv(log_tpm_df, "expression_log.tsv")
 write_tsv(anno_df, "annotation.tsv")
 
-upload_file_to_synapse("expression_tpm.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("expression_log_tpm.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)
+
+expression_manifest_df <- tibble(
+    path = c("expression_log.tsv", "expression_linear.tsv"),
+    parent = upload_id,
+    used = str_c(hugo_id, anno_id, expr_id, sep = ";"),
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    file_type = "expression",
+    expression_type = "RNASeq", 
+    rnaseq_normalization = "TPM",
+    expression_space = c("log10", "linear")
+)
+
+annotation_manifest_df <- tibble(
+    path = "annotation.tsv",
+    parent = upload_id,
+    used = str_c(hugo_id, anno_id, expr_id, sep = ";"),
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    file_type = "annotations",
+    annotations = str_c(colnames(anno_df)[-1], collapse = ";")
+)
+
+write_tsv(expression_manifest_df, "expression_manifest.tsv")
+write_tsv(annotation_manifest_df, "annotation_manifest.tsv")
+
+syncToSynapse("expression_manifest.tsv")
+syncToSynapse("annotation_manifest.tsv")
+
 
