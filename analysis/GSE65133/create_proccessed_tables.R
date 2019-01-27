@@ -1,5 +1,6 @@
 library(tidyverse)
 library(synapser)
+library(synapserutils)
 library(data.table)
 library(magrittr)
 library(GEOquery)
@@ -7,23 +8,22 @@ library(AnnotationDbi)
 library(illuminaHumanv4.db)
 
 
-home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE65133/"
-
 upload_id    <- "syn15664932"
 gt_upload_id <- "syn15664931"
 
-setwd(home_dir)
-source("scripts/utils.R")
-setwd(tmp_dir)
+dataset       <- "GSE65133"
+script_url    <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE65133/create_processed_tables.R"
+activity_name <- "process_files_from_GEO"
+
+source("../../scripts/utils.R")
 synLogin()
 
-gse <- getGEO("GSE65133", GSEMatrix = TRUE)
+gse <- getGEO(dataset, GSEMatrix = TRUE)
 
 series_df <- 
     pData(phenoData(gse[[1]])) %>% 
     rownames_to_column("sample") %>% 
-    as_data_frame %>% 
+    as_tibble %>% 
     dplyr::select(sample, title, `flow cytometry cell subset proportions:ch1`) %>% 
     set_colnames(c("sample", "id", "cell_types")) %>% 
     separate(cell_types, sep = "; ", into = as.character(1:20), fill = "right") %>%
@@ -46,7 +46,7 @@ query_df <-
         keys=keys(illuminaHumanv4.db,keytype="PROBEID"),
         columns=c("SYMBOL"), 
         keytype="PROBEID") %>% 
-    as_data_frame() %>% 
+    as_tibble() %>% 
     set_colnames(c("Illum", "Hugo")) %>% 
     drop_na()
 
@@ -62,10 +62,50 @@ log_expr_df <-
     drop_na() %>% 
     filter(Hugo != "")
 
-expr_df <- log_expr_df %>% 
+linear_expr_df <- log_expr_df %>% 
     gather(key = "sample", value = "expr", -Hugo) %>% 
     mutate(expr = 2^expr) %>% 
     spread(key = "sample", value = "expr")
+
+
+write_tsv(log_expr_df, "expression_log.tsv")
+write_tsv(linear_expr_df, "expression_linear.tsv")
+write_tsv(ground_truth_df, "ground_truth.tsv")
+write_tsv(anno_df, "annotation.tsv")
+
+
+expression_manifest_df <- tibble(
+    path = c("expression_log.tsv", "expression_linear.tsv"),
+    parent = upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    file_type = "expression",
+    expression_type = "microarray", 
+    microarray_type = "Illumina Human HT-12 V4 BeadChip",
+    expression_space = c("log2", "linear")
+)
+
+ground_truth_manifest_df <- tibble(
+    path = "ground_truth.tsv",
+    parent = gt_upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    file_type = "ground truth",
+    unit = "fraction",
+    cell_types = str_c(colnames(ground_truth_df)[-1], collapse = ";")
+)
+
+
+write_tsv(expression_manifest_df, "expression_manifest.tsv")
+write_tsv(ground_truth_manifest_df, "ground_truth_manifest.tsv")
+
+syncToSynapse("expression_manifest.tsv")
+syncToSynapse("ground_truth_manifest.tsv")
+
+
+
     
 activity_obj <- Activity(
     name = "create",
@@ -74,13 +114,7 @@ activity_obj <- Activity(
     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE65133/create_processed_tables.R")
 )
 
-write_tsv(log_expr_df, "log_expression_illumina.tsv")
-write_tsv(expr_df, "expression_illumina.tsv")
-write_tsv(anno_df, "annotation.tsv")
-write_tsv(ground_truth_df, "ground_truth.tsv")
+ 
 
-upload_file_to_synapse("log_expression_illumina.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("expression_illumina.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("ground_truth.tsv", gt_upload_id, activity_obj = activity_obj)
 
