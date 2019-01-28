@@ -14,8 +14,14 @@ synLogin()
 blood_count_id <- "syn13363369"
 expr_id  <- "syn13363367"
 
+dataset <- "SDY364"
+script_url <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SDY364/create_processed_tables.R"
+activity_name <- "Process files from 10kimmunome."
+used <- str_c(blood_count_id, expr_id, sep = ";")
 
-connection <- ImmuneSpaceR::CreateConnection("SDY364")
+
+
+connection <- ImmuneSpaceR::CreateConnection(dataset)
 fcs_df <- 
     connection$getDataset("fcs_analyzed_result") %>% 
     dplyr::as_tibble() %>% 
@@ -38,7 +44,7 @@ fcs_df <-
 
 blood_count_df <- blood_count_id %>% 
     create_df_from_synapse_id %>% 
-    filter(study_accession == "SDY364") %>% 
+    filter(study_accession == dataset) %>% 
     select(-c(study_accession, WBC_K_per_uL)) %>% 
     dplyr::rename(sample = subject_accession)
 
@@ -72,7 +78,7 @@ expr_df <- expr_id  %>%
     download_from_synapse %>%
     fread %>% 
     data.frame %>% 
-    dplyr::filter(study_accession == "SDY364") %>% 
+    dplyr::filter(study_accession == dataset) %>% 
     dplyr::select(-c(study_accession, data_accession, age, gender, race)) %>% 
     dplyr::rename(sample = subject_accession) %>% 
     as_tibble() %>% 
@@ -107,27 +113,28 @@ fcs_df <- fcs_df %>%
 
 
 
-manifest_df1 <- tibble(
-    path = c("expression_log.tsv",
-             "expression_linear.tsv"),
+expression_manifest_df <- tibble(
+    path = c("expression_log.tsv", "expression_linear.tsv"),
     parent = upload_id,
-    used = str_c(blood_count_id, expr_id, sep = ";"),
-    executed = "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SDY364/create_processed_tables.R",
-    activityName = "Process files from 10kimmunome.",
-    file_type = c(rep("expression", 2)),
-    expression_type = c(rep("microarray", 2)),
-    microarray_type = c(rep("unknown", 2)),
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    used = used,
+    file_type = "expression",
+    expression_type = "microarray", 
+    microarray_type = "unknown",
     expression_space = c("log2", "linear")
 )
 
-manifest_df2 <- tibble(
-    path = c("annotation.tsv"),
+annotation_manifest_df <- tibble(
+    path = "annotation.tsv",
     parent = upload_id,
-    used = str_c(blood_count_id, expr_id, sep = ";"),
-    executed = "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SDY364/create_processed_tables.R",
-    activityName = "Process files from 10kimmunome.",
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    used = used,
     file_type = "annotations",
-    annotations = "age;race;gender"
+    annotations = str_c(colnames(annotation_df)[-1], collapse = ";")
 )
 
 manifest_df3 <- tibble(
@@ -141,10 +148,17 @@ manifest_df3 <- tibble(
     cell_types = c("BASOPHIL;EOSINOPHIL;LYMPHOCYTE;MONOCYTE;NEUTROPHIL", "various")
 )
 
-
-write_tsv(manifest_df1, "manifest1.tsv")
-write_tsv(manifest_df2, "manifest2.tsv")
-write_tsv(manifest_df3, "manifest3.tsv")
+ground_truth_manifest_df <- tibble(
+    path = c("ground_truth.tsv", "ground_truth2.tsv"),
+    parent = gt_upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    used = used,
+    file_type = "ground truth",
+    unit = c("fraction", "ul"),
+    cell_types = c(str_c(colnames(ground_truth_df)[-1], collapse = ";"), "various")
+)
 
 write_tsv(log_expr_df, "expression_log.tsv")
 write_tsv(linear_expr_df, "expression_linear.tsv")
@@ -152,7 +166,11 @@ write_tsv(annotation_df, "annotation.tsv")
 write_tsv(fcs_df, "ground_truth2.tsv")
 write_tsv(ground_truth_df, "ground_truth.tsv")
 
-syncToSynapse("manifest1.tsv")
-syncToSynapse("manifest2.tsv")
-syncToSynapse("manifest3.tsv")
+write_tsv(expression_manifest_df, "expression_manifest.tsv")
+write_tsv(annotation_manifest_df, "annotation_manifest.tsv")
+write_tsv(ground_truth_manifest_df, "ground_truth_manifest.tsv")
+
+syncToSynapse("expression_manifest.tsv")
+syncToSynapse("annotation_manifest.tsv")
+syncToSynapse("ground_truth_manifest.tsv")
 
