@@ -1,4 +1,5 @@
 library(synapser)
+library(synapserutils)
 library(data.table)
 library(magrittr)
 library(tidyverse)
@@ -22,6 +23,10 @@ raw_upload_id <- "syn17014401"
 
 ## ground truth: IHC_MCP.TXT (sent by Aurelien)
 gt_id   <- "syn17014397"
+
+dataset       <- "GSE39582"
+script_url    <- paste0("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/", dataset, "/create_processed_tables.R")
+activity_name <- "process_files_from_GEO"
 
 ## Begin download/processing from GEO
 
@@ -57,6 +62,7 @@ activity_obj <- Activity(
 write_tsv(anno_df, "annotation.tsv")
 upload_file_to_synapse("annotation.tsv", preprocessed_upload_id, activity_obj = activity_obj)
 
+## This is RMA-normalized data (according to annotations), which is in log2 space
 expr <- as.data.frame(exprs(gse[[1]]))
 
 activity_obj <- Activity(
@@ -73,9 +79,9 @@ upload_file_to_synapse("GSE39582-expr-probes.tsv", raw_upload_id, activity_obj =
 gpl <- getGEO(gse[[1]]@annotation, destdir=".")
 mapping <- Table(gpl)[, c("ID", "Gene Symbol")]
 colnames(mapping) <- c("from", "to")
-if(!all(rownames(ex) %in% mapping$from)) {
+if(!all(rownames(expr) %in% mapping$from)) {
     cat("Some probes not in mapping\n")
-    table(rownames(ex) %in% mapping$from)
+    table(rownames(expr) %in% mapping$from)
     stop("Stopping")
 } else {
     cat("All probes in mapping\n")
@@ -94,9 +100,14 @@ compressGenes <- function(e, mapping, from.col = "from", to.col = "to")
   return(e)
 }
 
-expr_symbols <- expr %>% compressGenes(mapping) %>% matrix_to_df("Hugo")
+log2_expr_symbols <- expr %>% compressGenes(mapping) %>% matrix_to_df("Hugo")
+linear_expr_symbols <- log2_expr_symbols %>%
+    df_to_matrix("Hugo") %>%
+    raise_to_power(x=2, power=.) %>%
+    matrix_to_df("Hugo")
 
-write_tsv(expr_symbols, "expression_microarray.tsv")
+write_tsv(log2_expr_symbols, "expression_log.tsv")
+write_tsv(linear_expr_symbols, "expression_linear.tsv")
 
 ## Get the Synapse ID of the raw file we saved above
 children <- synGetChildren(raw_upload_id)
@@ -105,13 +116,30 @@ df <- do.call(rbind.data.frame, l)
 
 raw_expr_id <- as.character(df$id[df$name == "GSE39582-expr-probes.tsv"])
 
-activity_obj <- Activity(
-    name = "create",
-    description = "process GEO expression files",
-    used = list(raw_expr_id),
-    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE39582/create_processed_tables.R")
+microarray_type <- NA
+if(Meta(gpl)$title == "[HG-U133_Plus_2] Affymetrix Human Genome U133 Plus 2.0 Array") {
+  microarray_type <- "Affymetrix HG-U133 Plus 2.0"
+} else {
+  stop(paste0("Unknown array type", Meta(gpl)$title))
+}
+
+manifest_df1 <- tibble(
+    path = c("expression_log.tsv",
+             "expression_linear.tsv"),
+    parent = preprocessed_upload_id,
+    used = raw_expr_id,
+    executed = script_url,
+    activityName = "process GEO expression files",
+    dataset = dataset,
+    file_type = "expression",
+    expression_type = "microarray",
+    microarray_type = microarray_type,
+    expression_space = c("log2", "linear")
 )
-upload_file_to_synapse("expression_microarray.tsv", preprocessed_upload_id, activity_obj = activity_obj)
+
+write_tsv(manifest_df1, "manifest1.tsv")
+
+syncToSynapse("manifest1.tsv")
 
 ## Process the ground truth file
 gt_df <- gt_id %>% 
