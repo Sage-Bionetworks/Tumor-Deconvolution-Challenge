@@ -1,5 +1,6 @@
 library(tidyverse)
 library(synapser)
+library(synapserutils)
 library(data.table)
 library(magrittr)
 library(GEOquery)
@@ -9,18 +10,23 @@ library(hugene11sttranscriptcluster.db)
 upload_id     <- "syn17091816"
 gt_upload_id  <- "syn17091815"
 
+dataset       <- "GSE77343"
+script_url    <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE77343/create_processed_tables.R"
+used          <- NA
+activity_name <- "process GEO data into usable tables"
+
 source("../../scripts/utils.R")
 synLogin()
 
 
-gse_object <- getGEO("GSE77343", GSEMatrix = TRUE)
+gse_object <- getGEO(dataset, GSEMatrix = TRUE)
 
 geo_df <- gse_object %>% 
     extract2(1) %>% 
     phenoData() %>% 
     pData() %>%
     rownames_to_column("sample") %>%
-    as_data_frame %>%
+    as_tibble %>%
     dplyr::select(
         "sample", 
         "age" = "age:ch1", 
@@ -38,7 +44,7 @@ query_df <-
         keys=keys(hugene11sttranscriptcluster.db,keytype="PROBEID"),
         columns=c("SYMBOL"),
         keytype="PROBEID") %>%
-    as_data_frame() %>%
+    as_tibble() %>%
     set_colnames(c("Probe", "Hugo")) %>%
     drop_na()
 
@@ -74,21 +80,56 @@ ground_truth_df <- geo_df %>%
 annotation_df <- geo_df %>% 
     dplyr::select(sample, age, gender) %>% 
     filter(sample %in% samples_in_common)
-  
-activity_obj <- Activity(
-    name = "create",
-    description = "process GEO data into usable tables",
-    used = list(),
-    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE77343/create_processed_tables.R")
+
+
+expression_manifest_df <- tibble(
+    path = c("expression_log.tsv", "expression_linear.tsv"),
+    parent = upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    used = used,
+    file_type = "expression",
+    expression_type = "microarray",
+    microarray_type = "Affymetrix Human Gene 1.1 ST Array",
+    expression_space = c("log2", "linear")
 )
 
-write_tsv(expr_df, "expression_affy_log.tsv")
-write_tsv(linear_expr_df, "expression_affy_linear.tsv")
-write_tsv(ground_truth_df, "ground_truth.tsv")
-write_tsv(annotation_df, "annotation.tsv")
+annotation_manifest_df <- tibble(
+    path = "annotation.tsv",
+    parent = upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    used = used,
+    file_type = "annotations",
+    annotations = str_c(colnames(annotation_df)[-1], collapse = ";")
+)
 
-upload_file_to_synapse("expression_affy_log.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("expression_affy_linear.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("ground_truth.tsv", gt_upload_id, activity_obj = activity_obj)
+ground_truth_manifest_df <- tibble(
+    path = "ground_truth.tsv",
+    parent = gt_upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    used = used,
+    file_type = "ground truth",
+    unit = "fraction",
+    cell_types = str_c(colnames(ground_truth_df)[-1], collapse = ";")
+)
+
+write_tsv(expr_df, "expression_log.tsv")
+write_tsv(linear_expr_df, "expression_linear.tsv")
+write_tsv(annotation_df, "annotation.tsv")
+write_tsv(ground_truth_df, "ground_truth.tsv")
+
+write_tsv(expression_manifest_df, "expression_manifest.tsv")
+write_tsv(annotation_manifest_df, "annotation_manifest.tsv")
+write_tsv(ground_truth_manifest_df, "ground_truth_manifest.tsv")
+
+syncToSynapse("expression_manifest.tsv")
+syncToSynapse("annotation_manifest.tsv")
+syncToSynapse("ground_truth_manifest.tsv")
+
+
 
