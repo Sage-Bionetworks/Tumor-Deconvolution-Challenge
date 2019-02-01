@@ -1,5 +1,6 @@
 library(tidyverse)
 library(synapser)
+library(synapserutils)
 library(data.table)
 library(magrittr)
 library(GEOquery)
@@ -7,20 +8,20 @@ library(AnnotationDbi)
 library(hgu133plus2.db)
 library(preprocessCore)
 
-home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE65135/"
-
 upload_id    <- "syn15664986"
 gt_upload_id <- "syn15664985"
 
 expr_gse65133_id <- "syn15667753"
 
-setwd(home_dir)
-source("scripts/utils.R")
-setwd(tmp_dir)
+source("../../scripts/utils.R")
 synLogin()
 
-gse <- getGEO("GSE65135", GSEMatrix = TRUE)
+
+dataset       <- "GSE65135"
+script_url    <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE65135/create_processed_tables.R"
+activity_name <- "Process files from Geo."
+
+gse <- getGEO(dataset, GSEMatrix = TRUE)
 
 m_expr_gse65133_v <- expr_gse65133_id %>% 
     create_df_from_synapse_id %>% 
@@ -82,12 +83,54 @@ norm_log_expr_df <- expr_df %>%
     set_colnames(colnames(expr_df))
 
 
-activity_obj <- Activity(
-    name = "create",
-    description = "process GEO data into usable tables",
-    used = list(),
-    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE65135/create_processed_tables.R")
+write_tsv(log_expr_df, "expression_log.tsv")
+write_tsv(expr_df, "expression_linear.tsv")
+write_tsv(anno_df, "annotation.tsv")
+write_tsv(ground_truth_df, "ground_truth.tsv")
+
+expression_manifest_df <- tibble(
+    path = c("expression_log.tsv", "expression_linear.tsv"),
+    parent = upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    file_type = "expression",
+    expression_type = "microarray", 
+    microarray_type = "Affymetrix HG-U133 Plus 2.0",
+    expression_space = c("log2", "linear")
 )
+
+annotation_manifest_df <- tibble(
+    path = "annotation.tsv",
+    parent = upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    file_type = "annotations",
+    annotations = str_c(colnames(anno_df)[-1], collapse = ";")
+)
+
+ground_truth_manifest_df <- tibble(
+    path = "ground_truth.tsv",
+    parent = gt_upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    file_type = "ground truth",
+    unit = "percent",
+    cell_types = str_c(colnames(ground_truth_df)[-1], collapse = ";")
+)
+
+write_tsv(expression_manifest_df, "expression_manifest.tsv")
+write_tsv(annotation_manifest_df, "annotation_manifest.tsv")
+write_tsv(ground_truth_manifest_df, "ground_truth_manifest.tsv")
+
+syncToSynapse("expression_manifest.tsv")
+syncToSynapse("annotation_manifest.tsv")
+syncToSynapse("ground_truth_manifest.tsv")
+
+
+write_tsv(norm_log_expr_df, "normalized_log_expression_affy.tsv")
 
 activity_obj2 <- Activity(
     name = "create",
@@ -96,15 +139,5 @@ activity_obj2 <- Activity(
     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE65135/create_processed_tables.R")
 )
 
-write_tsv(log_expr_df, "log_expression_affy.tsv")
-write_tsv(norm_log_expr_df, "normalized_log_expression_affy.tsv")
-write_tsv(expr_df, "expression_affy.tsv")
-write_tsv(anno_df, "annotation.tsv")
-write_tsv(ground_truth_df, "ground_truth.tsv")
-
-upload_file_to_synapse("log_expression_affy.tsv", upload_id, activity_obj = activity_obj)
 upload_file_to_synapse("normalized_log_expression_affy.tsv", upload_id, activity_obj = activity_obj2)
-upload_file_to_synapse("expression_affy.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("ground_truth.tsv", gt_upload_id, activity_obj = activity_obj)
 
