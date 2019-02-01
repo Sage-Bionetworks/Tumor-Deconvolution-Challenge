@@ -4,14 +4,8 @@ library(data.table)
 library(magrittr)
 library(tidyverse)
 
-home_dir <- "/home/aelamb/repos/Tumor-Deconvolution-Challenge/"
-home_dir <- "../../../Tumor-Deconvolution-Challenge/"
-tmp_dir  <- "/home/aelamb/tmp/tumor_deconvolution/GSE59654/"
-tmp_dir <- tempdir()
 
-setwd(home_dir)
-source("scripts/utils.R")
-setwd(tmp_dir)
+source("../../scripts/utils.R")
 synLogin()
 
 ## Folder: leaderboard_datasets/GSE39582/
@@ -26,7 +20,7 @@ gt_id   <- "syn17014397"
 
 dataset       <- "GSE39582"
 script_url    <- paste0("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/", dataset, "/create_processed_tables.R")
-activity_name <- "process_files_from_GEO"
+
 
 ## Begin download/processing from GEO
 
@@ -52,15 +46,7 @@ anno_df <- annotations %>%
     dplyr::rename("gender" = "Sex:ch1") %>%
     select(sample, age, gender)
 
-activity_obj <- Activity(
-    name = "download-annotations",
-    description = "download GEO annotations",
-    used = NULL,
-    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE39582/create_processed_tables.R")
-)
 
-write_tsv(anno_df, "annotation.tsv")
-upload_file_to_synapse("annotation.tsv", preprocessed_upload_id, activity_obj = activity_obj)
 
 ## This is RMA-normalized data (according to annotations), which is in log2 space
 expr <- as.data.frame(exprs(gse[[1]]))
@@ -106,8 +92,7 @@ linear_expr_symbols <- log2_expr_symbols %>%
     raise_to_power(x=2, power=.) %>%
     matrix_to_df("Hugo")
 
-write_tsv(log2_expr_symbols, "expression_log.tsv")
-write_tsv(linear_expr_symbols, "expression_linear.tsv")
+
 
 ## Get the Synapse ID of the raw file we saved above
 children <- synGetChildren(raw_upload_id)
@@ -123,23 +108,7 @@ if(Meta(gpl)$title == "[HG-U133_Plus_2] Affymetrix Human Genome U133 Plus 2.0 Ar
   stop(paste0("Unknown array type", Meta(gpl)$title))
 }
 
-manifest_df1 <- tibble(
-    path = c("expression_log.tsv",
-             "expression_linear.tsv"),
-    parent = preprocessed_upload_id,
-    used = raw_expr_id,
-    executed = script_url,
-    activityName = "process GEO expression files",
-    dataset = dataset,
-    file_type = "expression",
-    expression_type = "microarray",
-    microarray_type = microarray_type,
-    expression_space = c("log2", "linear")
-)
 
-write_tsv(manifest_df1, "manifest1.tsv")
-
-syncToSynapse("manifest1.tsv")
 
 ## Process the ground truth file
 gt_df <- gt_id %>% 
@@ -147,13 +116,51 @@ gt_df <- gt_id %>%
     dplyr::rename(sample = CEL.ID)
 
 write_tsv(gt_df, "ground_truth.tsv")
+write_tsv(log2_expr_symbols, "expression_log.tsv")
+write_tsv(linear_expr_symbols, "expression_linear.tsv")
+write_tsv(anno_df, "annotation.tsv")
 
-activity_obj <- Activity(
-    name = "create",
-    description = "standardize format of raw ground truth file provided by Aurelien",
-    used = list(gt_id),
-    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE39582/create_processed_tables.R")
+expression_manifest_df <- tibble(
+    path = c("expression_log.tsv",
+             "expression_linear.tsv"),
+    parent = preprocessed_upload_id,
+    executed = script_url,
+    activityName = "process GEO expression files",
+    dataset = dataset,
+    used = raw_expr_id,
+    file_type = "expression",
+    expression_type = "microarray",
+    microarray_type = microarray_type,
+    expression_space = c("log2", "linear")
 )
 
-upload_file_to_synapse("ground_truth.tsv", preprocessed_upload_id, activity_obj = activity_obj)
+ground_truth_manifest_df <- tibble(
+    path = "ground_truth.tsv",
+    parent = dataset_upload_id,
+    executed = script_url,
+    activityName = "standardize format of raw ground truth file provided by Aurelien",
+    dataset = dataset,
+    used = gt_id,
+    file_type = "ground truth",
+    unit = "MCPcounter scores",
+    cell_types = str_c(colnames(gt_df)[-1], collapse = ";")
+)
+
+annotation_manifest_df <- tibble(
+    path = "annotation.tsv",
+    parent = preprocessed_upload_id,
+    executed = script_url,
+    activityName = "download GEO annotations",
+    dataset = dataset,
+    file_type = "annotations",
+    annotations = str_c(colnames(anno_df)[-1], collapse = ";")
+)
+
+write_tsv(expression_manifest_df, "expression_manifest.tsv")
+write_tsv(annotation_manifest_df, "annotation_manifest.tsv")
+write_tsv(ground_truth_manifest_df, "ground_truth_manifest.tsv")
+
+syncToSynapse("expression_manifest.tsv")
+syncToSynapse("annotation_manifest.tsv")
+syncToSynapse("ground_truth_manifest.tsv")
 
