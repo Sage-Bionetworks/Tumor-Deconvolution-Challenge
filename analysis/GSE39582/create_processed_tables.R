@@ -136,7 +136,7 @@ expression_manifest_df <- tibble(
 
 ground_truth_manifest_df <- tibble(
     path = "ground_truth.tsv",
-    parent = dataset_upload_id,
+    parent = preprocessed_upload_id,
     executed = script_url,
     activityName = "standardize format of raw ground truth file provided by Aurelien",
     dataset = dataset,
