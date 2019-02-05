@@ -1,0 +1,89 @@
+synapse_ids:
+  cibersort_results: "syn18143750"
+  mcpcounter_results: "syn18143751"
+  ground_truth: "syn18143748"
+  log_expression: "syn18143746"
+  cibersort_genes: "syn12184137"
+  mcpcounter_genes: "syn11918430"
+  annotations: "syn18143748"
+  
+cibersort_common_groups:
+  - "B_cells"	
+  - "CD4_T_cells"
+  - "CD8_T_cells"
+  - "Monocytes"
+
+gt_cs_groups:
+ - new_col: "B_cells" 
+   old_cols: 
+   -  "B_cells"
+ - new_col: "CD4_T_cells"
+   old_cols: 
+     - "CD4_T_cells"
+ - new_col: "CD8_T_cells"
+   old_cols: 
+     - "CD8_T_cells"
+ - new_col: "Monocytes"
+   old_cols: 
+     - "Monocytes"
+ 
+cs_gt_groups:
+ - new_col: "B_cells"
+   old_cols: 
+     - "B_cells_naive"
+     - "B_cells_memory"
+     - "Plasma_cells"
+ - new_col: "CD4_T_cells"
+   old_cols: 
+     - "T_cells_CD4_naive"
+     - "T_cells_CD4_memory_resting"
+     - "T_cells_CD4_memory_activated"
+ - new_col: "CD8_T_cells"
+   old_cols: 
+     - "T_cells_CD8"
+ - new_col: "Monocytes"
+   old_cols: 
+     - "Monocytes"
+     - "Macrophages_M0"
+     - "Macrophages_M1"
+     - "Macrophages_M2"
+
+mcpcounter_common_groups:
+ - "T_cells"
+ - "CD8_T_cells"
+ - "B_cells"
+ - "Monocytes"
+ 
+gt_mcp_groups:
+ - new_col: "T_cells"
+   old_cols: 
+     - "CD8_T_cells"
+     - "CD4_T_cells"
+ - new_col: "CD8_T_cells"
+   old_cols: 
+     - "CD8_T_cells"
+ - new_col: "B_cells" 
+   old_cols: 
+     - "B_cells"
+ - new_col: "Monocytes"
+   old_cols: 
+     - "Monocytes"
+ 
+mcp_gt_groups:
+ - new_col: "T_cells"
+   old_cols: 
+     - "T_cells"
+ - new_col: "CD8_T_cells"
+   old_cols: 
+     - "CD8_T_cells"
+ - new_col: "B_cells" 
+   old_cols: 
+     - "B_lineage"
+ - new_col: "Monocytes"
+   old_cols: 
+     - "Monocytic_lineage"
+
+
+
+  
+  
