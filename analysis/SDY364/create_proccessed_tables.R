@@ -137,17 +137,6 @@ annotation_manifest_df <- tibble(
     annotations = str_c(colnames(annotation_df)[-1], collapse = ";")
 )
 
-manifest_df3 <- tibble(
-    path = c("ground_truth.tsv", "ground_truth2.tsv"),
-    parent = gt_upload_id,
-    used = str_c(blood_count_id, expr_id, sep = ";"),
-    executed = "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SDY364/create_processed_tables.R",
-    activityName = "Process files from 10kimmunome.",
-    file_type = "ground truth",
-    unit = c("fraction", "ul"),
-    cell_types = c("BASOPHIL;EOSINOPHIL;LYMPHOCYTE;MONOCYTE;NEUTROPHIL", "various")
-)
-
 ground_truth_manifest_df <- tibble(
     path = c("ground_truth.tsv", "ground_truth2.tsv"),
     parent = gt_upload_id,
