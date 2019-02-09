@@ -1,5 +1,6 @@
 library(tidyverse)
 library(synapser)
+library(synapserutils)
 library(data.table)
 library(magrittr)
 library(GEOquery)
@@ -12,8 +13,14 @@ gt_upload_id  <- "syn17091885"
 source("../../scripts/utils.R")
 synLogin()
 
+dataset       <- "GSE40240"
+github.path   <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/"
+dataset.path  <- paste0(github.path, dataset)
+script_url    <- paste0(dataset.path, "/create_processed_tables.R")
+used          <- NA
+activity_name <- "process GEO data into usable tables"
 
-gse_object <- getGEO("GSE40240", GSEMatrix = TRUE)
+gse_object <- getGEO(dataset, GSEMatrix = TRUE)
 
 geo_df <- gse_object %>% 
     extract2(1) %>% 
@@ -43,6 +50,23 @@ query_df <-
     set_colnames(c("Probe", "Hugo")) %>%
     drop_na()
 
+## Confirm that these data are RMA-normalized data--i.e., in log2 space
+data.processing <-
+    gse_object %>%
+    extract2(1) %>%
+    phenoData() %>%
+    pData() %>%
+    dplyr::pull(data_processing) %>%
+    unique() %>%
+    as.character()
+
+cat(paste0(dataset, " data processing: ", data.processing))
+if(grepl(data.processing, pattern="RMA")) {
+  cat(paste0("Based on RMA processing, assuming data are in log2 space\n"))
+} else {
+  stop("Data were not processed via RMA.  Can not confirm in log2 space\n")
+}
+
 expr_df <- gse_object$GSE40240_series_matrix.txt.gz@assayData %>% 
     assayDataElement('exprs') %>%
     matrix_to_df("Probe") %>%
@@ -62,6 +86,11 @@ expr_df <- expr_df %>%
     filter(sample %in% samples_in_common) %>% 
     spread(key = "sample", value = "expr")
 
+linear_expr_df <- expr_df %>%
+    df_to_matrix("Hugo") %>%
+    raise_to_power(x=2, power=.) %>%
+    matrix_to_df("Hugo")
+
 ground_truth_df <- geo_df %>%
     dplyr::select(-c(age, gender, race)) %>% 
     filter(sample %in% samples_in_common)
@@ -69,19 +98,63 @@ ground_truth_df <- geo_df %>%
 annotation_df <- geo_df %>% 
     dplyr::select(sample, age, gender, race) %>% 
     filter(sample %in% samples_in_common)
-  
-activity_obj <- Activity(
-    name = "create",
-    description = "process GEO data into usable tables",
-    used = list(),
-    executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE40240/create_processed_tables.R")
+
+gpl <- getGEO(gse_object[[1]]@annotation, destdir=".")
+microarray_type <- NA
+if(Meta(gpl)$title == "[HG-U133_Plus_2] Affymetrix Human Genome U133 Plus 2.0 Array") {
+  microarray_type <- "Affymetrix HG-U133 Plus 2.0"
+} else if(Meta(gpl)$title == "[HuGene-1_0-st] Affymetrix Human Gene 1.0 ST Array [transcript (gene) version]") {
+  microarray_type <- "Affymetrix Human Gene 1.0 ST Array"
+} else {
+  stop(paste0("Unknown array type ", Meta(gpl)$title))
+}
+
+expression_manifest_df <- tibble(
+    path = c("expression_log.tsv", "expression_linear.tsv"),
+    parent = upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    used = used,
+    file_type = "expression",
+    expression_type = "microarray",
+    microarray_type = microarray_type,
+    expression_space = c("log2", "linear")
 )
 
-write_tsv(expr_df, "expression_affy.tsv")
-write_tsv(ground_truth_df, "ground_truth.tsv")
-write_tsv(annotation_df, "annotation.tsv")
+annotation_manifest_df <- tibble(
+    path = "annotation.tsv",
+    parent = upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    used = used,
+    file_type = "annotations",
+    annotations = str_c(colnames(annotation_df)[-1], collapse = ";")
+)
 
-upload_file_to_synapse("expression_affy.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("annotation.tsv", upload_id, activity_obj = activity_obj)
-upload_file_to_synapse("ground_truth.tsv", gt_upload_id, activity_obj = activity_obj)
+ground_truth_manifest_df <- tibble(
+    path = "ground_truth.tsv",
+    parent = gt_upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    used = used,
+    file_type = "ground truth",
+    unit = "fraction",
+    cell_types = str_c(colnames(ground_truth_df)[-1], collapse = ";")
+)
+
+write_tsv(expr_df, "expression_log.tsv")
+write_tsv(linear_expr_df, "expression_linear.tsv")
+write_tsv(annotation_df, "annotation.tsv")
+write_tsv(ground_truth_df, "ground_truth.tsv")
+
+write_tsv(expression_manifest_df, "expression_manifest.tsv")
+write_tsv(annotation_manifest_df, "annotation_manifest.tsv")
+write_tsv(ground_truth_manifest_df, "ground_truth_manifest.tsv")
+
+syncToSynapse("expression_manifest.tsv")
+syncToSynapse("annotation_manifest.tsv")
+syncToSynapse("ground_truth_manifest.tsv")
 

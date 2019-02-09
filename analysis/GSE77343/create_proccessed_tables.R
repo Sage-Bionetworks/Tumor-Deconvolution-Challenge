@@ -11,7 +11,7 @@ upload_id     <- "syn17091816"
 gt_upload_id  <- "syn17091815"
 
 dataset       <- "GSE77343"
-script_url    <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE77343/create_processed_tables.R"
+script_url    <- paste0("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/", dataset, "/create_processed_tables.R")
 used          <- NA
 activity_name <- "process GEO data into usable tables"
 

@@ -5,14 +5,17 @@
 ## curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
 ## sudo apt-get install -y nodejs
 ## 1. Create GSEXXX; GSEXXX/pre-processed, GSEXXX/deconvolution_results, and GSEXXX/raw
-## 2. Create a create_processed_tables.R file; upload_id here should point to GSEXXX/pre-processed;
-##    gt_upload_id should point to GSEXXX; source create_processed_tables.R
-## 3. Create a deconvolve.R file by copying over from GSE64385/deconvolve.R
-##    update expr_id, upload_id, and github.path
-##    expr_id should point to a non-log and normalized (e.g., cpm, tmp, FPKM) expression file
-##    upload_id should point to GSEXXX/deconvolution_results
+## 2. Create a create_processed_tables.R file by copying over from GSE77343/create_processed_tables.R
+##    update upload_id to point to GSEXXX/pre-processed;
+##    gt_upload_id should point to GSEXXX;
+##    update dataset to GSEXXX
+##    source create_processed_tables.R
+## 3. Create a deconvolve.R file by copying over from GSE77343/deconvolve.R
+##    update expr_id to point to a non-log/linear and normalized (e.g., cpm, tmp, FPKM) expression file in GSEXXX/pre-processed
+##    update upload_id to point to GSEXXX/deconvolution_results
+##    update dataset to GSEXXX
 ##    source deconvolve.R
-## 4. Create a qc_markdown_config.yaml file.  Copy from GSE64385/qc_markdown_config.yaml.
+## 4. Create a qc_markdown_config.yaml file.  Copy from GSE77343/qc_markdown_config.yaml.
 ##    Edit cibersort_results and mcpcounter_results (these will be in GSEXXX/deconvolution_results)
 ##    Edit log_expression (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
 ##    Edit ground_truth (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
@@ -31,8 +34,7 @@
 ##    Edit cs_mcp_groups [defining new population (new_col) as sum of columns (old_cols) in MCP-counter output.
 ##                       Every column in mcpcounter_common_groups should either already exist in the CIBERSORT output (by the same name)
 ##                       or be defined here.]
-## 5. Copy qc_markdown.Rmd from GSE64385/qc_markdown.Rmd
-## 6. Create qc_markdown_to_synapse.R by copying from GSE64385/qc_markdown_to_synapse.R and editing
+## 5. Copy qc_markdown.Rmd from GSE77343/qc_markdown.Rmd
+## 6. Create qc_markdown_to_synapse.R by copying from GSE77343/qc_markdown_to_synapse.R and editing
 ##    owner to point to GSEXXX; source qc_markdown_to_synapse.R
 
-gt_cs_groups:
