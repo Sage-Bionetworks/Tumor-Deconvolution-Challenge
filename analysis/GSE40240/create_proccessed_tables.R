@@ -95,6 +95,13 @@ ground_truth_df <- geo_df %>%
     dplyr::select(-c(age, gender, race)) %>% 
     filter(sample %in% samples_in_common)
 
+eps <- 0.01
+flag <- abs(rowSums(ground_truth_df[, !(colnames(ground_truth_df) == "sample")]) - 1) > eps
+if(any(flag)) {
+    cat("The following rows in the ground truth do not sum to one:\n")
+    print(ground_truth_df[flag,,drop=F])
+}
+
 annotation_df <- geo_df %>% 
     dplyr::select(sample, age, gender, race) %>% 
     filter(sample %in% samples_in_common)

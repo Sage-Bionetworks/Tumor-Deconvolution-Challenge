@@ -1,25 +1,31 @@
-## General steps:
-## Assume study is GSEXXX
 ## sudo pip install cwlref-runner
 ## sudo pip install cwltool
 ## curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
 ## sudo apt-get install -y nodejs
+
+## Assume study is GSEXXX
 ## 1. Create GSEXXX; GSEXXX/pre-processed, GSEXXX/deconvolution_results, and GSEXXX/raw
-## 2. Create a create_processed_tables.R file by copying over from GSE77343/create_processed_tables.R
+## 2. Create a create_processed_tables.R file by copying over from GSE40240/create_processed_tables.R
 ##    update upload_id to point to GSEXXX/pre-processed;
 ##    gt_upload_id should point to GSEXXX;
 ##    update dataset to GSEXXX
 ##    source create_processed_tables.R
-## 3. Create a deconvolve.R file by copying over from GSE77343/deconvolve.R
+## 3. Create a deconvolve.R file by copying over from GSE40240/deconvolve.R
 ##    update expr_id to point to a non-log/linear and normalized (e.g., cpm, tmp, FPKM) expression file in GSEXXX/pre-processed
 ##    update upload_id to point to GSEXXX/deconvolution_results
 ##    update dataset to GSEXXX
 ##    source deconvolve.R
-## 4. Create a qc_markdown_config.yaml file.  Copy from GSE77343/qc_markdown_config.yaml.
-##    Edit cibersort_results and mcpcounter_results (these will be in GSEXXX/deconvolution_results)
+## 4. Create a qc_markdown_config.yaml file by copying from GSE40240/qc_markdown_config.yaml.
+##    Edit cibersort_results to point to GSEXXX/deconvolution_results/cibersort_results.tsv (created by deconvolve.R)
+##    Edit mcpcounter_results to point to GSEXXX/deconvolution_results/mcpcounter_results.tsv (created by deconvolve.R)
+##    Edit ground_truth (this will have been placed in upload_id = GSEXXX/ by create_processed_tables.R)
 ##    Edit log_expression (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
-##    Edit ground_truth (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
 ##    Edit annotations (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
+##    Set sum_cibersort_results_to_one if the subset of cibersort populations used (directly or indirectly)
+##        in cibersort_common_groups should be normalized to one.  e.g., if the ground truth has only a subset of
+##        immune cells (say, neutrophils, eosinophils, monocytes, and lymphocytes) that are normalized to one,
+##        then this should be set to true so that the subset of cibersort populations that map to these four
+##        groundtruth populations also are normalized to one.
 ##    Edit cibersort_common_groups (describing the populations that will be compared between CIBERSORT and ground truth)
 ##    Edit gt_cs_groups [defining new population (new_col) as sum of columns (old_cols) in ground truth.
 ##                       Every column in cibersort_common_groups should either already exist in ground truth (by the same name)
@@ -34,7 +40,44 @@
 ##    Edit cs_mcp_groups [defining new population (new_col) as sum of columns (old_cols) in MCP-counter output.
 ##                       Every column in mcpcounter_common_groups should either already exist in the CIBERSORT output (by the same name)
 ##                       or be defined here.]
-## 5. Copy qc_markdown.Rmd from GSE77343/qc_markdown.Rmd
-## 6. Create qc_markdown_to_synapse.R by copying from GSE77343/qc_markdown_to_synapse.R and editing
-##    owner to point to GSEXXX; source qc_markdown_to_synapse.R
+## 5. Copy qc_markdown.Rmd from GSE40240/qc_markdown.Rmd
+## 6. Create qc_markdown_to_synapse.R by copying from GSE40240/qc_markdown_to_synapse.R.
+##    update owner to point to GSEXXX
+##    source qc_markdown_to_synapse.R
+
+## CIBERSORT cols:
+## B_cells_naive
+## B_cells_memory
+## Plasma_cells
+## T_cells_CD8
+## T_cells_CD4_naive
+## T_cells_CD4_memory_resting
+## T_cells_CD4_memory_activated
+## T_cells_follicular_helper
+## T_cells_regulatory__Tregs_
+## T_cells_gamma_delta
+## NK_cells_resting
+## NK_cells_activated
+## Monocytes
+## Macrophages_M0
+## Macrophages_M1
+## Macrophages_M2
+## Dendritic_cells_resting
+## Dendritic_cells_activated
+## Mast_cells_resting
+## Mast_cells_activated
+## Eosinophils
+## Neutrophils
+
+## MCP-counter cols:
+## T_cells
+## CD8_T_cells
+## Cytotoxic_lymphocytes
+## NK_cells
+## B_lineage
+## Monocytic_lineage
+## Myeloid_dendritic_cells
+## Neutrophils
+## Endothelial_cells
+## Fibroblasts
 

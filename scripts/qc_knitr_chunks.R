@@ -52,10 +52,12 @@ create_cs_scatter_plot_all<- function(plot_df){
     obj <- cor.test(
         plot_df$predicted_fraction, 
         plot_df$mean_fraction)
-    p <- obj$p.value %>% 
+    pval <- obj$p.value %>% 
         round(4)
     r <- obj$estimate %>% 
         round(4)
+    if(is.na(pval)) { pval <- "NA" }
+    if(is.na(r)) { r <- "NA" }
     p <- plot_df %>% 
         ggplot(aes(x = predicted_fraction, y = mean_fraction)) +
         geom_point(size = 4, aes(color = sample, shape = cell_type)) +
@@ -69,7 +71,7 @@ create_cs_scatter_plot_all<- function(plot_df){
         theme(axis.text.x = element_text(angle = 90, size = 12)) +
         theme(axis.text.y = element_text(size = 12)) +
         theme(strip.text.y = element_text(size = 10, angle = 0)) +
-        ggtitle(str_c("Ground truth vs Cibersort predictions, R=", r, " P=", p)) + 
+        ggtitle(str_c("Ground truth vs Cibersort predictions, R=", r, " P=", pval)) + 
         ylab("Ground truth fraction") +
         xlab("Cibersort predicted fraction")
     print(p)
@@ -79,10 +81,12 @@ create_cs_scatter_plot <- function(type, plot_df){
     obj <- cor.test(
         plot_df$predicted_fraction, 
         plot_df$mean_fraction)
-    p <- obj$p.value %>% 
+    pval <- obj$p.value %>% 
         round(4)
     r <- obj$estimate %>% 
         round(4)
+    if(is.na(pval)) { pval <- "NA" }
+    if(is.na(r)) { r <- "NA" }
     p <- plot_df %>% 
         ggplot(aes(x = predicted_fraction, y = mean_fraction)) +
         geom_point(size = 4, aes(color = sample, shape = cell_type)) +
@@ -96,7 +100,7 @@ create_cs_scatter_plot <- function(type, plot_df){
         theme(axis.text.x = element_text(angle = 90, size = 12)) +
         theme(axis.text.y = element_text(size = 12)) +
         theme(strip.text.y = element_text(size = 10, angle = 0)) +
-        ggtitle(str_c(type, ", ground truth vs Cibersort predictions, R=", r, " P=", p)) + 
+        ggtitle(str_c(type, ", ground truth vs Cibersort predictions, R=", r, " P=", pval)) + 
         ylab("Ground truth fraction") +
         xlab("Cibersort predicted fraction")
     print(p)
@@ -110,7 +114,6 @@ make_cibersort_vs_ground_truth_plots <- function(config){
         select(c("sample", config$cibersort_common_groups)) %>% 
         gather("cell_type", "predicted_fraction", -"sample") 
 
-    
     if(!is.null(config$sum_cibersort_results_to_one) && config$sum_cibersort_results_to_one){
         total_df <- results_df %>% 
             group_by(sample) %>% 
