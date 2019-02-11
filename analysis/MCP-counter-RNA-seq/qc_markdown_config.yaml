@@ -1,0 +1,70 @@
+synapse_ids:
+  cibersort_results: "syn18212260"
+  mcpcounter_results: "syn18212268"
+  ground_truth: "syn18211618"
+  log_expression: "syn18210868"
+  cibersort_genes: "syn12184137"
+  mcpcounter_genes: "syn11918430"
+  annotations: "syn18211618"
+  
+cibersort_common_groups:
+ - "B_cells"
+ - "CD4_t_cells"
+ - "CD8_t_cells"
+ - "NK_cells"
+ - "Monocytes"
+ - "Neutrophils"
+ - "Dendritic_cells"
+ 
+gt_cs_groups:
+ - {new_col: "B_cells", old_cols: ["B_Cells"]}
+ - {new_col: "CD4_t_cells", old_cols: ["CD4"]}
+ - {new_col: "CD8_t_cells", old_cols: ["CD8"]}
+ - {new_col: "NK_cells", old_cols: ["NK_Cells"]}
+ - {new_col: "Monocytes", old_cols: ["Monocytes"]}
+ - {new_col: "Neutrophils", old_cols: ["Neutrophils"]}
+ - {new_col: "Dendritic_cells", old_cols: ["MyeloidDC"]}
+ 
+cs_gt_groups:
+ - {new_col: "B_cells", old_cols: ["B_cells_naive", "B_cells_memory", "Plasma_cells"]}
+ - {new_col: "CD4_t_cells", old_cols: ["T_cells_CD4_naive", "T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated"]}
+ - {new_col: "CD8_t_cells", old_cols: ["T_cells_CD8"]}
+ - {new_col: "NK_cells", old_cols: ["NK_cells_resting",  "NK_cells_activated"]}
+ - {new_col: "Monocytes", old_cols: ["Monocytes"]}
+ - {new_col: "Neutrophils", old_cols: ["Neutrophils"]}
+ - {new_col: "Dendritic_cells", old_cols: ["Dendritic_cells_resting", "Dendritic_cells_activated"]}
+
+mcpcounter_common_groups:
+ - "B_cells"
+ - "T_cells"
+ - "CD8_t_cells"
+ - "NK_cells"
+ - "Monocytes"
+ - "Neutrophils"
+ - "Dendritic_cells"
+ - "Endothelial_cells"
+ - "Fibroblasts"
+ 
+gt_mcp_groups:
+ - {new_col: "B_cells", old_cols: ["B_Cells"]}
+ - {new_col: "T_cells", old_cols: ["CD4", "CD8"]}
+ - {new_col: "CD8_t_cells", old_cols: ["CD8"]}
+ - {new_col: "NK_cells", old_cols: ["NK_Cells"]}
+ - {new_col: "Monocytes", old_cols: ["Monocytes"]}
+ - {new_col: "Neutrophils", old_cols: ["Neutrophils"]}
+ - {new_col: "Dendritic_cells", old_cols: ["MyeloidDC"]}
+ - {new_col: "Endothelial_cells", old_cols: ["Endothelial"]}
+ - {new_col: "Fibroblasts", old_cols: ["Fibroblasts"]}
+ 
+mcp_gt_groups:
+ - {new_col: "B_cells", old_cols: ["B_lineage"]}
+ - {new_col: "T_cells", old_cols: ["T_cells"]}
+ - {new_col: "CD8_t_cells", old_cols: ["CD8_T_cells"]}
+ - {new_col: "NK_cells", old_cols: ["NK_cells"]}
+ - {new_col: "Monocytes", old_cols: ["Monocytic_lineage"]}
+ - {new_col: "Neutrophils", old_cols: ["Neutrophils"]}
+ - {new_col: "Dendritic_cells", old_cols: ["Myeloid_dendritic_cells"]}
+ - {new_col: "Endothelial_cells", old_cols: ["Endothelial_cells"]}
+ - {new_col: "Fibroblasts", old_cols: ["Fibroblasts"]}
+  
+  
