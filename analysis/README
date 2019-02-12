@@ -21,6 +21,7 @@
 ##    Edit ground_truth (this will have been placed in upload_id = GSEXXX/ by create_processed_tables.R)
 ##    Edit log_expression (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
 ##    Edit annotations (this will have been placed in upload_id = GSEXXX/pre-processed by create_processed_tables.R)
+##    Set dont_normalize_ground_truth_to_one to TRUE if the subset of ground truth populations used should not be normalized to one.
 ##    Set sum_cibersort_results_to_one if the subset of cibersort populations used (directly or indirectly)
 ##        in cibersort_common_groups should be normalized to one.  e.g., if the ground truth has only a subset of
 ##        immune cells (say, neutrophils, eosinophils, monocytes, and lymphocytes) that are normalized to one,

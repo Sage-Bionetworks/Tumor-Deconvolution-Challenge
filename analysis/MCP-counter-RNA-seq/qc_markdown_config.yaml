@@ -6,7 +6,9 @@ synapse_ids:
   cibersort_genes: "syn12184137"
   mcpcounter_genes: "syn11918430"
   annotations: "syn18211618"
-  
+dont_normalize_ground_truth_to_one: false
+sum_cibersort_results_to_one: true
+
 cibersort_common_groups:
  - "B_cells"
  - "T_cells"
