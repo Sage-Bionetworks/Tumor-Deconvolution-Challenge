@@ -29,9 +29,19 @@ fpkm_df <- fpkm_id %>%
 ground_truth_df <- ground_truth_id %>% 
     download_from_synapse() %>% 
     read.xlsx(sheetIndex = 1) %>% 
-    dplyr::rename(cell_type = `NA.`) %>% 
+    dplyr::rename(cell_type = `NA.`) %>%
     gather(key = "sample", value = "value", -"cell_type")
-    
+
+
+total_df <- ground_truth_df %>%
+    group_by(sample) %>%
+    dplyr::summarise(total = sum(value))
+
+ground_truth_df <- ground_truth_df %>%
+    inner_join(total_df) %>%
+    mutate(value = value / total) %>%
+    select(-total)
+
 
 samples_in_common <- intersect(fpkm_df$sample, ground_truth_df$sample)
 
