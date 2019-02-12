@@ -5,17 +5,18 @@
 
 ## Assume study is GSEXXX
 ## 1. Create GSEXXX; GSEXXX/pre-processed, GSEXXX/deconvolution_results, and GSEXXX/raw
-## 2. Create a create_processed_tables.R file by copying over from GSE20300/create_processed_tables.R
-##    update upload_id to point to GSEXXX/pre-processed;
-##    gt_upload_id should point to GSEXXX;
+## 2. Create a setup.R file by copying over from GSE20300/setup.R
 ##    update dataset to GSEXXX
+##    update linear_expr_id to point to a non-log/linear and normalized (e.g., cpm, tmp, FPKM) expression file
+##           in GSEXXX/pre-processeda
+##    update deconvolution_results_folder_upload_id to be GSEXXX/deconvolution_results
+##    update preprocessed_folder_upload_id to be GSEXXX/pre-processed
+##    update gt_upload_id to be GSEXXX
+## 3. Create a create_processed_tables.R file by copying over from GSE20300/create_processed_tables.R
 ##    source create_processed_tables.R
-## 3. Create a deconvolve.R file by copying over from GSE20300/deconvolve.R
-##    update expr_id to point to a non-log/linear and normalized (e.g., cpm, tmp, FPKM) expression file in GSEXXX/pre-processed
-##    update upload_id to point to GSEXXX/deconvolution_results
-##    update dataset to GSEXXX
+## 4. Create a deconvolve.R file by copying over from GSE20300/deconvolve.R
 ##    source deconvolve.R
-## 4. Create a qc_markdown_config.yaml file by copying from GSE20300/qc_markdown_config.yaml.
+## 5. Create a qc_markdown_config.yaml file by copying from GSE20300/qc_markdown_config.yaml.
 ##    Edit cibersort_results to point to GSEXXX/deconvolution_results/cibersort_results.tsv (created by deconvolve.R)
 ##    Edit mcpcounter_results to point to GSEXXX/deconvolution_results/mcpcounter_results.tsv (created by deconvolve.R)
 ##    Edit ground_truth (this will have been placed in upload_id = GSEXXX/ by create_processed_tables.R)
@@ -41,8 +42,8 @@
 ##    Edit cs_mcp_groups [defining new population (new_col) as sum of columns (old_cols) in MCP-counter output.
 ##                       Every column in mcpcounter_common_groups should either already exist in the CIBERSORT output (by the same name)
 ##                       or be defined here.]
-## 5. Copy qc_markdown.Rmd from GSE20300/qc_markdown.Rmd
-## 6. Create qc_markdown_to_synapse.R by copying from GSE20300/qc_markdown_to_synapse.R.
+## 6. Copy qc_markdown.Rmd from GSE20300/qc_markdown.Rmd
+## 7. Create qc_markdown_to_synapse.R by copying from GSE20300/qc_markdown_to_synapse.R.
 ##    update owner to point to GSEXXX
 ##    source qc_markdown_to_synapse.R
 

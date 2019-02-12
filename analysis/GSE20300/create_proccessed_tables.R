@@ -9,13 +9,12 @@ library(hugene11sttranscriptcluster.db)
 
 ground_truth_id <- "syn17089680"
 
-upload_id     <- "syn17026189"
-gt_upload_id  <- "syn17026188"
-
 source("../../scripts/utils.R")
+
+## preprocessed_folder_upload_id, gt_upload_id, and dataset defined in setup.R
+source("setup.R")
 synLogin()
 
-dataset       <- "GSE20300"
 github.path   <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/"
 dataset.path  <- paste0(github.path, dataset)
 script_url    <- paste0(dataset.path, "/create_processed_tables.R")
@@ -137,7 +136,7 @@ ground_truth_df <- ground_truth_df %>%
 
 expression_manifest_df <- tibble(
     path = c("expression_log.tsv", "expression_linear.tsv", "expression_log_probe.tsv"),
-    parent = upload_id,
+    parent = preprocessed_folder_upload_id,
     executed = script_url,
     activityName = activity_name,
     dataset = dataset,
@@ -151,7 +150,7 @@ expression_manifest_df <- tibble(
 
 annotation_manifest_df <- tibble(
     path = "annotation.tsv",
-    parent = upload_id,
+    parent = preprocessed_folder_upload_id,
     executed = script_url,
     activityName = activity_name,
     dataset = dataset,
