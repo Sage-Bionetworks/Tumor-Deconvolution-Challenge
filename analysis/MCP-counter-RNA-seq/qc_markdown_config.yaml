@@ -9,6 +9,7 @@ synapse_ids:
   
 cibersort_common_groups:
  - "B_cells"
+ - "T_cells"
  - "CD4_t_cells"
  - "CD8_t_cells"
  - "NK_cells"
@@ -18,6 +19,7 @@ cibersort_common_groups:
  
 gt_cs_groups:
  - {new_col: "B_cells", old_cols: ["B_Cells"]}
+ - {new_col: "T_cells", old_cols: ["CD4", "CD8"]}
  - {new_col: "CD4_t_cells", old_cols: ["CD4"]}
  - {new_col: "CD8_t_cells", old_cols: ["CD8"]}
  - {new_col: "NK_cells", old_cols: ["NK_Cells"]}
@@ -27,7 +29,10 @@ gt_cs_groups:
  
 cs_gt_groups:
  - {new_col: "B_cells", old_cols: ["B_cells_naive", "B_cells_memory", "Plasma_cells"]}
- - {new_col: "CD4_t_cells", old_cols: ["T_cells_CD4_naive", "T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated"]}
+ - {new_col: "T_cells", old_cols: ["T_cells_CD4_naive", "T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated",
+             "T_cells_follicular_helper", "T_cells_regulatory__Tregs_", "T_cells_CD8"]}
+ - {new_col: "CD4_t_cells", old_cols: ["T_cells_CD4_naive", "T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated",
+             "T_cells_follicular_helper", "T_cells_regulatory__Tregs_"]}
  - {new_col: "CD8_t_cells", old_cols: ["T_cells_CD8"]}
  - {new_col: "NK_cells", old_cols: ["NK_cells_resting",  "NK_cells_activated"]}
  - {new_col: "Monocytes", old_cols: ["Monocytes"]}
