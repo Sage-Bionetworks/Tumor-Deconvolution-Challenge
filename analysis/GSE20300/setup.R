@@ -13,4 +13,6 @@ preprocessed_folder_upload_id     <- "syn17026189"
 ## gt_upload_id is GSEXXX/
 gt_upload_id  <- "syn17026188"
 
+## wiki_synid is GSEXXX/
+wiki_synid <- "syn17026188"
 
