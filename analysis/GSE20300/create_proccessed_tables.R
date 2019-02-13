@@ -4,8 +4,6 @@ library(synapserutils)
 library(data.table)
 library(magrittr)
 library(GEOquery)
-library(AnnotationDbi)
-library(hugene11sttranscriptcluster.db)
 
 ground_truth_id <- "syn17089680"
 

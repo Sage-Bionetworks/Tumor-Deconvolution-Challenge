@@ -8,8 +8,12 @@ repo_dir  <- "../../../Tumor-Deconvolution-Challenge/"
 tmp_dir   <- tempdir()
 tmp_dir <- "."
 
-## Define linear_expr_id, deconvolutoin_results_folder_upload_id, and dataset in setup.R
+## Define deconvolutoin_results_folder_upload_id and dataset in setup.R
 source("setup.R")
+
+## linear_expr_id is GSEXXX/pre-processed/
+## This expression file should be in linear/non-log space!
+linear_expr_id   <- "syn18257902"
 
 github.path <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/"
 dataset.path <- paste0(github.path, dataset)
