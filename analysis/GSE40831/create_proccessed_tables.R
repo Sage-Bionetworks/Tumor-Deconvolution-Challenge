@@ -21,36 +21,40 @@ used          <- gt_id
 
 
 
-gse_object <- getGEO(dataset, GSEMatrix = TRUE)
 
-ground_truth_df <- gt_id %>% 
+
+mononucleated_ground_truth_df <- gt_id %>% 
     download_from_synapse() %>% 
-    read.xlsx(sheetIndex = 1, startRow = 2, stringsAsFactors = F) %>% 
+    read.xlsx(sheetIndex = 1, startRow = 2, endRow = 13, stringsAsFactors = F) %>% 
+    inset("sample", value = "mononucleated cell")
+
+lin_ground_truth_df <- gt_id %>% 
+    download_from_synapse() %>% 
+    read.xlsx(sheetIndex = 1, startRow = 16, endRow = 27, stringsAsFactors = F) %>% 
+    inset("sample", value = "lin- cell")
+
+ground_truth_df <-
+    bind_rows(mononucleated_ground_truth_df, lin_ground_truth_df) %>% 
     as_tibble() %>% 
-    dplyr::select(Reference.populations, Flow.cytometry) %>% 
-    set_colnames(c("cell_type", "percent")) %>% 
+    dplyr::select(sample, Reference.populations, Flow.cytometry) %>% 
+    set_colnames(c("sample", "cell_type", "percent")) %>% 
     mutate(percent = as.double(percent)) %>% 
-    filter(!is.na(percent))
+    filter(!is.na(percent)) %>% 
+    mutate(sample = c("lin_minus_cell", "mononucleated_cell"))
+
     
 
+gse_object <- getGEO(dataset, GSEMatrix = TRUE)
 
-
-df <- gse_object %>% 
+annotation_df <- gse_object %>% 
     extract2(2) %>% 
     phenoData() %>% 
     pData() %>%
     rownames_to_column("sample") %>%
-    as_tibble()
+    as_tibble() %>% 
+    dplyr::select(sample, `cell type:ch1`) %>% 
+    dplyr::rename(cell_type = `cell type:ch1`)
 
-
-
-
-# %>% 
-#     filter(characteristics_ch1.1 == "mixed cells") %>% 
-#     dplyr::select(sample, characteristics_ch1)
-# %>% 
-#     inner_join(mix_df, by = c("characteristics_ch1" = "Mix")) %>% 
-#     dplyr::select(-characteristics_ch1)
 
 
 query_df <-
@@ -73,27 +77,56 @@ expr_df <- gse_object$`GSE40831-GPL571_series_matrix.txt.gz`@assayData %>%
     summarise_all(mean) %>%
     drop_na() %>%
     filter(Hugo != "") %>%
-    gather(key = "sample", value = "expr", -Hugo)
-# 
-# samples_in_common <- intersect(expr_df$sample, ground_truth_df$sample)
-# 
-# expr_df <- expr_df %>% 
-#     filter(sample %in% samples_in_common) %>% 
-#     spread(key = "sample", value = "expr")
-# 
-# ground_truth_df <- ground_truth_df %>% 
-#     filter(sample %in% samples_in_common)
-#   
-# activity_obj <- Activity(
-#     name = "create",
-#     description = "process GEO data into usable tables",
-#     used = list("https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0006098"),
-#     executed = list("https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/GSE11058/create_processed_tables.R")
-# )
-# 
-# write_tsv(expr_df, "expression_illumina.tsv")
-# write_tsv(ground_truth_df, "ground_truth.tsv")
-# 
-# upload_file_to_synapse("expression_illumina.tsv", upload_id, activity_obj = activity_obj)
-# upload_file_to_synapse("ground_truth.tsv", gt_upload_id, activity_obj = activity_obj)
-# 
+    gather(key = "sample", value = "expr", -Hugo) %>% 
+    left_join(annotation_df) %>% 
+    group_by(cell_type, Hugo) %>% 
+    dplyr::summarise(expr = mean(expr)) %>% 
+    dplyr::rename(sample = cell_type) 
+
+linear_expr_df <- expr_df %>%
+    mutate(expr = 2^expr) %>% 
+    spread(key = "sample", value = "expr") %>% 
+    set_colnames(c("Hugo","lin_minus_cell", "mononucleated_cell"))
+
+log_expr_df <- expr_df %>%
+    spread(key = "sample", value = "expr") %>% 
+    set_colnames(c("Hugo","lin_minus_cell", "mononucleated_cell"))
+
+ground_truth_df <- ground_truth_df %>%
+    spread(key = "cell_type", value = "percent")
+
+
+expression_manifest_df <- tibble(
+    path = c("expression_log.tsv", "expression_linear.tsv"),
+    parent = upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    used = used,
+    file_type = "expression",
+    expression_type = "microarray",
+    microarray_type = "Affymetrix HG-U133 Plus 2.0",
+    expression_space = c("log2", "linear")
+)
+
+ground_truth_manifest_df <- tibble(
+    path = "ground_truth.tsv",
+    parent = upload_id,
+    executed = script_url,
+    activityName = activity_name,
+    dataset = dataset,
+    used = used,
+    file_type = "ground truth",
+    unit = "percent",
+    cell_types = str_c(colnames(ground_truth_df)[-1], collapse = ";")
+)
+
+write_tsv(log_expr_df, "expression_log.tsv")
+write_tsv(linear_expr_df, "expression_linear.tsv")
+write_tsv(ground_truth_df, "ground_truth.tsv")
+
+write_tsv(expression_manifest_df, "expression_manifest.tsv")
+write_tsv(ground_truth_manifest_df, "ground_truth_manifest.tsv")
+
+syncToSynapse("expression_manifest.tsv")
+syncToSynapse("ground_truth_manifest.tsv")

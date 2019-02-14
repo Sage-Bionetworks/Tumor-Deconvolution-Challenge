@@ -1,0 +1,33 @@
+
+
+```{r setup, echo = FALSE, include = F}
+library(knitr)
+library(yaml)
+library(tidyverse)
+library(synapser)
+library(magrittr)
+library(pheatmap)
+library(ggfortify)
+library(GSVA)
+
+config <- read_yaml("qc_markdown_config.yaml")
+read_chunk('../../../Tumor-Deconvolution-Challenge/scripts/qc_knitr_chunks.R')
+source("../../../Tumor-Deconvolution-Challenge/scripts/utils.R")
+synLogin()
+```
+
+```{r functions, echo = FALSE, include = F}
+```
+
+```{r cibersort_vs_ground_truth, echo = FALSE, fig.height = 14,  fig.width = 12}
+```
+
+```{r mcpcounter_vs_ground_truth, echo = FALSE, fig.height = 14,  fig.width = 12}
+```
+
+```{r cibersort_results, echo = FALSE, fig.height = 12,  fig.width = 12}
+```
+ 
+```{r mcpcounter_results, echo = FALSE, fig.height = 12,  fig.width = 12}
+```
+

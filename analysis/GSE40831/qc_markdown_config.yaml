@@ -1,0 +1,35 @@
+synapse_ids:
+  cibersort_results: "syn18228543"
+  mcpcounter_results: "syn18228549"
+  ground_truth: "syn18228474"
+  log_expression: "syn18228473"
+  cibersort_genes: "syn12184137"
+  mcpcounter_genes: "syn11918430"
+  annotations: "syn18228474"
+  
+
+cibersort_common_groups:
+ - "Eosinophils"
+ - "Monocytes"
+ - "Neutrophils"
+gt_cs_groups:
+ - {new_col: "Eosinophils", old_cols: ["EOS"]}
+ - {new_col: "Monocytes", old_cols: ["MONO"]}
+ - {new_col: "Neutrophils", old_cols: ["GRAN"]}
+cs_gt_groups:
+ - {new_col: "Eosinophils", old_cols: ["Eosinophils"]}
+ - {new_col: "Monocytes", old_cols: ["Monocytes"]}
+ - {new_col: "Neutrophils", old_cols: ["Neutrophils"]}
+                                       
+mcpcounter_common_groups:
+ - "Monocytes"
+ - "Neutrophils"
+gt_mcp_groups:
+ - {new_col: "Monocytes", old_cols: ["MONO"]}
+ - {new_col: "Neutrophils", old_cols: ["GRAN"]}
+mcp_gt_groups:
+ - {new_col: "Monocytes", old_cols: ["Monocytic_lineage"]}
+ - {new_col: "Neutrophils", old_cols: ["Neutrophils"]} 
+pca_plot_aes:
+  
+  

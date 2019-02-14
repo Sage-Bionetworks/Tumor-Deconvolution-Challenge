@@ -78,15 +78,21 @@ create_cs_scatter_plot_all<- function(plot_df){
 }
 
 create_cs_scatter_plot <- function(type, plot_df){
-    obj <- cor.test(
-        plot_df$predicted_fraction, 
-        plot_df$mean_fraction)
-    pval <- obj$p.value %>% 
-        round(4)
-    r <- obj$estimate %>% 
-        round(4)
+    if(nrow(plot_df) > 2){
+        obj <- cor.test(
+            plot_df$predicted_fraction, 
+            plot_df$mean_fraction)
+        pval <- obj$p.value %>% 
+            round(4)
+        r <- obj$estimate %>% 
+            round(4)
+    } else {
+        pval <- NA
+        r <- NA
+    }
     if(is.na(pval)) { pval <- "NA" }
     if(is.na(r)) { r <- "NA" }
+    
     p <- plot_df %>% 
         ggplot(aes(x = predicted_fraction, y = mean_fraction)) +
         geom_point(size = 4, aes(color = sample, shape = cell_type)) +
@@ -176,13 +182,21 @@ make_cibersort_vs_ground_truth_plots(config)
 ## @knitr mcpcounter_vs_ground_truth
 
 create_mcp_scatter_plot <- function(type, plot_df){
-    obj <- cor.test(
-        plot_df$score, 
-        plot_df$mean_fraction)
-    p <- obj$p.value %>% 
-        round(4)
-    r <- obj$estimate %>% 
-        round(4)
+    if(nrow(plot_df) > 2){
+        obj <- cor.test(
+            plot_df$score, 
+            plot_df$mean_fraction)
+        pval <- obj$p.value %>% 
+            round(4)
+        r <- obj$estimate %>% 
+            round(4)
+    } else {
+        pval <- NA
+        r <- NA
+    }
+    if(is.na(pval)) { pval <- "NA" }
+    if(is.na(r)) { r <- "NA" }
+
     p <- plot_df %>% 
         ggplot(aes(x = score, y = mean_fraction)) +
         geom_point(size = 4, aes(color = sample, shape = cell_type)) +
@@ -194,7 +208,7 @@ create_mcp_scatter_plot <- function(type, plot_df){
         theme(axis.text.x = element_text(angle = 90, size = 12)) +
         theme(axis.text.y = element_text(size = 12)) +
         theme(strip.text.y = element_text(size = 10, angle = 0)) +
-        ggtitle(str_c(type, ", ground truth vs MCPcounter scores, R=", r, " P=", p)) + 
+        ggtitle(str_c(type, ", ground truth vs MCPcounter scores, R=", r, " P=", pval)) + 
         ylab("Ground truth fraction") +
         xlab("MCPcounter score")
     print(p)
@@ -231,6 +245,9 @@ make_mcpcounter_vs_ground_truth_plots <- function(config){
     
     
     plot_df <- inner_join(results_df, ground_truth_df)
+    print(results_df)
+    print(ground_truth_df)
+
     cell_types <- plot_df %>% 
         use_series(cell_type) %>% 
         unique %>% 
