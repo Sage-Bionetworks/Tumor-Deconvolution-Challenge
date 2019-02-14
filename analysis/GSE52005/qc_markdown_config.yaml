@@ -11,15 +11,14 @@ cibersort_common_groups:
  - "MONOCYTE_percent"
  - "NEUTROPHIL_percent"
 gt_cs_groups:
-cs_gt_groups: 
-  - {new_col: "LYMPHOCYTE_percent", old_cols: ["B_cells_naive", "B_cells_memory",
-  "T_cells_CD4_naive",
-  "T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated",
-  "T_cells_regulatory__Tregs_",
-  "T_cells_CD8", "T_cells_gamma_delta",
-  "NK_cells_resting",  "NK_cells_activated"]}
-  - {new_col: "MONOCYTE_percent", old_cols: ["Monocytes"]}
-  - {new_col: "NEUTROPHIL_percent", old_cols: ["Neutrophils"]}
+cs_gt_groups:
+ - {new_col: "LYMPHOCYTE_percent", old_cols: ["B_cells_naive", "B_cells_memory", "T_cells_CD4_naive",
+                                       "T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated",
+                                       "T_cells_regulatory__Tregs_",
+                                       "T_cells_CD8", "T_cells_gamma_delta",
+                                       "NK_cells_resting",  "NK_cells_activated", "Plasma_cells"]}
+ - {new_col: "MONOCYTE_percent", old_cols: ["Monocytes"]}
+ - {new_col: "NEUTROPHIL_percent", old_cols: ["Neutrophils"]}
 mcpcounter_common_groups:
  - "MONOCYTE_percent"
  - "NEUTROPHIL_percent"

@@ -132,14 +132,25 @@ linear_expr_df <- log_expr_df %>%
 unity <- 100
 eps <- unity * 0.01
 
-flag <- abs(rowSums(ground_truth_df[, !(colnames(ground_truth_df) == "sample")]) - unity) > eps
+immune.cols <- !(colnames(ground_truth_df) == "sample")
+flag <- abs(rowSums(ground_truth_df[, immune.cols]) - unity) > eps
 if(any(flag)) {
     cat("The following rows in the ground truth do not sum to one:\n")
     print(ground_truth_df[flag,,drop=F])
     print(rowSums(ground_truth_df[flag, !(colnames(ground_truth_df) == "sample")]))
 }
 
+
+if(any(!is.na(ground_truth_df[, immune.cols])) && (ground_truth_df[, immune.cols] > 20)) {
+    cat("As expected ground truth is expressed as percent, not fraction.  Convert to fraction\n")
+} else {
+    stop(paste0("Expected ", dataset, " to be expressed in percents\n"))
+}
+
 cat("NB: The cell types in this ground truth are overlapping--do not normalize to sum to one!\n")
+
+## Convert to fraction
+ground_truth_df[, immune.cols] <- ground_truth_df[, immune.cols] / 100
 
 expression_manifest_df <- tibble(
     path = c("expression_log.tsv", "expression_linear.tsv", "expression_log_probe.tsv"),

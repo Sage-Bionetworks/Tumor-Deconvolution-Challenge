@@ -7,14 +7,14 @@
 ## 1. Create GSEXXX; GSEXXX/pre-processed, GSEXXX/deconvolution_results, and GSEXXX/raw
 ## 2. Create a setup.R file by copying over from GSE20300/setup.R
 ##    update dataset to GSEXXX
-##    update linear_expr_id to point to a non-log/linear and normalized (e.g., cpm, tmp, FPKM) expression file
-##           in GSEXXX/pre-processeda
 ##    update deconvolution_results_folder_upload_id to be GSEXXX/deconvolution_results
 ##    update preprocessed_folder_upload_id to be GSEXXX/pre-processed
 ##    update gt_upload_id to be GSEXXX
 ## 3. Create a create_processed_tables.R file by copying over from GSE20300/create_processed_tables.R
 ##    source create_processed_tables.R
 ## 4. Create a deconvolve.R file by copying over from GSE20300/deconvolve.R
+##    update linear_expr_id to point to a non-log/linear and normalized (e.g., cpm, tmp, FPKM) expression file
+##           in GSEXXX/pre-processed
 ##    source deconvolve.R
 ## 5. Create a qc_markdown_config.yaml file by copying from GSE20300/qc_markdown_config.yaml.
 ##    Edit cibersort_results to point to GSEXXX/deconvolution_results/cibersort_results.tsv (created by deconvolve.R)

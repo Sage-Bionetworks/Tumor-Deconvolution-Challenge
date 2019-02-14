@@ -18,11 +18,13 @@ gt_cs_groups:
  - {new_col: "Monocytes", old_cols: ["monocyte"]}
  - {new_col: "Neutrophils", old_cols: ["neutrophil"]}
 cs_gt_groups:
- - {new_col: "Lymphocytes", old_cols: ["B_cells_naive", "B_cells_memory", "T_cells_CD4_naive",
+ - {new_col: "Lymphocytes", old_cols: ["B_cells_naive", "B_cells_memory",
+                                       "T_cells_CD4_naive",
                                        "T_cells_CD4_memory_resting", "T_cells_CD4_memory_activated",
-                                       "T_cells_regulatory__Tregs_",
-                                       "T_cells_CD8", "T_cells_gamma_delta",
-                                       "NK_cells_resting",  "NK_cells_activated"]}
+                                       "T_cells_follicular_helper", "T_cells_regulatory__Tregs_",
+                                       "T_cells_gamma_delta", "T_cells_CD8", 
+                                       "NK_cells_resting",  "NK_cells_activated", "Plasma_cells"]}
+
 mcpcounter_common_groups:
  - "Lymphocytes"
  - "Monocytes"
