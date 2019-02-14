@@ -141,7 +141,7 @@ if(any(flag)) {
 }
 
 
-if(any(!is.na(ground_truth_df[, immune.cols])) && (ground_truth_df[, immune.cols] > 20)) {
+if(any(!is.na(ground_truth_df[, immune.cols])) && any(ground_truth_df[, immune.cols] > 20)) {
     cat("As expected ground truth is expressed as percent, not fraction.  Convert to fraction\n")
 } else {
     stop(paste0("Expected ", dataset, " to be expressed in percents\n"))
