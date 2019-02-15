@@ -67,7 +67,7 @@ ground_truth_10k <- whole_blood_flow_10k_id %>%
 #     used = used,
 #     file_type = "expression",
 #     expression_type = "microarray",
-#     microarray_type = "Illumina?",
+#     microarray_type = "Illumina",
 #     expression_space = c("log2", "linear")
 # )
 # 
@@ -80,7 +80,7 @@ ground_truth_10k <- whole_blood_flow_10k_id %>%
 #     dataset = dataset,
 #     used = used,
 #     file_type = "ground truth",
-#     unit = "cell number?",
+#     unit = "cell number",
 #     cell_types = str_c(colnames(ground_truth_df)[-1], collapse = ";")
 # )
 # 
