@@ -10,7 +10,7 @@ library(pheatmap)
 library(ggfortify)
 library(GSVA)
 
-config <- read_yaml("qc_markdown_config.yaml")
+config <- read_yaml("qc_markdown_config-labs.yaml")
 read_chunk('../../../Tumor-Deconvolution-Challenge/scripts/qc_knitr_chunks.R')
 source("../../../Tumor-Deconvolution-Challenge/scripts/utils.R")
 synLogin()
