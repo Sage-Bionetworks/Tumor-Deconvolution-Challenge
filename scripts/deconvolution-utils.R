@@ -24,7 +24,10 @@ download.deconvolution.tools.and.matrices <- function() {
   paths
 }
 
-run.deconvolution.tools <- function(expr_id, upload_id, cs.cwltool, cs.ref.matrix, mcp.cwltool, exec.url) {
+run.deconvolution.tools <- function(expr_id, upload_id, cs.cwltool, cs.ref.matrix, mcp.cwltool, exec.url,
+                                    cibersort.output.file = "cibersort_results.tsv",
+                                    cibersort.abs.output.file = "cibersort_abs_results.tsv",
+                                    mcp.counter.output.file = "mcpcounter_results.tsv") {
 
   expr_df <- expr_id %>% 
       create_df_from_synapse_id 
@@ -39,14 +42,14 @@ run.deconvolution.tools <- function(expr_id, upload_id, cs.cwltool, cs.ref.matri
       paste("cwltool", cs.cwltool),
       "--mixture_file expr.tsv", 
       paste("--sig_matrix_file", cs.ref.matrix),
-      "--output_file_string cibersort_results.tsv",
+      paste("--output_file_string", cibersort.output.file),
       sep = " "))
 
   system(str_c(
       paste("cwltool", cs.cwltool),
       "--mixture_file expr.tsv", 
       paste("--sig_matrix_file", cs.ref.matrix),
-      "--output_file_string cibersort_abs_results.tsv",
+      paste("--output_file_string", cibersort.abs.output.file),
       "--abs_method no.sumto1",
       "--absolute",
       sep = " "))
@@ -54,7 +57,7 @@ run.deconvolution.tools <- function(expr_id, upload_id, cs.cwltool, cs.ref.matri
   system(str_c(
       paste("cwltool", mcp.cwltool),
       "--input_expression_file expr_matrix.tsv",
-      "--output_file_string mcpcounter_results.tsv",
+      paste("--output_file_string", mcp.counter.output.file),
       "--features_type HUGO_symbols",
       sep = " "))
 
@@ -65,7 +68,7 @@ run.deconvolution.tools <- function(expr_id, upload_id, cs.cwltool, cs.ref.matri
       executed = list(exec.url)
   )
 
-  upload_file_to_synapse("cibersort_results.tsv", upload_id, activity_obj = activity_obj)
-  upload_file_to_synapse("cibersort_abs_results.tsv", upload_id, activity_obj = activity_obj)
-  upload_file_to_synapse("mcpcounter_results.tsv", upload_id, activity_obj = activity_obj)
+  upload_file_to_synapse(cibersort.output.file, upload_id, activity_obj = activity_obj)
+  upload_file_to_synapse(cibersort.abs.output.file, upload_id, activity_obj = activity_obj)
+  upload_file_to_synapse(mcp.counter.output.file, upload_id, activity_obj = activity_obj)
 }

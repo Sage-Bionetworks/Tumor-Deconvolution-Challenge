@@ -157,7 +157,7 @@ make_cibersort_vs_ground_truth_plots <- function(config){
         .[complete.cases(.),] %>% 
         group_by(sample, cell_type) %>% 
         dplyr::summarise(sd_fraction = sd(fraction), mean_fraction = mean(fraction))
-##    write.table(file="ground_truth_df.tsv", ground_truth_df, sep="\t", row.names=FALSE, col.names=TRUE)
+    write.table(file="ground_truth_df.tsv", ground_truth_df, sep="\t", row.names=FALSE, col.names=TRUE)
     
     plot_df <-
         inner_join(results_df, ground_truth_df)
