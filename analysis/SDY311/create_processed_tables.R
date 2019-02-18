@@ -19,7 +19,7 @@ synLogin()
 script_url    <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/SDY311/create_processed_tables.R"
 dataset       <- "SDY311"
 activity_name <- "process Import 10K files into usable tables"
-used          <- 
+used          <- str_c(fc_wb_10K_id, cytof_pbmc_10K_id, import_cytof_id, import_expr_id, import_trans_id, sep = ";")
 
 
 
