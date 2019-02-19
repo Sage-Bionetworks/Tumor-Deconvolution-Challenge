@@ -74,7 +74,7 @@ ground_truth_df <-
 #     spread(key = "cell_type", value = "percent")
 # 
 # 
-# 
+# couldn't find the specific microarray
 # expression_manifest_df <- tibble(
 #     path = c("expression_log.tsv", "expression_linear.tsv"),
 #     parent = upload_id,
@@ -84,7 +84,7 @@ ground_truth_df <-
 #     used = used,
 #     file_type = "expression",
 #     expression_type = "microarray",
-#     microarray_type = "Illumina Human HT-12 V3 BeadChip",
+#     microarray_type = "unknown",
 #     expression_space = c("log2", "linear")
 # )
 # 
