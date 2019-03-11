@@ -41,10 +41,13 @@ ground_truth_df <-
 
 
 # samples_in_common <- intersect(expr_df$sample, ground_truth_df$sample)
-# 
+
+## RNASeq appears to be pre-logged, but can't find any more information.
+#
 # 
 # linear_expr_df <- expr_df %>%
 #     filter(sample %in% samples_in_common) %>% 
+#     mutate(expr = 2^expr) %>%
 #     spread(key = "sample", value = "expr") 
 # 
 # log_expr_df <- expr_df %>%
@@ -66,7 +69,7 @@ ground_truth_df <-
 #     dataset = dataset,
 #     file_type = "expression",
 #     expression_type = "microarray",
-#     microarray_type = "unknown",
+#     rnaseq_normalization = ,
 #     expression_space = c("log2", "linear")
 # )
 # 
@@ -78,7 +81,7 @@ ground_truth_df <-
 #     activityName = activity_name,
 #     dataset = dataset,
 #     file_type = "ground truth",
-#     unit = "cell number",
+#     unit = 
 #     cell_types = str_c(colnames(ground_truth_df)[-1], collapse = ";")
 # )
 # 
