@@ -53,7 +53,6 @@ ground_truth_df <-
 # 
 # log_expr_df <- expr_df %>%
 #     filter(sample %in% samples_in_common) %>% 
-#     mutate(expr = log2(expr)) %>%
 #     spread(key = "sample", value = "expr") 
 # 
 # ground_truth_df <- ground_truth_immune_space %>%
