@@ -1,3 +1,4 @@
+## Update the following:
 source("dataset-setup.R")
 
 suppressPackageStartupMessages(p_load(tidyverse))
@@ -9,12 +10,11 @@ suppressPackageStartupMessages(p_load(Biobase))
 suppressPackageStartupMessages(p_load(ImmuneSpaceR))
 suppressPackageStartupMessages(p_load(reshape2))
 
-## Begin confirmation
+## Begin configuration
 
-dataset <- "SDY180"
 file <- "create_challenge_files.R"
 
-## End confirmation
+## End configuration
 
 script_url <- paste0(url.base, "/", dataset, "/", file)
 activity_name <- "create Challenge expression and ground truth files"
@@ -41,8 +41,6 @@ expr_immunespace_df <- expr_sets %>%
     select(-time) %>% 
     mutate(sample = str_remove_all(sample, ".180"))
 
-## experimentData(...)
-
 ground_truth_df <- 
     con$getDataset("fcs_analyzed_result") %>% 
     dplyr::as_tibble() %>% 
@@ -53,19 +51,59 @@ ground_truth_df <-
     distinct(participant_id, population_name_reported, .keep_all = TRUE) %>%
     as.data.frame()
 
+ground_truth_df %>%
+  select(population_definition_reported, population_name_reported) %>%
+  unique() %>%
+  arrange(desc(population_name_reported)) %>%
+  print()
+
+## Update the following:
+fine.grained.definitions <-
+  list("naive.CD4.T.cells" = c("naive CD4+ T cells"),
+       "memory.CD4.T.cells" = c("central memory CD4+ T cells", "effector memory CD4+ T cells"),  
+       "naive.CD8.T.cells" = c("naive CD8+ T cells"),
+       "memory.CD8.T.cells" = c("central memory CD8+ T cells", "effector memory CD8+ T cells"),
+       "naive.B.cells" = c("naive B cells"),
+       "memory.B.cells" = c("memory B cells"),
+       "regulatory.T.cells" = c("Tregs"),
+       "myeloid.dendritic.cells" = c("mDCs"),
+       "monocytes" = c("monocytes"),
+       "NK.cells" = c("NK cells")
+      )
+
+## Update the following:
+coarse.grained.definitions <-
+  list("CD4.T.cells" = c("CD4+ T cells"),
+       "CD8.T.cells" = c("CD8+ T cells"),
+       "B.cells" = c("B cells"),
+       "monocytic.lineage" = c("monocytes"),
+       "NK.cells" = c("NK cells")
+      )
+
 sample.mapping <- dataset %>%
-  get.immunespace.expression.metadata(.) %>%
+  get.immunespace.expression.metadata(.)
+
+cols <- c("study_time_collected", "study_time_collected_unit")
+for(col in cols) {
+  print(col)
+  print(table(sample.mapping[, col]))
+}
+
+## Confirm that participated_id ends in .XXX
+print(head(sample.mapping$participant_id))
+
+## Update the following: filtering by study_time_collected, study_time_collectd_unit, and removing participant_id
+sample.mapping <- sample.mapping %>%
   filter(study_time_collected == 0) %>%
   mutate(sample = str_sub(participant_id, end = -5)) %>%
-  filter(study_time_collected == 0) %>%
   filter(study_time_collected_unit == "Days") %>%
   arrange(cohort) %>%
   distinct(participant_id, .keep_all = TRUE) %>%
   as.data.frame()
   
-
+## Update the following:
 cols <- c("participant_id", "population_name_reported", "population_cell_number")
-gt.mat.raw <- unique(ground_truth_df[, cols]) %>%
+gt.mat.raw <- unique(subset(ground_truth_df, cell_number_unit == "cells")[, cols]) %>%
     mutate(population_cell_number = as.numeric(population_cell_number)) %>%
     acast(., formula = participant_id ~ population_name_reported)
 
@@ -109,39 +147,18 @@ sample.mapping$id <- paste0("S", 1:nrow(sample.mapping))
 rownames(gt.mat.raw) <- sample.mapping$id
 colnames(expr.mat) <- sample.mapping$id
 
-fine.grained.definitions <-
-  list("naive.CD4.T.cells" = c("Naive_CD4"),
-       "memory.CD4.T.cells" = c("CM_CD4", "EM_CD4"),
-       "naive.CD8.T.cells" = c("Naive_CD8"),
-       "memory.CD8.T.cells" = c("CM_CD8", "EM_CD8"),
-       "naive.B.cells" = c("naive_B"),
-       "memory.B.cells" = c("IgDp_memory_B", "IgDn_memory_B"),
-       "regulatory.T.cells" = c("CD25p_pCD4"),
-       "myeloid.dendritic.cells" = c("CD11c_pWBC"),
-       "monocytes" = c("CD14p"),
-       "neutrophils" = c("Neutros"),
-       "NK.cells" = c("CD56br_pLY")
-      )
-
-coarse.grained.definitions <-
-  list("CD4.T.cells" = c("CD4"),
-       "CD8.T.cells" = c("CD8"),
-       "B.cells" = c("CD19"),
-       "monocytic.lineage" = c("CD14p", "CD11c_pWBC"),
-       "neutrophils" = c("Neutros"),
-       "NK.cells" = c("CD56br_pLY")
-      )
-
+## May need to update the following get.geo.platform.name function
 platform <- get.geo.platform.name(gses)
 cancer.type <- NA
 data.processing <- unlist(get.geo.data.processing(gses))
+print(data.processing)
 ## scale <- get.log.or.linear.space(data.processing)
-scale <- "Linear"
+## Update the following based on data.processing:
+scale <- "Log"
+## Update the following:
 native.probe.type <- "Probe"
 
 obfuscated.dataset <- paste0("DS", sum(utf8ToInt(dataset)))
-
-
 
 gt.mat.fine <- combine.columns(gt.mat.raw, fine.grained.definitions)
 gt.mat.coarse <- combine.columns(gt.mat.raw, coarse.grained.definitions)

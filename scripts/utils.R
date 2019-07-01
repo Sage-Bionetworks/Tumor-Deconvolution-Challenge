@@ -215,6 +215,8 @@ get.geo.platform.name <- function(gses) {
   platform.name <- Meta(gpl)$title
   if(platform.name == "[HG-U133_Plus_2] Affymetrix Human Genome U133 Plus 2.0 Array") {
     platform.name <- "Affymetrix HG-U133 Plus 2.0"
+  } else if(platform.name == "[PrimeView] Affymetrix Human Gene Expression Array") {
+    platform.name <- "Affymetrix Human Gene PrimeView"  
   } else if(platform.name == "[HuGene-1_0-st] Affymetrix Human Gene 1.0 ST Array [transcript (gene) version]") {
     platform.name <- "Affymetrix Human Gene 1.0 ST"
   } else if(platform.name == "Illumina HumanHT-12 V3.0 expression beadchip") {
@@ -257,7 +259,10 @@ get.log.or.linear.space <- function(data.processing) {
 get.probe.to.symbol.map <- function(gses) {
   gpl <- get.annotation(gses)
   tbl <- Table(gpl)
-  mapping <- tbl[, c("ID", "Symbol")]
+  sym.col <- c("Symbol", "Gene Symbol")
+  sym.col <- sym.col[sym.col %in% colnames(tbl)]
+  if(length(sym.col) != 1) { stop("Could not find symbol col in: ", paste(colnames(tbl), collapse=", "), "\n") }
+  mapping <- tbl[, c("ID", sym.col)]
   colnames(mapping) <- c("from", "to")
   mapping <- na.omit(mapping)
   mapping <- subset(mapping, to != "")
@@ -266,7 +271,11 @@ get.probe.to.symbol.map <- function(gses) {
 
 get.probe.to.entrez.map <- function(gses) {
   gpl <- get.annotation(gses)
-  mapping <- Table(gpl)[, c("ID", "Entrez_Gene_ID")]
+  tbl <- Table(gpl)  
+  entrez.col <- c("Entrez_Gene_ID", "Entrez Gene")
+  entrez.col <- entrez.col[entrez.col %in% colnames(tbl)]
+  if(length(entrez.col) != 1) { stop("Could not find entrez col in: ", paste(colnames(tbl), collapse=", "), "\n") }
+  mapping <- tbl[, c("ID", entrez.col)]
   colnames(mapping) <- c("from", "to")
   mapping <- na.omit(mapping)
   mapping <- subset(mapping, to != "")
@@ -274,12 +283,19 @@ get.probe.to.entrez.map <- function(gses) {
 }
 
 get.probe.to.ensg.map <- function(gses) {
-  suppressPackageStartupMessages(p_load(org.Hs.eg.db))
-  entrez.to.ensg <- as.data.frame(org.Hs.egENSEMBL)
-  entrez.to.ensg
-  mapping <- get.probe.to.entrez.map(gses)
-  mapping <- merge(mapping, entrez.to.ensg, by.x = "to", by.y = "gene_id")
-  mapping <- mapping[, c("from", "ensembl_id")]
+  gpl <- get.annotation(gses)
+  tbl <- Table(gpl)  
+  ensembl.col <- c("Ensembl")
+  ensembl.col <- ensembl.col[ensembl.col %in% colnames(tbl)]
+  if(length(ensembl.col) == 1) {
+    mapping <- tbl[, c("ID", ensembl.col)]
+  } else {
+    suppressPackageStartupMessages(p_load(org.Hs.eg.db))
+    entrez.to.ensg <- as.data.frame(org.Hs.egENSEMBL)
+    mapping <- get.probe.to.entrez.map(gses)
+    mapping <- merge(mapping, entrez.to.ensg, by.x = "to", by.y = "gene_id")
+    mapping <- mapping[, c("from", "ensembl_id")]
+  }
   colnames(mapping) <- c("from", "to")
   mapping
 }
