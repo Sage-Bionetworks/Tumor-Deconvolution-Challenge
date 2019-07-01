@@ -55,7 +55,7 @@ for(col in cols) {
 ground_truth_df <- ground_truth_df %>%
     mutate(sample = str_sub(participant_id, end = -5)) %>% 
     filter(study_time_collected == 0) %>%
-    filter(cell_number_unit == "cells") %>%    
+    filter(cell_number_unit != "cells") %>%    
     filter(study_time_collected_unit == "Days") %>%
     arrange(cohort) %>%
     distinct(participant_id, population_name_reported, .keep_all = TRUE) %>%

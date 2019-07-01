@@ -38,12 +38,11 @@ run.coarse.grained.mcpcounter.model <- function(expression_matrices, dataset_nam
   ## Create a table that translates the cell types output by
   ## MCP-Counter ('mcpcounter.cell.type' column) to the cell types
   ## required of the course-grained sub-Challenge ('cell.type' column).
-  ## Note that MCP-Counter does not predict CD4 T cells. Instead, we have
-  ## mapped MCP-Counter's T cell output as our CD4 T cell prediction.
+  ## Note that MCP-Counter does not predict CD4 T cells.
   translation_df <- tibble::tribble(
       ~cell.type, ~mcpcounter.cell.type,
       "B.cells", "B lineage",
-      "CD4.T.cells", "T cells",
+##      "CD4.T.cells", "T cells",
       "CD8.T.cells", "CD8 T cells",
       "NK.cells", "NK cells",
       "neutrophils", "Neutrophils",
