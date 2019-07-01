@@ -45,6 +45,13 @@ ground_truth_df <-
     con$getDataset("fcs_analyzed_result") %>%
     dplyr::as_tibble()
 
+pops <- sort(unique(ground_truth_df$population_name_reported))
+print(pops)
+pops <- pops[!grepl(pattern="pSTAT", pops)]
+if(length(pops) == 0) {
+  stop("All populations are phospho\n")
+}
+
 cols <- c("cell_number_unit", "study_time_collected", "study_time_collected_unit")
 for(col in cols) {
   print(col)
@@ -54,18 +61,11 @@ for(col in cols) {
 ## Confirm that participated_id ends in .XXX
 print(head(ground_truth_df$participant_id))
 
-pops <- sort(unique(ground_truth_df$population_name_reported))
-print(pops)
-pops <- pops[!grepl(pattern="pSTAT", pops)]
-if(length(pops) == 0) {
-  stop("All populations are phospho\n")
-}
-
 ## Update the following: filtering by study_time_collected, study_time_collected_unit, cell_number_unit, and removing participant_id
 ground_truth_df <- ground_truth_df %>%
     mutate(sample = str_sub(participant_id, end = -5)) %>% 
     filter(study_time_collected == 0) %>%
-    filter(cell_number_unit == "cells") %>%    
+    filter(cell_number_unit != "cells") %>%    
     filter(study_time_collected_unit == "Days") %>%
     arrange(cohort) %>%
     distinct(participant_id, population_name_reported, .keep_all = TRUE) %>%
