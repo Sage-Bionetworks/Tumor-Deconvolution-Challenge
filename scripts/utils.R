@@ -221,6 +221,8 @@ get.geo.platform.name <- function(gses) {
     platform.name <- "Affymetrix Human Gene 1.0 ST"
   } else if(platform.name == "Illumina HumanHT-12 V3.0 expression beadchip") {
     platform.name <- "Illumina HumanHT-12 V3.0"
+  } else if(platform.name == "Illumina HumanHT-12 V4.0 expression beadchip") {
+    platform.name <- "Illumina HumanHT-12 V4.0"
   } else {
     stop(paste0("Unknown array type ", platform.name))
   }
@@ -383,7 +385,7 @@ combine.columns <- function(mat, map) {
   }
   new.cols <- names(map)
   new.cols <- new.cols[new.cols %in% colnames(mat)]
-  mat <- mat[, new.cols]
+  mat <- mat[, new.cols, drop = FALSE]
   mat
 }
 
