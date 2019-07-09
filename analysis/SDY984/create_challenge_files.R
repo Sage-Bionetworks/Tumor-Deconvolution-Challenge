@@ -69,11 +69,6 @@ tbls <-
 
 stop("Examine the populations reported and data units (i.e., relation of population to base/parent population)\n")
 
-sub <- subset(ground_truth_df, sample == ground_truth_df$sample[1])
-o <- order(nchar(sub$population_definition_reported))
-sub <- sub[o, ]
-print(sub)
-
 col <- "cell_number_unit"
 target.cell.number.unit <- as.character(tbls[[col]][1, which.max(tbls[[col]][, "Freq"])[1]])
 col <- "study_time_collected_unit"

@@ -215,6 +215,8 @@ get.geo.platform.name <- function(gses) {
   platform.name <- Meta(gpl)$title
   if(platform.name == "[HG-U133_Plus_2] Affymetrix Human Genome U133 Plus 2.0 Array") {
     platform.name <- "Affymetrix HG-U133 Plus 2.0"
+  } else if(platform.name == "[HT_HG-U133_Plus_PM] Affymetrix HT HG-U133+ PM Array") {
+    platform.name <- "Affymetrix HG-U133 Plus PM"
   } else if(platform.name == "[PrimeView] Affymetrix Human Gene Expression Array") {
     platform.name <- "Affymetrix Human Gene PrimeView"  
   } else if(platform.name == "[HuGene-1_0-st] Affymetrix Human Gene 1.0 ST Array [transcript (gene) version]") {
