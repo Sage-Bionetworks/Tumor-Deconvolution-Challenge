@@ -1,3 +1,4 @@
+## Update the following:
 source("dataset-setup.R")
 
 suppressPackageStartupMessages(p_load(tidyverse))
@@ -9,18 +10,22 @@ suppressPackageStartupMessages(p_load(Biobase))
 suppressPackageStartupMessages(p_load(ImmuneSpaceR))
 suppressPackageStartupMessages(p_load(reshape2))
 
-## Begin confirmation
+## Begin configuration
 
-dataset <- "SDY180"
 file <- "create_challenge_files.R"
 
-## End confirmation
+## End configuration
 
 script_url <- paste0(url.base, "/", dataset, "/", file)
 activity_name <- "create Challenge expression and ground truth files"
 
 source("../../scripts/utils.R")
 synLogin()
+
+if(!grepl(dataset, pattern="SDY")) {
+  stop("Was expecting an SDY dataset\n")
+}
+num.dataset.chars <- nchar(gsub(dataset, pattern="SDY", replacement=""))
 
 con   <- ImmuneSpaceR::CreateConnection(dataset)
 
@@ -41,10 +46,8 @@ expr_immunespace_df <- expr_sets %>%
     select(-time) %>% 
     mutate(sample = str_remove_all(sample, ".180"))
 
-## experimentData(...)
-
 ground_truth_df <- 
-    con$getDataset("fcs_analyzed_result") %>% 
+    con$getDataset("fcs_analyzed_result") %>%
     dplyr::as_tibble()
 
 cols <- c("cell_number_unit", "study_time_collected", "study_time_collected_unit")
@@ -55,13 +58,33 @@ tbls <-
                  tbl <- as.data.frame(table(ground_truth_df[, col]))
                  print(col)
                  print(tbl)
+		 for(val in as.character(tbl[,1])) {
+		   sub <- ground_truth_df[ground_truth_df[, col] == val, ]
+		   pops <- sort(unique(sub$population_name_reported))
+		   ## cat(paste0(col, " = ", val, ": ", paste(pops, collapse = ", "), "\n"))
+		   cat(paste0(col, " = ", val, ": ", length(pops), " populations\n"))
+		 }
                  tbl
                })
+
+sub <- subset(ground_truth_df, sample == ground_truth_df$sample[1])
+o <- order(nchar(sub$population_definition_reported))
+sub <- sub[o, ]
+print(head(sub))
+
+stop(paste0(dataset, " is not appropriate for deconvolution because everything is reported relative to CD45+ cells ",
+     "which may vary across patients. See population_definition_reported above. ",
+     "We need absolute measures of populations\n"))
+
+stop("Examine the populations reported and data units (i.e., relation of population to base/parent population)\n")
 
 col <- "cell_number_unit"
 target.cell.number.unit <- as.character(tbls[[col]][1, which.max(tbls[[col]][, "Freq"])[1]])
 col <- "study_time_collected_unit"
 target.study.time.collected.unit <- as.character(tbls[[col]][1, which.max(tbls[[col]][, "Freq"])[1]])
+
+cat(paste0("target.cell.number.unit = ", target.cell.number.unit, "\n"))
+cat(paste0("target.study.time.collected.unit = ", target.study.time.collected.unit, "\n"))
 
 ## Confirm that participated_id ends in .XXX
 print(head(ground_truth_df$participant_id))
@@ -74,11 +97,9 @@ if(length(pops) == 0) {
 }
 
 ## Update the following: filtering by study_time_collected, study_time_collected_unit, cell_number_unit, and removing participant_id
-grp1 <- c("Study group 1 2009-2010 Fluzone", "Study group 1 Pneunomax23", "Study group 1 Saline")           
 ground_truth_df <- ground_truth_df %>%
-    mutate(sample = str_sub(participant_id, end = -5)) %>% 
+    mutate(sample = str_sub(participant_id, end = -(num.dataset.chars + 2))) %>% 
     filter(study_time_collected == 0) %>%
-    filter(cohort %in% grp1) %>%
     filter(cell_number_unit == target.cell.number.unit) %>%    
     filter(study_time_collected_unit == target.study.time.collected.unit) %>%
     arrange(cohort) %>%
@@ -92,40 +113,8 @@ ground_truth_df %>%
   arrange(desc(population_name_reported)) %>%
   print()
 
-fine.grained.definitions <-
-  list("naive.CD4.T.cells" = c("Naive_CD4"),
-       "memory.CD4.T.cells" = c("CM_CD4", "EM_CD4"),
-       "naive.CD8.T.cells" = c("Naive_CD8"),
-       "memory.CD8.T.cells" = c("CM_CD8", "EM_CD8"),
-       "naive.B.cells" = c("naive_B"),
-       "memory.B.cells" = c("IgDp_memory_B", "IgDn_memory_B"),
-       "regulatory.T.cells" = c("CD25p_pCD4"),
-       "myeloid.dendritic.cells" = c("CD11c_pWBC"),
-       "monocytes" = c("CD14p"),
-       "neutrophils" = c("Neutros"),
-       "NK.cells" = c("CD56br_pLY")
-      )
-
-coarse.grained.definitions <-
-  list("CD4.T.cells" = c("CD4"),
-       "CD8.T.cells" = c("CD8"),
-       "B.cells" = c("CD19"),
-       "monocytic.lineage" = c("CD14p", "CD11c_pWBC"),
-       "neutrophils" = c("Neutros"),
-       "NK.cells" = c("CD56br_pLY")
-      )
-
-all.pops <- unique(as.vector(c(unlist(fine.grained.definitions), unlist(coarse.grained.definitions))))
-
-ground_truth_df %>%
-  select(population_definition_reported, population_name_reported) %>%
-  unique() %>%
-  arrange(desc(population_name_reported)) %>%
-  filter(population_name_reported %in% all.pops) %>%
-  print()
-
 ## Update the following: normalizing.pop
-normalizing.population <- NA
+normalizing.population <- "CD45+ cells/uL"
 population.value.col <- "population_cell_number"
   
 if(!is.na(normalizing.population)) {
@@ -138,6 +127,17 @@ if(!is.na(normalizing.population)) {
   population.value.col <- "population_fraction"
 }
 
+## Update the following:
+fine.grained.definitions <-
+  list("naive.B.cells" = c("Naive B cell,Freq. of,Q2: CD19+, CD20+"),
+       "memory.B.cells" = c("Memory B cell,Freq. of,Q2: CD19+, CD20+")
+      )
+
+## Update the following:
+coarse.grained.definitions <-
+  list("B.cells" = c("B lym CD19+,Freq. of,WBC CD45+")
+      )
+
 sample.mapping <- dataset %>%
   get.immunespace.expression.metadata(.)
 
@@ -147,14 +147,11 @@ for(col in cols) {
   print(table(sample.mapping[, col]))
 }
 
-## Confirm that participated_id ends in .XXX
-print(head(sample.mapping$participant_id))
-
 ## Update the following: filtering by study_time_collected, study_time_collected_unit, and removing participant_id
 sample.mapping <- sample.mapping %>%
   filter(study_time_collected == 0) %>%
-  mutate(sample = str_sub(participant_id, end = -5)) %>%
-  filter(study_time_collected_unit == "Days") %>%
+  mutate(sample = str_sub(participant_id, end = -(num.dataset.chars + 2))) %>%
+  filter(study_time_collected_unit == target.study.time.collected.unit) %>%
   arrange(cohort) %>%
   distinct(participant_id, .keep_all = TRUE) %>%
   as.data.frame()
@@ -204,16 +201,18 @@ sample.mapping$id <- paste0("S", 1:nrow(sample.mapping))
 rownames(gt.mat.raw) <- sample.mapping$id
 colnames(expr.mat) <- sample.mapping$id
 
+## May need to update the following get.geo.platform.name function
 platform <- get.geo.platform.name(gses)
 cancer.type <- NA
 data.processing <- unlist(get.geo.data.processing(gses))
+print(data.processing)
 ## scale <- get.log.or.linear.space(data.processing)
+## Update the following based on data.processing:
 scale <- "Linear"
+## Update the following:
 native.probe.type <- "Probe"
 
 obfuscated.dataset <- paste0("DS", sum(utf8ToInt(dataset)))
-
-
 
 gt.mat.fine <- combine.columns(gt.mat.raw, fine.grained.definitions)
 gt.mat.coarse <- combine.columns(gt.mat.raw, coarse.grained.definitions)

@@ -22,6 +22,11 @@ activity_name <- "create Challenge expression and ground truth files"
 source("../../scripts/utils.R")
 synLogin()
 
+if(!grepl(dataset, pattern="SDY")) {
+  stop("Was expecting an SDY dataset\n")
+}
+num.dataset.chars <- nchar(gsub(dataset, pattern="SDY", replacement=""))
+
 con   <- ImmuneSpaceR::CreateConnection(dataset)
 
 ## Get the list of gene expression matrices from ImmuneSpaceR
@@ -53,13 +58,29 @@ tbls <-
                  tbl <- as.data.frame(table(ground_truth_df[, col]))
                  print(col)
                  print(tbl)
+		 for(val in as.character(tbl[,1])) {
+		   sub <- ground_truth_df[ground_truth_df[, col] == val, ]
+		   pops <- sort(unique(sub$population_name_reported))
+		   ## cat(paste0(col, " = ", val, ": ", paste(pops, collapse = ", "), "\n"))
+		   cat(paste0(col, " = ", val, ": ", length(pops), " populations\n"))
+		 }
                  tbl
                })
+
+stop("Examine the populations reported and data units (i.e., relation of population to base/parent population)\n")
+
+sub <- subset(ground_truth_df, sample == ground_truth_df$sample[1])
+o <- order(nchar(sub$population_definition_reported))
+sub <- sub[o, ]
+print(sub)
 
 col <- "cell_number_unit"
 target.cell.number.unit <- as.character(tbls[[col]][1, which.max(tbls[[col]][, "Freq"])[1]])
 col <- "study_time_collected_unit"
 target.study.time.collected.unit <- as.character(tbls[[col]][1, which.max(tbls[[col]][, "Freq"])[1]])
+
+cat(paste0("target.cell.number.unit = ", target.cell.number.unit, "\n"))
+cat(paste0("target.study.time.collected.unit = ", target.study.time.collected.unit, "\n"))
 
 ## Confirm that participated_id ends in .XXX
 print(head(ground_truth_df$participant_id))
@@ -73,7 +94,7 @@ if(length(pops) == 0) {
 
 ## Update the following: filtering by study_time_collected, study_time_collected_unit, cell_number_unit, and removing participant_id
 ground_truth_df <- ground_truth_df %>%
-    mutate(sample = str_sub(participant_id, end = -5)) %>% 
+    mutate(sample = str_sub(participant_id, end = -(num.dataset.chars + 2))) %>% 
     filter(study_time_collected == 0) %>%
     filter(cell_number_unit == target.cell.number.unit) %>%    
     filter(study_time_collected_unit == target.study.time.collected.unit) %>%
@@ -122,13 +143,10 @@ for(col in cols) {
   print(table(sample.mapping[, col]))
 }
 
-## Confirm that participated_id ends in .XXX
-print(head(sample.mapping$participant_id))
-
 ## Update the following: filtering by study_time_collected, study_time_collected_unit, and removing participant_id
 sample.mapping <- sample.mapping %>%
   filter(study_time_collected == 0) %>%
-  mutate(sample = str_sub(participant_id, end = -5)) %>%
+  mutate(sample = str_sub(participant_id, end = -(num.dataset.chars + 2))) %>%
   filter(study_time_collected_unit == target.study.time.collected.unit) %>%
   arrange(cohort) %>%
   distinct(participant_id, .keep_all = TRUE) %>%

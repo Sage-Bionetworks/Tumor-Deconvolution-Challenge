@@ -46,10 +46,21 @@ ground_truth_df <-
     dplyr::as_tibble()
 
 cols <- c("cell_number_unit", "study_time_collected", "study_time_collected_unit")
-for(col in cols) {
-  print(col)
-  print(table(ground_truth_df[, col]))
-}
+names(cols) <- cols
+tbls <-
+  llply(cols,
+        .fun = function(col) {
+                 tbl <- as.data.frame(table(ground_truth_df[, col]))
+                 print(col)
+                 print(tbl)
+                 tbl
+               })
+
+col <- "cell_number_unit"
+target.cell.number.unit <- as.character(tbls[[col]][1, which.max(tbls[[col]][, "Freq"])[1]])
+target.cell.number.unit <- "cells"
+col <- "study_time_collected_unit"
+target.study.time.collected.unit <- as.character(tbls[[col]][1, which.max(tbls[[col]][, "Freq"])[1]])
 
 ## Confirm that participated_id ends in .XXX
 print(head(ground_truth_df$participant_id))
@@ -65,10 +76,11 @@ if(length(pops) == 0) {
 ground_truth_df <- ground_truth_df %>%
     mutate(sample = str_sub(participant_id, end = -5)) %>% 
     filter(study_time_collected == 0) %>%
-    filter(cell_number_unit == "cells") %>%    
-    filter(study_time_collected_unit == "Days") %>%
+    filter(cell_number_unit == target.cell.number.unit) %>%    
+    filter(study_time_collected_unit == target.study.time.collected.unit) %>%
     arrange(cohort) %>%
     distinct(participant_id, population_name_reported, .keep_all = TRUE) %>%
+    mutate(population_cell_number = as.numeric(population_cell_number)) %>%
     as.data.frame()
 
 ground_truth_df %>%
@@ -100,6 +112,29 @@ coarse.grained.definitions <-
        "NK.cells" = c("NK cells")
       )
 
+all.pops <- unique(as.vector(c(unlist(fine.grained.definitions), unlist(coarse.grained.definitions))))
+
+ground_truth_df %>%
+  select(population_definition_reported, population_name_reported) %>%
+  unique() %>%
+  arrange(desc(population_name_reported)) %>%
+  filter(population_name_reported %in% all.pops) %>%
+  print()
+
+## Update the following: normalizing.pop
+normalizing.population <- "viable/singlets"
+population.value.col <- "population_cell_number"
+  
+if(!is.na(normalizing.population)) {
+  normalizing_df <- ground_truth_df %>%
+    filter(population_name_reported == normalizing.population) %>%
+    mutate(denominator = population_cell_number) %>%
+    select(-population_name_reported, -population_definition_reported, -population_cell_number)
+  ground_truth_df <- merge(ground_truth_df, normalizing_df) %>%
+    mutate(population_fraction = as.numeric(population_cell_number) / as.numeric(denominator))
+  population.value.col <- "population_fraction"
+}
+
 sample.mapping <- dataset %>%
   get.immunespace.expression.metadata(.)
 
@@ -122,9 +157,8 @@ sample.mapping <- sample.mapping %>%
   as.data.frame()
   
 ## Update the following:
-cols <- c("participant_id", "population_name_reported", "population_cell_number")
+cols <- c("participant_id", "population_name_reported", population.value.col)
 gt.mat.raw <- unique(ground_truth_df[, cols]) %>%
-    mutate(population_cell_number = as.numeric(population_cell_number)) %>%
     acast(., formula = participant_id ~ population_name_reported)
 
 gsms <- get.immunespace.gsms(dataset)
