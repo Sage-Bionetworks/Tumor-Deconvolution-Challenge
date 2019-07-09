@@ -7,4 +7,4 @@ output.folder.synId <- "syn20459310"
 
 ## create_challenge_files.R creates a metadata file.
 ## Fill in its synId when it does.
-metadata.synId <- "syn20339573"
+metadata.synId <- "syn20459607"

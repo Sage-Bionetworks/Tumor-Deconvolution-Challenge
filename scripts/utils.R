@@ -215,7 +215,7 @@ get.geo.platform.name <- function(gses) {
   platform.name <- Meta(gpl)$title
   if(platform.name == "[HG-U133_Plus_2] Affymetrix Human Genome U133 Plus 2.0 Array") {
     platform.name <- "Affymetrix HG-U133 Plus 2.0"
-  } else if(platform.name == "[HT_HG-U133_Plus_PM] Affymetrix HT HG-U133+ PM Array") {
+  } else if(platform.name == "[HT_HG-U133_Plus_PM] Affymetrix HT HG-U133+ PM Array Plate") {
     platform.name <- "Affymetrix HG-U133 Plus PM"
   } else if(platform.name == "[PrimeView] Affymetrix Human Gene Expression Array") {
     platform.name <- "Affymetrix Human Gene PrimeView"  
@@ -276,7 +276,7 @@ get.probe.to.symbol.map <- function(gses) {
 get.probe.to.entrez.map <- function(gses) {
   gpl <- get.annotation(gses)
   tbl <- Table(gpl)  
-  entrez.col <- c("Entrez_Gene_ID", "Entrez Gene")
+  entrez.col <- c("Entrez_Gene_ID", "Entrez Gene", "ENTREZ_GENE_ID")
   entrez.col <- entrez.col[entrez.col %in% colnames(tbl)]
   if(length(entrez.col) != 1) { stop("Could not find entrez col in: ", paste(colnames(tbl), collapse=", "), "\n") }
   mapping <- tbl[, c("ID", entrez.col)]
@@ -400,7 +400,7 @@ lm_corr_eqn <- function(df, method = "pearson", display.r2 = FALSE, display.pval
     estimate <- as.numeric(ct$estimate)
     if(display.r2 == TRUE) { estimate <- estimate*estimate }
     pval <- ct$p.value
-    cat(paste0("method = ", method, " estimate = ", estimate, " pval = ", pval, "\n"))
+##    cat(paste0("method = ", method, " estimate = ", estimate, " pval = ", pval, "\n"))
     eq <- NULL
     if((method == "pearson") && (display.r2 == TRUE)) { 
       if(display.pval) { 
@@ -509,9 +509,17 @@ plot.individual.cell.type.correlations <- function(data, title) {
   gs <-
     dlply(data, .variables = c("cell.type"),
           .fun = function(df) {
-	           g <- plot.correlation(df$actual, df$prediction, method = "spearman", display.pval = TRUE)
+	           cell.type <- df$cell.type[1]
+		   x <- df$actual
+		   y <- df$prediction
+		   method <- "spearman"
+                   ct <- cor.test(x, y, method = method)
+                   estimate <- as.numeric(ct$estimate)
+                   pval <- ct$p.value
+                   cat(paste0("\n", title, " cell type = ", cell.type, " method = ", method, " estimate = ", estimate, " pval = ", pval, "\n"))
+	           g <- plot.correlation(x, y, method = method, display.pval = TRUE)
 		   g <- g + xlab("Actual") + ylab("Prediction")
-                   g <- g + ggtitle(paste0(title, df$cell.type[1]))
+                   g <- g + ggtitle(paste0(title, ct))
 		   return(g)
                    g <- ggplot(df, aes(x = actual, y = prediction))
                    g <- g + geom_point()

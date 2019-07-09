@@ -67,8 +67,6 @@ tbls <-
                  tbl
                })
 
-stop("Examine the populations reported and data units (i.e., relation of population to base/parent population)\n")
-
 col <- "cell_number_unit"
 target.cell.number.unit <- as.character(tbls[[col]][1, which.max(tbls[[col]][, "Freq"])[1]])
 col <- "study_time_collected_unit"
@@ -110,7 +108,7 @@ ground_truth_df %>%
   print()
 
 ## Update the following: normalizing.pop
-normalizing.population <- "CD45+ cells/uL"
+normalizing.population <- NA
 population.value.col <- "population_cell_number"
   
 if(!is.na(normalizing.population)) {
@@ -124,14 +122,43 @@ if(!is.na(normalizing.population)) {
 }
 
 ## Update the following:
+## fine.grained.definitions <-
+##   list("memory.B.cells" = c("X"),
+##        "naive.B.cells" = c("X"),
+##        "memory.CD4.T.cells" = c("X"),
+##        "naive.CD4.T.cells" = c("X"),
+##        "regulatory.T.cells" = c("X"),
+##        "memory.CD8.T.cells" = c("X"),
+##        "naive.CD8.T.cells" = c("X"),
+##        "NK.cells" = c("X"),
+##        "neutrophils" = c("X"),
+##        "monocytes" = c("X"),
+##        "myeloid.dendritic.cells" = c("X"),
+##        "macrophages" = c("X"),
+##        "fibroblasts" = c("X"),
+##        "endothelial.cells" = c("X")
+##       )
+
 fine.grained.definitions <-
-  list("naive.B.cells" = c("Naive B cell,Freq. of,Q2: CD19+, CD20+"),
-       "memory.B.cells" = c("Memory B cell,Freq. of,Q2: CD19+, CD20+")
+  list("NK.cells" = c("NK cell"),
+       "myeloid.dendritic.cells" = c("dendritic cell")
       )
 
 ## Update the following:
+## coarse.grained.definitions <-
+##   list("B.cells" = c("X"),
+##        "CD4.T.cells" = c("X"),
+##        "CD8.T.cells" = c("X"),
+##        "NK.cells" = c("X"),
+##        "neutrophils" = c("X"),
+##        "monocytic.lineage" = c("X"),
+##        "fibroblasts" = c("X"),
+##        "endothelial.cells" = c("X")
+##       )
+
 coarse.grained.definitions <-
-  list("B.cells" = c("B lym CD19+,Freq. of,WBC CD45+")
+  list("NK.cells" = c("NK cell"),
+       "monocytic.lineage" = c("dendritic cell")
       )
 
 sample.mapping <- dataset %>%
