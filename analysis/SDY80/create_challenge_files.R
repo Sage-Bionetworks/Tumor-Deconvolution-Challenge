@@ -67,17 +67,6 @@ tbls <-
                  tbl
                })
 
-sub <- subset(ground_truth_df, sample == ground_truth_df$sample[1])
-o <- order(nchar(sub$population_definition_reported))
-sub <- sub[o, ]
-print(head(sub))
-
-stop(paste0(dataset, " is not appropriate for deconvolution because everything is reported relative to CD45+ cells ",
-     "which may vary across patients. See population_definition_reported above. ",
-     "We need absolute measures of populations\n"))
-
-stop("Examine the populations reported and data units (i.e., relation of population to base/parent population)\n")
-
 col <- "cell_number_unit"
 target.cell.number.unit <- as.character(tbls[[col]][1, which.max(tbls[[col]][, "Freq"])[1]])
 col <- "study_time_collected_unit"
@@ -96,6 +85,8 @@ if(length(pops) == 0) {
   stop("All populations are phospho\n")
 }
 
+## stop("Examine the populations reported and data units (i.e., relation of population to base/parent population)\n")
+
 ## Update the following: filtering by study_time_collected, study_time_collected_unit, cell_number_unit, and removing participant_id
 ground_truth_df <- ground_truth_df %>%
     mutate(sample = str_sub(participant_id, end = -(num.dataset.chars + 2))) %>% 
@@ -107,35 +98,130 @@ ground_truth_df <- ground_truth_df %>%
     mutate(population_cell_number = as.numeric(population_cell_number)) %>%
     as.data.frame()
 
+sub <- subset(as.data.frame(ground_truth_df), participant_id == ground_truth_df$participant_id[1])
+o <- order(nchar(sub$population_definition_reported))
+sub <- sub[o, ]
+print(head(sub))
+
 ground_truth_df %>%
   select(population_definition_reported, population_name_reported) %>%
   unique() %>%
-  arrange(desc(population_name_reported)) %>%
+  arrange(desc(population_definition_reported)) %>%
   print()
 
-## Update the following: normalizing.pop
-normalizing.population <- "CD45+ cells/uL"
+##  arrange(desc(nchar(population_definition_reported))) %>%
+
 population.value.col <- "population_cell_number"
-  
-if(!is.na(normalizing.population)) {
-  normalizing_df <- ground_truth_df %>%
-    filter(population_name_reported == normalizing.population) %>%
-    mutate(denominator = population_cell_number) %>%
-    select(-population_name_reported, -population_definition_reported, -population_cell_number)
-  ground_truth_df <- merge(ground_truth_df, normalizing_df) %>%
-    mutate(population_fraction = as.numeric(population_cell_number) / as.numeric(denominator))
-  population.value.col <- "population_fraction"
+
+## Update the following:
+cols <- c("participant_id", "population_name_reported", population.value.col)
+gt.mat.raw <- unique(ground_truth_df[, cols]) %>%
+    acast(., formula = participant_id ~ population_name_reported)
+
+## Update the following:
+population.hierarchy <-
+  list(
+       list("parent" = "ID80, CD19+ of viable CD45+ (Total B cells)",
+            "relative" = "ID106, IgD+CD27- of CD20+ B cells* (Naive B)",
+	    "absolute" = "B.cells"),
+       list("parent" = "B.cells",
+            "relative" = "ID94, IgD-CD27+ of CD20+ B cells* (IgD-CD27+ memory B)",
+	    "absolute" = "IgD-CD27+ memory B"),
+       list("parent" = "B.cells",
+            "relative" = "ID101, IgD+CD27+ of CD20+ B cells* (IgD+CD27+ memory B)",
+	    "absolute" = "IgD+CD27+ memory B"),
+       list("parent" = "B.cells",
+            "relative" = "ID113, IgD-CD27- of CD20+ B cells* (IgD-CD27- memory B)",
+	    "absolute" = "IgD-CD27- memory B"),
+       list("parent" = "B.cells",
+            "relative" = "ID106, IgD+CD27- of CD20+ B cells* (Naive B)",
+	    "absolute" = "naive B"),
+       list("parent" = "ID1, CD3+ of viable CD45+ cells (Total T cells)",
+            "relative" = "ID4, CD8+ of total T cells",
+	    "absolute" = "CD8.T.cells"),
+       list("parent" = "CD8.T.cells",
+            "relative" = "ID53, CD45RA+ of CD8+ T cells",
+	    "absolute" = "CD45RA+.CD8.T.cells"),
+       list("parent" = "CD8.T.cells",
+            "relative" = "ID56, CD45RA- of CD8+ T cells (CD45RA- memory CD8+ T)",
+	    "absolute" = "CD45RA-.memory.CD8.T.cells"),
+       list("parent" = "CD45RA+.CD8.T.cells",
+            "relative" = "ID55, CD27- of CD45RA+CD8+ T cells (EMRA CD8+ T)",
+	    "absolute" = "EMRA.CD8.T.cells"),
+       list("parent" = "CD45RA+.CD8.T.cells",
+            "relative" = "ID54, CD27+ of CD45RA+CD8+ T cells (Naive CD8+ T)",
+	    "absolute" = "naive.CD8.T.cells"),
+       list("parent" = "ID1, CD3+ of viable CD45+ cells (Total T cells)",
+            "relative" = "ID2, CD4+ of total T cells",
+	    "absolute" = "CD4.T.cells"),
+       list("parent" = "CD4.T.cells",
+            "relative" = "ID59, CD25hi FoxP3+ of CD4+ T cells (Treg)",
+	    "absolute" = "Tregs"),
+       list("parent" = "CD4.T.cells",
+            "relative" = "ID35, CD45RA- of CD4+ T cells (Total memory CD4+ T)",
+	    "absolute" = "memory.CD4.T.cells"),
+       list("parent" = "CD4.T.cells",
+            "relative" = "ID34, CD45RA+ of CD4+ T cells (Naive T)",
+	    "absolute" = "naive.CD4.T.cells")
+      )
+
+## Update the following:
+final.pops <- c("B.cells", "IgD-CD27+ memory B", "IgD+CD27+ memory B", "IgD-CD27- memory B", "naive B",
+                "CD8.T.cells", "CD45RA+.CD8.T.cells", "CD45RA-.memory.CD8.T.cells", "EMRA.CD8.T.cells", "naive.CD8.T.cells",
+		"CD4.T.cells", "Tregs", "memory.CD4.T.cells", "naive.CD4.T.cells",
+		"ID64, CD14+ of viable CD45+ cells (Total Monocytes)")
+
+mat <- gt.mat.raw
+if(!is.null(population.hierarchy) && !is.null(final.pops)) {
+  mat <- propagate.relative.population.frequencies(mat / 100, population.hierarchy, final.pops)
 }
 
 ## Update the following:
+map <- list("monocytes" = c("ID64, CD14+ of viable CD45+ cells (Total Monocytes)"),
+            "B.cells" = c("B.cells"),
+	    "memory.B.cells" = c("IgD-CD27+ memory B", "IgD+CD27+ memory B", "IgD-CD27- memory B"),
+	    "naive.B.cells" = c("naive B"),
+	    "CD8.T.cells" = c("CD8.T.cells"),
+	    "memory.CD8.T.cells" = c("CD45RA-.memory.CD8.T.cells", "EMRA.CD8.T.cells"),
+	    "naive.CD8.T.cells" = c("naive.CD8.T.cells"),
+	    "CD4.T.cells" = c("CD4.T.cells"),
+	    "memory.CD4.T.cells" = c("memory.CD4.T.cells"),
+	    "naive.CD4.T.cells" = c("naive.CD4.T.cells"),
+	    "Tregs" = "Tregs")
+if(!is.null(map)) {
+  mat <- combine.columns(mat, map)
+}
+
+gt.mat.raw <- mat
+
+## Update the following:
 fine.grained.definitions <-
-  list("naive.B.cells" = c("Naive B cell,Freq. of,Q2: CD19+, CD20+"),
-       "memory.B.cells" = c("Memory B cell,Freq. of,Q2: CD19+, CD20+")
+  list("memory.B.cells" = c("memory.B.cells"),
+       "naive.B.cells" = c("naive.B.cells"),
+       "memory.CD4.T.cells" = c("memory.CD4.T.cells"),
+       "naive.CD4.T.cells" = c("naive.CD4.T.cells"),
+       "regulatory.T.cells" = c("Tregs"),
+       "memory.CD8.T.cells" = c("memory.CD8.T.cells"),
+       "naive.CD8.T.cells" = c("naive.CD8.T.cells"),
+##       "NK.cells" = c("X"),
+##       "neutrophils" = c("X"),
+       "monocytes" = c("monocytes")
+##       "myeloid.dendritic.cells" = c("X"),
+##       "macrophages" = c("X"),
+##       "fibroblasts" = c("X"),
+##       "endothelial.cells" = c("X")
       )
 
 ## Update the following:
 coarse.grained.definitions <-
-  list("B.cells" = c("B lym CD19+,Freq. of,WBC CD45+")
+  list("B.cells" = c("B.cells"),
+       "CD4.T.cells" = c("CD4.T.cells"),
+       "CD8.T.cells" = c("CD8.T.cells"),
+##       "NK.cells" = c("X"),
+##       "neutrophils" = c("X"),
+       "monocytic.lineage" = c("monocytes")
+##       "fibroblasts" = c("X"),
+##       "endothelial.cells" = c("X")
       )
 
 sample.mapping <- dataset %>%
@@ -156,11 +242,6 @@ sample.mapping <- sample.mapping %>%
   distinct(participant_id, .keep_all = TRUE) %>%
   as.data.frame()
   
-## Update the following:
-cols <- c("participant_id", "population_name_reported", population.value.col)
-gt.mat.raw <- unique(ground_truth_df[, cols]) %>%
-    acast(., formula = participant_id ~ population_name_reported)
-
 gsms <- get.immunespace.gsms(dataset)
 
 ## gse.ids <- unique(unlist(llply(gsms, .parallel = TRUE, .fun = function(gsm.id) get.gse(gsm.id))))
@@ -206,9 +287,12 @@ platform <- get.geo.platform.name(gses)
 cancer.type <- NA
 data.processing <- unlist(get.geo.data.processing(gses))
 print(data.processing)
+
+## stop("Set scale based on data processing\n")
+
 ## scale <- get.log.or.linear.space(data.processing)
 ## Update the following based on data.processing:
-scale <- "Linear"
+scale <- "Log2"
 ## Update the following:
 native.probe.type <- "Probe"
 
@@ -218,8 +302,29 @@ gt.mat.fine <- combine.columns(gt.mat.raw, fine.grained.definitions)
 gt.mat.coarse <- combine.columns(gt.mat.raw, coarse.grained.definitions)
 
 ## Extract mappings from probe to gene symbol and Ensembl ID.
-probe.to.symbol.map <- get.probe.to.symbol.map(gses)
-probe.to.ensg.map <- get.probe.to.ensg.map(gses)
+##probe.to.symbol.map <- get.probe.to.symbol.map(gses)
+##probe.to.ensg.map <- get.probe.to.ensg.map(gses)
+
+suppressPackageStartupMessages(p_load(biomaRt))
+mart <- useMart("ENSEMBL_MART_ENSEMBL")
+mart <- useDataset("hsapiens_gene_ensembl", mart)
+annotLookup <- getBM(
+  mart = mart,
+  attributes = c(
+    "affy_hugene_1_0_st_v1",
+    "ensembl_gene_id",
+    "external_gene_name"),
+  filter = "affy_hugene_1_0_st_v1",
+  values = rownames(expr.mat),
+  uniqueRows=TRUE)
+
+probe.to.ensg.map <- unique(annotLookup[, c("affy_hugene_1_0_st_v1", "ensembl_gene_id")])
+colnames(probe.to.ensg.map) <- c("from", "to")
+probe.to.ensg.map$from <- as.character(probe.to.ensg.map$from)
+
+probe.to.symbol.map <- unique(annotLookup[, c("affy_hugene_1_0_st_v1", "external_gene_name")])
+colnames(probe.to.symbol.map) <- c("from", "to")
+probe.to.symbol.map$from <- as.character(probe.to.symbol.map$from)
 
 ## Collapse probesets to gene symbol and Ensembl ID.
 ## Represent a gene by the corresponding probe with largest MAD.

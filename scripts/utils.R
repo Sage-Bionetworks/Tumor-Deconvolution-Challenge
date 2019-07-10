@@ -310,6 +310,15 @@ choose.max.mad.row <- function(mat) {
   mat[which.max(mads)[1], ,drop=F]
 }
 
+## Select the row that most often has the maximum value
+choose.max.row <- function(mat) {
+  if(nrow(mat) == 1) { return(mat) }
+  max.indices <- unlist(apply(mat, 2, which.max))
+  tmp <- as.data.frame(table(max.indices))
+  indx <- as.numeric(tmp[which.max(tmp[,2])[1], 1])
+  mat[indx, ,drop=F]
+}
+
 bidir.duplicated <- function(x) duplicated(x, fromLast = TRUE) | duplicated(x, fromLast = FALSE)
 
 drop.duplicate.columns <- function(mat) {
@@ -579,4 +588,27 @@ if(FALSE) {
     print(unique(gtds[[gd]]$population_name_reported))
   }
 
+}
+
+propagate.relative.population.frequencies <- function(mat, hierarchical.model, pops) {
+    l <- hierarchical.model
+    while(length(l) > 0) {
+        for(i in 1:length(l)) {
+	    parent.col <- l[[i]]$parent	    
+            if(!parent.col %in% colnames(mat)) { next }
+	    relative.col <- l[[i]]$relative
+	    if(!relative.col %in% colnames(mat)) {
+              stop(paste0("Was expecting ", relative.col, " to be in matrix ",
+	                  "since parent = ", parent.col, " was.\n",
+			  "Cols = ", paste(colnames(mat), collapse=", "), "\n"))
+            }
+	    absolute.col <- l[[i]]$absolute
+	    vec <- mat[, parent.col] * mat[, relative.col]
+	    mat <- cbind(mat, vec)
+	    colnames(mat)[ncol(mat)] <- absolute.col
+            l[[i]] <- NULL
+            break
+        }
+    }
+    mat[, colnames(mat) %in% pops]
 }
