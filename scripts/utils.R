@@ -319,6 +319,23 @@ get.annotation <- function(gses) {
   getGEO(gses[[1]]@annotation)
 }
 
+get.geo.metadata.tbls <- function(gses) {
+  llply(gses,
+        .fun = function(gse) {
+	         gse %>%
+		   phenoData() %>%
+		   pData() %>%
+		   rownames_to_column("sample") %>%
+		   as.data.frame()
+		 })
+}		
+
+get.geo.metadata.tbl <- function(gses) {
+  tbls <- get.geo.metadata.tbls(gses)
+  if(length(tbls) != 1) { stop("get.geo.metadata.tbl was only expecting a single GSE\n") }
+  tbls[[1]]
+}
+
 get.geo.platform.name <- function(gses) {
   gpl <- get.annotation(gses)
   platform.name <- Meta(gpl)$title
