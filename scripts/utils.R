@@ -665,11 +665,15 @@ if(FALSE) {
 }
 
 plot.all.cell.type.correlations <- function(data, title, x.col = "actual", y.col = "prediction") {
+  p_load(ggpubr)
   g <- ggplot(data, aes_string(x = x.col, y = y.col))
+##  cors <- ddply(data, c("cell.type"), .fun = function(df) { cor = round(cor(df[,x.col], df[,y.col]), 2) })
   g <- g + ggtitle(title)
   g <- g + geom_point()
   g <- g + geom_smooth(method = "lm")
   g <- g + facet_wrap(~ cell.type, scales = "free")
+##  g <- g + geom_text(data=cors, aes(label=paste("r=", cor, sep="")), x=30, y=4)
+  g <- g + stat_cor(method = "spearman")
   g
 }
 

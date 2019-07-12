@@ -26,14 +26,11 @@ run.deconvolution.methods <- function(metadata.synId, output.folder.synId) {
   fine.cs.pred <- cs.preds[["fine"]]  
 
   hugo.expr.mat <- hugo.expr.mat %>%
-    column_to_rownames(var = "Gene") %>%
-    log2()
+    column_to_rownames(var = "Gene") 
 
   coarse.mcp.pred <-
     run.coarse.grained.mcpcounter.model(list(hugo.expr.mat),
                                         list(dataset)) %>% as.data.frame()
-
-  print(head(coarse.mcp.pred))
 
   if(!((class(gt.mat.coarse) == "logical") && is.na(gt.mat.coarse))) {
     gt.mat.coarse <- gt.mat.coarse %>%
