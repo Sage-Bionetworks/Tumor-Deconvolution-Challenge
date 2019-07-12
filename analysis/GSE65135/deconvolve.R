@@ -1,4 +1,5 @@
-library(synapseClient)
+##library(synapseClient)
+library(synapser)
 library(tidyverse)
 library(data.table)
 library(magrittr)
@@ -21,7 +22,8 @@ source(str_c(repo_dir, "scripts/synapseClient_functions.R"))
 source(str_c(repo_dir, "scripts/matrix_functions.R"))
 source(str_c(repo_dir, "scripts/deconvolution-utils.R"))
 setwd(tmp_dir)
-synapseLogin()
+##synapseLogin()
+synLogin()
 
 paths <- download.deconvolution.tools.and.matrices()
 cs.cwltool <- paths$cs.cwltool

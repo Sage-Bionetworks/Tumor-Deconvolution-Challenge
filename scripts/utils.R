@@ -72,16 +72,17 @@ get.synapse.id.of.folder.content <- function(folder.synId, file.or.dir.name, exi
   warn(msg)
 }
 
+get.synapse.id <- function(obj) {
+  obj$properties$id
+}
+
 create.folder <- function(folder.synId, folder.name) {
   synId <- get.synapse.id.of.folder.content_(folder.synId, folder.name)
   if(!is.null(synId)) { return(synId) }
   folder <- Folder(folder.name, parent=folder.synId)
-  synId <- synStore(folder)
+  obj <- synStore(folder)
+  synId <- get.synapse.id(obj)
   synId
-}
-
-get.synapse.id <- function(obj) {
-  obj$properties$id
 }
 
 get.synapse.file.location <- function(obj) {
@@ -113,13 +114,19 @@ upload.data.and.metadata.to.synapse <- function(dataset, expr.mats, gt.mats, map
 
   nms <- names(gt.mats)
   names(nms) <- nms
-  gt.mat.files <- llply(nms, .fun = function(nm) paste0(dataset, "-", nm, "-gt.csv"))
+  gt.mat.files <-
+    llply(nms,
+          .fun = function(nm) {
+	           if((class(gt.mats[[nm]]) == "logical") && is.na(gt.mats[[nm]])) { return(NA) }
+                   paste0(dataset, "-", nm, "-gt.csv")
+		 })
 
   gt.mat.synIds <-
     llply(nms,
           .fun = function(nm) {
-                   file <- gt.mat.files[[nm]]
 	           mat <- gt.mats[[nm]]
+		   if((class(mat) == "logical") && is.na(mat)) { return(NA) }
+                   file <- gt.mat.files[[nm]]
   	           write.table(file = file, mat, sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
     	           f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
                    ss <- synStore(f, executed = script_url, forceVersion = FALSE)
@@ -186,6 +193,7 @@ download.hugo.expression.matrix <- function(metadata) {
 
 download.coarse.grained.ground.truth <- function(metadata) {
   synId <- metadata[["coarse.gt.synId"]]
+  if(is.na(synId)) { return(NA) }
   obj <- synGet(synId, downloadFile = TRUE)
   file <- get.synapse.file.location(obj)
   read.table(file, sep = ",", header = TRUE, as.is = TRUE)
@@ -193,6 +201,7 @@ download.coarse.grained.ground.truth <- function(metadata) {
 
 download.fine.grained.ground.truth <- function(metadata) {
   synId <- metadata[["fine.gt.synId"]]
+  if(is.na(synId)) { return(NA) }
   obj <- synGet(synId, downloadFile = TRUE)
   file <- get.synapse.file.location(obj)
   read.table(file, sep = ",", header = TRUE, as.is = TRUE)
@@ -325,7 +334,6 @@ get.geo.metadata.tbls <- function(gses) {
 	         gse %>%
 		   phenoData() %>%
 		   pData() %>%
-		   rownames_to_column("sample") %>%
 		   as.data.frame()
 		 })
 }		
@@ -695,6 +703,66 @@ plot.individual.cell.type.correlations <- function(data, title, x.col = "actual"
 
 require(magrittr)
 require(preprocessCore)
+
+## expr.mat has columns Gene and the sample names
+## gt.df has columns sample, cell.type, and possibly others 
+subset.and.rename.samples <- function(expr.mat, gt.df, obfuscate.sample.names = TRUE) {
+
+  samples_in_common <- intersect(colnames(expr.mat), gt.df$sample)
+
+  if(obfuscate.sample.names) {
+    new_samples_in_common <- paste0("S", 1:length(samples_in_common))
+    map <- data.frame(sample = samples_in_common, new.sample = new_samples_in_common)
+    gt.df <- merge(gt.df, map) %>%
+      dplyr::select(-sample) %>%
+      dplyr::rename(sample = new.sample)
+    expr.mat <- expr.mat[, c("Gene", samples_in_common)]
+    colnames(expr.mat) <- c("Gene", new_samples_in_common)
+    samples_in_common <- new_samples_in_common
+  }
+
+  expr.mat <- expr.mat[, c("Gene", samples_in_common)]
+
+  gt.df <- gt.df %>%
+      filter(sample %in% samples_in_common)
+
+  list("expr" = expr.mat, "gt" = gt.df)
+}
+
+map.populations <- function(mat, map) {
+  ret <- combine.columns(mat, map) 
+  rownames(ret) <- mat$sample.id
+
+  gt.df.fine <- melt(as.matrix(ret)) %>%
+    dplyr::rename(sample.id = Var1) %>%
+    dplyr::rename(cell.type = Var2) %>%
+    dplyr::rename(measured = value) %>%
+    dplyr::select(sample.id, cell.type, measured)
+
+  ret
+}
+
+translate.genes <- function(mat, map, fun = choose.max.mad.row) {
+  tmp.map <- subset(map, from %in% mat$Gene)
+  tmp.map <- tmp.map[!duplicated(tmp.map$to, fromLast = TRUE) & !duplicated(tmp.map$to, fromLast = FALSE), ]
+  ret <- mat %>%
+    column_to_rownames(var = "Gene") %>%
+    aggregate_rows(., tmp.map, fun = fun, parallel = TRUE) %>%
+    rownames_to_column(var = "Gene")
+  ret
+}
+
+map.and.format.populations <- function(mat, map) {
+  mat %>%
+    map.populations(., map) %>%
+    as.matrix() %>%
+    melt() %>%
+    dplyr::rename(sample.id = Var1) %>%
+    dplyr::rename(cell.type = Var2) %>%
+    dplyr::rename(measured = value) %>%        
+    add_column(dataset.name = obfuscated.dataset) %>%
+    dplyr::select(dataset.name, sample.id, cell.type, measured)
+}
 
 get_summary_by_matrix_cols <- function(columns, matrix, fn){
     m <- matrix[,columns]

@@ -125,9 +125,20 @@ write_tsv(expression_manifest_df, "expression_manifest.tsv")
 write_tsv(annotation_manifest_df, "annotation_manifest.tsv")
 write_tsv(ground_truth_manifest_df, "ground_truth_manifest.tsv")
 
-syncToSynapse("expression_manifest.tsv")
-syncToSynapse("annotation_manifest.tsv")
-syncToSynapse("ground_truth_manifest.tsv")
+my.syncToSynapse <- function(file) {
+  df <- read.table(file, sep="\t", header=TRUE)
+  for(i in 1:nrow(df)) {
+    file <- as.character(df$path[i])
+    parent <- as.character(df$parent[i])
+    print(c(file, parent))
+    f <- File(file, parentId = parent, synapseStore = TRUE)
+    ss <- synStore(f, executed = NULL, used = NULL, forceVersion = FALSE)
+  }
+}
+
+my.syncToSynapse("expression_manifest.tsv")
+my.syncToSynapse("annotation_manifest.tsv")
+my.syncToSynapse("ground_truth_manifest.tsv")
 
 
 write_tsv(norm_log_expr_df, "normalized_log_expression_affy.tsv")
