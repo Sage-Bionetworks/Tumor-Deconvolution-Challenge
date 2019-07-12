@@ -16,7 +16,7 @@ do_mcpcounter <- function(expression_matrix, dataset_name){
     result_matrix <- MCPcounter::MCPcounter.estimate(
         expression_matrix,
         featuresType = 'HUGO_symbols')
-    
+
     # Convert the result matrix back to a dataframe
     result_df <- result_matrix %>% 
         as.data.frame() %>% 

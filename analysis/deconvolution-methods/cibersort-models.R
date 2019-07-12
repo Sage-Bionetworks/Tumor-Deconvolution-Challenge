@@ -54,21 +54,22 @@ run.cibersort.models <- function(expression_matrix_files, dataset_names) {
          "neutrophils" = c("Neutrophils"),
          "monocytes" = c("Monocytes"),
          "myeloid.dendritic.cells" = c("Dendritic cells resting", "Dendritic cells activated"),
-	 "macrophages" = c("Macrophages M0", "Macrophages M1", "Macrophages M2"),
-	 "fibroblasts" = c("non.immune"),
-	 "endothelial.cells" = c("non.immune")
+	 "macrophages" = c("Macrophages M0", "Macrophages M1", "Macrophages M2")
+##	 "fibroblasts" = c("non.immune"),
+##	 "endothelial.cells" = c("non.immune")
         )
 
   coarse.grained.translations <-
     list("B.cells" = c("B cells naive", "B cells memory"),
-         "CD4.T.cells" = c("T cells CD4 naive", "T cells CD4 memory resting", "T cells CD4 memory activated"),
+         "CD4.T.cells" = c("T cells CD4 naive", "T cells CD4 memory resting", "T cells CD4 memory activated",
+	                   "T cells regulatory (Tregs)", "T cells follicular helper"),
          "CD8.T.cells" = c("T cells CD8"),
          "NK.cells" = c("NK cells resting", "NK cells activated"),
          "neutrophils" = c("Neutrophils"),
          "monocytic.lineage" = c("Monocytes", "Macrophages M0", "Macrophages M1", "Macrophages M2",
-	                         "Dendritic cells resting", "Dendritic cells activated"),
-	 "fibroblasts" = c("non.immune"),
-	 "endothelial.cells" = c("non.immune")
+	                         "Dendritic cells resting", "Dendritic cells activated")
+##	 "fibroblasts" = c("non.immune"),
+##	 "endothelial.cells" = c("non.immune")
         )
 
   ## Run CIBERSORT on each of the expression files

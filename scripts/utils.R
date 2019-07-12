@@ -47,12 +47,128 @@ get_file_df_from_synapse_dir_id <- function(syn_id){
         tibble::as_tibble() 
 }
 
+
+get.synapse.id.of.folder.content_ <- function(folder.synId, file.or.dir.name) {
+  children <- synGetChildren(folder.synId)
+  children <- as.list(children)
+  for(kid in children) {
+    if(kid$name == file.or.dir.name) { return(kid$id) }
+  }
+  return(NULL)
+}
+
+get.synapse.id.of.folder.content <- function(folder.synId, file.or.dir.name, exit.on.failure = TRUE) {
+  synId <- get.synapse.id.of.folder.content_(folder.synId, file.or.dir.name)
+  if(!is.null(synId)) { return(synId) }  
+  children <- synGetChildren(folder.synId)
+  children <- as.list(children)
+  for(kid in children) {
+    if(kid$name == file.or.dir.name) { return(kid$id) }
+  }
+  msg <- paste0("Could not find ", file.or.dir.name, " in ", folder.synId, "\n")
+  if(exit.on.failure) {
+    stop(msg)
+  }
+  warn(msg)
+}
+
 get.synapse.id <- function(obj) {
   obj$properties$id
 }
 
+create.folder <- function(folder.synId, folder.name) {
+  synId <- get.synapse.id.of.folder.content_(folder.synId, folder.name)
+  if(!is.null(synId)) { return(synId) }
+  folder <- Folder(folder.name, parent=folder.synId)
+  obj <- synStore(folder)
+  synId <- get.synapse.id(obj)
+  synId
+}
+
 get.synapse.file.location <- function(obj) {
   obj$path
+}
+
+upload.data.and.metadata.to.synapse <- function(dataset, expr.mats, gt.mats, mapping.mats, metadata, output.folder.synId, metadata.file.name, executed = NULL, used = NULL) {
+
+  nms <- names(expr.mats)
+  names(nms) <- nms
+  expr.mat.files <- llply(nms, .fun = function(nm) paste0(dataset, "-", nm, "-gene-expr.csv"))
+
+  expr.mat.synIds <-
+    llply(nms,
+          .fun = function(nm) {
+                   file <- expr.mat.files[[nm]]
+  	           mat <- expr.mats[[nm]]
+  	           write.table(file = file, mat, sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+    	           f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
+                   ss <- synStore(f, executed = executed, used = used, forceVersion = FALSE)
+                   synId <- get.synapse.id(ss)
+	           synId
+	         })
+		 
+  for(nm in nms) {
+    metadata[[paste0(nm, ".expr.file")]] = expr.mat.files[[nm]]
+    metadata[[paste0(nm, ".expr.synId")]] = expr.mat.synIds[[nm]]    
+  }
+
+  nms <- names(gt.mats)
+  names(nms) <- nms
+  gt.mat.files <-
+    llply(nms,
+          .fun = function(nm) {
+	           if((class(gt.mats[[nm]]) == "logical") && is.na(gt.mats[[nm]])) { return(NA) }
+                   paste0(dataset, "-", nm, "-gt.csv")
+		 })
+
+  gt.mat.synIds <-
+    llply(nms,
+          .fun = function(nm) {
+	           mat <- gt.mats[[nm]]
+		   if((class(mat) == "logical") && is.na(mat)) { return(NA) }
+                   file <- gt.mat.files[[nm]]
+  	           write.table(file = file, mat, sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+    	           f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
+                   ss <- synStore(f, executed = script_url, forceVersion = FALSE)
+                   synId <- get.synapse.id(ss)
+	           synId
+	         })
+
+  for(nm in nms) {
+    metadata[[paste0(nm, ".gt.file")]] = gt.mat.files[[nm]]
+    metadata[[paste0(nm, ".gt.synId")]] = gt.mat.synIds[[nm]]    
+  }
+
+  nms <- names(mapping.mats)
+  names(nms) <- nms
+  mapping.mat.files <- llply(nms, .fun = function(nm) paste0(dataset, "-", nm, "-to-native-mapping.tsv"))
+
+  mapping.mat.synIds <-
+    llply(nms,
+          .fun = function(nm) {
+                   file <- mapping.mat.files[[nm]]
+	           mat <- mapping.mats[[nm]]
+	           write.table(file = file, mat, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
+    	           f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
+                   ss <- synStore(f, executed = script_url, forceVersion = FALSE)
+                   synId <- get.synapse.id(ss)
+	           synId
+	         })
+
+  for(nm in nms) {
+    metadata[[paste0(nm, ".to.native.mapping.file")]] = mapping.mat.files[[nm]]
+    metadata[[paste0(nm, ".to.native.mapping.synId")]] = mapping.mat.synIds[[nm]]    
+  }
+
+  metadata.df <- data.frame("key" = names(metadata), "value" = as.character(metadata))
+
+  mat <- metadata.df
+  write.table(file = metadata.file.name, mat, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
+  f <- File(metadata.file.name, parentId = output.folder.synId, synapseStore = TRUE)
+  ss <- synStore(f, executed = script_url, forceVersion = FALSE)
+  synId <- get.synapse.id(ss)
+
+  cat(paste0("Wrote metadata file ", metadata.file.name, " to ", synId, "\n"))
 }
 
 download.and.parse.dataset.metadata <- function(metadata.synId) {
@@ -77,16 +193,18 @@ download.hugo.expression.matrix <- function(metadata) {
 
 download.coarse.grained.ground.truth <- function(metadata) {
   synId <- metadata[["coarse.gt.synId"]]
+  if(is.na(synId)) { return(NA) }
   obj <- synGet(synId, downloadFile = TRUE)
   file <- get.synapse.file.location(obj)
-  read.table(file, sep = "\t", header = TRUE, as.is = TRUE)
+  read.table(file, sep = ",", header = TRUE, as.is = TRUE)
 }
 
 download.fine.grained.ground.truth <- function(metadata) {
   synId <- metadata[["fine.gt.synId"]]
+  if(is.na(synId)) { return(NA) }
   obj <- synGet(synId, downloadFile = TRUE)
   file <- get.synapse.file.location(obj)
-  read.table(file, sep = "\t", header = TRUE, as.is = TRUE)
+  read.table(file, sep = ",", header = TRUE, as.is = TRUE)
 }
 
 # data_frame / matrix ---------------------------------------------------------
@@ -210,6 +328,22 @@ get.annotation <- function(gses) {
   getGEO(gses[[1]]@annotation)
 }
 
+get.geo.metadata.tbls <- function(gses) {
+  llply(gses,
+        .fun = function(gse) {
+	         gse %>%
+		   phenoData() %>%
+		   pData() %>%
+		   as.data.frame()
+		 })
+}		
+
+get.geo.metadata.tbl <- function(gses) {
+  tbls <- get.geo.metadata.tbls(gses)
+  if(length(tbls) != 1) { stop("get.geo.metadata.tbl was only expecting a single GSE\n") }
+  tbls[[1]]
+}
+
 get.geo.platform.name <- function(gses) {
   gpl <- get.annotation(gses)
   platform.name <- Meta(gpl)$title
@@ -303,6 +437,31 @@ get.probe.to.ensg.map <- function(gses) {
   colnames(mapping) <- c("from", "to")
   mapping
 }
+
+get.symbol.to.ensg.map <- function(symbols) {
+  suppressPackageStartupMessages(p_load(mygene))
+  dummy <- data.frame(query = symbols, ensembl = NA)
+  bm <- tryCatch({queryMany(symbols, scopes="symbol", fields=c("ensembl.gene"), species="human")}, error = function(e) { return(dummy) })
+##  bm <- tryCatch({queryMany(symbols, scopes="symbol", fields=c("ensembl.gene"), species="human", return.as = "records")}, error = function(e) { return(dummy) })
+##  bm <- ldply(bm.lst, .fun = function(entry) { if(!("ensembl" %in% names(entry)) || !("gene" %in% names(entry$ensembl))) { return(NULL)}; data.frame(query=entry$query, ensembl=entry$ensembl$gene) })
+  if(FALSE) {
+  flag <- grepl(pattern="ensembl", colnames(bm))
+  if(length(which(flag)) != 1) {
+    stop(paste0("Could not find ensembl col in: ", paste(colnames(bm), collapse=" "), "\n"))
+  }
+  ensg.col <- colnames(bm)[flag]
+  }
+  ensg.col <- "ensembl"
+  bm <- bm[, c("query", ensg.col)]
+  lst <- bm[,ensg.col]
+  names(lst) <- bm$query
+  bm <- ldply(lst, .fun = function(comp) data.frame(unlist(comp)))
+  colnames(bm) <- c("from", "to")
+  bm <- bm[!(bm$to %in% c("")),,drop=F]
+  bm <- bm[!is.na(bm$to) & !is.na(bm$from),,drop=F]
+  bm
+}
+
 
 choose.max.mad.row <- function(mat) {
   if(nrow(mat) == 1) { return(mat) }
@@ -505,32 +664,36 @@ if(FALSE) {
   g
 }
 
-plot.all.cell.type.correlations <- function(data, title) {
-  g <- ggplot(data, aes(x = actual, y = prediction))
+plot.all.cell.type.correlations <- function(data, title, x.col = "actual", y.col = "prediction") {
+  p_load(ggpubr)
+  g <- ggplot(data, aes_string(x = x.col, y = y.col))
+##  cors <- ddply(data, c("cell.type"), .fun = function(df) { cor = round(cor(df[,x.col], df[,y.col]), 2) })
   g <- g + ggtitle(title)
   g <- g + geom_point()
   g <- g + geom_smooth(method = "lm")
   g <- g + facet_wrap(~ cell.type, scales = "free")
+##  g <- g + geom_text(data=cors, aes(label=paste("r=", cor, sep="")), x=30, y=4)
+  g <- g + stat_cor(method = "spearman")
   g
 }
 
-plot.individual.cell.type.correlations <- function(data, title) {
+plot.individual.cell.type.correlations <- function(data, title, x.col = "actual", y.col = "prediction") {
   gs <-
-    dlply(data, .variables = c("cell.type"),
+    dlply(data, .variables = c("cell.type"), .parallel = FALSE,
           .fun = function(df) {
 	           cell.type <- df$cell.type[1]
-		   x <- df$actual
-		   y <- df$prediction
+		   x <- df[, x.col]
+		   y <- df[, y.col]
 		   method <- "spearman"
                    ct <- cor.test(x, y, method = method)
                    estimate <- as.numeric(ct$estimate)
                    pval <- ct$p.value
                    cat(paste0("\n", title, " cell type = ", cell.type, " method = ", method, " estimate = ", estimate, " pval = ", pval, "\n"))
 	           g <- plot.correlation(x, y, method = method, display.pval = TRUE)
-		   g <- g + xlab("Actual") + ylab("Prediction")
-                   g <- g + ggtitle(paste0(title, ct))
+		   g <- g + xlab("Measured") + ylab("Predicted")
+                   g <- g + ggtitle(paste0(title, cell.type))
 		   return(g)
-                   g <- ggplot(df, aes(x = actual, y = prediction))
+                   g <- ggplot(df, aes_string(x = x.col, y = y.col))
                    g <- g + geom_point()
                    g <- g + geom_smooth(method = "lm")
                    g
@@ -544,6 +707,66 @@ plot.individual.cell.type.correlations <- function(data, title) {
 
 require(magrittr)
 require(preprocessCore)
+
+## expr.mat has columns Gene and the sample names
+## gt.df has columns sample, cell.type, and possibly others 
+subset.and.rename.samples <- function(expr.mat, gt.df, obfuscate.sample.names = TRUE) {
+
+  samples_in_common <- intersect(colnames(expr.mat), gt.df$sample)
+
+  if(obfuscate.sample.names) {
+    new_samples_in_common <- paste0("S", 1:length(samples_in_common))
+    map <- data.frame(sample = samples_in_common, new.sample = new_samples_in_common)
+    gt.df <- merge(gt.df, map) %>%
+      dplyr::select(-sample) %>%
+      dplyr::rename(sample = new.sample)
+    expr.mat <- expr.mat[, c("Gene", samples_in_common)]
+    colnames(expr.mat) <- c("Gene", new_samples_in_common)
+    samples_in_common <- new_samples_in_common
+  }
+
+  expr.mat <- expr.mat[, c("Gene", samples_in_common)]
+
+  gt.df <- gt.df %>%
+      filter(sample %in% samples_in_common)
+
+  list("expr" = expr.mat, "gt" = gt.df)
+}
+
+map.populations <- function(mat, map) {
+  ret <- combine.columns(mat, map) 
+  rownames(ret) <- mat$sample.id
+
+  gt.df.fine <- melt(as.matrix(ret)) %>%
+    dplyr::rename(sample.id = Var1) %>%
+    dplyr::rename(cell.type = Var2) %>%
+    dplyr::rename(measured = value) %>%
+    dplyr::select(sample.id, cell.type, measured)
+
+  ret
+}
+
+translate.genes <- function(mat, map, fun = choose.max.mad.row) {
+  tmp.map <- subset(map, from %in% mat$Gene)
+  tmp.map <- tmp.map[!duplicated(tmp.map$to, fromLast = TRUE) & !duplicated(tmp.map$to, fromLast = FALSE), ]
+  ret <- mat %>%
+    column_to_rownames(var = "Gene") %>%
+    aggregate_rows(., tmp.map, fun = fun, parallel = TRUE) %>%
+    rownames_to_column(var = "Gene")
+  ret
+}
+
+map.and.format.populations <- function(mat, map) {
+  mat %>%
+    map.populations(., map) %>%
+    as.matrix() %>%
+    melt() %>%
+    dplyr::rename(sample.id = Var1) %>%
+    dplyr::rename(cell.type = Var2) %>%
+    dplyr::rename(measured = value) %>%        
+    add_column(dataset.name = obfuscated.dataset) %>%
+    dplyr::select(dataset.name, sample.id, cell.type, measured)
+}
 
 get_summary_by_matrix_cols <- function(columns, matrix, fn){
     m <- matrix[,columns]
