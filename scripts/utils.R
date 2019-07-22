@@ -89,7 +89,7 @@ get.synapse.file.location <- function(obj) {
   obj$path
 }
 
-upload.data.and.metadata.to.synapse <- function(dataset, expr.mats, gt.mats, mapping.mats, metadata, output.folder.synId, metadata.file.name, executed = NULL, used = NULL) {
+upload.data.and.metadata.to.synapse <- function(dataset, expr.mats, gt.mats, mapping.mats, metadata, output.folder.synId, metadata.file.name, executed = NULL, used = NULL, fastq1s = NULL, fastq2s = NULL) {
 
   nms <- names(expr.mats)
   names(nms) <- nms
@@ -158,6 +158,15 @@ upload.data.and.metadata.to.synapse <- function(dataset, expr.mats, gt.mats, map
   for(nm in nms) {
     metadata[[paste0(nm, ".to.native.mapping.file")]] = mapping.mat.files[[nm]]
     metadata[[paste0(nm, ".to.native.mapping.synId")]] = mapping.mat.synIds[[nm]]    
+  }
+
+  if(!is.null(fastq1s) && !is.null(fastq2s)) {
+    nms1 <- names(fastq1s)
+    nms2 <- names(fastq2s)
+    if(!(all(nms1 == nms2))) { stop("FASTQ names mismatch\n") }
+    metadata[["fastq.samples"]] <- paste0(nms1, collapse=",")
+    metadata[["fastq1.files"]] <- paste0(fastq1s, collapse=",")
+    metadata[["fastq2.files"]] <- paste0(fastq2s, collapse=",")        
   }
 
   metadata.df <- data.frame("key" = names(metadata), "value" = as.character(metadata))
@@ -359,6 +368,8 @@ get.geo.platform.name <- function(gses) {
     platform.name <- "Illumina HumanHT-12 V3.0"
   } else if(platform.name == "Illumina HumanHT-12 V4.0 expression beadchip") {
     platform.name <- "Illumina HumanHT-12 V4.0"
+  } else if(platform.name == "Illumina HiSeq 2000 (Homo sapiens)") {
+    platform.name <- "Illumina HiSeq 2000"
   } else {
     stop(paste0("Unknown array type ", platform.name))
   }
@@ -436,6 +447,20 @@ get.probe.to.ensg.map <- function(gses) {
   }
   colnames(mapping) <- c("from", "to")
   mapping
+}
+
+get.ensg.to.sym.map <- function(gene.ids) {
+  suppressPackageStartupMessages(p_load(mygene))
+  bm <- queryMany(gene.ids, scopes="ensembl.gene", fields=c("symbol"), species="human")
+  bm <- as.data.frame(bm[,c("symbol", "query")])
+  names(bm) <- c("symbol", "ensg")
+  bm <- bm[!is.na(bm$ensg),]
+  bm <- bm[!is.na(bm$symbol),]
+  bm <- bm[!(bm$symbol %in% c("")),]
+  bm <- bm[!(bm$ensg %in% c("")),]
+  bm <- bm[, c("ensg", "symbol")]
+  colnames(bm) <- c("from", "to")
+  bm
 }
 
 get.symbol.to.ensg.map <- function(symbols) {
@@ -714,6 +739,8 @@ subset.and.rename.samples <- function(expr.mat, gt.df, obfuscate.sample.names = 
 
   samples_in_common <- intersect(colnames(expr.mat), gt.df$sample)
 
+  map <- data.frame(from = samples_in_common, to = samples_in_common)
+
   if(obfuscate.sample.names) {
     new_samples_in_common <- paste0("S", 1:length(samples_in_common))
     map <- data.frame(sample = samples_in_common, new.sample = new_samples_in_common)
@@ -722,6 +749,7 @@ subset.and.rename.samples <- function(expr.mat, gt.df, obfuscate.sample.names = 
       dplyr::rename(sample = new.sample)
     expr.mat <- expr.mat[, c("Gene", samples_in_common)]
     colnames(expr.mat) <- c("Gene", new_samples_in_common)
+    map <- data.frame(from = samples_in_common, to = new_samples_in_common)
     samples_in_common <- new_samples_in_common
   }
 
@@ -730,7 +758,7 @@ subset.and.rename.samples <- function(expr.mat, gt.df, obfuscate.sample.names = 
   gt.df <- gt.df %>%
       filter(sample %in% samples_in_common)
 
-  list("expr" = expr.mat, "gt" = gt.df)
+  list("expr" = expr.mat, "gt" = gt.df, "map" = map)
 }
 
 map.populations <- function(mat, map) {
