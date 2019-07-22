@@ -198,6 +198,8 @@ mapping.mats <- list("symbol" = probe.to.symbol.map, "ensg" = probe.to.ensg.map)
 ## Get the fastq files, the mappings are stored in the following manifest
 fastq.manifest.synId <- "syn12663606"
 
+fastq.folder.synId <- "syn12649849"
+
 fastq.manifest <- create_df_from_synapse_id(fastq.manifest.synId) %>%
   mutate(ABV2 = ifelse(cell_type == "myeloid DC", "mDC", 
                          ifelse(cell_type == "Monocytes", "Mono", 
@@ -224,6 +226,9 @@ names(fastq1s) <- as.character(fastq.manifest$sample)
 fastq2s <- as.character(fastq.manifest$fastq2)
 names(fastq2s) <- as.character(fastq.manifest$sample)
 
+fastq1.synIds <- llply(fastq1s, .fun = function(nm) get.synapse.id.of.folder.content(fastq.folder.synId, nm, exit.on.failure = TRUE))
+fastq2.synIds <- llply(fastq2s, .fun = function(nm) get.synapse.id.of.folder.content(fastq.folder.synId, nm, exit.on.failure = TRUE))
+
 metadata <-
   list("dataset.name" = obfuscated.dataset,
        "orig.dataset.name" = dataset,
@@ -234,6 +239,8 @@ metadata <-
        "data.processing" = data.processing)
 
 upload.data.and.metadata.to.synapse(dataset, expr.mats, gt.mats, mapping.mats, metadata, output.folder.synId, metadata.file.name,
-                                    executed = script_url, used = NULL, fastq1s = fastq1s, fastq2s = fastq2s)
+                                    executed = script_url, used = NULL,
+				    fastq1s = fastq1s, fastq2s = fastq2s, fastq1.synIds = fastq1.synIds, fastq2.synIds = fastq2.synIds,
+				    sample.mapping = samples.map)
 
 

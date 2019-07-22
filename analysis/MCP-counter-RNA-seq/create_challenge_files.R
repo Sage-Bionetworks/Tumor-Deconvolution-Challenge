@@ -56,6 +56,7 @@ samples_in_common <- intersect(fpkm_df$sample, ground_truth_df$sample)
 
 ## Obfuscate the sample names
 obfuscate.sample.names <- TRUE
+samples.map <- data.frame(from = as.character(samples_in_common), to = as.character(samples_in_common))
 if(obfuscate.sample.names) {
   new_samples_in_common <- paste0("S", 1:length(samples_in_common))
   map <- data.frame(sample = samples_in_common, new.sample = new_samples_in_common)
@@ -65,6 +66,7 @@ if(obfuscate.sample.names) {
   fpkm_df <- merge(fpkm_df, map) %>%
     select(-sample) %>%
     dplyr::rename(sample = new.sample)
+  samples.map <- data.frame(from = as.character(samples_in_common), to = as.character(new_samples_in_common))    
 }
 
 gt.mat.raw <- ground_truth_df %>%
@@ -114,6 +116,10 @@ rownames(gt.mat.fine) <- gt.mat.raw$sample.id
 gt.mat.coarse <- combine.columns(gt.mat.raw, coarse.grained.definitions)
 rownames(gt.mat.coarse) <- gt.mat.raw$sample.id
 
+## May need to update the following get.geo.platform.name function
+set.seed(1234)
+obfuscated.dataset <- paste0("DS", sum(utf8ToInt(dataset)))
+
 gt.df.fine <- melt(as.matrix(gt.mat.fine)) %>%
   dplyr::rename(sample.id = Var1) %>%
   dplyr::rename(cell.type = Var2) %>%
@@ -146,9 +152,6 @@ expr.mats <- list("native" = expr.mat, "ensg" = expr.mat.ensg, "hugo" = expr.mat
 gt.mats <- list("fine" = gt.df.fine, "coarse" = gt.df.coarse)
 mapping.mats <- list("symbol" = probe.to.symbol.map, "ensg" = probe.to.ensg.map)
 
-## May need to update the following get.geo.platform.name function
-set.seed(1234)
-obfuscated.dataset <- paste0("DS", sum(utf8ToInt(dataset)))
 cancer.type <- "CRC"
 platform <- "RNA-seq"
 scale <- "Linear"
@@ -165,5 +168,5 @@ metadata <-
        "data.processing" = data.processing)
 
 upload.data.and.metadata.to.synapse(dataset, expr.mats, gt.mats, mapping.mats, metadata, output.folder.synId, metadata.file.name,
-                                    executed = script_url, used = NULL)
+                                    executed = script_url, used = NULL, sample.mapping = samples.map)
 

@@ -89,7 +89,7 @@ get.synapse.file.location <- function(obj) {
   obj$path
 }
 
-upload.data.and.metadata.to.synapse <- function(dataset, expr.mats, gt.mats, mapping.mats, metadata, output.folder.synId, metadata.file.name, executed = NULL, used = NULL, fastq1s = NULL, fastq2s = NULL) {
+upload.data.and.metadata.to.synapse <- function(dataset, expr.mats, gt.mats, mapping.mats, metadata, output.folder.synId, metadata.file.name, executed = NULL, used = NULL, fastq1s = NULL, fastq2s = NULL, fastq1.synIds = NULL, fastq2.synIds = NULL, sample.mapping = NULL) {
 
   nms <- names(expr.mats)
   names(nms) <- nms
@@ -160,13 +160,39 @@ upload.data.and.metadata.to.synapse <- function(dataset, expr.mats, gt.mats, map
     metadata[[paste0(nm, ".to.native.mapping.synId")]] = mapping.mat.synIds[[nm]]    
   }
 
+  metadata[["sample.mapping.file"]] <- NA
+  metadata[["sample.mapping.synId"]] <- NA
+  if(!is.null(sample.mapping)) {
+    sample.mapping.file <- paste0(dataset, "-sample-mapping.tsv")
+    mat <- sample.mapping
+    write.table(file = sample.mapping.file, mat, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
+    f <- File(sample.mapping.file, parentId = output.folder.synId, synapseStore = TRUE)
+    ss <- synStore(f, executed = script_url, forceVersion = FALSE)
+    sample.mapping.synId <- get.synapse.id(ss)
+    metadata[["sample.mapping.file"]] <- sample.mapping.file
+    metadata[["sample.mapping.synId"]] <- sample.mapping.synId
+  }
+  
+  metadata[["fastq.samples"]] <- NA
+  metadata[["fastq1.files"]] <- NA
+  metadata[["fastq2.files"]] <- NA
+  metadata[["fastq1.synIds"]] <- NA
+  metadata[["fastq2.synIds"]] <- NA
   if(!is.null(fastq1s) && !is.null(fastq2s)) {
     nms1 <- names(fastq1s)
     nms2 <- names(fastq2s)
     if(!(all(nms1 == nms2))) { stop("FASTQ names mismatch\n") }
+    nms1 <- names(fastq1.synIds)
+    nms2 <- names(fastq2.synIds)
+    if(!(all(nms1 == nms2))) { stop("FASTQ names mismatch\n") }
+    nms1 <- names(fastq1s)
+    nms2 <- names(fastq1.synIds)
+    if(!(all(nms1 == nms2))) { stop("FASTQ names mismatch\n") }
     metadata[["fastq.samples"]] <- paste0(nms1, collapse=",")
     metadata[["fastq1.files"]] <- paste0(fastq1s, collapse=",")
     metadata[["fastq2.files"]] <- paste0(fastq2s, collapse=",")        
+    metadata[["fastq1.synIds"]] <- paste0(fastq1.synIds, collapse=",")
+    metadata[["fastq2.synIds"]] <- paste0(fastq2.synIds, collapse=",")        
   }
 
   metadata.df <- data.frame("key" = names(metadata), "value" = as.character(metadata))
