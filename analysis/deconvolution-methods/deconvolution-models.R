@@ -8,8 +8,8 @@ run.deconvolution.methods <- function(metadata.synId, output.folder.synId) {
   ## Create an expression matrix whose first column is the HUGO gene name,
   ## as required by CIBERSORT.
 ##  hugo.expr.gene.col.mat <- cbind(HUGO = rownames(hugo.expr.mat), hugo.expr.mat)
-  hugo.expr.gene.col.mat <- hugo.expr.mat %>%
-    dplyr::rename(HUGO = Gene)
+  hugo.expr.gene.col.mat <- hugo.expr.mat %>% dplyr::rename(HUGO = Gene)
+##  hugo.expr.gene.col.mat <- hugo.expr.mat %>% dplyr::rename(HUGO = Hugo)
 
   cibersort.expr.input.file <- paste0(dataset, "-hugo-expr-cibersort-input.tsv")
   write.table(file = cibersort.expr.input.file, hugo.expr.gene.col.mat, sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
@@ -25,13 +25,15 @@ run.deconvolution.methods <- function(metadata.synId, output.folder.synId) {
   coarse.cs.pred <- cs.preds[["coarse"]]
   fine.cs.pred <- cs.preds[["fine"]]  
 
-  hugo.expr.mat <- hugo.expr.mat %>%
-    column_to_rownames(var = "Gene") 
+  hugo.expr.mat <- hugo.expr.mat %>% column_to_rownames(var = "Gene")
+##  hugo.expr.mat <- hugo.expr.mat %>% column_to_rownames(var = "Hugo") 
 
   coarse.mcp.pred <-
     run.coarse.grained.mcpcounter.model(list(hugo.expr.mat),
                                         list(dataset)) %>% as.data.frame()
 
+  methods <- c("spearman", "pearson")
+  
   if(!((class(gt.mat.coarse) == "logical") && is.na(gt.mat.coarse))) {
     gt.mat.coarse <- gt.mat.coarse %>%
       dplyr::select(-dataset.name)
@@ -39,38 +41,44 @@ run.deconvolution.methods <- function(metadata.synId, output.folder.synId) {
     coarse.cs <- merge(coarse.cs.pred, gt.mat.coarse)
 
     ## Plot MCPcounter-based coarse-grained predictions
-    g.coarse.mcp.all <-
-      plot.all.cell.type.correlations(coarse.mcp, "MCP Counter", x.col = measured.col, y.col = predicted.col)
-
-    g.coarse.mcp.individual <-
-      plot.individual.cell.type.correlations(coarse.mcp, "MCP Counter: ", x.col = measured.col, y.col = predicted.col)
-
-    l <- c(list(g.coarse.mcp.all), g.coarse.mcp.individual)
-    file <- paste0(dataset, "-mcp-counter-coarse-correlations.pdf")
-    pdf(file, onefile = TRUE)
-    l_ply(l, .fun = function(g) print(g))
-    d <- dev.off()
+    for(method in methods) {
+      if(nrow(coarse.mcp) > 0) {
+        g.coarse.mcp.all <-
+          plot.all.cell.type.correlations(coarse.mcp, paste0("MCP Counter ", method), x.col = measured.col, y.col = predicted.col, method = method)
+    
+        g.coarse.mcp.individual <-
+          plot.individual.cell.type.correlations(coarse.mcp, paste0("MCP Counter ", method, ": "), x.col = measured.col, y.col = predicted.col, method = method)
+    
+        l <- c(list(g.coarse.mcp.all), g.coarse.mcp.individual)
+        file <- paste0(dataset, "-mcp-counter-coarse-", method, "-correlations.pdf")
+        pdf(file, onefile = TRUE)
+        l_ply(l, .fun = function(g) print(g))
+        d <- dev.off()
+      
+        f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
+        ss <- synStore(f, executed = script_url, forceVersion = FALSE)
+        synId <- get.synapse.id(ss)
+      }
   
-    f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
-    ss <- synStore(f, executed = script_url, forceVersion = FALSE)
-    synId <- get.synapse.id(ss)
-
-    ## Plot CIBERSORT-based coarse-grained predictions
-    g.coarse.cs.all <-
-      plot.all.cell.type.correlations(coarse.cs, "CIBERSORT", x.col = measured.col, y.col = predicted.col)
-
-    g.coarse.cs.individual <-
-      plot.individual.cell.type.correlations(coarse.cs, "CIBERSORT: ", x.col = measured.col, y.col = predicted.col)
-
-    l <- c(list(g.coarse.cs.all), g.coarse.cs.individual)
-    file <- paste0(dataset, "-cibersort-coarse-correlations.pdf")
-    pdf(file, onefile = TRUE)
-    l_ply(l, .fun = function(g) print(g))
-    d <- dev.off()
+      if(nrow(coarse.cs) > 0) {
+        ## Plot CIBERSORT-based coarse-grained predictions
+        g.coarse.cs.all <-
+          plot.all.cell.type.correlations(coarse.cs, paste0("CIBERSORT ", method), x.col = measured.col, y.col = predicted.col, method = method)
   
-    f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
-    ss <- synStore(f, executed = script_url, forceVersion = FALSE)
-    synId <- get.synapse.id(ss)
+        g.coarse.cs.individual <-
+          plot.individual.cell.type.correlations(coarse.cs, paste0("CIBERSORT ", method, ": "), x.col = measured.col, y.col = predicted.col, method = method)
+  
+        l <- c(list(g.coarse.cs.all), g.coarse.cs.individual)
+        file <- paste0(dataset, "-cibersort-coarse-", method, "-correlations.pdf")
+        pdf(file, onefile = TRUE)
+        l_ply(l, .fun = function(g) print(g))
+        d <- dev.off()
+      
+        f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
+        ss <- synStore(f, executed = script_url, forceVersion = FALSE)
+        synId <- get.synapse.id(ss)
+      }
+    } ## for(method in methods)
   }
 
   if(!((class(gt.mat.fine) == "logical") && is.na(gt.mat.fine))) {
@@ -79,22 +87,27 @@ run.deconvolution.methods <- function(metadata.synId, output.folder.synId) {
 
     fine.cs <- merge(fine.cs.pred, gt.mat.fine)    
 
-    ## Plot CIBERSORT-based fine-grained predictions
-    g.fine.cs.all <-
-      plot.all.cell.type.correlations(fine.cs, "CIBERSORT", x.col = measured.col, y.col = predicted.col)
+    for(method in methods) {
 
-    g.fine.cs.individual <-
-      plot.individual.cell.type.correlations(fine.cs, "CIBERSORT: ", x.col = measured.col, y.col = predicted.col)
-
-    l <- c(list(g.fine.cs.all), g.fine.cs.individual)
-    file <- paste0(dataset, "-cibersort-fine-correlations.pdf")
-    pdf(file, onefile = TRUE)
-    l_ply(l, .fun = function(g) print(g))
-    d <- dev.off()
-  
-    f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
-    ss <- synStore(f, executed = script_url, forceVersion = FALSE)
-    synId <- get.synapse.id(ss)
+      if(nrow(fine.cs) > 0) {
+        ## Plot CIBERSORT-based fine-grained predictions
+        g.fine.cs.all <-
+          plot.all.cell.type.correlations(fine.cs, paste0("CIBERSORT ", method), x.col = measured.col, y.col = predicted.col, method = method)
+    
+        g.fine.cs.individual <-
+          plot.individual.cell.type.correlations(fine.cs, paste0("CIBERSORT ", method, ": "), x.col = measured.col, y.col = predicted.col, method = method)
+    
+        l <- c(list(g.fine.cs.all), g.fine.cs.individual)
+        file <- paste0(dataset, "-cibersort-fine-", method, "-correlations.pdf")
+        pdf(file, onefile = TRUE)
+        l_ply(l, .fun = function(g) print(g))
+        d <- dev.off()
+      
+        f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
+        ss <- synStore(f, executed = script_url, forceVersion = FALSE)
+        synId <- get.synapse.id(ss)
+      }
+    } ## for(method in methods)
   }
 
 }

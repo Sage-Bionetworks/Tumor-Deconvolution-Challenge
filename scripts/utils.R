@@ -100,7 +100,9 @@ upload.data.and.metadata.to.synapse <- function(dataset, expr.mats, gt.mats, map
           .fun = function(nm) {
                    file <- expr.mat.files[[nm]]
   	           mat <- expr.mats[[nm]]
-  	           write.table(file = file, mat, sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+		   sep <- ","
+		   if(grepl(file, pattern="tsv")) { sep <- "\t" }
+  	           write.table(file = file, mat, sep = sep, col.names = TRUE, row.names = FALSE, quote = FALSE)
     	           f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
                    ss <- synStore(f, executed = executed, used = used, forceVersion = FALSE)
                    synId <- get.synapse.id(ss)
@@ -109,7 +111,9 @@ upload.data.and.metadata.to.synapse <- function(dataset, expr.mats, gt.mats, map
 		 
   for(nm in nms) {
     metadata[[paste0(nm, ".expr.file")]] = expr.mat.files[[nm]]
-    metadata[[paste0(nm, ".expr.synId")]] = expr.mat.synIds[[nm]]    
+    metadata[[paste0(nm, ".expr.synId")]] = expr.mat.synIds[[nm]]
+##    metadata[[paste0(nm, ".expr.file")]] = "foo.tsv"
+##    metadata[[paste0(nm, ".expr.synId")]] = "syn17091415"
   }
 
   nms <- names(gt.mats)
@@ -127,7 +131,9 @@ upload.data.and.metadata.to.synapse <- function(dataset, expr.mats, gt.mats, map
 	           mat <- gt.mats[[nm]]
 		   if((class(mat) == "logical") && is.na(mat)) { return(NA) }
                    file <- gt.mat.files[[nm]]
-  	           write.table(file = file, mat, sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+		   sep <- ","
+		   if(grepl(file, pattern="tsv")) { sep <- "\t" }
+  	           write.table(file = file, mat, sep = sep, col.names = TRUE, row.names = FALSE, quote = FALSE)
     	           f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
                    ss <- synStore(f, executed = script_url, forceVersion = FALSE)
                    synId <- get.synapse.id(ss)
@@ -223,7 +229,9 @@ download.hugo.expression.matrix <- function(metadata) {
   synId <- metadata[["hugo.expr.synId"]]
   obj <- synGet(synId, downloadFile = TRUE)
   file <- get.synapse.file.location(obj)
-  read.table(file, sep = ",", header = TRUE, as.is = TRUE)
+  sep <- ","
+  if(grepl(file, pattern="tsv")) { sep <- "\t" }
+  read.table(file, sep = sep, header = TRUE, as.is = TRUE)
 }
 
 download.coarse.grained.ground.truth <- function(metadata) {
@@ -715,7 +723,7 @@ if(FALSE) {
   g
 }
 
-plot.all.cell.type.correlations <- function(data, title, x.col = "actual", y.col = "prediction") {
+plot.all.cell.type.correlations <- function(data, title, x.col = "actual", y.col = "prediction", method = "spearman") {
   p_load(ggpubr)
   g <- ggplot(data, aes_string(x = x.col, y = y.col))
 ##  cors <- ddply(data, c("cell.type"), .fun = function(df) { cor = round(cor(df[,x.col], df[,y.col]), 2) })
@@ -724,22 +732,24 @@ plot.all.cell.type.correlations <- function(data, title, x.col = "actual", y.col
   g <- g + geom_smooth(method = "lm")
   g <- g + facet_wrap(~ cell.type, scales = "free")
 ##  g <- g + geom_text(data=cors, aes(label=paste("r=", cor, sep="")), x=30, y=4)
-  g <- g + stat_cor(method = "spearman")
+  g <- g + stat_cor(method = method)
   g
 }
 
-plot.individual.cell.type.correlations <- function(data, title, x.col = "actual", y.col = "prediction") {
+plot.individual.cell.type.correlations <- function(data, title, x.col = "actual", y.col = "prediction", method = "spearman") {
   gs <-
     dlply(data, .variables = c("cell.type"), .parallel = FALSE,
           .fun = function(df) {
 	           cell.type <- df$cell.type[1]
 		   x <- df[, x.col]
 		   y <- df[, y.col]
-		   method <- "spearman"
-                   ct <- cor.test(x, y, method = method)
-                   estimate <- as.numeric(ct$estimate)
-                   pval <- ct$p.value
-                   cat(paste0("\n", title, " cell type = ", cell.type, " method = ", method, " estimate = ", estimate, " pval = ", pval, "\n"))
+		   methods <- c("spearman", "pearson")
+		   for(m in method) {
+                     ct <- cor.test(x, y, method = method)
+                     estimate <- as.numeric(ct$estimate)
+                     pval <- ct$p.value
+                     cat(paste0("\n", title, " cell type = ", cell.type, " method = ", m, " estimate = ", estimate, " pval = ", pval, "\n"))
+		   }
 	           g <- plot.correlation(x, y, method = method, display.pval = TRUE)
 		   g <- g + xlab("Measured") + ylab("Predicted")
                    g <- g + ggtitle(paste0(title, cell.type))
@@ -802,7 +812,10 @@ map.populations <- function(mat, map) {
 
 translate.genes <- function(mat, map, fun = choose.max.mad.row) {
   tmp.map <- subset(map, from %in% mat$Gene)
-  tmp.map <- tmp.map[!duplicated(tmp.map$to, fromLast = TRUE) & !duplicated(tmp.map$to, fromLast = FALSE), ]
+  flag <- as.character(mat$Gene) %in% as.character(map$from)
+  mat <- mat[flag, ]
+  rownames(mat) <- NULL
+##  tmp.map <- tmp.map[!duplicated(tmp.map$to, fromLast = TRUE) & !duplicated(tmp.map$to, fromLast = FALSE), ]
   ret <- mat %>%
     column_to_rownames(var = "Gene") %>%
     aggregate_rows(., tmp.map, fun = fun, parallel = TRUE) %>%
