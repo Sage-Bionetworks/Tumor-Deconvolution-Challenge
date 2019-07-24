@@ -455,7 +455,78 @@ get.log.or.linear.space <- function(data.processing) {
   type
 }
 
+get.probe.to.symbol.map.hugene.1.0.st <- function(probes) {
+  suppressPackageStartupMessages(p_load(biomaRt))
+  mart <- useMart("ENSEMBL_MART_ENSEMBL")
+  mart <- useDataset("hsapiens_gene_ensembl", mart)
+  annotLookup <- getBM(
+    mart = mart,
+    attributes = c(
+      "affy_hugene_1_0_st_v1",
+      "ensembl_gene_id",
+      "external_gene_name"),
+    filter = "affy_hugene_1_0_st_v1",
+    values = probes,
+    uniqueRows=TRUE)
+
+  probe.to.symbol.map <- unique(annotLookup[, c("affy_hugene_1_0_st_v1", "external_gene_name")])
+  colnames(probe.to.symbol.map) <- c("from", "to")
+  probe.to.symbol.map$from <- as.character(probe.to.symbol.map$from)
+
+  probe.to.symbol.map
+}
+
+get.probe.to.ensg.map.hugene.1.0.st <- function(probes) {
+  suppressPackageStartupMessages(p_load(biomaRt))
+  mart <- useMart("ENSEMBL_MART_ENSEMBL")
+  mart <- useDataset("hsapiens_gene_ensembl", mart)
+  annotLookup <- getBM(
+    mart = mart,
+    attributes = c(
+      "affy_hugene_1_0_st_v1",
+      "ensembl_gene_id",
+      "external_gene_name"),
+    filter = "affy_hugene_1_0_st_v1",
+    values = probes,
+    uniqueRows=TRUE)
+
+  probe.to.ensg.map <- unique(annotLookup[, c("affy_hugene_1_0_st_v1", "ensembl_gene_id")])
+  colnames(probe.to.ensg.map) <- c("from", "to")
+  probe.to.ensg.map$from <- as.character(probe.to.ensg.map$from)
+
+  probe.to.ensg.map
+}
+
+get.probe.maps.hugene.1.0.st <- function(probes) {
+  suppressPackageStartupMessages(p_load(biomaRt))
+  mart <- useMart("ENSEMBL_MART_ENSEMBL")
+  mart <- useDataset("hsapiens_gene_ensembl", mart)
+  annotLookup <- getBM(
+    mart = mart,
+    attributes = c(
+      "affy_hugene_1_0_st_v1",
+      "ensembl_gene_id",
+      "external_gene_name"),
+    filter = "affy_hugene_1_0_st_v1",
+    values = probes,
+    uniqueRows=TRUE)
+
+  probe.to.ensg.map <- unique(annotLookup[, c("affy_hugene_1_0_st_v1", "ensembl_gene_id")])
+  colnames(probe.to.ensg.map) <- c("from", "to")
+  probe.to.ensg.map$from <- as.character(probe.to.ensg.map$from)
+
+  probe.to.symbol.map <- unique(annotLookup[, c("affy_hugene_1_0_st_v1", "external_gene_name")])
+  colnames(probe.to.symbol.map) <- c("from", "to")
+  probe.to.symbol.map$from <- as.character(probe.to.symbol.map$from)
+
+  list("ensg" = probe.to.ensg.map, "symbol" = probe.to.symbol.map)
+}
+
 get.probe.to.symbol.map <- function(gses) {
+  platform <- get.geo.platform.name(gses)
+  if(platform == "Affymetrix Human Gene 1.0 ST") {
+    stop("Call get.probe.to.symbol.map.hugene.1.0.st\n")
+  }
   gpl <- get.annotation(gses)
   tbl <- Table(gpl)
   sym.col <- c("Symbol", "Gene Symbol")
@@ -482,6 +553,10 @@ get.probe.to.entrez.map <- function(gses) {
 }
 
 get.probe.to.ensg.map <- function(gses) {
+  platform <- get.geo.platform.name(gses)
+  if(platform == "Affymetrix Human Gene 1.0 ST") {
+    stop("Call get.probe.to.ensg.map.hugene.1.0.st\n")  
+  }
   gpl <- get.annotation(gses)
   tbl <- Table(gpl)  
   ensembl.col <- c("Ensembl")
