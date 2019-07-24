@@ -7,6 +7,7 @@ suppressPackageStartupMessages(p_load(synapserutils))
 suppressPackageStartupMessages(p_load(data.table))
 suppressPackageStartupMessages(p_load(magrittr))
 suppressPackageStartupMessages(p_load(Biobase))
+suppressPackageStartupMessages(p_load(xlsx))
 suppressPackageStartupMessages(p_load(reshape2))
 suppressPackageStartupMessages(p_load(GEOquery))
 
@@ -37,26 +38,35 @@ gses <- unlist(gses)
 
 ## Process ground truth
 
+ground_truth_id <- "syn17089680"
+
+gt.df <- ground_truth_id %>% 
+    download_from_synapse() %>% 
+    xlsx::read.xlsx(1)
+
+cat(paste0("Warning: these cell types are normalized to sum to 100\n"))
+print(head(gt.df[, c("Sample.ID", "Total")]))
+
 ## Create a data frame holding the ground truth with columns sample, cell.type, and measured
-gt.df <- gses %>%
-  get.geo.metadata.tbl %>%
-  rownames_to_column("sample") %>% 
-  as.data.frame() %>% 
-  dplyr::select(sample, title, `fractional abundance:ch1`) %>% 
-  set_colnames(c("sample", "title", "measured")) %>%
-  separate(col = title, into = c("cell.type", "donor"), sep = ", donor ")
+ground_truth_df <- ground_truth_id %>% 
+    download_from_synapse() %>% 
+    xlsx::read.xlsx(1)
 
-translation.df <- gt.df %>% 
-    filter(cell.type == "PBMCs") %>% 
-    dplyr::select("sample", "donor")
+series_df <- gses %>%
+  get.geo.metadata.tbl() %>%
+  rownames_to_column("sample") %>%
+  as_data_frame %>% 
+  arrange(`transplant state:ch1`)
 
-gt.df <- gt.df %>% 
-    dplyr::select(-sample) %>% 
-    spread(key = "cell.type", value = "measured") %>% 
-    drop_na() %>% 
-    inner_join(translation.df, .) %>% 
-    dplyr::select(- c(donor, PBMCs)) %>%
-    melt(id.vars = "sample") %>%
+translation_df <- 
+    bind_cols(ground_truth_df, series_df) %>% 
+    dplyr::select(sample, title, Sample.ID)
+
+gt.df <- ground_truth_df %>% 
+    left_join(translation_df) %>% 
+    dplyr::select(-c(Sample.ID, Patient.Group, Total, title)) %>% 
+    dplyr::select(sample, everything()) %>%
+    melt() %>%
     set_colnames(c("sample", "cell.type", "measured")) %>%
     mutate(measured = as.numeric(measured))
 
@@ -80,32 +90,9 @@ print(data.processing)
 
 ## scale <- get.log.or.linear.space(data.processing)
 ## Update the following based on data.processing:
-scale <- "Linear"
+scale <- "Log"
 ## Update the following:
 native.probe.type <- "Probe"
-
-suppressPackageStartupMessages(p_load("hgu133plus2.db"))
-probe.to.symbol.map <-
-    AnnotationDbi::select(
-        hgu133plus2.db,
-        keys=keys(hgu133plus2.db,keytype="PROBEID"),
-        columns=c("SYMBOL"),
-        keytype="PROBEID") %>%
-    as_tibble() %>%
-    set_colnames(c("from", "to")) %>%
-    drop_na() %>%
-    as.data.frame()
-
-probe.to.ensg.map <-
-    AnnotationDbi::select(
-        hgu133plus2.db,
-        keys=keys(hgu133plus2.db,keytype="PROBEID"),
-        columns=c("ENSEMBL"),
-        keytype="PROBEID") %>%
-    as_tibble() %>%
-    set_colnames(c("from", "to")) %>%
-    drop_na() %>%
-    as.data.frame()
 
 ## Extract mappings from probe to gene symbol and Ensembl ID.
 probe.to.symbol.map <- get.probe.to.symbol.map(gses)
@@ -119,14 +106,14 @@ fine.grained.definitions <-
   list(
 ##       "memory.B.cells" = c("Memory_B_cells"),
 ##       "naive.B.cells" = c("Naive_B_cells"),
-       "memory.CD4.T.cells" = c("Central memory", "Effector memory"),
-       "naive.CD4.T.cells" = c("Naive")
+##       "memory.CD4.T.cells" = c("Central memory", "Effector memory"),
+##       "naive.CD4.T.cells" = c("Naive")
 ##       "regulatory.T.cells" = c("Tregs"),
 ##       "memory.CD8.T.cells" = c("memory.CD8.T.cells"), 
 ##       "naive.CD8.T.cells" = c("naive.CD8.T.cells"),
 ##       "NK.cells" = c("NK_cells"),
-##       "neutrophils" = c("Neutrophils"),
-##       "monocytes" = c("Monocytes")
+       "neutrophils" = c("Neutrophils..."),
+       "monocytes" = c("Monocytes...")
 ##       "myeloid.dendritic.cells" = c("MyeloidDC"),
 ##       "macrophages" = c("X"),
 ##       "fibroblasts" = c("Fibroblasts"),
@@ -137,11 +124,11 @@ fine.grained.definitions <-
 coarse.grained.definitions <-
   list(
 ##       "B.cells" = c("Naive_B_cells", "Memory_B_cells"),
-       "CD4.T.cells" = c("Central memory", "Effector memory", "Naive")
+##       "CD4.T.cells" = c("Central memory", "Effector memory", "Naive")
 ##       "CD8.T.cells" = c("CD8_T_cells"),
 ##       "NK.cells" = c("NK_cells")
-##       "neutrophils" = c("Neutrophils"),
-##       "monocytic.lineage" = c("Monocytes"),
+       "neutrophils" = c("Neutrophils..."),
+       "monocytic.lineage" = c("Monocytes...")
 ##       "fibroblasts" = c("Fibroblasts"),
 ##       "endothelial.cells" = c("Endothelial")
       )
@@ -182,38 +169,6 @@ if(length(fine.grained.definitions) > 0) {
 fun <- colMeans
 expr.mat.symbol <- translate.genes(expr.mat, probe.to.symbol.map, fun = fun)
 expr.mat.ensg <- translate.genes(expr.mat, probe.to.ensg.map, fun = fun)
-
-query_df <-
-    AnnotationDbi::select(
-        hgu133plus2.db,
-        keys=keys(hgu133plus2.db,keytype="PROBEID"),
-        columns=c("SYMBOL"),
-        keytype="PROBEID") %>%
-    as_tibble() %>%
-    set_colnames(c("Probe", "Hugo")) %>%
-    drop_na()
-
-## query_df <- probe.to.symbol.map
-## colnames(query_df) <- c("Probe", "Hugo")
-
-expr_df <- gses$GSE11057.GSE11057_series_matrix.txt.gz@assayData %>%
-    assayDataElement('exprs') %>%
-    matrix_to_df("Probe") %>%
-    inner_join(query_df) %>%
-    dplyr::select(Hugo, everything()) %>%
-    dplyr::select(-Probe) %>%
-    group_by(Hugo) %>%
-    summarise_all(mean) %>%
-    drop_na() %>%
-    filter(Hugo != "") %>% 
-    gather(key = "sample", value = "expr", -Hugo) %>% 
-    mutate(sample = str_remove_all(sample, "X"))
-
-tmp <- expr_df %>%
-  as.data.frame() %>%
-  acast(., Hugo ~ sample) %>%
-  as.data.frame() %>%
-  rownames_to_column("Gene")
 
 expr.mats <- list("native" = expr.mat, "ensg" = expr.mat.ensg, "hugo" = expr.mat.symbol)
 gt.mats <- list("fine" = gt.df.fine, "coarse" = gt.df.coarse)
