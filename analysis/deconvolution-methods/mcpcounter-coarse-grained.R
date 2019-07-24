@@ -44,6 +44,7 @@ run.coarse.grained.mcpcounter.model <- function(expression_matrices, dataset_nam
       "B.cells", "B lineage",
 ##      "CD4.T.cells", "T cells",
       "CD8.T.cells", "CD8 T cells",
+##      "CD8.T.cells", "Cytotoxic lymphocytes",
       "NK.cells", "NK cells",
       "neutrophils", "Neutrophils",
       "monocytic.lineage", "Monocytic lineage",

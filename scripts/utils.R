@@ -225,13 +225,29 @@ get.dataset.name <- function(metadata) {
   metadata[["orig.dataset.name"]]
 }
 
+## Download the hugo-based expression matrix and convert to linear scale
+## by exponentiating (if needed)
 download.hugo.expression.matrix <- function(metadata) {
   synId <- metadata[["hugo.expr.synId"]]
+  scale <- metadata[["scale"]]
+  print(scale)
   obj <- synGet(synId, downloadFile = TRUE)
   file <- get.synapse.file.location(obj)
   sep <- ","
   if(grepl(file, pattern="tsv")) { sep <- "\t" }
-  read.table(file, sep = sep, header = TRUE, as.is = TRUE)
+  mat <- read.table(file, sep = sep, header = TRUE, as.is = TRUE)
+  if(grepl(scale, pattern="log", ignore.case=TRUE)) {
+    pow <- NA
+    if(scale %in% c("Log2", "LOG2")) { pow <- 2 }
+    if(scale %in% c("Log10", "LOG10")) { pow <- 10 }
+    if(is.na(pow)) { stop(paste0("Could not parse base from log: ", scale, "\n")) }
+    col <- colnames(mat)[1]
+    mat <- mat %>%
+      column_to_rownames(var = col) %>%
+      raise_to_power(x = pow, power = .) %>%
+      rownames_to_column(var = col)
+  }
+  mat
 }
 
 download.coarse.grained.ground.truth <- function(metadata) {
@@ -553,7 +569,7 @@ drop.duplicate.columns <- function(mat) {
   mat[, !duplicated(colnames(mat))]
 }
 
-aggregate_rows <- function(mat, map, from.col = "from", to.col = "to", fun = colMeans, parallel = T) {
+aggregate_rows <- function(mat, map, from.col = "from", to.col = "to", fun = "colMeans", parallel = T) {
 
   map <- map[map[, from.col] %in% rownames(mat), ]
   lst <- dlply(map, .variables = to.col, .fun = function(df) df[, from.col])
@@ -810,7 +826,7 @@ map.populations <- function(mat, map) {
   ret
 }
 
-translate.genes <- function(mat, map, fun = choose.max.mad.row) {
+translate.genes <- function(mat, map, fun = "choose.max.mad.row") {
   tmp.map <- subset(map, from %in% mat$Gene)
   flag <- as.character(mat$Gene) %in% as.character(map$from)
   mat <- mat[flag, ]

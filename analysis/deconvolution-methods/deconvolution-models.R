@@ -5,17 +5,26 @@ run.deconvolution.methods <- function(metadata.synId, output.folder.synId) {
 
   hugo.expr.mat <- download.hugo.expression.matrix(metadata)
 
+  gt.mat.coarse <- download.coarse.grained.ground.truth(metadata)
+  gt.mat.fine <- download.fine.grained.ground.truth(metadata)  
+
+  samples <- unique(c(gt.mat.coarse$sample, gt.mat.fine$sample))
+  flag <- colnames(hugo.expr.mat) %in% c(samples, "HUGO", "Hugo", "Gene")
+  hugo.expr.mat <- hugo.expr.mat[, flag]
+  
   ## Create an expression matrix whose first column is the HUGO gene name,
   ## as required by CIBERSORT.
+  use.matrix.with.hugo.col <- FALSE
 ##  hugo.expr.gene.col.mat <- cbind(HUGO = rownames(hugo.expr.mat), hugo.expr.mat)
-  hugo.expr.gene.col.mat <- hugo.expr.mat %>% dplyr::rename(HUGO = Gene)
-##  hugo.expr.gene.col.mat <- hugo.expr.mat %>% dplyr::rename(HUGO = Hugo)
+  hugo.expr.gene.col.mat <- NULL
+  if(use.matrix.with.hugo.col) {
+    hugo.expr.gene.col.mat <- hugo.expr.mat %>% dplyr::rename(HUGO = Hugo)
+  } else { 
+    hugo.expr.gene.col.mat <- hugo.expr.mat %>% dplyr::rename(HUGO = Gene)
+  }
 
   cibersort.expr.input.file <- paste0(dataset, "-hugo-expr-cibersort-input.tsv")
   write.table(file = cibersort.expr.input.file, hugo.expr.gene.col.mat, sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
-
-  gt.mat.coarse <- download.coarse.grained.ground.truth(metadata)
-  gt.mat.fine <- download.fine.grained.ground.truth(metadata)  
 
   measured.col <- "measured"
   predicted.col <- "prediction"
@@ -25,9 +34,11 @@ run.deconvolution.methods <- function(metadata.synId, output.folder.synId) {
   coarse.cs.pred <- cs.preds[["coarse"]]
   fine.cs.pred <- cs.preds[["fine"]]  
 
-  hugo.expr.mat <- hugo.expr.mat %>% column_to_rownames(var = "Gene")
-##  hugo.expr.mat <- hugo.expr.mat %>% column_to_rownames(var = "Hugo") 
-
+  if(use.matrix.with.hugo.col) {
+    hugo.expr.mat <- hugo.expr.mat %>% column_to_rownames(var = "Hugo") 
+  } else {
+    hugo.expr.mat <- hugo.expr.mat %>% column_to_rownames(var = "Gene")
+  }
   coarse.mcp.pred <-
     run.coarse.grained.mcpcounter.model(list(hugo.expr.mat),
                                         list(dataset)) %>% as.data.frame()
