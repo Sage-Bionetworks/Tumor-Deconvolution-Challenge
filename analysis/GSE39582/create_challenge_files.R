@@ -66,6 +66,7 @@ platform <- get.geo.platform.name(gses)
 cancer.type <- NA
 data.processing <- unlist(get.geo.data.processing(gses))
 print(data.processing)
+normalization <- "RMA"
 
 ## scale <- get.log.or.linear.space(data.processing)
 ## Update the following based on data.processing:
@@ -159,11 +160,6 @@ expr.mat.ensg <- translate.genes(expr.mat, probe.to.ensg.map, fun = ensg.compres
 expr.mats <- list("native" = expr.mat, "ensg" = expr.mat.ensg, "hugo" = expr.mat.symbol)
 gt.mats <- list("fine" = gt.df.fine, "coarse" = gt.df.coarse)
 mapping.mats <- list("symbol" = probe.to.symbol.map, "ensg" = probe.to.ensg.map)
-ns <- list("n.coarse.pops" = length(unique(gt.df.coarse$cell.type)),
-           "n.coarse" = nrow(gt.df.coarse),
-	   "n.fine.pops" = length(unique(gt.df.fine$cell.type)),
-           "n.fine" = nrow(gt.df.coarse),
-           "n.samples" = ncol(expr.mat.symbol))
 
 metadata <-
   list("dataset.name" = obfuscated.dataset,
@@ -175,8 +171,6 @@ metadata <-
        "data.processing" = data.processing,
        "symbol.compression.function" = symbol.compression.fun,
        "ensg.compression.function" = ensg.compression.fun)
-
-metadata <- c(metadata, ns)
 
 identifier <- dataset
 if(obfuscate.sample.names) {
