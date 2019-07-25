@@ -135,17 +135,24 @@ gt.df.coarse <- melt(as.matrix(gt.mat.coarse)) %>%
   select(dataset.name, sample.id, cell.type, measured)
 
 ## Extract mappings from probe to gene symbol and Ensembl ID.
-probe.to.symbol.map <- unique(data.frame(from = expr.mat$Gene, to = expr.mat$Gene))
+probe.to.symbol.map <- unique(data.frame(from = as.character(expr.mat$Gene), to = as.character(expr.mat$Gene)))
 probe.to.ensg.map <- get.symbol.to.ensg.map(expr.mat$Gene)
 
 ## Translate symbols to ensg
 expr.mat.symbol <- expr.mat
 
+## Translate probes to symbols and to ensembl IDs
+## compression.fun <- "choose.max.mad.row"
+compression.fun <- "colMeans"
+## compression.fun <- "choose.max.row"
+symbol.compression.fun <- "identity"
+ensg.compression.fun <- compression.fun
+
 tmp.map <- subset(probe.to.ensg.map, from %in% expr.mat$Gene)
 tmp.map <- tmp.map[!duplicated(tmp.map$to), ]
 expr.mat.ensg <- expr.mat %>%
   column_to_rownames(var = "Gene") %>%
-  aggregate_rows(., tmp.map, fun = choose.max.mad.row, parallel = TRUE) %>%
+  aggregate_rows(., tmp.map, fun = ensg.compression.fun, parallel = TRUE) %>%
   rownames_to_column(var = "Gene")
 
 expr.mats <- list("native" = expr.mat, "ensg" = expr.mat.ensg, "hugo" = expr.mat.symbol)
@@ -157,6 +164,8 @@ platform <- "RNA-seq"
 scale <- "Linear"
 native.probe.type <- "Hugo"
 data.processing <- "FPKM"
+normalization <- "FPKM"
+
 
 metadata <-
   list("dataset.name" = obfuscated.dataset,
@@ -165,8 +174,17 @@ metadata <-
        "platform" = platform,
        "scale" = scale,
        "native.probe.type" = native.probe.type,
-       "data.processing" = data.processing)
+       "data.processing" = data.processing,
+       "normalization" = normalization,
+       "symbol.compression.function" = symbol.compression.fun,
+       "ensg.compression.function" = ensg.compression.fun)
 
-upload.data.and.metadata.to.synapse(dataset, expr.mats, gt.mats, mapping.mats, metadata, output.folder.synId, metadata.file.name,
+identifier <- dataset
+if(obfuscate.sample.names) {
+  identifier <- obfuscated.dataset
+}
+## NB: the name of the metadata file uses (and _must_ use) the original dataset name
+metadata.file.name <- paste0(dataset, "-metadata.tsv")
+upload.data.and.metadata.to.synapse(identifier, expr.mats, gt.mats, mapping.mats, metadata,
+                                    output.folder.synId, metadata.file.name,
                                     executed = script_url, used = NULL, sample.mapping = samples.map)
-
