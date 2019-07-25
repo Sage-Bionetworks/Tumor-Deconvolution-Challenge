@@ -585,6 +585,8 @@ get.ensg.to.sym.map <- function(gene.ids) {
   bm <- bm[!(bm$ensg %in% c("")),]
   bm <- bm[, c("ensg", "symbol")]
   colnames(bm) <- c("from", "to")
+  bm$to <- as.character(bm$to)
+  bm$from <- as.character(bm$from)  
   bm
 }
 
@@ -609,6 +611,8 @@ get.symbol.to.ensg.map <- function(symbols) {
   colnames(bm) <- c("from", "to")
   bm <- bm[!(bm$to %in% c("")),,drop=F]
   bm <- bm[!is.na(bm$to) & !is.na(bm$from),,drop=F]
+  bm$to <- as.character(bm$to)
+  bm$from <- as.character(bm$from)  
   bm
 }
 

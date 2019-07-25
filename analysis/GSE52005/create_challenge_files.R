@@ -10,6 +10,7 @@ suppressPackageStartupMessages(p_load(Biobase))
 suppressPackageStartupMessages(p_load(xlsx))
 suppressPackageStartupMessages(p_load(reshape2))
 suppressPackageStartupMessages(p_load(GEOquery))
+suppressPackageStartupMessages(p_load(ImmuneSpaceR))
 
 ## Begin configuration
 
@@ -57,7 +58,17 @@ gt.df <- ground_truth_id %>%
     set_colnames(c("sample", "cell.type", "measured")) %>%
     mutate(measured = as.numeric(measured))
 
-stop("stop")
+connection <- ImmuneSpaceR::CreateConnection(sdy_id)
+
+expr_obj <- connection$getGEMatrix("SDY144_Other_TIV_Geo")
+## expr_obj <- connection$getGEMatrix("SDY144_TIV2011_geo")
+
+translation_df <- expr_obj@phenoData@data %>% 
+    rownames_to_column("expr_id") %>% 
+    as_tibble() %>%
+    filter(study_time_collected == 0) %>% 
+    dplyr::select(expr_id, participant_id) %>% 
+    dplyr::rename(sample = participant_id) 
 
 cat("Warning: relative measures sum to 100%\n")
 print(sum(subset(gt.df, sample == gt.df$sample[1])$measured))
@@ -66,6 +77,17 @@ print(sum(subset(gt.df, sample == gt.df$sample[1])$measured))
 
 ## Process GEO expression
 
+expr.mat <- expr_obj@assayData$exprs %>% 
+    t %>% 
+    matrix_to_df("expr_id") %>% 
+    inner_join(translation_df) %>% 
+    dplyr::select(-expr_id) %>%
+    column_to_rownames(var = "sample") %>%
+    t %>%
+    as.data.frame() %>%
+    rownames_to_column(var = "Gene")
+
+if(FALSE) {
 ## Get the GEO expression matrices, combining into one matrix
 ## First column is 'Gene'
 expr.mats <- llply(gses, .fun = function(gse) exprs(gse) %>% as.data.frame)
@@ -73,26 +95,27 @@ if(length(expr.mats) != 1) { stop("Multiple GSEs: may be a batch effect\n") }
 expr.mat <- Reduce("cbind", expr.mats)
 
 expr.mat <- drop.duplicate.columns(expr.mat) %>% rownames_to_column(var = "Gene")
+} ## FALSE
 
 ## May need to update the following get.geo.platform.name function
 platform <- get.geo.platform.name(gses)
 cancer.type <- NA
 data.processing <- unlist(get.geo.data.processing(gses))
+normalization <- "unknown"
 print(data.processing)
 
 ## scale <- get.log.or.linear.space(data.processing)
 ## Update the following based on data.processing:
-## expr.mat <- expr.mat %>%
-##   column_to_rownames(var = "Gene") %>%
-##   raise_to_power(x=2, power=.) %>%
-##   rownames_to_column(var = "Gene")
-scale <- "Log2"
+scale <- "Linear"
 ## Update the following:
-native.probe.type <- "Probe"
+native.probe.type <- "Hugo"
 
 ## Extract mappings from probe to gene symbol and Ensembl ID.
-probe.to.symbol.map <- get.probe.to.symbol.map(gses)
-probe.to.ensg.map <- get.probe.to.ensg.map(gses)
+## probe.to.symbol.map <- get.probe.to.symbol.map(gses)
+probe.to.symbol.map <- data.frame(from = as.character(expr.mat$Gene),
+                                  to = as.character(expr.mat$Gene), stringsAsFactors = FALSE)
+## probe.to.ensg.map <- get.probe.to.ensg.map(gses)
+probe.to.ensg.map <- get.symbol.to.ensg.map(expr.mat$Gene)
 
 ## End processing GEO expression
 
@@ -108,8 +131,8 @@ fine.grained.definitions <-
 ##       "memory.CD8.T.cells" = c("memory.CD8.T.cells"), 
 ##       "naive.CD8.T.cells" = c("naive.CD8.T.cells"),
 ##       "NK.cells" = c("NK_cells"),
-       "neutrophils" = c("neutrophils"),
-       "monocytes" = c("monocytes")
+       "neutrophils" = c("NEUTROPHIL_percent"),
+       "monocytes" = c("MONOCYTE_percent")
 ##       "myeloid.dendritic.cells" = c("MyeloidDC"),
 ##       "macrophages" = c("Macrophages.IHC")
 ##       "fibroblasts" = c("Fibroblasts"),
@@ -123,8 +146,8 @@ coarse.grained.definitions <-
 ##       "CD4.T.cells" = c("Central memory", "Effector memory", "Naive")
 ##       "CD8.T.cells" = c("CD8.IHC"),
 ##       "NK.cells" = c("NK_cells")
-       "neutrophils" = c("neutrophils"),
-       "monocytic.lineage" = c("monocytes")
+       "neutrophils" = c("NEUTROPHIL_percent"),
+       "monocytic.lineage" = c("MONOCYTE_percent")
 ##       "fibroblasts" = c("Fibroblasts"),
 ##       "endothelial.cells" = c("Endothelial")
       )
@@ -186,6 +209,7 @@ metadata <-
        "scale" = scale,
        "native.probe.type" = native.probe.type,
        "data.processing" = data.processing,
+       "normalization" = normalization,
        "symbol.compression.function" = symbol.compression.fun,
        "ensg.compression.function" = ensg.compression.fun)
 
