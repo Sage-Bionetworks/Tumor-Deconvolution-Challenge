@@ -428,6 +428,8 @@ get.geo.platform.name <- function(gses) {
     platform.name <- "Affymetrix Human Gene PrimeView"  
   } else if(platform.name == "[HuGene-1_0-st] Affymetrix Human Gene 1.0 ST Array [transcript (gene) version]") {
     platform.name <- "Affymetrix Human Gene 1.0 ST"
+  } else if(platform.name == "[HuGene-1_1-st] Affymetrix Human Gene 1.1 ST Array [transcript (gene) version]") {
+    platform.name <- "Affymetrix Human Gene 1.1 ST"
   } else if(platform.name == "Illumina HumanHT-12 V3.0 expression beadchip") {
     platform.name <- "Illumina HumanHT-12 V3.0"
   } else if(platform.name == "Illumina HumanHT-12 V4.0 expression beadchip") {
@@ -511,30 +513,75 @@ get.probe.to.ensg.map.hugene.1.0.st <- function(probes) {
   probe.to.ensg.map
 }
 
-get.probe.maps.hugene.1.0.st <- function(probes) {
+get.probe.maps.biomart <- function(probes, array.name = "affy_hugene_1_0_st_v1") {
   suppressPackageStartupMessages(p_load(biomaRt))
   mart <- useMart("ENSEMBL_MART_ENSEMBL")
   mart <- useDataset("hsapiens_gene_ensembl", mart)
   annotLookup <- getBM(
     mart = mart,
     attributes = c(
-      "affy_hugene_1_0_st_v1",
+      array.name,
       "ensembl_gene_id",
       "external_gene_name"),
-    filter = "affy_hugene_1_0_st_v1",
+    filter = array.name,
     values = probes,
     uniqueRows=TRUE)
 
-  probe.to.ensg.map <- unique(annotLookup[, c("affy_hugene_1_0_st_v1", "ensembl_gene_id")])
+  probe.to.ensg.map <- unique(annotLookup[, c(array.name, "ensembl_gene_id")])
   colnames(probe.to.ensg.map) <- c("from", "to")
   probe.to.ensg.map$from <- as.character(probe.to.ensg.map$from)
 
-  probe.to.symbol.map <- unique(annotLookup[, c("affy_hugene_1_0_st_v1", "external_gene_name")])
+  probe.to.symbol.map <- unique(annotLookup[, c(array.name, "external_gene_name")])
   colnames(probe.to.symbol.map) <- c("from", "to")
   probe.to.symbol.map$from <- as.character(probe.to.symbol.map$from)
 
   list("ensg" = probe.to.ensg.map, "symbol" = probe.to.symbol.map)
 }
+
+get.probe.maps.hugene.1.0.st <- function(probes) {
+  get.probe.maps(probes, array.name = "affy_hugene_1_0_st_v1")
+}
+
+get.probe.to.symbol.map.hugene.1.1.st <- function(probes) {
+  suppressPackageStartupMessages(p_load(AnnotationDbi))
+  suppressPackageStartupMessages(p_load(hugene11sttranscriptcluster.db))
+  query_df <-
+      AnnotationDbi::select(
+          hugene11sttranscriptcluster.db,
+          keys=keys(hugene11sttranscriptcluster.db,keytype="PROBEID"),
+          columns=c("SYMBOL"),
+          keytype="PROBEID") %>%
+      as_tibble() %>%
+      set_colnames(c("from", "to")) %>%
+      drop_na() %>%
+      as.data.frame() %>%
+      mutate(from = as.character(from)) %>%
+      mutate(to = as.character(to))
+
+  query_df <- subset(query_df, from %in% probes)
+  query_df
+}
+
+get.probe.to.ensg.map.hugene.1.1.st <- function(probes) {
+  suppressPackageStartupMessages(p_load(AnnotationDbi))
+  suppressPackageStartupMessages(p_load(hugene11sttranscriptcluster.db))
+  query_df <-
+      AnnotationDbi::select(
+          hugene11sttranscriptcluster.db,
+          keys=keys(hugene11sttranscriptcluster.db,keytype="PROBEID"),
+          columns=c("ENSEMBL"),
+          keytype="PROBEID") %>%
+      as_tibble() %>%
+      set_colnames(c("from", "to")) %>%
+      drop_na() %>%
+      as.data.frame() %>%
+      mutate(from = as.character(from)) %>%
+      mutate(to = as.character(to))
+
+  query_df <- subset(query_df, from %in% probes)
+  query_df
+}
+
 
 get.probe.to.symbol.map <- function(gses) {
   platform <- get.geo.platform.name(gses)
