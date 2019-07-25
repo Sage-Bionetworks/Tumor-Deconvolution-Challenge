@@ -77,6 +77,7 @@ platform <- get.geo.platform.name(gses)
 cancer.type <- NA
 data.processing <- unlist(get.geo.data.processing(gses))
 print(data.processing)
+normalization <- "MAS5"
 
 ## scale <- get.log.or.linear.space(data.processing)
 ## Update the following based on data.processing:
@@ -178,10 +179,13 @@ if(length(fine.grained.definitions) > 0) {
 }
 
 ## Translate probes to symbols and to ensembl IDs
-## fun <- choose.max.mad.row
-fun <- colMeans
-expr.mat.symbol <- translate.genes(expr.mat, probe.to.symbol.map, fun = fun)
-expr.mat.ensg <- translate.genes(expr.mat, probe.to.ensg.map, fun = fun)
+## compression.fun <- "choose.max.mad.row"
+compression.fun <- "colMeans"
+## compression.fun <- "choose.max.row"
+symbol.compression.fun <- compression.fun
+ensg.compression.fun <- compression.fun
+expr.mat.symbol <- translate.genes(expr.mat, probe.to.symbol.map, fun = symbol.compression.fun)
+expr.mat.ensg <- translate.genes(expr.mat, probe.to.ensg.map, fun = ensg.compression.fun)
 
 query_df <-
     AnnotationDbi::select(
@@ -226,8 +230,17 @@ metadata <-
        "platform" = platform,
        "scale" = scale,
        "native.probe.type" = native.probe.type,
-       "data.processing" = data.processing)
+       "data.processing" = data.processing,
+       "normalization" = normalization,
+       "symbol.compression.function" = symbol.compression.fun,
+       "ensg.compression.function" = ensg.compression.fun)
 
-upload.data.and.metadata.to.synapse(dataset, expr.mats, gt.mats, mapping.mats, metadata, output.folder.synId, metadata.file.name,
+identifier <- dataset
+if(obfuscate.sample.names) {
+  identifier <- obfuscated.dataset
+}
+## NB: the name of the metadata file uses (and _must_ use) the original dataset name
+metadata.file.name <- paste0(dataset, "-metadata.tsv")
+upload.data.and.metadata.to.synapse(identifier, expr.mats, gt.mats, mapping.mats, metadata,
+                                    output.folder.synId, metadata.file.name,
                                     executed = script_url, used = NULL, sample.mapping = samples.map)
-
