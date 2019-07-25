@@ -69,9 +69,10 @@ expr.mat <- drop.duplicate.columns(expr.mat) %>% rownames_to_column(var = "Gene"
 
 ## May need to update the following get.geo.platform.name function
 platform <- get.geo.platform.name(gses)
-cancer.type <- NA
+cancer.type <- "FL"
 data.processing <- unlist(get.geo.data.processing(gses))
 print(data.processing)
+normalization <- "MAS5"
 
 ## scale <- get.log.or.linear.space(data.processing)
 ## Update the following based on data.processing:
@@ -129,6 +130,7 @@ obfuscate.sample.names <- TRUE
 ret <- subset.and.rename.samples(expr.mat, gt.df, obfuscate.sample.names)
 expr.mat <- ret[["expr"]]
 gt.df <- ret[["gt"]]
+samples.map <- ret[["map"]]
 
 ## Spread ground truth into a matrix
 gt.mat.raw <- gt.df %>%    
@@ -148,8 +150,14 @@ if(length(fine.grained.definitions) > 0) {
 }
 
 ## Translate probes to symbols and to ensembl IDs
-expr.mat.symbol <- translate.genes(expr.mat, probe.to.symbol.map, fun = choose.max.row)
-expr.mat.ensg <- translate.genes(expr.mat, probe.to.ensg.map, fun = choose.max.row)
+## Translate probes to symbols and to ensembl IDs
+## compression.fun <- "choose.max.mad.row"
+compression.fun <- "colMeans"
+## compression.fun <- "choose.max.row"
+symbol.compression.fun <- compression.fun
+ensg.compression.fun <- compression.fun
+expr.mat.symbol <- translate.genes(expr.mat, probe.to.symbol.map, fun = symbol.compression.fun)
+expr.mat.ensg <- translate.genes(expr.mat, probe.to.ensg.map, fun = ensg.compression.fun)
 
 expr.mats <- list("native" = expr.mat, "ensg" = expr.mat.ensg, "hugo" = expr.mat.symbol)
 gt.mats <- list("fine" = gt.df.fine, "coarse" = gt.df.coarse)
@@ -162,8 +170,18 @@ metadata <-
        "platform" = platform,
        "scale" = scale,
        "native.probe.type" = native.probe.type,
-       "data.processing" = data.processing)
+       "data.processing" = data.processing,
+       "normalization" = normalization,
+       "symbol.compression.function" = symbol.compression.fun,
+       "ensg.compression.function" = ensg.compression.fun)
 
-upload.data.and.metadata.to.synapse(dataset, expr.mats, gt.mats, mapping.mats, metadata, output.folder.synId, metadata.file.name,
-                                    executed = script_url, used = NULL)
+identifier <- dataset
+if(obfuscate.sample.names) {
+  identifier <- obfuscated.dataset
+}
+## NB: the name of the metadata file uses (and _must_ use) the original dataset name
+metadata.file.name <- paste0(dataset, "-metadata.tsv")
+upload.data.and.metadata.to.synapse(identifier, expr.mats, gt.mats, mapping.mats, metadata,
+                                    output.folder.synId, metadata.file.name,
+                                    executed = script_url, used = NULL, sample.mapping = samples.map)
 

@@ -8,7 +8,13 @@ run.deconvolution.methods <- function(metadata.synId, output.folder.synId) {
   gt.mat.coarse <- download.coarse.grained.ground.truth(metadata)
   gt.mat.fine <- download.fine.grained.ground.truth(metadata)  
 
-  samples <- unique(c(gt.mat.coarse$sample, gt.mat.fine$sample))
+  samples <- c()
+  if(!((class(gt.mat.coarse) == "logical") && is.na(gt.mat.coarse))) {
+    samples <- unique(c(samples, gt.mat.coarse$sample))
+  }
+  if(!((class(gt.mat.fine) == "logical") && is.na(gt.mat.fine))) {
+    samples <- unique(c(samples, gt.mat.fine$sample))
+  }
   flag <- colnames(hugo.expr.mat) %in% c(samples, "HUGO", "Hugo", "Gene")
   hugo.expr.mat <- hugo.expr.mat[, flag]
   

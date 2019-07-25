@@ -116,6 +116,8 @@ upload.data.and.metadata.to.synapse <- function(dataset, expr.mats, gt.mats, map
 ##    metadata[[paste0(nm, ".expr.synId")]] = "syn17091415"
   }
 
+  metadata[["n.samples"]] = ncol(expr.mats[[1]])
+
   nms <- names(gt.mats)
   names(nms) <- nms
   gt.mat.files <-
@@ -143,6 +145,18 @@ upload.data.and.metadata.to.synapse <- function(dataset, expr.mats, gt.mats, map
   for(nm in nms) {
     metadata[[paste0(nm, ".gt.file")]] = gt.mat.files[[nm]]
     metadata[[paste0(nm, ".gt.synId")]] = gt.mat.synIds[[nm]]    
+  }
+
+  for(nm in nms) {
+    if((class(gt.mats[[nm]]) == "logical") && is.na(gt.mats[[nm]])) {
+      metadata[[paste0("n.", nm, ".pops")]] = NA
+      metadata[[paste0(nm, ".pops")]] = NA
+      metadata[[paste0("n.", nm)]] = NA      
+    } else {
+      metadata[[paste0("n.", nm, ".pops")]] = length(unique(gt.mats[[nm]]$cell.type))
+      metadata[[paste0(nm, ".pops")]] = paste(sort(as.character(unique(gt.mats[[nm]]$cell.type))), collapse=", ")
+      metadata[[paste0("n.", nm)]] = nrow(gt.mats[[nm]])
+    }
   }
 
   nms <- names(mapping.mats)
