@@ -167,6 +167,22 @@ gt.df <- gt.mat.raw %>%
   melt() %>%
   set_colnames(c("sample", "cell.type", "measured"))
 
+gsms <- get.immunespace.gsms(dataset)
+
+## gse.ids <- unique(unlist(llply(gsms, .parallel = TRUE, .fun = function(gsm.id) get.gse(gsm.id))))
+gse.ids <- get.gses(gsms, sql.dir = "../")
+names(gse.ids) <- gse.ids
+
+## Get the GEO expression matrices 
+gses <- llply(gse.ids, .parallel = TRUE, .fun = function(gse.id) getGEO(gse.id, GSEMatrix=TRUE))
+gses <- unlist(gses)
+expr.mats <- llply(gses, .fun = function(gse) exprs(gse) %>% as.data.frame)
+
+## Combine the GEO expression matrices into one matrix
+expr.mat <- Reduce("cbind", expr.mats)
+
+expr.mat <- drop.duplicate.columns(expr.mat) %>% rownames_to_column(var = "Gene")
+
 sample.mapping <- subset(sample.mapping, participant_id %in% ground_truth_df$participant_id)
 sample.mapping <- subset(sample.mapping, geo_accession %in% colnames(expr.mat))
 if(nrow(sample.mapping) == 0) {
@@ -182,26 +198,10 @@ if(any(duplicated(sample.mapping$geo_accession))) {
   stop("Redudant GEO sample ids\n")
 }
 
-expr.mat <- expr.mat[, sample.mapping$geo_accession]
+expr.mat <- expr.mat[, c("Gene", sample.mapping$geo_accession)]
 gt.df <- subset(gt.df, sample %in% sample.mapping$participant_id)
 gt.df <- merge(gt.df, sample.mapping[, c("participant_id", "geo_accession")], by.x = c("sample"), by.y = c("participant_id")) %>%
   dplyr::select("sample" = "geo_accession", "cell.type", "measured") 
-
-gsms <- get.immunespace.gsms(dataset)
-
-## gse.ids <- unique(unlist(llply(gsms, .parallel = TRUE, .fun = function(gsm.id) get.gse(gsm.id))))
-gse.ids <- get.gses(gsms, sql.dir = "../")
-names(gse.ids) <- gse.ids
-
-## Get the GEO expression matrices 
-gses <- llply(gse.ids, .parallel = TRUE, .fun = function(gse.id) getGEO(gse.id, GSEMatrix=TRUE))
-gses <- unlist(gses)
-expr.mats <- llply(gses, .fun = function(gse) exprs(gse) %>% as.data.frame)
-
-## Combine the GEO expression matrices into one matrix
-expr.mat <- Reduce("cbind", expr.mats)
-
-expr.mat <- drop.duplicate.columns(expr.mat)
 
 ## May need to update the following get.geo.platform.name function
 platform <- get.geo.platform.name(gses)
@@ -247,19 +247,14 @@ if(length(fine.grained.definitions) > 0) {
 probe.to.symbol.map <- get.probe.to.symbol.map(gses)
 probe.to.ensg.map <- get.probe.to.ensg.map(gses)
 
-## Collapse probesets to gene symbol and Ensembl ID.
-## Represent a gene by the corresponding probe with largest MAD.
 ## Translate probes to symbols and to ensembl IDs
 ## compression.fun <- "choose.max.mad.row"
 compression.fun <- "colMeans"
 ## compression.fun <- "choose.max.row"
 symbol.compression.fun <- compression.fun
 ensg.compression.fun <- compression.fun
-expr.mat.symbol <- aggregate_rows(expr.mat, subset(probe.to.symbol.map, from %in% rownames(expr.mat)),
-                                  fun = symbol.compression.fun, parallel = TRUE)
-
-expr.mat.ensg <- aggregate_rows(expr.mat, subset(probe.to.ensg.map, from %in% rownames(expr.mat)),
-                                fun = ensg.compression.fun, parallel = TRUE)
+expr.mat.symbol <- translate.genes(expr.mat, probe.to.symbol.map, fun = symbol.compression.fun)
+expr.mat.ensg <- translate.genes(expr.mat, probe.to.ensg.map, fun = ensg.compression.fun)
 
 expr.mats <- list("native" = expr.mat, "ensg" = expr.mat.ensg, "hugo" = expr.mat.symbol)
 gt.mats <- list("fine" = gt.df.fine, "coarse" = gt.df.coarse)
