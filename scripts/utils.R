@@ -545,7 +545,7 @@ get.probe.maps.biomart <- function(probes, array.name = "affy_hugene_1_0_st_v1")
 }
 
 get.probe.maps.hugene.1.0.st <- function(probes) {
-  get.probe.maps(probes, array.name = "affy_hugene_1_0_st_v1")
+  get.probe.maps.biomart(probes, array.name = "affy_hugene_1_0_st_v1")
 }
 
 get.probe.to.symbol.map.hugene.1.1.st <- function(probes) {

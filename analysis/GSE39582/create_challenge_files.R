@@ -169,6 +169,7 @@ metadata <-
        "scale" = scale,
        "native.probe.type" = native.probe.type,
        "data.processing" = data.processing,
+       "normalization" = normalization,
        "symbol.compression.function" = symbol.compression.fun,
        "ensg.compression.function" = ensg.compression.fun)
 
