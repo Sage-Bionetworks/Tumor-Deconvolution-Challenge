@@ -101,7 +101,7 @@ expr.mat <- drop.duplicate.columns(expr.mat) %>% rownames_to_column(var = "Gene"
 platform <- get.geo.platform.name(gses)
 cancer.type <- NA
 data.processing <- unlist(get.geo.data.processing(gses))
-normalization <- "unknown"
+normalization <- "average"
 print(data.processing)
 
 ## scale <- get.log.or.linear.space(data.processing)
@@ -212,8 +212,6 @@ metadata <-
        "normalization" = normalization,
        "symbol.compression.function" = symbol.compression.fun,
        "ensg.compression.function" = ensg.compression.fun)
-
-metadata <- c(metadata, ns)
 
 identifier <- dataset
 if(obfuscate.sample.names) {
