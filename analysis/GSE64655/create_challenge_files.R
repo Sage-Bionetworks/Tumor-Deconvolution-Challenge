@@ -158,8 +158,14 @@ coarse.grained.definitions <-
 ## End defining the coarse- and fine-grained population mapping
 
 ## May need to update the following get.geo.platform.name function
-set.seed(1234)
-obfuscated.dataset <- paste0("DS", sum(utf8ToInt(dataset)))
+dataset.num <- gsub(dataset, pattern="GSE", replacement="")
+dataset.num <- gsub(dataset.num, pattern="SDY", replacement="")
+dataset.num <- as.numeric(dataset.num)
+set.seed(dataset.num)
+obfuscated.dataset <- paste0("DS", sample.int(n=10^6, size=1))
+
+##set.seed(1234)
+##obfuscated.dataset <- paste0("DS", sum(utf8ToInt(dataset)))
 
 ## Obfuscate the sample names
 obfuscate.sample.names <- TRUE
@@ -225,13 +231,13 @@ if(!all(samples.map$from %in% fastq.manifest$sample)) {
   stop("Missing some fastqs\n")
 }
 
-fastq.manifest <- subset(fastq.manifest, sample %in% samples.map$from)
+fastq.manifest <- merge(fastq.manifest, samples.map, by.x = "sample", by.y = "from", all = FALSE)
 
 fastq1s <- as.character(fastq.manifest$fastq1)
-names(fastq1s) <- as.character(fastq.manifest$sample)
+names(fastq1s) <- as.character(fastq.manifest$to)
 
 fastq2s <- as.character(fastq.manifest$fastq2)
-names(fastq2s) <- as.character(fastq.manifest$sample)
+names(fastq2s) <- as.character(fastq.manifest$to)
 
 fastq1.synIds <- llply(fastq1s, .fun = function(nm) get.synapse.id.of.folder.content(fastq.folder.synId, nm, exit.on.failure = TRUE))
 fastq2.synIds <- llply(fastq2s, .fun = function(nm) get.synapse.id.of.folder.content(fastq.folder.synId, nm, exit.on.failure = TRUE))
