@@ -46,7 +46,7 @@ manifests <-
                  vec
 	       })
 
-exclude <- c("SDY180", "SDY305", "SDY984", "MCP-counter-RNA-seq")
+exclude <- c("SDY180", "SDY305", "SDY984", "MCP-counter-RNA-seq", "GSE11057")
 manifests <- manifests[!(names(manifests) %in% exclude)]
 
 cols <- names(manifests[[1]])
