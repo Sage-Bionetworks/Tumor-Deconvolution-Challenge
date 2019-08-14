@@ -1,21 +1,10 @@
 
 ###############################################################################
 ## This code uses MCPCounter to calculate cell type predictions for
-## the coarse-grained sub-Challenge.
+## the fine-grained sub-Challenge.
 ###############################################################################
 
-
-print(parallel::detectCores(all.tests = FALSE, logical = TRUE))
-print(as.numeric(system("awk '/MemFree/ {print $2}' /proc/meminfo", intern=TRUE)))
-
-library(MCPcounter)
-library(dplyr)
-library(readr)
-library(purrr)
 library(magrittr)
-library(tibble)
-library(tidyr)
-
 
 ## Read in the round and sub-Challenge-specific input file 
 ## listing each of the datasets
@@ -57,14 +46,20 @@ probesets <- as.data.frame(readr::read_csv("probesets.csv"))
 ## mapped MCP-Counter's T cell output as our CD4 T cell prediction.
 translation_df <- tibble::tribble(
     ~cell.type, ~mcpcounter.cell.type,
-    "B.cells", "B lineage",
-    "CD4.T.cells", "T cells",
-    "CD8.T.cells", "CD8 T cells",
+    "memory.B.cells",  "B lineage",
+    "naive.B.cells", "B lineage",
+    "memory.CD4.T.cells", "T cells",
+    "naive.CD4.T.cells", "T cells",
+    "regulatory.T.cells", "T cells",
+    "memory.CD8.T.cells", "CD8 T cells",
+    "naive.CD8.T.cells", "CD8 T cells",
     "NK.cells", "NK cells",
     "neutrophils", "Neutrophils",
-    "monocytic.lineage", "Monocytic lineage",
+    "monocytes", "Monocytic lineage",
+    "myeloid.dendritic.cells", "Myeloid dendritic cells",
+    "macrophages", "Monocytic lineage",
     "fibroblasts", "Fibroblasts",
-    "endothelial.cells", "Endothelial cells"
+    "endothelial.cells", "Endothelial cells",
 )
 
 ## Execute MCP-Counter against a dataset.
