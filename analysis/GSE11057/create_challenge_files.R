@@ -154,7 +154,7 @@ set.seed(1234)
 obfuscated.dataset <- paste0("DS", sum(utf8ToInt(dataset)))
 
 ## Obfuscate the sample names
-obfuscate.sample.names <- FALSE
+obfuscate.sample.names <- TRUE
 
 ret <- subset.and.rename.samples(expr.mat, gt.df, obfuscate.sample.names)
 expr.mat <- ret[["expr"]]
