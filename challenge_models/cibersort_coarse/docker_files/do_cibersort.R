@@ -18,13 +18,16 @@ library(preprocessCore)
 source("CIBERSORT.R")
 
 
-## Read in the round and sub-Challenge-specific input file 
-## listing each of the datasets
 print(list.files())
 print(getwd())
+print(list.dirs)
+print(list.files("param"))
+print(readLines("param/parameters.json"))
+
+## Read in the round and sub-Challenge-specific input file 
+## listing each of the datasets
 input_df <- readr::read_csv("input/input.csv")
 
-# convert 
 
 ## Extract the names of each dataset
 dataset_names <- input_df$dataset.name
