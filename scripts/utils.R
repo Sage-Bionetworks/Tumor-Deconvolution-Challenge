@@ -603,7 +603,17 @@ get.probe.to.symbol.map <- function(gses) {
   colnames(mapping) <- c("from", "to")
   mapping <- na.omit(mapping)
   mapping <- subset(mapping, to != "")
-  mapping
+  ## Sometimes mappings have multiple ids per probe.
+  ## e.g., 11715138_s_at CGB /// CGB1 /// CGB2 /// CGB5 /// CGB7 /// CGB8
+  ## Create a row for each symbol
+  re.mapping <-
+    ldply(1:nrow(mapping), .parallel = TRUE,
+          .fun = function(i) {
+                   str <- as.character(mapping[i, "to"])
+                   symbols <- unlist(strsplit(str, split="[ ]*///[ ]*"))
+		   df <- data.frame(from = mapping[i, "from"], to = symbols)
+                 })
+  re.mapping
 }
 
 get.probe.to.entrez.map <- function(gses) {
@@ -616,7 +626,17 @@ get.probe.to.entrez.map <- function(gses) {
   colnames(mapping) <- c("from", "to")
   mapping <- na.omit(mapping)
   mapping <- subset(mapping, to != "")
-  mapping
+  ## Sometimes mappings have multiple ids per probe.
+  ## e.g., 11715138_s_at CGB /// CGB1 /// CGB2 /// CGB5 /// CGB7 /// CGB8
+  ## Create a row for each symbol
+  re.mapping <-
+    ldply(1:nrow(mapping), .parallel = TRUE,
+          .fun = function(i) {
+                   str <- as.character(mapping[i, "to"])
+                   symbols <- unlist(strsplit(str, split="[ ]*///[ ]*"))
+		   df <- data.frame(from = mapping[i, "from"], to = symbols)
+                 })
+  re.mapping
 }
 
 get.probe.to.ensg.map <- function(gses) {
@@ -638,7 +658,21 @@ get.probe.to.ensg.map <- function(gses) {
     mapping <- mapping[, c("from", "ensembl_id")]
   }
   colnames(mapping) <- c("from", "to")
-  mapping
+  ## Sometimes mappings have multiple ids per probe, not all (or any) of which are ENSG.
+  ## e.g., "ENSG00000206282 /// ENSG00000224841 /// ENSG00000228736 /// ENSG00000237441 /// ENSG00000237825 /// OTTHUMG00000013077 /// OTTHUMG00000031072 /// OTTHUMG00000031342 /// OTTHUMG00000149093 /// OTTHUMG00000149608"
+  ## Creat a row for each ENSG
+  flag <- grepl(pattern="ENSG", mapping$to)
+  mapping <- mapping[flag,]
+  re.mapping <-
+    ldply(1:nrow(mapping), .parallel = TRUE,
+          .fun = function(i) {
+                   str <- as.character(mapping[i, "to"])
+		   reg.res <- gregexpr(pattern="ENSG\\d+", str)[[1]]
+                   ensgs <-
+		     unlist(llply(1:length(reg.res), function(j) substr(str, reg.res[j], reg.res[j] + attr(reg.res, "match.length")[j] - 1)))
+		   df <- data.frame(from = mapping[i, "from"], to = ensgs)
+                 })
+  re.mapping
 }
 
 get.ensg.to.sym.map <- function(gene.ids) {
