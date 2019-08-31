@@ -611,7 +611,7 @@ get.probe.to.symbol.map <- function(gses) {
           .fun = function(i) {
                    str <- as.character(mapping[i, "to"])
                    symbols <- unlist(strsplit(str, split="[ ]*///[ ]*"))
-		   df <- data.frame(from = mapping[i, "from"], to = symbols)
+		   df <- data.frame(from = as.character(mapping[i, "from"]), to = symbols, stringsAsFactors = FALSE)
                  })
   re.mapping
 }
@@ -634,7 +634,7 @@ get.probe.to.entrez.map <- function(gses) {
           .fun = function(i) {
                    str <- as.character(mapping[i, "to"])
                    symbols <- unlist(strsplit(str, split="[ ]*///[ ]*"))
-		   df <- data.frame(from = mapping[i, "from"], to = symbols)
+		   df <- data.frame(from = as.character(mapping[i, "from"]), to = symbols, stringsAsFactors = FALSE)
                  })
   re.mapping
 }
@@ -670,7 +670,8 @@ get.probe.to.ensg.map <- function(gses) {
 		   reg.res <- gregexpr(pattern="ENSG\\d+", str)[[1]]
                    ensgs <-
 		     unlist(llply(1:length(reg.res), function(j) substr(str, reg.res[j], reg.res[j] + attr(reg.res, "match.length")[j] - 1)))
-		   df <- data.frame(from = mapping[i, "from"], to = ensgs)
+		   df <- data.frame(from = as.character(mapping[i, "from"]), to = ensgs, stringsAsFactors = FALSE)
+		   df
                  })
   re.mapping
 }
