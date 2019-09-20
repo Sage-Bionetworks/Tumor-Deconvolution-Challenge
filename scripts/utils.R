@@ -401,6 +401,10 @@ get.annotation <- function(gses) {
   getGEO(gses[[1]]@annotation)
 }
 
+get.annotations <- function(gses) {
+    llply(gses, .fun = function(gse) getGEO(gse@annotation))
+}
+
 get.geo.metadata.tbls <- function(gses) {
   llply(gses,
         .fun = function(gse) {
@@ -417,9 +421,7 @@ get.geo.metadata.tbl <- function(gses) {
   tbls[[1]]
 }
 
-get.geo.platform.name <- function(gses) {
-  gpl <- get.annotation(gses)
-  platform.name <- Meta(gpl)$title
+translate.platform.name <- function(platform.name) {
   if(platform.name == "[HG-U133_Plus_2] Affymetrix Human Genome U133 Plus 2.0 Array") {
       platform.name <- "Affymetrix HG-U133 Plus 2.0"
   } else if(platform.name == "[HG-U133A] Affymetrix Human Genome U133A Array") {
@@ -441,7 +443,17 @@ get.geo.platform.name <- function(gses) {
   } else {
     stop(paste0("Unknown array type ", platform.name))
   }
-  platform.name
+}
+
+get.geo.platform.name <- function(gses) {
+    gpls <- get.annotations(gses)
+    platform.names <-
+        unique(Reduce("c",
+                      llply(gpls,
+                            .fun = function(gpl) {
+                                translate.platform.name(Meta(gpl)$title)
+                            })))
+    platform.names
 }
 
 get.geo.data.processing <- function(gses) {
