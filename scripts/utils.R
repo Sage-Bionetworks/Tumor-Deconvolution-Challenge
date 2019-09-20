@@ -445,11 +445,16 @@ get.geo.platform.name <- function(gses) {
 }
 
 get.geo.data.processing <- function(gses) {
-  tbl <- get.geo.metadata.tbl(gses)
-  flag <- grepl(colnames(tbl), pattern="data.processing")
-  data.processing <- as.character(unlist(unique(tbl[, flag])))
-  data.processing <- paste(data.processing, collapse = "; ")
-  return(data.processing)
+    tbls <- get.geo.metadata.tbls(gses)
+    data.processing <-
+        unique(Reduce("c", lapply(tbls,
+                                  function(tbl) {
+                                      flag <- grepl(colnames(tbl), pattern="data.processing")
+                                      data.processing <- as.character(unlist(unique(tbl[, flag])))
+                                      data.processing
+                                  })))
+    data.processing <- paste(data.processing, collapse = "; ")
+    return(data.processing)
   
   data.processing <-
     llply(gses,
