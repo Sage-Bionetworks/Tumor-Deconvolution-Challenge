@@ -421,7 +421,9 @@ get.geo.platform.name <- function(gses) {
   gpl <- get.annotation(gses)
   platform.name <- Meta(gpl)$title
   if(platform.name == "[HG-U133_Plus_2] Affymetrix Human Genome U133 Plus 2.0 Array") {
-    platform.name <- "Affymetrix HG-U133 Plus 2.0"
+      platform.name <- "Affymetrix HG-U133 Plus 2.0"
+  } else if(platform.name == "[HG-U133A] Affymetrix Human Genome U133A Array") {
+      platform.name <- "Affymetrix HG-U133A"
   } else if(platform.name == "[HT_HG-U133_Plus_PM] Affymetrix HT HG-U133+ PM Array Plate") {
     platform.name <- "Affymetrix HG-U133 Plus PM"
   } else if(platform.name == "[PrimeView] Affymetrix Human Gene Expression Array") {
