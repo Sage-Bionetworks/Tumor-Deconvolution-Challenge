@@ -440,6 +440,8 @@ translate.platform.name <- function(platform.name) {
     platform.name <- "Illumina HumanHT-12 V4.0"
   } else if(platform.name == "Illumina HiSeq 2000 (Homo sapiens)") {
     platform.name <- "Illumina HiSeq 2000"
+  } else if(platform.name == "Illumina HiSeq 4000 (Homo sapiens)") {
+    platform.name <- "Illumina HiSeq 4000"
   } else if(platform.name == "Illumina NextSeq 500 (Homo sapiens)") {
     platform.name <- "Illumina NextSeq 500"      
   } else {
