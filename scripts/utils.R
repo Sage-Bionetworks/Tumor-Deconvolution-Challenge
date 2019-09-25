@@ -442,6 +442,8 @@ translate.platform.name <- function(platform.name) {
     platform.name <- "Illumina HiSeq 2000"
   } else if(platform.name == "Illumina HiSeq 4000 (Homo sapiens)") {
     platform.name <- "Illumina HiSeq 4000"
+  } else if(platform.name =- "Illumina NovaSeq 6000 (Homo sapiens)") {
+    platform.name <- "Illumina NovaSeq 6000"
   } else if(platform.name == "Illumina NextSeq 500 (Homo sapiens)") {
     platform.name <- "Illumina NextSeq 500"      
   } else {
