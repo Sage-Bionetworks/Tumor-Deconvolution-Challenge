@@ -164,7 +164,7 @@ readr::write_tsv(fine_expr_tbl, "fine.tsv")
 Cib_coarse_res_tbl <- 
     CIBERSORT(
         "coarse.tsv",
-        "/home/aelamb/repos/irwg/iatlas-tool-cibersort/LM22.tsv",
+        "../../challenge_models/cibersort_coarse/docker_files/LM22.tsv",
         QN = F
     ) %>% 
     data.frame() %>% 
