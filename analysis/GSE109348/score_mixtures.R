@@ -166,7 +166,8 @@ Cib_coarse_res_tbl <-
         "coarse.tsv",
         "../../challenge_models/cibersort_coarse/docker_files/LM22.tsv",
         ##        QN = F
-        abs_method = "sig.scorea",
+        absolute = TRUE,
+        abs_method = "sig.score",
         absmean = TRUE
     ) %>% 
     data.frame() %>% 
@@ -190,7 +191,8 @@ Cib_fine_res_tbl <-
         "fine.tsv",
         "../../challenge_models/cibersort_coarse/docker_files/LM22.tsv",
         ##        QN = F
-        abs_method = "sig.scorea",
+        absolute = TRUE,        
+        abs_method = "sig.score",
         absmean = TRUE
     ) %>% 
     data.frame() %>% 
@@ -226,12 +228,16 @@ result_tbl <-
 
 upload_tbl_to_synapse <- function(tbl, file_name, id, delim){
     readr::write_delim(tbl, file_name, delim)
-    return()
     file_entity <- synapser::File(path = file_name, parent = id)
     synapser::synStore(file_entity)
 }
 
-upload_tbl_to_synapse(result_tbl, "model_correlations.csv", dataset_id, ",")
+write_tbl <- function(tbl, file_name, id, delim){
+    readr::write_delim(tbl, file_name, delim)
+}
+
+## upload_tbl_to_synapse(result_tbl, "model_correlations.csv", dataset_id, ",")
+write_tbl(result_tbl, "model_correlations.csv", dataset_id, ",")
 
 
 create_fit_plot <- function(title, data){

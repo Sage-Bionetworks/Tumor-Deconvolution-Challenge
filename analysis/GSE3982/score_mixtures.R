@@ -236,38 +236,46 @@ upload_tbl_to_synapse <- function(tbl, file_name, id, delim){
     synapser::synStore(file_entity)
 }
 
-upload_tbl_to_synapse(result_tbl, "model_correlations.csv", dataset_id, ",")
+write_tbl <- function(tbl, file_name, id, delim){
+    readr::write_delim(tbl, file_name, delim)
+}
 
-# 
-# create_fit_plot <- function(title, data){
-#     p <- data %>%
-#         ggplot(aes(x = measured, y = predicted)) +
-#         geom_point() +
-#         geom_smooth(method = 'lm') +
-#         ggtitle(title)
-#     print(p)
-# }
-# 
-# 
-# plot_table <- 
-#     list(
-#         Cib_coarse_res_tbl, 
-#         Cib_fine_res_tbl, 
-#         MCP_fine_res_tbl, 
-#         MCP_coarse_res_tbl
-#     ) %>% 
-#     dplyr::bind_rows() %>% 
-#     dplyr::group_by(cell.type, model) %>% 
-#     dplyr::mutate(
-#         pearson = cor(predicted, measured, method = "pearson"),
-#         title = stringr::str_c(model, cell.type, pearson, sep = "; pearson: ")
-#     ) %>% 
-#     dplyr::ungroup() %>% 
-#     dplyr::select(title, predicted, measured) %>% 
-#     dplyr::group_by(title) %>% 
-#     tidyr::nest()
-# 
-# purrr::pmap(plot_table, create_fit_plot)
+## upload_tbl_to_synapse(result_tbl, "model_correlations.csv", dataset_id, ",")
+write_tbl(result_tbl, "model_correlations.csv", dataset_id, ",")
 
+
+ 
+create_fit_plot <- function(title, data){
+    p <- data %>%
+        ggplot(aes(x = measured, y = predicted)) +
+        geom_point() +
+        geom_smooth(method = 'lm') +
+        ggtitle(title)
+    print(p)
+}
+
+
+plot_table <- 
+    list(
+        Cib_coarse_res_tbl, 
+        Cib_fine_res_tbl, 
+        MCP_fine_res_tbl, 
+        MCP_coarse_res_tbl
+    ) %>% 
+    dplyr::bind_rows() %>% 
+    dplyr::group_by(cell.type, model) %>% 
+    dplyr::mutate(
+        pearson = cor(predicted, measured, method = "pearson"),
+        title = stringr::str_c(model, cell.type, pearson, sep = "; pearson: ")
+    ) %>% 
+    dplyr::ungroup() %>%
+    dplyr::arrange(cell.type) %>%    
+    dplyr::select(title, predicted, measured) %>% 
+    dplyr::group_by(title) %>% 
+    tidyr::nest()
+
+pdf("all-fits.pdf", onefile = TRUE)
+purrr::pmap(plot_table, create_fit_plot)
+d <- dev.off()
 
 
