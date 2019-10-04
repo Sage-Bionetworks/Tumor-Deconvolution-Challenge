@@ -165,7 +165,9 @@ Cib_coarse_res_tbl <-
     CIBERSORT(
         "coarse.tsv",
         "../../challenge_models/cibersort_coarse/docker_files/LM22.tsv",
-        QN = F
+        ##        QN = F
+        abs_method = "sig.scorea",
+        absmean = TRUE
     ) %>% 
     data.frame() %>% 
     tibble::rownames_to_column("cibersort.cell.type") %>% 
@@ -187,7 +189,9 @@ Cib_fine_res_tbl <-
     CIBERSORT(
         "fine.tsv",
         "../../challenge_models/cibersort_coarse/docker_files/LM22.tsv",
-        QN = F
+        ##        QN = F
+        abs_method = "sig.scorea",
+        absmean = TRUE
     ) %>% 
     data.frame() %>% 
     tibble::rownames_to_column("cibersort.cell.type") %>% 
@@ -222,6 +226,7 @@ result_tbl <-
 
 upload_tbl_to_synapse <- function(tbl, file_name, id, delim){
     readr::write_delim(tbl, file_name, delim)
+    return()
     file_entity <- synapser::File(path = file_name, parent = id)
     synapser::synStore(file_entity)
 }
@@ -252,12 +257,14 @@ plot_table <-
         pearson = cor(predicted, measured, method = "pearson"),
         title = stringr::str_c(model, cell.type, pearson, sep = "; pearson: ")
     ) %>% 
-    dplyr::ungroup() %>% 
+    dplyr::ungroup() %>%
+    dplyr::arrange(cell.type) %>%
     dplyr::select(title, predicted, measured) %>% 
     dplyr::group_by(title) %>% 
     tidyr::nest()
 
+pdf("all-fits.pdf", onefile = TRUE)
 purrr::pmap(plot_table, create_fit_plot)
-
+d <- dev.off()
 
 
