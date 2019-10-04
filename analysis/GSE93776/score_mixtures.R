@@ -21,6 +21,7 @@ cibersort_coarse_tbl <- tibble::tribble(
     "CD4.T.cells", "T cells regulatory (Tregs)", 
     "CD4.T.cells", "T cells follicular helper",
     "CD8.T.cells", "T cells CD8",
+    "T.cells.gamma.delta", "T cells CD8",    
     "NK.cells", "NK cells resting", 
     "NK.cells", "NK cells activated",
     "neutrophils", "Neutrophils",
@@ -60,7 +61,6 @@ cibersort_fine_tbl <- tibble::tribble(
 mcpcounter_coarse_tbl <- tibble::tribble(
     ~cell.type, ~mcpcounter.cell.type,
     "B.cells", "B lineage",
-    "CD4.T.cells", "T cells",
     "CD8.T.cells", "CD8 T cells",
     "NK.cells", "NK cells",
     "neutrophils", "Neutrophils",
@@ -71,18 +71,9 @@ mcpcounter_coarse_tbl <- tibble::tribble(
 
 mcpcounter_fine_tbl <- tibble::tribble(
     ~cell.type, ~mcpcounter.cell.type,
-    "memory.B.cells",  "B lineage",
-    "naive.B.cells", "B lineage",
-    "memory.CD4.T.cells", "T cells",
-    "naive.CD4.T.cells", "T cells",
-    "regulatory.T.cells", "T cells",
-    "memory.CD8.T.cells", "CD8 T cells",
-    "naive.CD8.T.cells", "CD8 T cells",
     "NK.cells", "NK cells",
     "neutrophils", "Neutrophils",
-    "monocytes", "Monocytic lineage",
     "myeloid.dendritic.cells", "Myeloid dendritic cells",
-    "macrophages", "Monocytic lineage",
     "fibroblasts", "Fibroblasts",
     "endothelial.cells", "Endothelial cells",
 )
@@ -175,7 +166,10 @@ Cib_coarse_res_tbl <-
     CIBERSORT(
         "coarse.tsv",
         "../../challenge_models/cibersort_coarse/docker_files/LM22.tsv",
-        QN = F
+        ##        QN = F
+        absolute = TRUE,
+        abs_method = "sig.score",
+        absmean = TRUE
     ) %>% 
     data.frame() %>% 
     tibble::rownames_to_column("cibersort.cell.type") %>% 
@@ -197,7 +191,10 @@ Cib_fine_res_tbl <-
     CIBERSORT(
         "fine.tsv",
         "../../challenge_models/cibersort_coarse/docker_files/LM22.tsv",
-        QN = F
+##        QN = F
+        absolute = TRUE,
+        abs_method = "sig.score",
+        absmean = TRUE
     ) %>% 
     data.frame() %>% 
     tibble::rownames_to_column("cibersort.cell.type") %>% 
@@ -236,38 +233,45 @@ upload_tbl_to_synapse <- function(tbl, file_name, id, delim){
     synapser::synStore(file_entity)
 }
 
-upload_tbl_to_synapse(result_tbl, "model_correlations.csv", dataset_id, ",")
+write_tbl <- function(tbl, file_name, id, delim){
+    readr::write_delim(tbl, file_name, delim)
+}
 
-# 
-# create_fit_plot <- function(title, data){
-#     p <- data %>%
-#         ggplot(aes(x = measured, y = predicted)) +
-#         geom_point() +
-#         geom_smooth(method = 'lm') +
-#         ggtitle(title)
-#     print(p)
-# }
-# 
-# 
-# plot_table <- 
-#     list(
-#         Cib_coarse_res_tbl, 
-#         Cib_fine_res_tbl, 
-#         MCP_fine_res_tbl, 
-#         MCP_coarse_res_tbl
-#     ) %>% 
-#     dplyr::bind_rows() %>% 
-#     dplyr::group_by(cell.type, model) %>% 
-#     dplyr::mutate(
-#         pearson = cor(predicted, measured, method = "pearson"),
-#         title = stringr::str_c(model, cell.type, pearson, sep = "; pearson: ")
-#     ) %>% 
-#     dplyr::ungroup() %>% 
-#     dplyr::select(title, predicted, measured) %>% 
-#     dplyr::group_by(title) %>% 
-#     tidyr::nest()
-# 
-# purrr::pmap(plot_table, create_fit_plot)
+## upload_tbl_to_synapse(result_tbl, "model_correlations.csv", dataset_id, ",")
+write_tbl(result_tbl, "model_correlations.csv", dataset_id, ",")
 
+
+create_fit_plot <- function(title, data){
+    p <- data %>%
+        ggplot(aes(x = measured, y = predicted)) +
+        geom_point() +
+        geom_smooth(method = 'lm') +
+        ggtitle(title)
+    print(p)
+}
+
+
+plot_table <- 
+    list(
+        Cib_coarse_res_tbl, 
+        Cib_fine_res_tbl, 
+        MCP_fine_res_tbl, 
+        MCP_coarse_res_tbl
+    ) %>% 
+    dplyr::bind_rows() %>% 
+    dplyr::group_by(cell.type, model) %>% 
+    dplyr::mutate(
+        pearson = cor(predicted, measured, method = "pearson"),
+        title = stringr::str_c(model, cell.type, pearson, sep = "; pearson: ")
+    ) %>% 
+    dplyr::ungroup() %>%
+    dplyr::arrange(cell.type) %>%
+    dplyr::select(title, predicted, measured) %>% 
+    dplyr::group_by(title) %>% 
+    tidyr::nest()
+
+pdf("all-fits.pdf", onefile = TRUE)
+purrr::pmap(plot_table, create_fit_plot)
+d <- dev.off()
 
 
