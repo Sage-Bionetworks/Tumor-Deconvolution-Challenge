@@ -21,6 +21,7 @@ cibersort_coarse_tbl <- tibble::tribble(
     "CD4.T.cells", "T cells regulatory (Tregs)", 
     "CD4.T.cells", "T cells follicular helper",
     "CD8.T.cells", "T cells CD8",
+    "T.cells.gamma.delta", "T cells CD8",
     "NK.cells", "NK cells resting", 
     "NK.cells", "NK cells activated",
     "neutrophils", "Neutrophils",
@@ -175,7 +176,10 @@ Cib_coarse_res_tbl <-
     CIBERSORT(
         "coarse.tsv",
         "../../challenge_models/cibersort_coarse/docker_files/LM22.tsv",
-        QN = F
+        ## QN = F
+        absolute = TRUE,
+        abs_method = "sig.score",
+        absmean = TRUE
     ) %>% 
     data.frame() %>% 
     tibble::rownames_to_column("cibersort.cell.type") %>% 
@@ -197,7 +201,10 @@ Cib_fine_res_tbl <-
     CIBERSORT(
         "fine.tsv",
         "../../challenge_models/cibersort_coarse/docker_files/LM22.tsv",
-        QN = F
+        ## QN = F
+        absolute = TRUE,
+        abs_method = "sig.score",
+        absmean = TRUE        
     ) %>% 
     data.frame() %>% 
     tibble::rownames_to_column("cibersort.cell.type") %>% 
