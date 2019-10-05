@@ -247,6 +247,9 @@ gt_coarse <- coarse_mix_tbl2 %>%
     dplyr::mutate(
         cell.type = forcats::fct_expand(cell.type, coarse_celltypes)
     ) %>% 
+    plyr::ddply(.variables = c("dataset.name", "sample.id", "cell.type"),
+                .fun = function(df) data.frame(measured = sum(df$measured))
+    ) %>%
     tidyr::complete(
         dataset.name,
         sample.id,
@@ -269,7 +272,10 @@ gt_fine <- fine_mix_tbl2 %>%
     ) %>% 
     dplyr::mutate(
         cell.type = forcats::fct_expand(cell.type, fine_celltypes)
-    ) %>% 
+    ) %>%
+    plyr::ddply(.variables = c("dataset.name", "sample.id", "cell.type"),
+                .fun = function(df) data.frame(measured = sum(df$measured))
+    ) %>%
     tidyr::complete(
         dataset.name,
         sample.id,
