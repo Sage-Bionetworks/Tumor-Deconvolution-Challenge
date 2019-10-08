@@ -168,8 +168,8 @@ Cib_coarse_res_tbl <-
         "../../challenge_models/cibersort_coarse/docker_files/LM22.tsv",
         ##        QN = F
         absolute = TRUE,
-        abs_method = "sig.score",
-        absmean = TRUE
+        abs_method = "sig.score"
+        # absmean = TRUE
     ) %>% 
     data.frame() %>% 
     tibble::rownames_to_column("cibersort.cell.type") %>% 
@@ -193,8 +193,8 @@ Cib_fine_res_tbl <-
         "../../challenge_models/cibersort_coarse/docker_files/LM22.tsv",
 ##        QN = F
         absolute = TRUE,
-        abs_method = "sig.score",
-        absmean = TRUE
+        abs_method = "sig.score"
+        # absmean = TRUE
     ) %>% 
     data.frame() %>% 
     tibble::rownames_to_column("cibersort.cell.type") %>% 
