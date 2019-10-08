@@ -237,7 +237,7 @@ write_tbl <- function(tbl, file_name, id, delim){
     readr::write_delim(tbl, file_name, delim)
 }
 
-## upload_tbl_to_synapse(result_tbl, "model_correlations.csv", dataset_id, ",")
+upload_tbl_to_synapse(result_tbl, "model_correlations.csv", dataset_id, ",")
 write_tbl(result_tbl, "model_correlations.csv", dataset_id, ",")
 
 
