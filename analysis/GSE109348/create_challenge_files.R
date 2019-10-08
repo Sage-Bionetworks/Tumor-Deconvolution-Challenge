@@ -156,6 +156,39 @@ ensg.compression.fun <- compression.fun
 expr.mat.symbol <- translate.genes(expr.mat, probe.to.symbol.map, fun = symbol.compression.fun)
 expr.mat.ensg <- translate.genes(expr.mat, probe.to.ensg.map, fun = ensg.compression.fun)
 
+coarse_input_tbl <- dplyr::tibble(
+    dataset.name = obfuscated.dataset,
+    cancer.type = cancer.type,
+    platform = platform,
+    scale = scale,
+    normalization = normalization,
+    native.probe.type = native.probe.type, 
+    native.expr.file = stringr::str_c(coarse_datatset_name, "-native-gene-expr.csv"),
+    hugo.expr.file = stringr::str_c(coarse_datatset_name, "-hugo-gene-expr.csv"),
+    ensg.expr.file = stringr::str_c(coarse_datatset_name, "-ensg-gene-expr.csv"),
+    symbol.compression.function = symbol.compression.fun,
+    ensg.compression.function = ensg.compression.fun,
+    symbol.to.native.mapping.file = stringr::str_c(coarse_datatset_name, "-symbol-to-native-mapping.tsv"),
+    ensg.to.native.mapping.file = stringr::str_c(coarse_datatset_name, "-ensg-to-native-mapping.tsv")
+)
+
+fine_input_tbl <- dplyr::tibble(
+    dataset.name = obfuscated.dataset,
+    cancer.type = cancer.type,
+    platform = platform,
+    scale = scale,
+    normalization = normalization,
+    native.probe.type = native.probe.type, 
+    native.expr.file = stringr::str_c(fine_datatset_name, "-native-gene-expr.csv"),
+    hugo.expr.file = stringr::str_c(fine_datatset_name, "-hugo-gene-expr.csv"),
+    ensg.expr.file = stringr::str_c(fine_datatset_name, "-ensg-gene-expr.csv"),
+    symbol.compression.function = symbol.compression.fun,
+    ensg.compression.function = ensg.compression.fun,
+    symbol.to.native.mapping.file = stringr::str_c(fine_datatset_name, "-symbol-to-native-mapping.tsv"),
+    ensg.to.native.mapping.file = stringr::str_c(fine_datatset_name, "-ensg-to-native-mapping.tsv")
+)
+
+
 expr.mats <- list("native" = expr.mat, "ensg" = expr.mat.ensg, "hugo" = expr.mat.symbol)
 mapping.mats <- list("symbol" = probe.to.symbol.map, "ensg" = probe.to.ensg.map)
 
@@ -287,6 +320,9 @@ upload_tbl_to_synapse <- function(tbl, file_name, id, delim){
 
 upload_tbl_to_synapse(gt_fine, "fine_gt.csv", dataset_id, ",")
 upload_tbl_to_synapse(gt_coarse, "coarse_gt.csv", dataset_id, ",")
+
+upload_tbl_to_synapse(fine_input_tbl, "fine_input.csv", dataset_id, ",")
+upload_tbl_to_synapse(coarse_input_tbl, "coarse_input.csv", dataset_id, ",")
 
 upload_tbl_to_synapse(
     coarse_ensembl_df, 
