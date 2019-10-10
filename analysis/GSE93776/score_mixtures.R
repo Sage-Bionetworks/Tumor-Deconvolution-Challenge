@@ -161,7 +161,7 @@ MCP_fine_res_tbl <- fine_expr_tbl %>%
 readr::write_tsv(coarse_expr_tbl, "coarse.tsv")
 readr::write_tsv(fine_expr_tbl, "fine.tsv")
 
-
+cat("Running CS coarse\n")
 Cib_coarse_res_tbl <- 
     CIBERSORT(
         "coarse.tsv",
@@ -187,6 +187,7 @@ Cib_coarse_res_tbl <-
     dplyr::inner_join(coarse_gt_tbl) %>% 
     dplyr::mutate(model = "cibersort_coarse")
 
+cat("Running CS fine\n")
 Cib_fine_res_tbl <- 
     CIBERSORT(
         "fine.tsv",
@@ -212,6 +213,7 @@ Cib_fine_res_tbl <-
     dplyr::inner_join(fine_gt_tbl) %>% 
     dplyr::mutate(model = "cibersort_fine")
 
+cat("Assembling results tbl\n")
 result_tbl <- 
     list(
         Cib_coarse_res_tbl, 
@@ -237,7 +239,9 @@ write_tbl <- function(tbl, file_name, id, delim){
     readr::write_delim(tbl, file_name, delim)
 }
 
+cat("Uploading model correlations\n")
 upload_tbl_to_synapse(result_tbl, "model_correlations.csv", dataset_id, ",")
+cat("Writing model correlations\n")
 write_tbl(result_tbl, "model_correlations.csv", dataset_id, ",")
 
 
@@ -270,6 +274,7 @@ plot_table <-
     dplyr::group_by(title) %>% 
     tidyr::nest()
 
+cat("Creating fits plot\n")
 pdf("all-fits.pdf", onefile = TRUE)
 purrr::pmap(plot_table, create_fit_plot)
 d <- dev.off()
