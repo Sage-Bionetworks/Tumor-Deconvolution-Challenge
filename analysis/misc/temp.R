@@ -2,9 +2,17 @@ library(synapser)
 library(data.table)
 library(magrittr)
 library(tidyverse)
-library(Biobase)
 
-sdy_ids <- c("SDY311", "SDY312", "SDY314", "SDY315")
+
+sdy_ids <- c(
+    "SDY296",
+    "SDY301", 
+    "SDY387", 
+    "SDY522", 
+    "SDY984"
+    )
+
+sdy_ids <- "SDY80"
 
 fc_wb_id      <- "syn13363370"
 expr_wb_id    <- "syn13363367"
@@ -12,21 +20,6 @@ expr_wb_id    <- "syn13363367"
 
 source("../../scripts/utils.R")
 synLogin()
-
-
-# connection <- ImmuneSpaceR::CreateConnection("SDY311")
-connection <- ImmuneSpaceR::CreateConnection("SDY312")
-# connection <- ImmuneSpaceR::CreateConnection("SDY314")
-# connection <- ImmuneSpaceR::CreateConnection("SDY315")
-
-connection$listDatasets()
-x <- connection$getGEMatrix(c("SDY312_Other_GroupA", "SDY312_Other_GroupB", "SDY312_Other_GroupC"))
-x2 <- exprs(connection$mapSampleNames(EM = x))
-
-
-str_sub(colnames(x2), end = -8) %in% ground_truth_flow_wb_df$sample
-ground_truth_flow_wb_df$sample %in% str_sub(colnames(x2), end = -8)
-
 
 
 
@@ -42,8 +35,7 @@ expr_wb_df <- expr_wb_id %>%
 ground_truth_flow_wb_df <- fc_wb_id %>%
     create_df_from_synapse_id %>%
     filter(study_accession %in% sdy_ids) %>%
-    .[, colSums(is.na(.)) < nrow(.)] %>%
-    dplyr::rename(sample = subject_accession)
+    .[, colSums(is.na(.)) < nrow(.)]
 
 
 ground_truth_cytof_pbmc_df <- "syn13363372" %>%

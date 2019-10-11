@@ -3,7 +3,8 @@ analysis/*/qc_markdown_cache/*
 *.pdf
 *.html
 *.Rhistory
-challenge_models/cibersort*/docker_files/CIBERSORT.R
+*CIBERSORT.R
 challenge_models/cibersort*/docker_files/LM22.tsv
 challenge_models/*/docker_files/input/
 challenge_models/*/docker_files/output/
+

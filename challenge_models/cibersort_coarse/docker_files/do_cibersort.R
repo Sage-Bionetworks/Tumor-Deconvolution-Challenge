@@ -20,7 +20,7 @@ source("CIBERSORT.R")
 
 print(list.files())
 print(getwd())
-print(list.dirs)
+print(list.dirs())
 print(list.files("param"))
 print(readLines("param/parameters.json"))
 
