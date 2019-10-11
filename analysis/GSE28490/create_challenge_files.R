@@ -146,6 +146,38 @@ expr.mat.ensg <- translate.genes(expr.mat, probe.to.ensg.map, fun = ensg.compres
 expr.mats <- list("native" = expr.mat, "ensg" = expr.mat.ensg, "hugo" = expr.mat.symbol)
 mapping.mats <- list("symbol" = probe.to.symbol.map, "ensg" = probe.to.ensg.map)
 
+coarse_input_tbl <- dplyr::tibble(
+    dataset.name = obfuscated.dataset,
+    cancer.type = cancer.type,
+    platform = platform,
+    scale = scale,
+    normalization = normalization,
+    native.probe.type = native.probe.type, 
+    native.expr.file = stringr::str_c(coarse_datatset_name, "-native-gene-expr.csv"),
+    hugo.expr.file = stringr::str_c(coarse_datatset_name, "-hugo-gene-expr.csv"),
+    ensg.expr.file = stringr::str_c(coarse_datatset_name, "-ensg-gene-expr.csv"),
+    symbol.compression.function = symbol.compression.fun,
+    ensg.compression.function = ensg.compression.fun,
+    symbol.to.native.mapping.file = stringr::str_c(coarse_datatset_name, "-symbol-to-native-mapping.tsv"),
+    ensg.to.native.mapping.file = stringr::str_c(coarse_datatset_name, "-ensg-to-native-mapping.tsv")
+)
+
+fine_input_tbl <- dplyr::tibble(
+    dataset.name = obfuscated.dataset,
+    cancer.type = cancer.type,
+    platform = platform,
+    scale = scale,
+    normalization = normalization,
+    native.probe.type = native.probe.type, 
+    native.expr.file = stringr::str_c(fine_datatset_name, "-native-gene-expr.csv"),
+    hugo.expr.file = stringr::str_c(fine_datatset_name, "-hugo-gene-expr.csv"),
+    ensg.expr.file = stringr::str_c(fine_datatset_name, "-ensg-gene-expr.csv"),
+    symbol.compression.function = symbol.compression.fun,
+    ensg.compression.function = ensg.compression.fun,
+    symbol.to.native.mapping.file = stringr::str_c(fine_datatset_name, "-symbol-to-native-mapping.tsv"),
+    ensg.to.native.mapping.file = stringr::str_c(fine_datatset_name, "-ensg-to-native-mapping.tsv")
+)
+
 make_expr <- function(samples, freqs){
     exp <-  
         stringr::str_c(
@@ -313,6 +345,9 @@ upload_tbl_to_synapse <- function(tbl, file_name, id, delim){
     file_entity <- synapser::File(path = file_name, parent = id)
     synapser::synStore(file_entity)
 }
+
+upload_tbl_to_synapse(fine_input_tbl, "fine_input.csv", dataset_id, ",")
+upload_tbl_to_synapse(coarse_input_tbl, "coarse_input.csv", dataset_id, ",")
 
 ## Confirm ground truths sum to one and that no cell types are duplicated within a sample
 d_ply(gt_coarse,
