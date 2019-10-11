@@ -163,6 +163,27 @@ mutate_func <- function(df, col, exp){
         dplyr::select("Gene", col)
 }
 
+eps <- 10^-4
+
+## Confirm all freqs sum to one
+l_ply(1:nrow(coarse_mix_tbl),
+      .fun = function(i) {
+               freqs <- unlist(strsplit(as.character(coarse_mix_tbl[i, "freqs"]), split=";[ ]*"))
+	       freqs <- as.numeric(freqs)
+	       sm <- sum(freqs)
+	       if(abs(sm - 1) > eps) { stop(paste0("coarse sum = ", sm, "\n")) }
+             })
+cat("Confirmed all coarse frequencies sum to one\n")
+
+l_ply(1:nrow(fine_mix_tbl),
+      .fun = function(i) {
+               freqs <- unlist(strsplit(as.character(fine_mix_tbl[i, "freqs"]), split=";[ ]*"))
+	       freqs <- as.numeric(freqs)
+	       sm <- sum(freqs)
+	       if(abs(sm - 1) > eps) { stop(paste0("fine sum = ", sm, "\n")) }
+             })
+cat("Confirmed all fine frequencies sum to one\n")
+
 coarse_mix_tbl2 <- coarse_mix_tbl %>% 
     dplyr::select(sample_name, freqs, samples, cell.types) %>% 
     dplyr::mutate(mix = stringr::str_c("S", 1: dplyr::n())) %>% 
@@ -251,6 +272,9 @@ gt_coarse <- coarse_mix_tbl2 %>%
     dplyr::mutate(
         cell.type = forcats::fct_expand(cell.type, coarse_celltypes)
     ) %>% 
+    plyr::ddply(.variables = c("dataset.name", "sample.id", "cell.type"),
+    		.fun = function(df) data.frame(measured = sum(df$measured))
+    ) %>%
     tidyr::complete(
         dataset.name,
         sample.id,
@@ -274,6 +298,9 @@ gt_fine <- fine_mix_tbl2 %>%
     dplyr::mutate(
         cell.type = forcats::fct_expand(cell.type, fine_celltypes)
     ) %>% 
+    plyr::ddply(.variables = c("dataset.name", "sample.id", "cell.type"),
+    		.fun = function(df) data.frame(measured = sum(df$measured))
+    ) %>%
     tidyr::complete(
         dataset.name,
         sample.id,
@@ -286,6 +313,27 @@ upload_tbl_to_synapse <- function(tbl, file_name, id, delim){
     file_entity <- synapser::File(path = file_name, parent = id)
     synapser::synStore(file_entity)
 }
+
+## Confirm ground truths sum to one and that no cell types are duplicated within a sample
+d_ply(gt_coarse,
+      .variables = c("dataset.name", "sample.id"),
+      .fun = function(df) {
+	       sm <- sum(na.omit(df$measured))
+	       if(abs(sm - 1) > eps) { stop(paste0("coarse ground truth sum = ", sm, "\n")) }
+	       dups <- duplicated(df$cell.type)
+	       if(any(dups)) { stop(paste0("duplicated cell types: ", paste(df$cell.type[dupgs], collapse=", "), "\n")) }
+             })
+cat("Confirmed all coarse ground truth frequencies sum to one and no duplicated cell types\n")
+
+d_ply(gt_fine,
+      .variables = c("dataset.name", "sample.id"),
+      .fun = function(df) {
+	       sm <- sum(na.omit(df$measured))      
+	       if(abs(sm - 1) > eps) { stop(paste0("fine ground truth sum = ", sm, "\n")) }
+	       dups <- duplicated(df$cell.type)
+	       if(any(dups)) { stop(paste0("duplicated cell types: ", paste(df$cell.type[dupgs], collapse=", "), "\n")) }
+             })
+cat("Confirmed all fine ground truth frequencies sum to one and no duplicated cell types\n")
 
 upload_tbl_to_synapse(gt_fine, "fine_gt.csv", dataset_id, ",")
 upload_tbl_to_synapse(gt_coarse, "coarse_gt.csv", dataset_id, ",")
