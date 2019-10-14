@@ -15,7 +15,7 @@ library(e1071)
 library(parallel)
 library(preprocessCore)
 
-source("../../../external/CIBERSORT.R")
+source("CIBERSORT.R")
 
 
 print(list.files())

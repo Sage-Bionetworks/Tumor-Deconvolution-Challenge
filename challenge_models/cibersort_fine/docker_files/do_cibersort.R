@@ -15,7 +15,7 @@ library(e1071)
 library(parallel)
 library(preprocessCore)
 
-source("../../../external/CIBERSORT.R")
+source("CIBERSORT.R")
 
 
 ## Read in the round and sub-Challenge-specific input file 
