@@ -15,7 +15,7 @@ library(e1071)
 library(parallel)
 library(preprocessCore)
 
-source("CIBERSORT.R")
+source("../../../external/CIBERSORT.R")
 
 
 ## Read in the round and sub-Challenge-specific input file 
@@ -74,8 +74,8 @@ do_cibersort <- function(expression_path, dataset_name){
     result_matrix <- CIBERSORT(
         "LM22.tsv", 
         "expr.tsv", 
-        absolute = TRUE, 
-        abs_method = "no.sumto1"
+        absolute = TRUE,
+        abs_method = "sig.score"
     )
     
     # remove expresion file
