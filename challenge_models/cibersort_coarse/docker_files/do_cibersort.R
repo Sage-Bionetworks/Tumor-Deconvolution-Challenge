@@ -94,7 +94,7 @@ do_cibersort <- function(expression_path, dataset_name){
             "P-value", 
             "Correlation", 
             "RMSE", 
-            "Absolute score (no.sumto1)"
+            dplyr::starts_with("Absolute score")
         )) %>% 
         dplyr::mutate(non.immune = 1 - rowSums(.[-1])) 
         

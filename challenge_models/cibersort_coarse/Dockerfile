@@ -8,7 +8,6 @@ RUN Rscript -e "BiocManager::install('preprocessCore')"
 
 ## Copy files into Docker image
 COPY docker_files/* ./
-COPY ../../../external/CIBERSORT.R ./
 
 ## Make script executable
 RUN chmod a+x do_cibersort.R

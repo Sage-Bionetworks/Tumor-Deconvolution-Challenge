@@ -26,7 +26,7 @@ input_df <- readr::read_csv("input/input.csv")
 
 # convert 
 
-## Extract the names of each dataset
+## Extract the names of each datasetit
 dataset_names <- input_df$dataset.name
 
 ## Extract the names of the expression files that use 
@@ -91,7 +91,7 @@ do_cibersort <- function(expression_path, dataset_name){
             "P-value", 
             "Correlation", 
             "RMSE", 
-            "Absolute score (no.sumto1)"
+            dplyr::starts_with("Absolute score")
         )) %>% 
         dplyr::mutate(non.immune = 1 - rowSums(.[-1])) 
         
