@@ -8,3 +8,4 @@ challenge_models/cibersort*/docker_files/LM22.tsv
 challenge_models/*/docker_files/input/
 challenge_models/*/docker_files/output/
 
+.Rproj.user

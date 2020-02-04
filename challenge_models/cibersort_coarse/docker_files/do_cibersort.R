@@ -15,19 +15,20 @@ library(e1071)
 library(parallel)
 library(preprocessCore)
 
+print("libraries loaded")
+
 source("CIBERSORT.R")
 
+print("Cibersort loaded")
 
 print(list.files())
 print(getwd())
-print(list.dirs())
-print(list.files("param"))
-print(readLines("param/parameters.json"))
+
 
 ## Read in the round and sub-Challenge-specific input file 
 ## listing each of the datasets
 input_df <- readr::read_csv("input/input.csv")
-
+print(input_df)
 
 ## Extract the names of each dataset
 dataset_names <- input_df$dataset.name
@@ -67,6 +68,7 @@ translation_df <- tibble::tribble(
 ## Assumes that expression_path points to a CSV whose gene identifiers
 ## are HUGO symbols.
 do_cibersort <- function(expression_path, dataset_name){
+    print(dataset_name)
     
     # files must be in tsv format with no missing values
     expression_path %>% 

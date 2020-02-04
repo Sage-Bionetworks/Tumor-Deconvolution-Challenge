@@ -57,44 +57,30 @@ activity_name <- "create Challenge expression and ground truth files"
 source("../../scripts/utils.R")
 synLogin()
 
-
-expr.mat  <- expr_id %>% 
+translation_df <- "syn20958615" %>% 
     create_df_from_synapse_id() %>% 
-    dplyr::rename(Gene = V1) %>% 
-    tidyr::pivot_longer(-Gene) %>% 
-    dplyr::arrange(name) 
-
-translation_df <- expr.mat %>% 
-    dplyr::select(name) %>% 
+    dplyr::select(sample = geo_accession, cell_type = title) %>% 
     dplyr::distinct() %>% 
-    dplyr::mutate(new_name = stringr::str_c("input", 1:dplyr::n()))
+    dplyr::mutate(
+        cell_type = stringr::str_remove_all(cell_type, "_rep[:digit:]+$")
+   )
 
-expr.mat <- expr.mat %>% 
-    dplyr::inner_join(translation_df) %>% 
-    dplyr::select(-name) %>% 
-    dplyr::rename(name = new_name)
+expr.mat  <- expr_id %>%
+    create_df_from_synapse_id() %>%
+    dplyr::rename(Gene = V1) %>%
+    dplyr::mutate(Gene = stringr::str_remove_all(Gene, ".[:digit:]+$")) %>% 
+    tidyr::pivot_longer(-Gene) %>%
+    dplyr::arrange(name) %>%
+    dplyr::left_join(translation_df, by = c("name" = "cell_type")) %>%
+    dplyr::select(-name)
 
 # mixture files
 fine_mix_tbl <- fine_mix_id %>% 
     create_df_from_synapse_id() %>% 
-    tidyr::separate_rows(samples, sep = "; ") %>% 
-    dplyr::inner_join(translation_df, by = c("samples" = "name")) %>% 
-    dplyr::select(-samples) %>% 
-    dplyr::rename(samples = new_name) %>% 
-    dplyr::group_by_at(vars(-samples)) %>% 
-    dplyr::summarise(samples = str_c(samples, collapse = "; ")) %>% 
-    dplyr::ungroup() %>% 
     dplyr::mutate(sample_name = stringr::str_c("S", 1:dplyr::n()))
 
 coarse_mix_tbl <- coarse_mix_id %>% 
     create_df_from_synapse_id() %>% 
-    tidyr::separate_rows(samples, sep = "; ") %>% 
-    dplyr::inner_join(translation_df, by = c("samples" = "name")) %>% 
-    dplyr::select(-samples) %>% 
-    dplyr::rename(samples = new_name) %>% 
-    dplyr::group_by_at(vars(-samples)) %>% 
-    dplyr::summarise(samples = str_c(samples, collapse = "; ")) %>% 
-    dplyr::ungroup() %>% 
     dplyr::mutate(sample_name = stringr::str_c("S", 1:dplyr::n()))
 
 
@@ -141,11 +127,8 @@ if (normalization_method == "divide.by.sample.total"){
 
 expr.mat <- expr.mat %>% 
     dplyr::ungroup() %>% 
-    tidyr::pivot_wider(names_from = name, values_from = value)
+    tidyr::pivot_wider(names_from = sample, values_from = value)
 
-
-# data.processing <- unlist(get.geo.data.processing(gses))
-# print(data.processing)
 
 ## Extract mappings from probe to gene symbol and Ensembl ID.
 ensg.to.symbol.map <- get.ensg.to.sym.map(expr.mat$Gene)
