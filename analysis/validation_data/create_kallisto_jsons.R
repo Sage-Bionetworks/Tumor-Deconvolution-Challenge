@@ -13,20 +13,19 @@ parameter_list <- list(
     "destination_id" = "syn21570813"
 )
 
-# uploaded_samples <- "select name, id from syn19955373" %>% 
-#     query_synapse_table() %>%  
-#     dplyr::mutate(sample_name = stringr::str_remove_all(name, ".tsv")) %>% 
-#     magrittr::use_series(sample_name)
+uploaded_samples <- "select sample from syn21571153" %>%
+    query_synapse_table() %>%
+    dplyr::pull(sample)
 
 fastq_tbl <- 
-    "SELECT * FROM syn21570575" %>%
+    "SELECT id, pair, sample, size, type FROM syn21570575" %>%
     query_synapse_table() %>%  
-    dplyr::select(-c(createdOn, modifiedOn, name, celltype, replicate)) %>% 
+    dplyr::filter(!sample %in% uploaded_samples) %>% 
     dplyr::group_by(sample) %>% 
     dplyr::mutate(size = sum(size)) %>% 
     dplyr::ungroup() %>% 
     tidyr::pivot_wider(names_from = pair, values_from = id)
-    # dplyr::filter(!sample_names %in% uploaded_samples) 
+   
 
 df_to_json <- function(dfs, output_file_names, json_file_names){
     dfs %>% 
@@ -55,7 +54,6 @@ fastq_tbl %>%
 fastq_tbl %>%
     dplyr::filter(type == "Biological Mix") %>%
     dplyr::mutate(cum_size = cumsum(size)) %>%
-    dplyr::filter(cum_size < 3.0e11) %>%
     dplyr::select(fastq1_ids = R1, fastq2_ids = R2, sample_names = sample) %>% 
     as.list() %>%
     c(parameter_list) %>%
@@ -68,7 +66,6 @@ fastq_tbl %>%
 fastq_tbl %>%
     dplyr::filter(type == "Random Mix") %>%
     dplyr::mutate(cum_size = cumsum(size)) %>%
-    dplyr::filter(cum_size < 3.0e11) %>%
     dplyr::select(fastq1_ids = R1, fastq2_ids = R2, sample_names = sample) %>% 
     as.list() %>%
     c(parameter_list) %>%
