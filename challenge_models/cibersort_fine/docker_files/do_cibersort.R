@@ -36,46 +36,85 @@ expression_files  <- input_df$hugo.expr.file
 ## Form the paths of the expression files
 expression_paths <- paste0("input/", expression_files)
 
+## get the scale methods from the input file
+scales <- input_df$scale
+
+## get the scale methods from the input file
+normalizations <- input_df$normalization
+
+allowed_normalization_methods <- c(
+    "CPM", "MAS5", "gcRMA", "RMA", "RMA+quantile normalization+FARMS", 
+    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM"
+)
+
+
 # Cibersort translation table
 translation_df <- tibble::tribble(
     ~cell.type, ~cibersort.cell.type,
     "memory.B.cells", "B cells memory",
     "naive.B.cells", "B cells naive",
-    "memory.CD4.T.cells", "T cells CD4 memory resting",
     "memory.CD4.T.cells", "T cells CD4 memory activated",
+    "memory.CD4.T.cells", "T cells CD4 memory resting",
     "naive.CD4.T.cells", "T cells CD4 naive",
     "regulatory.T.cells", "T cells regulatory (Tregs)",
-    "memory.CD8.T.cells", "T cells CD8",
-    "naive.CD8.T.cells", "T cells CD8",
-    "NK.cells", "NK cells resting", 
+    # "memory.CD8.T.cells", "T cells CD8",
+    # "naive.CD8.T.cells", "T cells CD8",
+    "NK.cells", "NK cells resting",
     "NK.cells", "NK cells activated",
     "neutrophils", "Neutrophils",
     "monocytes", "Monocytes",
-    "myeloid.dendritic.cells", "Dendritic cells resting", 
+    "myeloid.dendritic.cells", "Dendritic cells resting",
     "myeloid.dendritic.cells", "Dendritic cells activated",
     "macrophages", "Macrophages M0",
     "macrophages", "Macrophages M1",
-    "macrophages", "Macrophages M2",
-    "fibroblasts", "non.immune",
-    "endothelial.cells", "non.immune"
+    "macrophages", "Macrophages M2"
+    # "fibroblasts", "non.immune",
+    # "endothelial.cells", "non.immune"
 )
 
 ## Execute Cibersort against a dataset.
 ## Assumes that expression_path points to a CSV whose gene identifiers
 ## are HUGO symbols.
-do_cibersort <- function(expression_path, dataset_name){
+do_cibersort <- function(expression_path, dataset_name, scale, normalization){
+    
+    # normalization must be one of these methods
+    if (!normalization %in% allowed_normalization_methods) {
+        stop("non-accepted normalization method")
+    }
     
     # files must be in tsv format with no missing values
-    expression_path %>% 
+    expression_df <- expression_path %>% 
         readr::read_csv() %>% 
-        tidyr::drop_na() %>% 
-        readr::write_tsv("expr.tsv")
+        tidyr::drop_na()
+    
+    if (scale == "Linear") {
+        expression_df <- expression_df
+    } else if (scale = "Log2") {
+        expression_df <- expression_df %>% 
+            tibble::column_to_rownames("Gene") %>% 
+            as.matrix() %>% 
+            2^. %>% 
+            as.data.frame() %>% 
+            tibble::rownames_to_column("Gene")
+    } else if (scale == "Log10") {
+        expression_df <- expression_df %>% 
+            tibble::column_to_rownames("Gene") %>% 
+            as.matrix() %>% 
+            10^. %>% 
+            as.data.frame() %>% 
+            tibble::rownames_to_column("Gene")
+    } else {
+        stop("non-accepted scale method")
+    }
+    
+    readr::write_tsv(expression_df, "expr.tsv")
     
     result_matrix <- CIBERSORT(
         "LM22.tsv", 
         "expr.tsv", 
-        absolute = TRUE,
-        abs_method = "sig.score"
+        abs_method = "sig.score",
+        absmean = TRUE,
+        QN = FALSE
     )
     
     # remove expresion file
@@ -108,7 +147,13 @@ do_cibersort <- function(expression_path, dataset_name){
 }
 
 ## Run Cibersort on each of the expression files
-result_dfs <- purrr::map2(expression_paths, dataset_names, do_cibersort) 
+result_dfs <- purrr::pmap(
+    expression_paths, 
+    dataset_names,
+    scales,
+    normalizations,
+    do_cibersort
+) 
 
 ## Combine all results into one dataframe
 combined_result_df <- dplyr::bind_rows(result_dfs)
