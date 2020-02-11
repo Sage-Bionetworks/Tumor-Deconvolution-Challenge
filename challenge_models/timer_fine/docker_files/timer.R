@@ -1,7 +1,7 @@
 
 ###############################################################################
 ## This code uses timer to calculate cell type predictions for
-## the coarse-grained sub-Challenge.
+## the fine-grained sub-Challenge.
 ###############################################################################
 
 
@@ -24,15 +24,13 @@ expression_files  <- input_df$hugo.expr.file
 ## Form the paths of the expression files
 expression_paths <- paste0("input/", expression_files)
 
+
 # timer to challenge cell type names
 translation_df <- tibble::tribble(
-    ~cell.type,          ~timer.cell.type,
-    "B.cells",           "B_cell",
-    "CD4.T.cells",       "T_cell.CD4",
-    "CD8.T.cells",       "T_cell.CD8",
-    "neutrophils",       "Neutrophil",
-    "monocytic.lineage", "Macrophage",
-    "monocytic.lineage", "DC"
+    ~cell.type,                ~timer.cell.type,
+    "neutrophils",             "Neutrophil",
+    "macrophages",             "Macrophage",
+    "myeloid.dendritic.cells", "DC"
 )
 
 ## get the scale methods from the input file
@@ -100,6 +98,7 @@ do_timer <- function(
             expression_matrix,
             indications = rep(indications, ncol(expression_matrix))
         ) %>% 
+        print() %>% 
         as.data.frame() %>% 
         tibble::rownames_to_column("timer.cell.type") %>% 
         dplyr::as_tibble() %>%
