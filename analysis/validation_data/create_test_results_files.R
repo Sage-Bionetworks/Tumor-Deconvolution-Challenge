@@ -21,18 +21,13 @@ coarse_tbl <- "syn21590364" %>%
 
 fine_tbl <- "syn21590365" %>% 
     synapse_file_to_tbl(delim = ",") %>% 
+    dplyr::rename(dataset.name = datast.name) %>% 
     dplyr::full_join(
         dplyr::filter(prediction_files_tbl, subchallenge == "fine"),
         .
     )
 
-tbl <- dplyr::bind_rows(coarse_tbl, fine_tbl)
+dplyr::bind_rows(coarse_tbl, fine_tbl) %>% 
+    readr::write_csv("test_results.csv")
 
-# expr_tbl %>% 
-#     dplyr::select(c("Gene", dataset_list$DS4)) %>% 
-#     readr::write_csv("symbol_tpm_DS4.csv")
-# 
-# "symbol_tpm_DS4.csv" %>% 
-#     synapser::File(parent = upload_dir_id) %>% 
-#     synapser::synStore()
 
