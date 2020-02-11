@@ -33,20 +33,76 @@ translation_df <- tibble::tribble(
     "CD8.T.cells", "CD8+ T-cells",
     "NK.cells", "NK cells",
     "neutrophils", "Neutrophils",
-    "monocytic.lineage", "DC",
+    "monocytic.lineage", "Monocytes",
     "fibroblasts", "Fibroblasts",
     "endothelial.cells","Endothelial cells"
 )
 
+## get the scale methods from the input file
+scales <- input_df$scale
+
+## get the scale methods from the input file
+normalizations <- input_df$normalization
+
+allowed_normalization_methods <- c(
+    "CPM", "MAS5", "gcRMA", "RMA", "RMA+quantile normalization+FARMS", 
+    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM"
+)
+
+## Get cancer types 
+cancer_types <- input_df$cancer.type
+
+## Get platforms
+platforms <- input_df$platform
+
 ## Assumes that expression_path points to a CSV whose gene identifiers
 ## are HUGO symbols.
-do_xcell <- function(expression_path, dataset_name){
-    expression_path %>%
+do_xcell <- function(
+    expression_path, 
+    dataset_name,
+    scale, 
+    normalization, 
+    cancer_type,
+    platform
+){
+    
+    if (platform %in% c("Illumina HiSeq 2000", "Illumina NovaSeq")) {
+        rnaseq <- TRUE
+    } else if (platform %in% c(
+        "Affymetrix HG-U133 Plus 2.0", "Affymetrix Human Gene 1.0 ST",
+        "Illumina HumanHT-12 V4.0", "Affymetrix Human Gene 1.1 ST",
+        "Affymetrix Human Gene PrimeView")) {
+        rnaseq <- FALSE
+    } else {
+        stop("platform not allowed")
+    }
+    
+    # normalization must be one of these methods
+    if (!normalization %in% allowed_normalization_methods) {
+        stop("non-accepted normalization method")
+    }
+    
+    expression_matrix <- expression_path %>%
         readr::read_csv() %>%
         as.data.frame() %>%
         tibble::column_to_rownames(., colnames(.)[[1]]) %>%
-        as.matrix() %>%
-        xCell::xCellAnalysis() %>%
+        as.matrix()
+    
+    if (scale == "Linear") {
+        expression_matrix <- expression_matrix
+    } else if (scale == "Log2") {
+        expression_matrix <- 2^expression_matrix
+    } else if (scale == "Log10") {
+        expression_matrix <- 10^expression_matrix
+    } else {
+        stop("non-accepted scale method")
+    }
+    
+    expression_matrix %>% 
+        xCell::xCellAnalysis(
+            rnaseq = rnaseq,
+            cell.types.use = translation_df$xcell.cell.type
+        ) %>%
         as.data.frame() %>%
         tibble::rownames_to_column("xcell.cell.type") %>%
         dplyr::as_tibble() %>%
@@ -58,7 +114,12 @@ do_xcell <- function(expression_path, dataset_name){
 }
 
 ## Run Xcell on each of the expression files
-result_dfs <- purrr::map2(expression_paths, dataset_names, do_xcell) 
+result_dfs <- purrr::pmap(
+    list(expression_paths, dataset_names, scales, 
+         normalizations, cancer_types, platforms),
+    do_xcell
+)
+    
 
 ## Combine all results into one dataframe
 combined_result_df <- dplyr::bind_rows(result_dfs)

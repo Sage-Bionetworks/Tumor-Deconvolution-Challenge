@@ -30,6 +30,19 @@ expression_files  <- input_df$hugo.expr.file
 ## Form the paths of the expression files
 expression_paths <- paste0("input/", expression_files)
 
+## get the scale methods from the input file
+scales <- input_df$scale
+
+## get the scale methods from the input file
+normalizations <- input_df$normalization
+
+allowed_normalization_methods <- c(
+    "CPM", "MAS5", "gcRMA", "RMA", "RMA+quantile normalization+FARMS", 
+    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM"
+)
+
+## Get cancer types 
+cancer_types <- input_df$cancer.type
 
 # EPIC to challenge cell type names
 translation_df <- tibble::tribble(
@@ -47,19 +60,52 @@ translation_df <- tibble::tribble(
     "myeloid.dendritic.cells", "Macrophages",
     "macrophages", "Macrophages",
     "fibroblasts", "CAFs",
-    "endothelial.cells", "Endothelial"
+    "endothelial.cells", "Endothelial",
+    "monocytes", "Monocytes",
+    "neutrophils", "Neutrophils"
 )
+
 
 ## Assumes that expression_path points to a CSV whose gene identifiers
 ## are HUGO symbols.
-do_epic <- function(expression_path, dataset_name){
+do_epic <- function(
+    expression_path, 
+    dataset_name, 
+    scale, 
+    normalization, 
+    cancer_type
+){
+    # normalization must be one of these methods
+    if (!normalization %in% allowed_normalization_methods) {
+        stop("non-accepted normalization method")
+    }
     
-    expression_path %>% 
+    expression_matrix <- expression_path %>% 
         readr::read_csv() %>% 
         as.data.frame() %>% 
         tibble::column_to_rownames(., colnames(.)[[1]]) %>% 
-        as.matrix() %>% 
-        EPIC::EPIC() %>% 
+        as.matrix()
+    
+    if (scale == "Linear") {
+        expression_matrix <- expression_matrix
+    } else if (scale == "Log2") {
+        expression_matrix <- 2^expression_matrix
+    } else if (scale == "Log10") {
+        expression_matrix <- 10^expression_matrix
+    } else {
+        stop("non-accepted scale method")
+    }
+    
+    if (is.na(cancer_type)) {
+        reference <- "TRef"
+    } else if (cancer_type == "") {
+        reference <- "TRef"
+    } else {
+        reference <- "BRef"
+    }
+    
+    expression_matrix %>% 
+        EPIC::EPIC(reference = reference, mRNA_cell = FALSE) %>% 
         magrittr::use_series(mRNAProportions) %>% 
         as.data.frame() %>% 
         tibble::rownames_to_column("sample.id") %>% 
@@ -72,7 +118,10 @@ do_epic <- function(expression_path, dataset_name){
 }
 
 ## Run EPIC on each of the expression files
-result_dfs <- purrr::map2(expression_paths, dataset_names, do_epic) 
+result_dfs <- purrr::pmap(
+    list(expression_paths, dataset_names, scales, normalizations, cancer_types),
+    do_epic
+) 
 
 ## Combine all results into one dataframe
 combined_result_df <- dplyr::bind_rows(result_dfs)

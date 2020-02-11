@@ -22,6 +22,17 @@ expression_files  <- input_df$hugo.expr.file
 ## Form the paths of the expression files
 expression_paths <- paste0("input/", expression_files)
 
+## get the scale methods from the input file
+scales <- input_df$scale
+
+## get the scale methods from the input file
+normalizations <- input_df$normalization
+
+allowed_normalization_methods <- c(
+    "CPM", "MAS5", "gcRMA", "RMA", "RMA+quantile normalization+FARMS", 
+    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM"
+)
+
 ##### MCPcounter example code below ########
 
 ## MCPcounter.estimate (called below) requires two input data frames
@@ -46,26 +57,31 @@ probesets <- as.data.frame(readr::read_csv("probesets.csv"))
 ## mapped MCP-Counter's T cell output as our CD4 T cell prediction.
 translation_df <- tibble::tribble(
     ~cell.type, ~mcpcounter.cell.type,
-    "memory.B.cells",  "B lineage",
-    "naive.B.cells", "B lineage",
-    "memory.CD4.T.cells", "T cells",
-    "naive.CD4.T.cells", "T cells",
-    "regulatory.T.cells", "T cells",
-    "memory.CD8.T.cells", "CD8 T cells",
-    "naive.CD8.T.cells", "CD8 T cells",
+    # "memory.B.cells",  "B lineage",
+    # "naive.B.cells", "B lineage",
+    # "memory.CD4.T.cells", "T cells",
+    # "naive.CD4.T.cells", "T cells",
+    # "regulatory.T.cells", "T cells",
+    # "memory.CD8.T.cells", "CD8 T cells",
+    # "naive.CD8.T.cells", "CD8 T cells",
     "NK.cells", "NK cells",
     "neutrophils", "Neutrophils",
-    "monocytes", "Monocytic lineage",
+    # "monocytes", "Monocytic lineage",
     "myeloid.dendritic.cells", "Myeloid dendritic cells",
-    "macrophages", "Monocytic lineage",
+    # "macrophages", "Monocytic lineage",
     "fibroblasts", "Fibroblasts",
-    "endothelial.cells", "Endothelial cells",
+    "endothelial.cells", "Endothelial cells"
 )
 
 ## Execute MCP-Counter against a dataset.
 ## Assumes that expression_path points to a CSV whose gene identifiers
 ## are HUGO symbols.
-do_mcpcounter <- function(expression_path, dataset_name){
+do_mcpcounter <- function(expression_path, dataset_name, scale, normalization){
+    
+    # normalization must be one of these methods
+    if (!normalization %in% allowed_normalization_methods) {
+        stop("non-accepted normalization method")
+    }
     
     # This reads in the input file and converts to a matrix which will be
     # input to MCPCounter
@@ -74,6 +90,16 @@ do_mcpcounter <- function(expression_path, dataset_name){
         as.data.frame() %>%
         tibble::column_to_rownames("Gene") %>% 
         as.matrix() 
+    
+    if (scale == "Linear") {
+        expression_matrix <- expression_matrix
+    } else if (scale == "Log2") {
+        expression_matrix <- 2^expression_matrix
+    } else if (scale == "Log10") {
+        expression_matrix <- 10^expression_matrix
+    } else {
+        stop("non-accepted scale method")
+    }
     
     # We are using the HUGO version of the expression file, so this needs to
     # indicate that here. probests and genes are the dataframes created above.
@@ -101,7 +127,10 @@ do_mcpcounter <- function(expression_path, dataset_name){
 }
 
 ## Run MCP-Counter on each of the expression files
-result_dfs <- purrr::map2(expression_paths, dataset_names, do_mcpcounter) 
+result_dfs <- purrr::pmap(
+    list(expression_paths, dataset_names, scales, normalizations),
+    do_mcpcounter
+) 
 
 ## Combine all results into one dataframe
 combined_result_df <- dplyr::bind_rows(result_dfs)
