@@ -1,7 +1,7 @@
 
 ###############################################################################
 ## This code uses quantiseq to calculate cell type predictions for
-## the coarse-grained sub-Challenge.
+## the fine-grained sub-Challenge.
 ###############################################################################
 
 
@@ -27,64 +27,107 @@ expression_paths <- paste0("input/", expression_files)
 
 # quantiseq to challenge cell type names
 translation_df <- tibble::tribble(
-    ~cell.type, ~quantiseq.cell.type,
-    "memory.B.cells", "Memory B-cells",
-    "naive.B.cells", "naive B-cells",
-    "memory.CD4.T.cells", "CD4+ memory T-cells",
-    "naive.CD4.T.cells", "CD4+ naive T-cells",
-    "regulatory.T.cells", "T cell regulatory (Tregs)",
-    "memory.CD8.T.cells", "CD8+ Tem",
-    "naive.CD8.T.cells", "CD8+ naive T-cells",
-    "NK.cells", "NK cell",
-    "neutrophils", "Neutrophil",
-    "monocytes", "Monocyte",
-    "myeloid.dendritic.cells", "Dendritic cell",
-    "macrophages", "Macrophage M1", 
-    "macrophages", "Macrophage M2",
-    "fibroblasts", "Fibroblasts",
-    "endothelial.cells", "Endothelial cells"
+    ~cell.type,                ~quantiseq.cell.type,
+    "regulatory.T.cells",      "Tregs",
+    "NK.cells",                "NK.cells", 
+    "monocytes",               "Monocytes",
+    "macrophages",             "Macrophages.M1",
+    "macrophages",             "Macrophages.M2",
+    "myeloid.dendritic.cells", "Dendritic.cell"
 )
+
+## get the scale methods from the input file
+scales <- input_df$scale
+
+## get the scale methods from the input file
+normalizations <- input_df$normalization
+
+allowed_normalization_methods <- c(
+    "CPM", "MAS5", "gcRMA", "RMA", "RMA+quantile normalization+FARMS", 
+    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM"
+)
+
+## Get cancer types 
+cancer_types <- input_df$cancer.type
+
+## Get platforms
+platforms <- input_df$platform
 
 ## Assumes that expression_path points to a CSV whose gene identifiers
 ## are HUGO symbols.
-do_quantiseq <- function(expression_path, dataset_name){
-    df <- expression_path %>%
+do_quantiseq <- function(
+    expression_path, 
+    dataset_name,
+    scale, 
+    normalization, 
+    cancer_type,
+    platform
+){
+    
+    if (platform %in% c("Illumina HiSeq 2000", "Illumina NovaSeq")) {
+        arrays <- FALSE
+    } else if (platform %in% c(
+        "Affymetrix HG-U133 Plus 2.0", "Affymetrix Human Gene 1.0 ST",
+        "Illumina HumanHT-12 V4.0", "Affymetrix Human Gene 1.1 ST",
+        "Affymetrix Human Gene PrimeView")) {
+        arrays <- TRUE
+    } else {
+        stop("platform not allowed")
+    }
+    
+    # normalization must be one of these methods
+    if (!normalization %in% allowed_normalization_methods) {
+        stop("non-accepted normalization method")
+    }
+    
+    if (is.na(cancer_type)) {
+        tumor <- FALSE
+    } else if (cancer_type == "") {
+        tumor <- FALSE
+    } else {
+        tumor <- TRUE 
+    }
+    
+    expression_matrix <- expression_path %>%
         readr::read_csv() %>%
         tidyr::drop_na() %>% 
         as.data.frame() %>%
         tibble::column_to_rownames(., colnames(.)[[1]]) %>%
-        as.matrix() %>%
-        immunedeconv::deconvolute("quantiseq") %>% 
-        dplyr::as_tibble() %>%
-        dplyr::rename(quantiseq.cell.type = cell_type) %>% 
-        tidyr::gather(
-            key = sample.id,
-            value = prediction,
-            -quantiseq.cell.type) 
+        as.matrix()
     
-    dplyr::tibble(
-            "quantiseq.cell.type" = c(
-                "Memory B-cells",
-                "naive B-cells",
-                "CD4+ memory T-cells",
-                "CD4+ naive T-cells",
-                "CD8+ Tem",
-                "CD8+ naive T-cells",
-                "Fibroblasts", 
-                "Endothelial cells"),
-            "prediction" = 0
+    if (scale == "Linear") {
+        expression_matrix <- expression_matrix
+    } else if (scale == "Log2") {
+        expression_matrix <- 2^expression_matrix
+    } else if (scale == "Log10") {
+        expression_matrix <- 10^expression_matrix
+    } else {
+        stop("non-accepted scale method")
+    }
+    
+    tbl <- 
+        immunedeconv::deconvolute_quantiseq(
+            expression_matrix,
+            tumor = tumor,
+            arrays = arrays,
+            scale_mrna = FALSE
         ) %>% 
-        merge(df$sample.id) %>%
-        dplyr::distinct() %>% 
-        dplyr::rename(sample.id = y) %>% 
-        dplyr::bind_rows(df) %>% 
+        as.data.frame() %>% 
+        tibble::rownames_to_column("cell.type") %>% 
+        dplyr::as_tibble() %>%
+        tidyr::gather(
+            key = sample.id, 
+            value = prediction,
+            -cell.type
+        ) %>% 
         dplyr::mutate(dataset.name = dataset_name)
-    
-    
 }
 
 ## Run Quantiseq on each of the expression files
-result_dfs <- purrr::map2(expression_paths, dataset_names, do_quantiseq) 
+result_dfs <- purrr::pmap(
+    list(expression_paths, dataset_names, scales, normalizations, cancer_types, platforms),
+    do_quantiseq
+) 
 
 ## Combine all results into one dataframe
 combined_result_df <- dplyr::bind_rows(result_dfs)

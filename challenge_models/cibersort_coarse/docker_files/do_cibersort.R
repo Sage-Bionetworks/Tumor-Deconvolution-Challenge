@@ -94,7 +94,7 @@ do_cibersort <- function(expression_path, dataset_name, scale, normalization){
     
     if (scale == "Linear") {
         expression_df <- expression_df
-    } else if (scale = "Log2") {
+    } else if (scale == "Log2") {
         expression_df <- expression_df %>% 
             tibble::column_to_rownames("Gene") %>% 
             as.matrix() %>% 
@@ -111,7 +111,6 @@ do_cibersort <- function(expression_path, dataset_name, scale, normalization){
     } else {
         stop("non-accepted scale method")
     }
-    
     readr::write_tsv(expression_df, "expr.tsv")
     
     result_matrix <- CIBERSORT(
@@ -153,10 +152,7 @@ do_cibersort <- function(expression_path, dataset_name, scale, normalization){
 
 ## Run Cibersort on each of the expression files
 result_dfs <- purrr::pmap(
-    expression_paths, 
-    dataset_names,
-    scales,
-    normalizations,
+    list(expression_paths, dataset_names, scales, normalizations),
     do_cibersort
 ) 
 

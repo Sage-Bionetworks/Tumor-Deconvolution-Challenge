@@ -24,10 +24,10 @@ counts_ensg_tbl <-
     dplyr::ungroup() %>% 
     dplyr::rename(Gene = ensembl_gene_id)
 
-readr::write_tsv(counts_ensg_tbl, "ensg_counts.tsv")   
-synapser::File("ensg_counts.tsv", parent = "syn21571479") %>% 
+readr::write_csv(counts_ensg_tbl, "ensg_counts.csv")   
+synapser::File("ensg_counts.csv", parent = "syn21571479") %>% 
     synapser::synStore()
-file.remove("ensg_counts.tsv")
+file.remove("ensg_counts.csv")
 
 counts_symbol_tbl <- counts_ensg_tbl %>% 
     dplyr::inner_join(
@@ -42,10 +42,10 @@ counts_symbol_tbl <- counts_ensg_tbl %>%
     dplyr::ungroup() %>% 
     dplyr::rename(Gene = hgnc_symbol)
 
-readr::write_tsv(counts_symbol_tbl, "symbol_counts.tsv")   
-synapser::File("symbol_counts.tsv", parent = "syn21571479") %>% 
+readr::write_csv(counts_symbol_tbl, "symbol_counts.csv")   
+synapser::File("symbol_counts.csv", parent = "syn21571479") %>% 
     synapser::synStore()
-file.remove("symbol_counts.tsv")
+file.remove("symbol_counts.csv")
 
 tpm_transcripts_tbl <- "syn21574261" %>% 
     synapse_file_to_tbl() %>% 
@@ -65,10 +65,10 @@ tpm_ensg_tbl <-
     dplyr::ungroup() %>% 
     dplyr::rename(Gene = ensembl_gene_id)
 
-readr::write_tsv(tpm_ensg_tbl, "ensg_tpm.tsv")   
-synapser::File("ensg_tpm.tsv", parent = "syn21571479") %>% 
+readr::write_csv(tpm_ensg_tbl, "ensg_tpm.csv")   
+synapser::File("ensg_tpm.csv", parent = "syn21571479") %>% 
     synapser::synStore()
-file.remove("ensg_tpm.tsv")
+file.remove("ensg_tpm.csv")
 
 tpm_symbol_tbl <- tpm_ensg_tbl %>% 
     dplyr::inner_join(
@@ -83,8 +83,8 @@ tpm_symbol_tbl <- tpm_ensg_tbl %>%
     dplyr::ungroup() %>% 
     dplyr::rename(Gene = hgnc_symbol)
 
-readr::write_tsv(tpm_symbol_tbl, "symbol_tpm.tsv")   
-synapser::File("symbol_tpm.tsv", parent = "syn21571479") %>% 
+readr::write_csv(tpm_symbol_tbl, "symbol_tpm.csv")   
+synapser::File("symbol_tpm.csv", parent = "syn21571479") %>% 
     synapser::synStore()
-file.remove("symbol_tpm.tsv")
+file.remove("symbol_tpm.csv")
 

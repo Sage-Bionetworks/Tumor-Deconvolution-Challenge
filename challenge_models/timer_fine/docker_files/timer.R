@@ -1,18 +1,12 @@
 
 ###############################################################################
-## This code uses Epic to calculate cell type predictions for
+## This code uses timer to calculate cell type predictions for
 ## the fine-grained sub-Challenge.
 ###############################################################################
 
-library(EPIC)
-library(readr)
-library(tibble)
-library(magrittr)
-library(dplyr)
-library(purrr)
-library(tibble)
-library(tidyr)
 
+library(magrittr)
+library(immunedeconv)
 
 ## Read in the round and sub-Challenge-specific input file 
 ## listing each of the datasets
@@ -30,6 +24,15 @@ expression_files  <- input_df$hugo.expr.file
 ## Form the paths of the expression files
 expression_paths <- paste0("input/", expression_files)
 
+
+# timer to challenge cell type names
+translation_df <- tibble::tribble(
+    ~cell.type,                ~timer.cell.type,
+    "neutrophils",             "Neutrophil",
+    "macrophages",             "Macrophage",
+    "myeloid.dendritic.cells", "DC"
+)
+
 ## get the scale methods from the input file
 scales <- input_df$scale
 
@@ -44,46 +47,40 @@ allowed_normalization_methods <- c(
 ## Get cancer types 
 cancer_types <- input_df$cancer.type
 
-# EPIC to challenge cell type names
-translation_df <- tibble::tribble(
-    ~cell.type, ~epic.cell.type,
-    "memory.B.cells", "Bcells",
-    "naive.B.cells", "Bcells",
-    "memory.CD4.T.cells", "CD4_Tcells",
-    "naive.CD4.T.cells", "CD4_Tcells",
-    "regulatory.T.cells", "CD4_Tcells",
-    "memory.CD8.T.cells", "CD8_Tcells",
-    "naive.CD8.T.cells", "CD8_Tcells",
-    "NK.cells", "NKcells",
-    "neutrophils", "NKcells",
-    "monocytes", "Macrophages",
-    "myeloid.dendritic.cells", "Macrophages",
-    "macrophages", "Macrophages",
-    "fibroblasts", "CAFs",
-    "endothelial.cells", "Endothelial",
-    "monocytes", "Monocytes",
-    "neutrophils", "Neutrophils"
-)
-
-
 ## Assumes that expression_path points to a CSV whose gene identifiers
 ## are HUGO symbols.
-do_epic <- function(
+do_timer <- function(
     expression_path, 
-    dataset_name, 
+    dataset_name,
     scale, 
     normalization, 
     cancer_type
 ){
+    
     # normalization must be one of these methods
     if (!normalization %in% allowed_normalization_methods) {
         stop("non-accepted normalization method")
     }
     
-    expression_matrix <- expression_path %>% 
-        readr::read_csv() %>% 
-        as.data.frame() %>% 
-        tibble::column_to_rownames(., colnames(.)[[1]]) %>% 
+    if (cancer_type == "BRCA") {
+        indications <- "brca" 
+    } else if (cancer_type == "CRC") {
+        indications <- "coad"
+    } else if (cancer_type == "FL") {
+        indications <- "dlbc"
+    } else if (is.na(cancer_type)) {
+        indications <- "coad"
+    } else if (cancer_type == "") {
+        indications <- "coad"
+    } else {
+        stop("Unallowed cancer type")
+    }
+    
+    expression_matrix <- expression_path %>%
+        readr::read_csv() %>%
+        tidyr::drop_na() %>% 
+        as.data.frame() %>%
+        tibble::column_to_rownames(., colnames(.)[[1]]) %>%
         as.matrix()
     
     if (scale == "Linear") {
@@ -96,49 +93,47 @@ do_epic <- function(
         stop("non-accepted scale method")
     }
     
-    if (is.na(cancer_type)) {
-        reference <- "TRef"
-    } else if (cancer_type == "") {
-        reference <- "TRef"
-    } else {
-        reference <- "BRef"
-    }
-    
-    expression_matrix %>% 
-        EPIC::EPIC(reference = reference, mRNA_cell = FALSE) %>% 
-        magrittr::use_series(mRNAProportions) %>% 
+    tbl <-   
+        immunedeconv::deconvolute_timer(
+            expression_matrix,
+            indications = rep(indications, ncol(expression_matrix))
+        ) %>% 
+        print() %>% 
         as.data.frame() %>% 
-        tibble::rownames_to_column("sample.id") %>% 
-        dplyr::as_tibble() %>% 
+        tibble::rownames_to_column("timer.cell.type") %>% 
+        dplyr::as_tibble() %>%
         tidyr::gather(
-            key = epic.cell.type, 
-            value = prediction, 
-            -sample.id) %>% 
+            key = sample.id, 
+            value = prediction,
+            -timer.cell.type
+        ) %>% 
         dplyr::mutate(dataset.name = dataset_name)
 }
 
-## Run EPIC on each of the expression files
+## Run Timer on each of the expression files
 result_dfs <- purrr::pmap(
-    list(expression_paths, dataset_names, scales, normalizations, cancer_types),
-    do_epic
-) 
+    list(expression_paths, dataset_names, scales, 
+         normalizations, cancer_types),
+    do_timer
+)
 
 ## Combine all results into one dataframe
 combined_result_df <- dplyr::bind_rows(result_dfs)
 
-## Translate cell type names as output from MCP-Counter to those
+## Translate cell type names as output from Quantiseq to those
 ## required for the coarse-grained sub-Challenge.
-combined_result_df <- combined_result_df %>% 
+combined_result_df2 <- combined_result_df %>% 
     dplyr::inner_join(translation_df) %>% 
-    dplyr::select(dataset.name, sample.id, cell.type, prediction)
+    dplyr::select(dataset.name, sample.id, cell.type, prediction) %>% 
+    dplyr::group_by(dataset.name, sample.id, cell.type) %>% 
+    dplyr::summarise(prediction = sum(prediction)) %>% 
+    dplyr::ungroup()
 
-##### MCPcounter example code above ########
 
 ## Create the directory the output will go into
 dir.create("output")
 
 ## Write result into output directory
-readr::write_csv(combined_result_df, "output/predictions.csv")
+readr::write_csv(combined_result_df2, "output/predictions.csv")
 
 print(list.files("output"))
-    
