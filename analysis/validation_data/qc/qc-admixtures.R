@@ -5,7 +5,6 @@ suppressPackageStartupMessages(p_load("plyr"))
 suppressPackageStartupMessages(p_load("dplyr"))
 suppressPackageStartupMessages(p_load("reshape2"))
 
-suppressPackageStartupMessages(p_load("immunedeconv"))
 suppressPackageStartupMessages(p_load("MCPcounter"))
 suppressPackageStartupMessages(p_load("corrplot"))
 suppressPackageStartupMessages(p_load("openxlsx"))
@@ -114,41 +113,6 @@ plot.deconv.scores <- function(res, order.by = NULL) {
   g
 }
 
-## expr.mat should be genes x samples, with genes indicated as symbols
-run.deconv.methods <- function(expr.mat) {
-
-  immunedeconv::set_cibersort_mat("/home/bwhite/LM22.txt")
-  immunedeconv::set_cibersort_binary("/home/bwhite/CIBERSORT.R")
-  xcell.fine.grained.cell.types <-
-      c("CD4+ memory T-cells", "CD4+ naive T-cells",
-        "CD8+ T-cells", "DC", "Endothelial cells",
-        "Fibroblasts", "Macrophages", "Memory B-cells", "Monocytes", "naive B-cells",
-        "Neutrophils", "NK cells", "Tregs")
-
-  xcell.fine.grained.cell.types <-
-      c("T cell CD4+ memory", "T cell CD4+ naive",
-        "T cell CD8+", "Myeloid dendritic cell", "Endothelial cell",
-        "Cancer associated fibroblast", "Macrophage", "B cell memory",
-        "Monocyte", "B cell naive", "Neutrophil", "NK cell", "T cell regulatory (Tregs)")
-
-  expected_cell_types = xcell.fine.grained.cell.types
-
-  arrays <- FALSE
-  tumor <- FALSE
-  scale_mrna <- FALSE
-  ret.list <- list()
-  ret.list[["mcp"]] <- MCPcounter.estimate(expr.mat, featuresType = "HUGO_symbols")
-  ret.list[["cibersort"]] <- deconvolute_cibersort(expr.mat, arrays = arrays, absmean = TRUE)
-  ret.list[["xcell"]] <-
-      deconvolute_xcell(expr.mat, arrays = arrays, expected_cell_types = expected_cell_types)
-  ret.list[["epic"]] <- deconvolute_epic(expr.mat, tumor = tumor, scale_mrna = scale_mrna)
-  indications <- rep("coad", ncol(expr.mat))
-  ret.list[["timer"]] <- deconvolute_timer(expr.mat, indications = indications)
-  ret.list[["quantiseq"]] <-
-      deconvolute_quantiseq(expr.mat, tumor = tumor, arrays = arrays, scale_mrna = scale_mrna)
-  return(ret.list)
-}
-
 plot.all.purified.results <- function(res.list, suffix) {
   nms <- names(res.list)
   names(nms) <- nms
@@ -185,8 +149,6 @@ plot.all.purified.results <- function(res.list, suffix) {
         })
 }
 
-purified.deconv <- run.deconv.methods(purified.expr)
-plot.all.purified.results(purified.deconv, suffix = "-purified-deconv")
 
 suppressPackageStartupMessages(p_load(AnnotationHub))
 suppressPackageStartupMessages(p_load(ensembldb))
@@ -194,7 +156,9 @@ ah <- AnnotationHub()
 flag <- (ah$species == "Homo sapiens") & (ah$genome == "GRCh38") & (ah$dataprovider == "Ensembl") & (ah$rdataclass == "EnsDb")
 ah2 <- ah[flag, ]
 ## as.data.frame(mcols(ah2))[1:10,c("title"),drop=FALSE]
-edb <- ah2[["AH73881"]]
+nm <- "AH73881"
+if(!(nm %in% names(ah2))) { nm <- names(ah2)[1] }
+edb <- ah2[[nm]]
 
 ## keytypes(edb)
 ## columns(edb)
@@ -319,11 +283,11 @@ insilico.admixtures <- insilico.admixtures[, admix.names]
 admixture.expr <- admixture.expr[, admix.names]
 colnames(insilico.admixtures) <- paste0(colnames(insilico.admixtures), "i")
 mat <- cbind(insilico.admixtures, admixture.expr)
+stop("stop")
 
 dst <- dist(t(as.matrix(mat)))
 hc <- hclust(dst^2, "cen")
 
-stop("stop")
 
 ratios <-
   ldply(1:2,
