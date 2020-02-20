@@ -173,8 +173,6 @@ cpm.pc.expr <- apply(cpm.pc.expr, 2, function(col) col * 10^6 / sum(col))
 purified.pc.expr <- cpm.pc.expr[, purified.samples]
 purified.pc.expr <- rename.samples(purified.pc.expr)
 
-purified.pc.deconv <- run.deconv.methods(purified.pc.expr)
-plot.all.purified.results(purified.pc.deconv, suffix = "-purified-pc-deconv")
 
 
 
@@ -283,10 +281,16 @@ insilico.admixtures <- insilico.admixtures[, admix.names]
 admixture.expr <- admixture.expr[, admix.names]
 colnames(insilico.admixtures) <- paste0(colnames(insilico.admixtures), "i")
 mat <- cbind(insilico.admixtures, admixture.expr)
-stop("stop")
 
-dst <- dist(t(as.matrix(mat)))
-hc <- hclust(dst^2, "cen")
+batch <- c(rep(0, ncol(insilico.admixtures)), rep(1, ncol(admixture.expr)))
+flag <- apply(mat, 1, function(row) all(row == row[1]))
+mat.c <- ComBat(as.matrix(mat)[!flag,], batch = batch)
+str(as.dendrogram(hc))
+cr <- cor(mat.c)
+
+## NB: correlations are all very high.
+## Limit to deconv genes
+
 
 
 ratios <-
@@ -360,6 +364,8 @@ g <- ggplot(data = mer, aes(x = actual, y = prediction))
 g <- g + geom_point()
 g <- g + facet_wrap(~ cell.type, scale = "free_y")
 
+suppressPackageStartupMessages(p_load("immunedeconv"))
+
 xcell.deconv.genes <-
     sort(unique(unlist(lapply(xCell.data$signatures, function(x) x@geneIds))))
 
@@ -393,6 +399,45 @@ deconv.genes <-
     sort(unique(c(cibersort.deconv.genes, mcp.deconv.genes, epic.deconv.genes, quantiseq.deconv.genes)))
 deconv.genes <- deconv.genes
 
+stop("stop")
+
+dst <- dist(t(as.matrix(mat.c[rownames(mat.c) %in% deconv.genes,])))
+hc <- hclust(dst^2, "cen")
+str(as.dendrogram(hc))
+
+mt <- mat.c
+
+pc <- prcomp(mt[rownames(mt) %in% deconv.genes,], scale = TRUE, center = TRUE)
+df <- data.frame(PC1 = pc$rotation[,1], PC2 =  pc$rotation[,2])
+batch <- rep("in vitro", nrow(df))
+flag <- grepl(rownames(df), pattern="i")
+batch[flag] <- "in silico"
+pdf("gp.pdf")
+g <- ggplot(data = df, aes(x = PC1, y = PC2, colour = batch))
+g <- g + geom_point()
+print(g)
+d <- dev.off()
+
+
+cols <- colnames(mt)[grepl(colnames(mt), pattern="i")]
+names(cols) <- cols
+cr <- cor(mt[rownames(mt) %in% deconv.genes,])
+crp <- cr - diag(nrow = nrow(cr), ncol = ncol(cr))
+bar <- llply(cols, .fun = function(col) { i <- which.max(crp[col,]); colnames(crp)[i] })
+names(bar) <- gsub(names(bar), pattern="i", replacement="")
+table(names(bar) == unname(bar))
+
+head(cor(mat.c[rownames(mat.c) %in% deconv.genes,])[,1:5])
+pdf("cr.pdf", width = 14)
+corrplot(cr, order="hclust")
+dst <- dist(t(as.matrix(mat[rownames(mat) %in% deconv.genes,])))
+hc <- hclust(dst^2, "cen")
+## plot(hc)
+d <- dev.off()
+
+dst <- dist(t(as.matrix(mat[rownames(mat) %in% deconv.genes,])))
+hc <- hclust(dst^2, "cen")
+str(as.dendrogram(hc))
 
 cov.purified.expr <- purified.expr[rownames(purified.expr) %in% cov.genes,]
 corrplot(cor(cov.purified.expr), order="hclust")
