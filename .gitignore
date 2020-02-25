@@ -7,5 +7,13 @@ analysis/*/qc_markdown_cache/*
 challenge_models/cibersort*/docker_files/LM22.tsv
 challenge_models/*/docker_files/input/
 challenge_models/*/docker_files/output/
-
+*.yaml
+*.pdf
+*.df
+*~
+*.jpg
+*.pptx
+*.ppt
+*.tsv
+*.png
 .Rproj.user
