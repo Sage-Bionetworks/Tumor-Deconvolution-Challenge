@@ -8,17 +8,17 @@ unif.broken.stick.proportion <- function(n, min.prop = 0, max.prop = 1, step = 0
     ret
 }
 
-generate.random.uniform.admixtures <- function(populations, n, min.prop = 0, max.prop = 1, lbs = NULL, ubs = NULL) {
+generate.random.uniform.admixtures <- function(populations, n, min.prop = 0, max.prop = 1, lbs = NULL, ubs = NULL, step = 0.01) {
 
     ## Generate the random admixtures
-    mat <- ldply(1:n, .fun = function(i) unif.broken.stick.proportion(length(populations), min.prop = min.prop, max.prop = max.prop))
+    mat <- ldply(1:n, .fun = function(i) unif.broken.stick.proportion(length(populations), min.prop = min.prop, max.prop = max.prop, step = step))
     if(is.null(lbs)) { lbs <- rep(0, length(populations)) }
     if(is.null(ubs)) { ubs <- rep(1, length(populations)) }    
     
     flag <- unlist(apply(mat, 1, function(row) any(row < lbs) | any(row > ubs)))
     while(any(flag)) {
         num <- length(which(flag))
-        mat[flag,] <- ldply(1:num, .fun = function(i) unif.broken.stick.proportion(length(populations), min.prop = min.prop, max.prop = max.prop))
+        mat[flag,] <- ldply(1:num, .fun = function(i) unif.broken.stick.proportion(length(populations), min.prop = min.prop, max.prop = max.prop, step = step))
         flag <- unlist(apply(mat, 1, function(row) any(row < lbs) | any(row > ubs)))
     }
     ## Generate the admixture with only tumor content
