@@ -1,15 +1,15 @@
 library(plyr)
 library(tidyverse)
 
-load.iAtlas.supp <- function() {
+load.iAtlas.supp <- function(cache.dir = ".") {
     library(openxlsx)
-    iatlas.file <- "iAtlas-sup1.xlsx"
+    iatlas.file <- paste0(cache.dir, "/iAtlas-sup1.xlsx")
     iatlas.tbl <- read.xlsx(iatlas.file)
     iatlas.tbl
 }
 
 ## NB: Li has very few counts
-load.li.cell.type.counts <- function() {
+load.li.cell.type.counts <- function(cache.dir = ".") {
     ## Li CRC (GSE81861)
     ## synId <- "syn11898281"
     synId <- "syn11898215"  ## this is the expression file
@@ -28,9 +28,9 @@ load.li.cell.type.counts <- function() {
     tmp
 }
 
-load.azizi.cell.type.counts <- function() {
+load.azizi.cell.type.counts <- function(cache.dir = ".") {
     library(openxlsx)
-    file <- "azizi-fig1d-immune-proportions.xlsx"
+    file <- paste0(cache.dir, "/azizi-fig1d-immune-proportions.xlsx")
     tbl <- read.xlsx(file, startRow = 4)
     cols <- colnames(tbl)
     cols <- cols[!(cols %in% c("Sample", "Total"))]
@@ -40,7 +40,7 @@ load.azizi.cell.type.counts <- function() {
     ## tbl now holds the population fractions
     
     ## Read in the supplemental table that has the total number of cells per sample
-    file <- "221994-1.xlsx"
+    file <- paste0(cache.dir, "/221994-1.xlsx")
     cnt.tbl <- read.xlsx(file, startRow = 3)
     cnt.tbl <- subset(cnt.tbl, sample == "TUMOR")
     cnt.tbl <- ddply(cnt.tbl, .variables = "patient", .fun = function(df) data.frame(n_cells = sum(df$n_cells)))
@@ -52,8 +52,8 @@ load.azizi.cell.type.counts <- function() {
     tbl
 }
 
-load.cytof.10k.cell.type.fractions <- function() {
-  cytof.10k.file <- "10KImmunomes.CyTOF_\ PBMC.2018-07-09.csv"
+load.cytof.10k.cell.type.fractions <- function(cache.dir = ".") {
+  cytof.10k.file <- paste0(cache.dir, "/10KImmunomes.CyTOF_\ PBMC.2018-07-09.csv")
   cytof.tbl <- read.table(cytof.10k.file, sep=",", header=TRUE, as.is=TRUE)
   cytof.tbl <- cytof.tbl[!duplicated(cytof.tbl$subject_accession, fromLast = TRUE) &
                          !duplicated(cytof.tbl$subject_accession, fromLast = FALSE), ]
@@ -72,7 +72,7 @@ load.cytof.10k.cell.type.fractions <- function() {
 ## In fact, there was further isolation into CD45-/CD90-/CD31- (deplete fibroblasts and endothelial and enrich for malignant)
 ## and CD45+/CD3+ (to enrich for T cells).
 ## Hence, really not use to quantitate relative abundance.
-load.puram.cell.type.counts <- function() {
+load.puram.cell.type.counts <- function(cache.dir = ".") {
     ## Puram Head and Neck (GSE103322)
     ## Get the annotations from the Puram Head and Neck data
     synId <- "syn11990378"
@@ -106,7 +106,7 @@ load.puram.cell.type.counts <- function() {
 ## Hence, can not compare relative abundance of immune vs non-immune.
 ## In four tumors (Mel58, 67, 72 and 74), we sequenced primarily the immune infiltrates (CD45+ cells) and there were only zero or one malignant cells by this definition.
 ## This seems also to be true for CY75, which doesn't have any tumor cells.
-load.tirosh.cell.type.counts <- function() {
+load.tirosh.cell.type.counts <- function(cache.dir = ".") {
     ## Tirosh Melanoma (GSE72056)
     synId <- "syn12119636"
     tirosh.tbl <- read.table(synGet(synId)$path, sep="\t", header=TRUE)

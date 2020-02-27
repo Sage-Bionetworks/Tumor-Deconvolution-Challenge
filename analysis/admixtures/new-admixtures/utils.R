@@ -116,8 +116,9 @@ distance.squared.from.pt.to.hyperplane <- function(hyperplane, pt) {
   num / denom
 }
 
-library(OjaNP) # for hyperplane
 find.extremal.points.hyp <- function(mat, m) {
+    library(pacman)
+    p_load(OjaNP) # for hyperplane
   if(ncol(mat) <= 2) { return(mat) }
 
   ## Find the two mutually most distant points
