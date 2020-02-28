@@ -117,8 +117,20 @@ plot.deconv.scores <- function(res, order.by = NULL) {
 ## expr.mat should be genes x samples, with genes indicated as symbols
 run.deconv.methods <- function(expr.mat) {
 
-  immunedeconv::set_cibersort_mat("/home/bwhite/LM22.txt")
-  immunedeconv::set_cibersort_binary("/home/bwhite/CIBERSORT.R")
+    files <- c("/home/bwhite/LM22.txt", "/Users/Brian/Downloads/new-cibersort-code/LM22.txt")
+    for(file in files) {
+        if(file.exists(file)) {
+            cat(paste0("Setting CIBERSORT mat to ", file, "\n"))
+            immunedeconv::set_cibersort_mat(file)
+        }
+    }
+    files <- c("/home/bwhite/CIBERSORT.R", "/Users/Brian/Downloads/new-cibersort-code/CIBERSORT.R")
+    for(file in files) {
+        if(file.exists(file)) {
+            cat(paste0("Setting CIBERSORT script to ", file, "\n"))
+            immunedeconv::set_cibersort_binary(file)
+        }
+    }
   xcell.fine.grained.cell.types <-
       c("CD4+ memory T-cells", "CD4+ naive T-cells",
         "CD8+ T-cells", "DC", "Endothelial cells",
@@ -323,7 +335,7 @@ mat <- cbind(insilico.admixtures, admixture.expr)
 dst <- dist(t(as.matrix(mat)))
 hc <- hclust(dst^2, "cen")
 
-stop("stop")
+## stop("stop")
 
 ratios <-
   ldply(1:2,
@@ -399,7 +411,14 @@ g <- g + facet_wrap(~ cell.type, scale = "free_y")
 xcell.deconv.genes <-
     sort(unique(unlist(lapply(xCell.data$signatures, function(x) x@geneIds))))
 
-lm22 <- read.table("/home/bwhite/LM22.txt", sep="\t", header=TRUE)
+lm22 <- NULL
+files <- c("/home/bwhite/LM22.txt", "/Users/Brian/Downloads/new-cibersort-code/LM22.txt")
+for(file in files) {
+    if(file.exists(file)) {
+        lm22 <- read.table(file, sep="\t", header=TRUE)
+    }
+}
+
 cibersort.deconv.genes <- as.character(lm22$Gene.symbol)
 mcp.deconv.genes <-
     sort(unique(
@@ -702,8 +721,52 @@ df$dataset[flag] <- "DS3"
 flag <- ( df$tumor.type == "CRC" ) & ( df$mixture.type == "RM" )
 df$dataset[flag] <- "DS4"
 
+synId <- "syn21576632"
+obj <- synGet(synId, downloadFile = TRUE)
+cpm.expr <- read.table(obj$path, sep = ",", header = TRUE)
+
+samples <- colnames(cpm.expr)
+## Exclude the admixtures samples
+flag <- grepl(samples, pattern="RM")
+samples <- samples[!flag]
+flag <- grepl(samples, pattern="BM")
+samples <- samples[!flag]
+samples <- samples[!(samples == "Gene")]
+names(samples) <- samples
+
+for(col in colnames(df)) { df[, col] <- as.character(df[, col]) }
+df <- rbind(data.frame(id = unname(samples), tumor.type = "CRC", batch = "P", mixture.type = "P", dataset = "DS5", stringsAsFactors = FALSE), df)
+
 write.table(file = "in-vitro-admixture-sample-datasets.tsv", df, sep = "\t", row.names = FALSE,
             col.names = TRUE, quote = FALSE)
+
+
+## Map populations to samples
+populations <- samples
+populations <- gsub(populations, pattern="_1", replacement="")
+populations <- gsub(populations, pattern="_2", replacement="")
+pop.df <- data.frame(population = unname(populations), sample = names(populations))
+
+## Translate the population names to those we use in the challenge
+fine.grained.map <- list(
+    "Breast" = "Breast",
+    "CRC" = "CRC",
+    "Dendritic_cells" = "myeloid.dendritic.cells",
+    "Endothelial_cells" = "endothelial.cells",
+    "Fibroblasts" = "fibroblasts",
+    "Macrophages" = "macrophages",
+    "Memory_CD4_T_cells" = "memory.CD4.T.cells",
+    "Memory_CD8_T_cells" = "memory.CD8.T.cells",
+    "Monocytes" = "monocytes",
+    "NK_cells" = "NK.cells",
+    "Naive_B_cells" = "naive.B.cells",
+    "Naive_CD4_T_cells" = "naive.CD4.T.cells",
+    "Naive_CD8_T_cells" = "naive.CD8.T.cells",
+    "Neutrophils" = "neutrophils",
+    "Tregs" = "regulatory.T.cells")
+
+fine.grained.map.df <- data.frame(population = names(fine.grained.map), challenge.population = unname(unlist(fine.grained.map)))
+fine.grained.pop.df <- merge(pop.df, fine.grained.map.df)
 
 ddply(melted.ratios, .variables = c("sample"), .fun = function(df) sum(df$actual))
 gold.standard.tbl <- melted.ratios
@@ -711,10 +774,28 @@ colnames(gold.standard.tbl) <- c("sample.id", "cell.type", "measured")
 gold.standard.tbl <- merge(gold.standard.tbl, unique(df[, c("id", "dataset")]), by.x = c("sample.id"), by.y = c("id"))
 
 gold.standard.tbl <- gold.standard.tbl[, c("dataset", "sample.id", "cell.type", "measured")]
-colnames(gold.standard.tbl) <- c("datast.name", "sample.id", "cell.type", "measured")
+colnames(gold.standard.tbl) <- c("dataset.name", "sample.id", "cell.type", "measured")
 gold.standard.tbl <- subset(gold.standard.tbl, !(cell.type %in% c("breast", "CRC")))
 flag <- gold.standard.tbl$cell.type == "DC"
 gold.standard.tbl$cell.type[flag] <- c("myeloid.dendritic.cells")
+
+## Add purified samples to the gold standard
+tmp <- fine.grained.pop.df
+tmp$val <- 1
+tmp <- tmp[, c("sample", "challenge.population", "val")]
+tmp2 <- melt(acast(tmp, sample ~ challenge.population, fill = 0))
+colnames(tmp2) <- c("sample.id", "cell.type", "measured")
+tmp2 <- subset(tmp2, (cell.type != "Breast") & (cell.type != "CRC"))
+tmp2 <- cbind(dataset.name = "DS5", tmp2)
+for(col in c("dataset.name", "sample.id", "cell.type")) {
+    gold.standard.tbl[, col] <- as.character(gold.standard.tbl[, col])
+    tmp2[, col] <- as.character(tmp2[, col])
+}
+print(dim(gold.standard.tbl))
+print(dim(tmp2))
+gold.standard.tbl <- rbind(gold.standard.tbl, tmp2)
+print(dim(gold.standard.tbl))
+
 
 ## fine-grained
 # memory.B.cells (missing)
@@ -733,6 +814,8 @@ gold.standard.tbl$cell.type[flag] <- c("myeloid.dendritic.cells")
 # endothelial.cells
 fine.grained.gold.standard <- gold.standard.tbl
 
+
+
 ## coarse-grained
 # B.cells
 # CD4.T.cells
@@ -746,14 +829,14 @@ coarse.cell.types <-
   c("B.cells", "CD4.T.cells", "CD8.T.cells", "NK.cells", "neutrophils", "monocytic.lineage",
     "fibroblasts", "endothelial.cells")
 
-tmp <- acast(gold.standard.tbl , sample.id ~ cell.type, value.var = "measured")
+tmp <- acast(gold.standard.tbl , sample.id ~ cell.type, value.var = "measured", fill = 0)
 
 ## B.cells = memory.B.cells + naive.B.cells
 flag <- colnames(tmp) %in% c("memory.B.cells", "naive.B.cells")
 tmp <- cbind(tmp, B.cells = as.numeric(unlist(apply(tmp[, flag, drop=F], 1, function(row) sum(row)))))
 
-## CD4.T.cells = memory.CD4.T.cells + naive.CD4.T.cells
-flag <- colnames(tmp) %in% c("memory.CD4.T.cells", "naive.CD4.T.cells")
+## CD4.T.cells = memory.CD4.T.cells + naive.CD4.T.cells + regulatory.T.cells
+flag <- colnames(tmp) %in% c("memory.CD4.T.cells", "naive.CD4.T.cells", "regulatory.T.cells")
 tmp <- cbind(tmp, CD4.T.cells = as.numeric(unlist(apply(tmp[, flag, drop=F], 1, function(row) sum(row)))))
 
 ## CD8.T.cells = memory.CD8.T.cells + naive.CD8.T.cells
@@ -772,6 +855,8 @@ coarse.grained.gold.standard <-
   merge(coarse.grained.gold.standard, unique(df[, c("id", "dataset")]), by.x = c("sample.id"), by.y = c("id"))
 colnames(coarse.grained.gold.standard) <- c("sample.id", "cell.type", "measured", "dataset.name")
 coarse.grained.gold.standard <- coarse.grained.gold.standard[, c("dataset.name", "sample.id", "cell.type", "measured")]
+
+
 
 write.table(file = "val_coarse.csv", coarse.grained.gold.standard, sep=",", row.names = FALSE, col.names = TRUE, quote = FALSE)
 write.table(file = "val_fine.csv", fine.grained.gold.standard, sep=",", row.names = FALSE, col.names = TRUE, quote = FALSE)
