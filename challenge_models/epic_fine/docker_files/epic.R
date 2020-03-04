@@ -38,7 +38,7 @@ normalizations <- input_df$normalization
 
 allowed_normalization_methods <- c(
     "CPM", "MAS5", "gcRMA", "RMA", "RMA+quantile normalization+FARMS", 
-    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM"
+    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM", "fRMA"
 )
 
 ## Get cancer types 
@@ -75,9 +75,10 @@ do_epic <- function(
     normalization, 
     cancer_type
 ){
+    
     # normalization must be one of these methods
     if (!normalization %in% allowed_normalization_methods) {
-        stop("non-accepted normalization method")
+        stop(paste0("Non-accepted normalization method: ", normalization))
     }
     
     expression_matrix <- expression_path %>% 
@@ -93,7 +94,7 @@ do_epic <- function(
     } else if (scale == "Log10") {
         expression_matrix <- 10^expression_matrix
     } else {
-        stop("non-accepted scale method")
+        stop(paste0("non-accepted scale method: ", scale))
     }
     
     if (is.na(cancer_type)) {
@@ -130,7 +131,10 @@ combined_result_df <- dplyr::bind_rows(result_dfs)
 ## required for the coarse-grained sub-Challenge.
 combined_result_df <- combined_result_df %>% 
     dplyr::inner_join(translation_df) %>% 
-    dplyr::select(dataset.name, sample.id, cell.type, prediction)
+    dplyr::select(dataset.name, sample.id, cell.type, prediction) %>% 
+    dplyr::group_by(dataset.name, sample.id, cell.type) %>% 
+    dplyr::summarise(prediction = sum(prediction)) %>% 
+    dplyr::ungroup()
 
 ##### MCPcounter example code above ########
 

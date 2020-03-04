@@ -41,7 +41,7 @@ normalizations <- input_df$normalization
 
 allowed_normalization_methods <- c(
     "CPM", "MAS5", "gcRMA", "RMA", "RMA+quantile normalization+FARMS", 
-    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM"
+    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM", "fRMA"
 )
 
 ## Get cancer types 
@@ -59,21 +59,23 @@ do_timer <- function(
     
     # normalization must be one of these methods
     if (!normalization %in% allowed_normalization_methods) {
-        stop("non-accepted normalization method")
+        stop(paste0("Non-accepted normalization method: ", normalization))
     }
     
-    if (cancer_type == "BRCA") {
+    if (is.na(cancer_type)) {
+        indications <- "coad"
+    } else if (cancer_type == "BRCA") {
         indications <- "brca" 
     } else if (cancer_type == "CRC") {
         indications <- "coad"
     } else if (cancer_type == "FL") {
         indications <- "dlbc"
-    } else if (is.na(cancer_type)) {
-        indications <- "coad"
     } else if (cancer_type == "") {
         indications <- "coad"
+    } else if (cancer_type == "NA") {
+        indications <- "coad"
     } else {
-        stop("Unallowed cancer type")
+        stop(paste0("Unallowed cancer type: ",  cancer_type))
     }
     
     expression_matrix <- expression_path %>%
@@ -90,7 +92,7 @@ do_timer <- function(
     } else if (scale == "Log10") {
         expression_matrix <- 10^expression_matrix
     } else {
-        stop("non-accepted scale method")
+        stop(paste0("non-accepted scale method: ", scale))
     }
     
     tbl <-   

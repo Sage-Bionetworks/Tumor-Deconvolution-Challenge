@@ -41,7 +41,7 @@ normalizations <- input_df$normalization
 
 allowed_normalization_methods <- c(
     "CPM", "MAS5", "gcRMA", "RMA", "RMA+quantile normalization+FARMS", 
-    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM"
+    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM", "fRMA"
 )
 
 ##### MCPcounter example code below ########
@@ -85,7 +85,7 @@ do_mcpcounter <- function(expression_path, dataset_name, scale, normalization){
     
     # normalization must be one of these methods
     if (!normalization %in% allowed_normalization_methods) {
-        stop("non-accepted normalization method")
+        stop(paste0("Non-accepted normalization method: ", normalization))
     }
     
 
@@ -104,7 +104,7 @@ do_mcpcounter <- function(expression_path, dataset_name, scale, normalization){
     } else if (scale == "Log10") {
         expression_matrix <- 10^expression_matrix
     } else {
-        stop("non-accepted scale method")
+        stop(paste0("non-accepted scale method: ", expression_matrix))
     }
     
     # We are using the HUGO version of the expression file, so this needs to

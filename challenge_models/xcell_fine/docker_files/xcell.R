@@ -52,7 +52,7 @@ normalizations <- input_df$normalization
 
 allowed_normalization_methods <- c(
     "CPM", "MAS5", "gcRMA", "RMA", "RMA+quantile normalization+FARMS", 
-    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM"
+    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM", "fRMA"
 )
 
 ## Get cancer types 
@@ -72,20 +72,23 @@ do_xcell <- function(
     cancer_type,
     platform
 ){
-    if (platform %in% c("Illumina HiSeq 2000", "Illumina NovaSeq")) {
+    if (platform %in% c(
+        "Illumina HiSeq 2000", "Illumina NovaSeq", "Illumina", 
+        "Illumina HiSeq 4000", "Illumina NextSeq 500")) {
         rnaseq <- TRUE
     } else if (platform %in% c(
         "Affymetrix HG-U133 Plus 2.0", "Affymetrix Human Gene 1.0 ST",
         "Illumina HumanHT-12 V4.0", "Affymetrix Human Gene 1.1 ST",
-        "Affymetrix Human Gene PrimeView")) {
+        "Affymetrix Human Gene PrimeView", "Illumina HumanHT-12 V4.0",
+        "Affymetrix HG-U133A")) {
         rnaseq <- FALSE
     } else {
-        stop("platform not allowed")
+        stop(paste0("Platform not allowed:", platform))
     }
     
     # normalization must be one of these methods
     if (!normalization %in% allowed_normalization_methods) {
-        stop("non-accepted normalization method")
+        stop(paste0("Non-accepted normalization method: ", normalization))
     }
     
     expression_matrix <- expression_path %>%

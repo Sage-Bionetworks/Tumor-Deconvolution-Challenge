@@ -1,5 +1,5 @@
 ## Start from this Docker image
-FROM rocker/tidyverse:3.6.0
+FROM rocker/tidyverse:3.6.1
 
 ## Install R packages in Docker image
 RUN Rscript -e "library(devtools);devtools::install_github('dviraran/xCell')"

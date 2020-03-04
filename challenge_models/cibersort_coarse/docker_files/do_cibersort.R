@@ -48,7 +48,7 @@ normalizations <- input_df$normalization
 
 allowed_normalization_methods <- c(
     "CPM", "MAS5", "gcRMA", "RMA", "RMA+quantile normalization+FARMS", 
-    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM"
+    "average", "TMM", "RMA+quantile normalization", "normexp", "TPM", "fRMA"
 )
 
 # Cibersort translation table
@@ -84,7 +84,7 @@ do_cibersort <- function(expression_path, dataset_name, scale, normalization){
     
     # normalization must be one of these methods
     if (!normalization %in% allowed_normalization_methods) {
-        stop("non-accepted normalization method")
+        stop(paste0("Non-accepted normalization method: ", normalization))
     }
     
     # files must be in tsv format with no missing values
