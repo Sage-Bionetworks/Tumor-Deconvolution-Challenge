@@ -109,14 +109,26 @@ do_quantiseq <- function(
     } else {
         stop(paste0("non-accepted scale method: ", scale))
     }
-    
-    tbl <- 
+
+    res <- 
         immunedeconv::deconvolute_quantiseq(
             expression_matrix,
             tumor = tumor,
             arrays = arrays,
-            scale_mrna = FALSE
-        ) %>% 
+            scale_mrna = FALSE)
+    if(any(is.nan(res))) {
+        library(MASS)
+        res <- 
+            immunedeconv::deconvolute_quantiseq(
+                              expression_matrix,
+                              tumor = tumor,
+                              arrays = arrays,
+                              scale_mrna = FALSE,
+                              method = "huber")
+    }
+    
+    tbl <-
+        res %>%
         as.data.frame() %>% 
         tibble::rownames_to_column("cell.type") %>% 
         dplyr::as_tibble() %>%

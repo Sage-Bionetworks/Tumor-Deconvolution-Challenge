@@ -3,6 +3,7 @@ suppressPackageStartupMessages(library(pacman))
 suppressPackageStartupMessages(p_load(ggplot2))
 suppressPackageStartupMessages(p_load(plyr))
 suppressPackageStartupMessages(p_load(dplyr))
+suppressPackageStartupMessages(p_load(tidyr))
 
 res <- read.table("all-leaderboard-results.csv", sep=",", header=TRUE, as.is=TRUE)
 
@@ -83,208 +84,175 @@ save.image(".Rdata")
 
 stop("stop")
 
-bootstrapped.cors <-
-    llply(sub.challenges,
-          .fun = function(sub.challenge) {
-              tmp <- subset(res, subchallenge == sub.challenge)
-              tmp <- subset(tmp, !is.na(measured))
-##              tmp$modelId <- paste0(tmp$repo_name, "-", tmp$submitterId)
-              ##              methods <- unique(tmp$repo_name)
-              methods <- unique(tmp$modelId)
-              names(methods) <- methods
-              indices <- 1:n.bootstraps
-              names(indices) <- indices
-              ret.i <-
-                  ldply(indices,
-                        .fun = function(i) {
-                            ret.all <-
-                                ldply(methods,
-                                      .fun = function(method) {
-                                          ret.method <-
-                                              ldply(tbls.by.cell[[sub.challenge]],
-                                                    .fun = function(df) {
-                                                        ##                                                        df <- subset(df, repo_name == method)
-                                                        df <- subset(df, modelId == method)
-                                                        rownames(df) <- df$id
-                                                        sample.ids <- bootstraps[[sub.challenge]][[i]]$id
-                                                        sample.ids <- sample.ids[sample.ids %in% df$id]
-                                                        df <- df[sample.ids,]
-                                                        df
-                                                    })
-                                          colnames(ret.method)[1] <- method
-                                          score <-
-                                              ddply(ret.method, .variables = c("dataset.name"),
-                                                    .fun = function(df.ds) {
-                                                        tmp <- ddply(df.ds, .variables = c("cell.type"),
-                                                                     .fun = function(df.ct) {
-                                                                         val <- cor(df.ct$prediction, df.ct$measured)
-                                                                         if(var(df.ct$prediction) == 0) { val <- 0 }
-                                                                         data.frame(cor = val)
-                                                                     })
-                                                        colnames(tmp)[1] <- "cell.type"
-                                                        tmp
-                                                    })
-                                          score
-                                      })
-                            colnames(ret.all)[1] <- "method"
-                            ret.all
+bootstrapped.cors <- read.table("bootstraps.tsv", sep = "\t", header = TRUE)
+
+bootstrapped.scores <-
+    ddply(bootstrapped.cors,
+          .variables = c("subchallenge", "round", "bootstrap", "modelId"),
+          .fun = function(df) {
+              res.ds <-
+                  ddply(df, .variables = c("dataset.name"),
+                        .fun = function(df.ds) {
+                            data.frame(ds.score = mean(df$cor))
                         })
-              colnames(ret.i)[1] <- "boot.i"
-              ret.i
+              data.frame(score = mean(res.ds$ds.score))
           })
 
+bootstrapped.scores.sv <- bootstrapped.scores
+
+model.name.tbl <- merge(unique(bootstrapped.scores[, c("modelId"), drop = FALSE]),
+                        unique(res[, c("modelId", "submitterId")]))
+model.name.tbl <- unique(model.name.tbl[, c("submitterId"), drop = FALSE])
+my.letters <- c(LETTERS, paste0("A", LETTERS))
+model.name.tbl$id <- my.letters[1:nrow(model.name.tbl)]
+model.name.tbl <- merge(model.name.tbl, unique(res[, c("submitterId", "modelId")]))
+colnames(model.name.tbl) <- c("submitterId", "id", "modelId")
+model.name.tbl <- merge(model.name.tbl, unique(res[, c("repo_name", "modelId")]))
+flag <- grepl(model.name.tbl$repo_name, pattern = "baseline_method")
+model.name.tbl[flag, "id"] <- gsub(model.name.tbl[flag, "repo_name"], pattern = "method", replacement = "")
+
+bootstrapped.scores <- merge(bootstrapped.scores, unique(model.name.tbl[, c("modelId", "id")]))
+
+facet.labels <- list("1" = "Round 1", "2" = "Round 2", "3" = "Round 3")
+my.facet.labeller <- function(value) {
+    paste0("Round ", value)
+}
+
+plot.bootstraps <- function(df) {
+    means <- ddply(df, .variables = c("round", "modelId"),
+                   .fun = function(tmp) data.frame(mean = mean(tmp$score, na.rm=TRUE)))
+    means <- merge(means, unique(model.name.tbl[, c("modelId", "id")]))
+    means <- means[order(means$round, means$mean),]
+    means <- means[!duplicated(means$id, fromLast = TRUE),]
+    df$id <- factor(df$id, levels = unique(means$id))
+    g1 <- ggplot(data = df)
+    g1 <- g1 + geom_boxplot(aes(x = id, y = score))
+    g1 <- g1 + facet_wrap(~ round, labeller = labeller(round = my.facet.labeller))
+    int.data <- ddply(df, .variables = c("round"), .fun = function(df.rd) data.frame(mean = mean(df.rd$score)))
+    g1 <- g1 + geom_hline(data = int.data, aes(yintercept = mean), linetype = "dashed")
+    g1 <- g1 + coord_flip()
+    g1 <- g1 + ylab("Pearson Correlation\nAvg over Dataset & Cell Type")
+    g1 <- g1 + theme(text = element_text(size=20), axis.text.y = element_text(size = 10))
+    g1 <- g1 + xlab("Method")
+    g1
+}
+
+df <- subset(bootstrapped.scores, subchallenge == "coarse")
+g1 <- plot.bootstraps(df)
+g1 <- g1 + ggtitle("Coarse-Grained Sub-Challenge")
+pdf("coarse-bootstrap.pdf", width = 14)
+print(g1)
+d <- dev.off()
+
+df <- subset(bootstrapped.scores, subchallenge == "fine")
+g2 <- plot.bootstraps(df)
+g2 <- g2 + ggtitle("Fine-Grained Sub-Challenge")
+pdf("fine-bootstrap.pdf", width = 14)
+print(g2)
+d <- dev.off()
+
+mean.bootstrapped.scores <-
+    ddply(bootstrapped.scores,
+          .variables = c("subchallenge", "round", "modelId", "id"),
+          .fun = function(df) {
+              data.frame(mean.score = mean(df$score))
+          })
+
+bootstrapped.cors <- merge(bootstrapped.cors, unique(model.name.tbl[, c("modelId", "id")]))
 means.by.cell.type.method <-
-    llply(bootstrapped.cors,
+    ddply(bootstrapped.cors,
+          .variables = c("subchallenge", "round", "modelId", "cell.type", "id"),
           .fun = function(df) {
               ## first, average over bootstrap
-              ret <- ddply(df, .variables = c("method", "cell.type", "dataset.name"),
+              ret <- ddply(df, .variables = c("dataset.name"),
                            .fun = function(df) {
                                data.frame(cor = mean(df$cor, na.rm=TRUE))
                            })
               ## now, average over dataset
-              ret2 <- ddply(ret, .variables = c("method", "cell.type"),
-                            .fun = function(df) {
-                                data.frame(cor = mean(df$cor, na.rm=TRUE))
-                            })
-              })
-
-bootstrapped.scores <-
-    llply(sub.challenges,
-          .fun = function(sub.challenge) {
-              tmp <- subset(res, subchallenge == sub.challenge)
-              tmp <- subset(tmp, !is.na(measured))
-##              tmp$modelId <- paste0(tmp$repo_name, "-", tmp$submitterId)              
-              ##              methods <- unique(tmp$repo_name)
-              methods <- unique(tmp$modelId)
-              names(methods) <- methods
-              indices <- 1:n.bootstraps
-              names(indices) <- indices
-              ret.i <-
-                  ldply(indices,
-                        .fun = function(i) {
-                            ret.all <-
-                                ldply(methods,
-                                      .fun = function(method) {
-                                          ret.method <-
-                                              ldply(tbls.by.cell[[sub.challenge]],
-                                                    .fun = function(df) {
-                                                        ##                                                        df <- subset(df, repo_name == method)
-                                                        df <- subset(df, modelId == method)
-                                                        rownames(df) <- df$id
-                                                        sample.ids <- bootstraps[[sub.challenge]][[i]]$id
-                                                        sample.ids <- sample.ids[sample.ids %in% df$id]
-                                                        df <- df[sample.ids,]
-                                                        df
-                                                    })
-                                          colnames(ret.method)[1] <- method
-                                          score <-
-                                              ddply(ret.method, .variables = c("dataset.name"),
-                                                    .fun = function(df.ds) {
-                                                        tmp <- ddply(df.ds, .variables = c("cell.type"),
-                                                                     .fun = function(df.ct) {
-                                                                         val <- cor(df.ct$prediction, df.ct$measured)
-                                                                         if(var(df.ct$prediction) == 0) { val <- 0 }
-                                                                         data.frame(cor = val)
-                                                                     })
-                                                        if(FALSE) {
-                                                        cell.types <- coarse.cell.types
-                                                        if(sub.challenge == "fine") { cell.types <- fine.cell.types }
-                                                        tmp <- ldply(cell.types, 
-                                                                     .fun = function(ct) {
-                                                                         if(!(ct %in% df.ds$cell.type)) {
-                                                                             return(data.frame(cor = NA))
-                                                                         }
-                                                                         df.ct <- subset(df.ds, cell.type == ct)
-                                                                         val <- cor(df.ct$prediction, df.ct$measured)
-                                                                         if(var(df.ct$prediction) == 0) { val <- 0 }
-                                                                         data.frame(cor = val)
-                                                                     })
-                                                        }
-                                                        data.frame(score = mean(tmp$cor))
-                                                        
-                                                    })
-                                          ret.method <- data.frame(score = mean(score$score))
-                                          ret.method
-                                      })
-                            colnames(ret.all)[1] <- "method"
-                            ret.all
-                        })
+              data.frame(cor = mean(ret$cor))
           })
 
-df <- bootstrapped.scores[["coarse"]]
-means <- ddply(df, .variables = c("method"), .fun = function(tmp) data.frame(mean = mean(tmp$score, na.rm=TRUE)))
-means <- means[order(means$mean),]
-bootstrap.method.levels <- unique(means$method)
-df$method <- factor(df$method, levels = bootstrap.method.levels)
-g1 <- ggplot(data = df)
-g1 <- g1 + geom_boxplot(aes(x = method, y = score))
-g1 <- g1 + coord_flip()
-g1 <- g1 + ggtitle("Coarse-Grained Sub-Challenge (Round 2)")
-g1 <- g1 + ylab("Pearson Correlation\nAvg over Dataset & Cell Type")
-g1 <- g1 + theme(text = element_text(size=20))
-g1 <- g1 + xlab("")
+plot.cell.type.correlation.heatmap <- function(df) {
+    means <- ddply(df, .variables = c("cell.type"),
+                   .fun = function(tmp) mean(tmp$cor, na.rm=TRUE))
+    means <- means[order(means$V1),]
+    df$cell.type <- factor(df$cell.type, levels = means$cell.type)
+    
+    means <- ddply(df, .variables = c("id"),
+                   .fun = function(tmp) mean(tmp$cor, na.rm=TRUE))
+    means <- means[order(means$V1),]
+    df$id <- factor(df$id, levels = means$id)
+    g <- ggplot(data = df, aes(y = id, x = cell.type, fill = cor))
+    g <- g + geom_tile()
+    g <- g + theme(axis.text.x = element_text(angle = 90), axis.text.y = element_text(size = 5), title = element_text(size = 8))
+    g <- g + ylab("Method") + xlab("")
+    ## g <- g + scale_fill_continuous("Pearson\ncorrelation", limits = c(-1,1))
+    ##    g <- g + scale_fill_gradient2("Pearson\ncorrelation", limits = c(-1,1), low = "red", high = "blue", mid = "white", na.value = "black")
+    g <- g + scale_fill_gradient2("Correlation", limits = c(-1,1), low = "red", high = "blue", mid = "white", na.value = "black")
+##    g <- g + theme(text = element_text(size=20))
+    g
+}
 
-df <- bootstrapped.scores[["fine"]]
-means <- ddply(df, .variables = c("method"), .fun = function(tmp) data.frame(mean = mean(tmp$score, na.rm=TRUE)))
-means <- means[order(means$mean),]
-df$method <- factor(df$method, levels = unique(means$method))
-g2 <- ggplot(data = df)
-g2 <- g2 + geom_boxplot(aes(x = method, y = score))
-g2 <- g2 + coord_flip()
-g2 <- g2 + ggtitle("Fine-Grained Sub-Challenge (Round 2)")
-g2 <- g2 + ylab("Pearson Correlation\nAvg over Dataset & Cell Type")
-g2 <- g2 + theme(text = element_text(size=20))
-g2 <- g2 + xlab("")
+glist <-
+    dlply(subset(means.by.cell.type.method, subchallenge == "coarse"),
+          .variables = c("round"),
+          .fun = function(df) {
+              g <- plot.cell.type.correlation.heatmap(df)
+              g <- g + ggtitle(paste0("Coarse-Grained Sub-Challenge\nRound ", df$round[1]))
+              g
+          })
 
-library(gridExtra)
-library(cowplot)
-## print(grid.arrange(g1,g2,nrow=1))
-g <- plot_grid(g1, g2)
-ggsave("round2-results.pdf", width = 14)
+pdf("coarse-cell-type.pdf")
+do.call("grid.arrange", c(glist, nrow = 2))
+d <- dev.off()
 
+png("coarse-cell-type.png")
+do.call("grid.arrange", c(glist, nrow = 2))
+d <- dev.off()
+
+glist <-
+    dlply(subset(means.by.cell.type.method, subchallenge == "fine"),
+          .variables = c("round"),
+          .fun = function(df) {
+              g <- plot.cell.type.correlation.heatmap(df)
+              g <- g + ggtitle(paste0("Fine-Grained Sub-Challenge\nRound ", df$round[1]))
+              g
+          })
+
+pdf("fine-cell-type.pdf")
+do.call("grid.arrange", c(glist, nrow = 2))
+d <- dev.off()
+
+png("fine-cell-type.png")
+do.call("grid.arrange", c(glist, nrow = 2))
+d <- dev.off()
+
+## Plot the rank of the top n (e.g., n = 5) across the 3 rounds
+plot.ranks <- function(df, n.top = 5) {
+    df$round <- as.character(df$round)
+    tmp <-
+        ddply(df,
+              .variables = c("subchallenge", "round"),
+              .fun = function(sub.df) {
+                  sub.df$rank <- rank(- sub.df$mean.score)
+                  sub.df
+              })
+    top.performers <- as.character(subset(tmp, rank <= n.top)$id)
+    g <- ggplot(subset(tmp, id %in% top.performers), aes(x = round, y = rank, colour = id, group = id))
+    g <- g + geom_line()
+    g <- g + xlab("Round") + ylab("Rank") + scale_color_discrete(name = "Method")
+    text.df <- subset(tmp, (id %in% top.performers) & (round == 3))
+    g <- g + geom_text(data = text.df, aes(x = round, y = rank, label = id), hjust = -0.1)
+    g <- g + theme(legend.position = "none")
+    g
+}
+
+pdf("coarse-rank-rounds.pdf")
+g <- plot.ranks(subset(mean.bootstrapped.scores, subchallenge == "coarse"), n.top = 5)
 print(g)
-ggsave("round2-results.png", width = 14)
-
-pdf("round2-coarse-results.pdf")
-print(g1)
 d <- dev.off()
 
-png("round2-coarse-results.png")
-print(g1)
-d <- dev.off()
-
-tmp <- means.by.cell.type.method[["coarse"]]
-library(dplyr)
-library(tidyr)
-
-tmp = tmp %>%
-     group_by(method) %>%
-     complete(cell.type = unique(tmp$cell.type))
-
-
-means <- ddply(tmp, .variables = c("cell.type"),
-               .fun = function(df) mean(df$cor, na.rm=TRUE))
-means <- means[order(means$V1),]
-tmp$cell.type <- factor(tmp$cell.type, levels = means$cell.type)
-
-means <- ddply(tmp, .variables = c("method"),
-               .fun = function(df) mean(df$cor, na.rm=TRUE))
-means <- means[order(means$V1),]
-## tmp$method <- factor(tmp$method, levels = means$method)
-
-tmp$method <- factor(tmp$method, levels = bootstrap.method.levels)
-
-
-g.coarse <- ggplot(data = tmp, 
-                   aes(y = method, x = cell.type, fill = cor))
-g.coarse <- g.coarse + geom_tile()
-g.coarse <- g.coarse + theme(axis.text.x = element_text(angle = 90))
-## g.coarse <- g.coarse + scale_fill_continuous("Pearson\ncorrelation", limits = c(-1,1))
-g.coarse <- g.coarse + scale_fill_gradient2("Pearson\ncorrelation", limits = c(-1,1), low = "red", high = "blue", mid = "white", na.value = "black")
-g.coarse <- g.coarse + theme(text = element_text(size=20))
-##g.coarse <- g.coarse + geom_point(data = tmp, aes(size="NA"), shape =NA, colour = "black")+
-##    guides(size=guide_legend("", override.aes=list(shape=15, size = 10)))
-
-png("round2-coarse-cell-type-results.png")
-print(g.coarse)
+pdf("fine-rank-rounds.pdf")
+g <- plot.ranks(subset(mean.bootstrapped.scores, subchallenge == "fine"), n.top = 5)
+print(g)
 d <- dev.off()
