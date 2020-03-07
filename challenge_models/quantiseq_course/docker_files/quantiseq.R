@@ -24,7 +24,6 @@ expression_files  <- input_df$hugo.expr.file
 ## Form the paths of the expression files
 expression_paths <- paste0("input/", expression_files)
 
-
 # quantiseq to challenge cell type names
 translation_df <- tibble::tribble(
     ~cell.type,          ~quantiseq.cell.type,
@@ -130,12 +129,12 @@ do_quantiseq <- function(
     tbl <-
         res %>%
         as.data.frame() %>% 
-        tibble::rownames_to_column("cell.type") %>% 
+        tibble::rownames_to_column("quantiseq.cell.type") %>% 
         dplyr::as_tibble() %>%
         tidyr::gather(
             key = sample.id, 
             value = prediction,
-            -cell.type
+            -quantiseq.cell.type
         ) %>% 
         dplyr::mutate(dataset.name = dataset_name)
 }

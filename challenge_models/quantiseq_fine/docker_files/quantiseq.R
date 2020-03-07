@@ -128,12 +128,12 @@ do_quantiseq <- function(
     tbl <- 
         res %>%
         as.data.frame() %>% 
-        tibble::rownames_to_column("cell.type") %>% 
+        tibble::rownames_to_column("quantiseq.cell.type") %>% 
         dplyr::as_tibble() %>%
         tidyr::gather(
             key = sample.id, 
             value = prediction,
-            -cell.type
+            -quantiseq.cell.type
         ) %>% 
         dplyr::mutate(dataset.name = dataset_name)
 }

@@ -4,8 +4,9 @@ suppressPackageStartupMessages(p_load(ggplot2))
 suppressPackageStartupMessages(p_load(plyr))
 suppressPackageStartupMessages(p_load(dplyr))
 suppressPackageStartupMessages(p_load(tidyr))
+suppressPackageStartupMessages(p_load(gridExtra))
 
-res <- read.table("all-leaderboard-results.csv", sep=",", header=TRUE, as.is=TRUE)
+res <- read.table("all-leaderboard-results.csv", sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
 
 ## Limit to the final (of two) submissions for each group
 ## and the baseline methods (which were all submitted by Andrew L
@@ -79,12 +80,8 @@ bootstrapped.cors <-
           })
 
 write.table(file = "bootstraps.tsv", bootstrapped.cors, sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
-cat("Exiting successfully\n")
-save.image(".Rdata")
 
-stop("stop")
-
-bootstrapped.cors <- read.table("bootstraps.tsv", sep = "\t", header = TRUE)
+## bootstrapped.cors <- read.table("bootstraps.tsv", sep = "\t", header = TRUE)
 
 bootstrapped.scores <-
     ddply(bootstrapped.cors,
@@ -109,7 +106,29 @@ model.name.tbl <- merge(model.name.tbl, unique(res[, c("submitterId", "modelId")
 colnames(model.name.tbl) <- c("submitterId", "id", "modelId")
 model.name.tbl <- merge(model.name.tbl, unique(res[, c("repo_name", "modelId")]))
 flag <- grepl(model.name.tbl$repo_name, pattern = "baseline_method")
-model.name.tbl[flag, "id"] <- gsub(model.name.tbl[flag, "repo_name"], pattern = "method", replacement = "")
+## model.name.tbl[flag, "id"] <- gsub(model.name.tbl[flag, "repo_name"], pattern = "method", replacement = "")
+
+## Translate the baseline models
+translate.baseline.models <- TRUE
+if(!translate.baseline.models) {
+    model.name.tbl[flag, "id"] <- gsub(model.name.tbl[flag, "repo_name"], pattern = "method", replacement = "")
+} else {
+    model.name.tbl[flag, "id"] <- model.name.tbl[flag, "repo_name"]
+    trans <-
+        list("baseline_method1" = "CIBERSORT",
+             "baseline_method2" = "MCP-counter",
+             "baseline_method3" = "quanTIseq",
+             "baseline_method4" = "xCell",
+             "baseline_method5" = "EPIC (Sage)",
+             "baseline_method6" = "TIMER",
+             "CelEst" = "EPIC")
+    for(nm in names(trans)) {
+        flag <- grepl(model.name.tbl$id, pattern = nm)
+        model.name.tbl[flag, "id"] <- trans[[nm]]
+    }
+}
+
+
 
 bootstrapped.scores <- merge(bootstrapped.scores, unique(model.name.tbl[, c("modelId", "id")]))
 
@@ -128,26 +147,30 @@ plot.bootstraps <- function(df) {
     g1 <- ggplot(data = df)
     g1 <- g1 + geom_boxplot(aes(x = id, y = score))
     g1 <- g1 + facet_wrap(~ round, labeller = labeller(round = my.facet.labeller))
-    int.data <- ddply(df, .variables = c("round"), .fun = function(df.rd) data.frame(mean = mean(df.rd$score)))
+    int.data <- ddply(means, .variables = c("round"), .fun = function(df.rd) data.frame(mean = mean(df.rd$mean)))
     g1 <- g1 + geom_hline(data = int.data, aes(yintercept = mean), linetype = "dashed")
     g1 <- g1 + coord_flip()
     g1 <- g1 + ylab("Pearson Correlation\nAvg over Dataset & Cell Type")
-    g1 <- g1 + theme(text = element_text(size=20), axis.text.y = element_text(size = 10))
+    g1 <- g1 + theme(text = element_text(size=20), axis.text.y = element_text(size = 10),
+                     axis.text.x = element_text(angle = 45, hjust = 1),
+                     panel.spacing = unit(1, "lines"))
     g1 <- g1 + xlab("Method")
     g1
 }
 
 df <- subset(bootstrapped.scores, subchallenge == "coarse")
 g1 <- plot.bootstraps(df)
-g1 <- g1 + ggtitle("Coarse-Grained Sub-Challenge")
-pdf("coarse-bootstrap.pdf", width = 14)
+g1 <- g1 + ggtitle("Coarse-Grained Sub-Challenge (Leaderboard Rounds)")
+## pdf("leaderboard-coarse-bootstrap.pdf", width = 14)
+png("leaderboard-coarse-bootstrap.png", width = 480 * 2)
 print(g1)
 d <- dev.off()
 
 df <- subset(bootstrapped.scores, subchallenge == "fine")
 g2 <- plot.bootstraps(df)
-g2 <- g2 + ggtitle("Fine-Grained Sub-Challenge")
-pdf("fine-bootstrap.pdf", width = 14)
+g2 <- g2 + ggtitle("Fine-Grained Sub-Challenge (Leaderboard Rounds)")
+## pdf("leaderboard-fine-bootstrap.pdf", width = 14)
+png("leaderboard-fine-bootstrap.png", width = 480 * 2)
 print(g2)
 d <- dev.off()
 
@@ -184,12 +207,14 @@ plot.cell.type.correlation.heatmap <- function(df) {
     df$id <- factor(df$id, levels = means$id)
     g <- ggplot(data = df, aes(y = id, x = cell.type, fill = cor))
     g <- g + geom_tile()
-    g <- g + theme(axis.text.x = element_text(angle = 90), axis.text.y = element_text(size = 5), title = element_text(size = 8))
+    g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
+                   axis.text.y = element_text(size = 5), title = element_text(size = 8))
     g <- g + ylab("Method") + xlab("")
     ## g <- g + scale_fill_continuous("Pearson\ncorrelation", limits = c(-1,1))
-    ##    g <- g + scale_fill_gradient2("Pearson\ncorrelation", limits = c(-1,1), low = "red", high = "blue", mid = "white", na.value = "black")
+    ## g <- g + scale_fill_gradient2("Pearson\ncorrelation", limits = c(-1,1),
+    ##                               low = "red", high = "blue", mid = "white", na.value = "black")
     g <- g + scale_fill_gradient2("Correlation", limits = c(-1,1), low = "red", high = "blue", mid = "white", na.value = "black")
-##    g <- g + theme(text = element_text(size=20))
+    ## g <- g + theme(text = element_text(size=20))
     g
 }
 
@@ -198,16 +223,14 @@ glist <-
           .variables = c("round"),
           .fun = function(df) {
               g <- plot.cell.type.correlation.heatmap(df)
-              g <- g + ggtitle(paste0("Coarse-Grained Sub-Challenge\nRound ", df$round[1]))
+              ## g <- g + ggtitle(paste0("Coarse-Grained Sub-Challenge\nRound ", df$round[1]))
+              g <- g + ggtitle(paste0("Round ", df$round[1]))
               g
           })
 
-pdf("coarse-cell-type.pdf")
-do.call("grid.arrange", c(glist, nrow = 2))
-d <- dev.off()
 
-png("coarse-cell-type.png")
-do.call("grid.arrange", c(glist, nrow = 2))
+png("leaderboard-coarse-cell-type.png")
+do.call("grid.arrange", c(glist, nrow = 2, top = "Coarse-Grained Sub-Challenge (Leaderboard Rounds)"))
 d <- dev.off()
 
 glist <-
@@ -215,16 +238,13 @@ glist <-
           .variables = c("round"),
           .fun = function(df) {
               g <- plot.cell.type.correlation.heatmap(df)
-              g <- g + ggtitle(paste0("Fine-Grained Sub-Challenge\nRound ", df$round[1]))
+              ## g <- g + ggtitle(paste0("Fine-Grained Sub-Challenge\nRound ", df$round[1]))
+              g <- g + ggtitle(paste0("Round ", df$round[1]))
               g
           })
 
-pdf("fine-cell-type.pdf")
-do.call("grid.arrange", c(glist, nrow = 2))
-d <- dev.off()
-
-png("fine-cell-type.png")
-do.call("grid.arrange", c(glist, nrow = 2))
+png("leaderboard-fine-cell-type.png")
+do.call("grid.arrange", c(glist, nrow = 2, top = "Fine-Grained Sub-Challenge (Leaderboard Rounds)"))
 d <- dev.off()
 
 ## Plot the rank of the top n (e.g., n = 5) across the 3 rounds
@@ -247,12 +267,14 @@ plot.ranks <- function(df, n.top = 5) {
     g
 }
 
-pdf("coarse-rank-rounds.pdf")
+png("leaderboard-coarse-rank-rounds.png")
 g <- plot.ranks(subset(mean.bootstrapped.scores, subchallenge == "coarse"), n.top = 5)
+g <- g + ggtitle("Coarse-Grained Sub-Challenge (Leaderboard Rounds)")
 print(g)
 d <- dev.off()
 
-pdf("fine-rank-rounds.pdf")
+png("leaderboard-fine-rank-rounds.png")
 g <- plot.ranks(subset(mean.bootstrapped.scores, subchallenge == "fine"), n.top = 5)
+g <- g + ggtitle("Fine-Grained Sub-Challenge (Leaderboard Rounds)")
 print(g)
 d <- dev.off()
