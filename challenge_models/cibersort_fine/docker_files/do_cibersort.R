@@ -154,6 +154,15 @@ result_dfs <- purrr::pmap(
 ## Combine all results into one dataframe
 combined_result_df <- dplyr::bind_rows(result_dfs)
 
+tmp <- as.data.frame(translation_df)
+col <- "cibersort.cell.type"
+flag <- !(tmp[, col] %in% as.data.frame(combined_result_df)[,col])
+if(any(flag)) {
+    missed.cell.types <- unique(tmp[flag,col])
+    stop("Method did not returned a cell type expected by the translation: ",
+         paste0(missed.cell.types, collapse = ", "), "\n")
+}
+
 ## Translate cell type names as output from MCP-Counter to those
 ## required for the coarse-grained sub-Challenge.
 combined_result_df <- combined_result_df %>% 
