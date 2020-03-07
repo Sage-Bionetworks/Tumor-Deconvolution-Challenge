@@ -47,17 +47,7 @@ cancer_types <- input_df$cancer.type
 # EPIC to challenge cell type names
 translation_df <- tibble::tribble(
     ~cell.type, ~epic.cell.type,
-    "memory.B.cells", "Bcells",
-    "naive.B.cells", "Bcells",
-    "memory.CD4.T.cells", "CD4_Tcells",
-    "naive.CD4.T.cells", "CD4_Tcells",
-    "regulatory.T.cells", "CD4_Tcells",
-    "memory.CD8.T.cells", "CD8_Tcells",
-    "naive.CD8.T.cells", "CD8_Tcells",
     "NK.cells", "NKcells",
-    "neutrophils", "NKcells",
-    "monocytes", "Macrophages",
-    "myeloid.dendritic.cells", "Macrophages",
     "macrophages", "Macrophages",
     "fibroblasts", "CAFs",
     "endothelial.cells", "Endothelial",
