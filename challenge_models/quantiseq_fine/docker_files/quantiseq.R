@@ -29,7 +29,8 @@ expression_paths <- paste0("input/", expression_files)
 translation_df <- tibble::tribble(
     ~cell.type,                ~quantiseq.cell.type,
     "regulatory.T.cells",      "Tregs",
-    "NK.cells",                "NK.cells", 
+    "NK.cells",                "NK.cells",
+    "neutrophils",             "Neutrophils",
     "monocytes",               "Monocytes",
     "macrophages",             "Macrophages.M1",
     "macrophages",             "Macrophages.M2",

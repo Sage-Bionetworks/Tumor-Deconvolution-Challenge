@@ -55,7 +55,7 @@ allowed_normalization_methods <- c(
 translation_df <- tibble::tribble(
     ~cell.type, ~cibersort.cell.type,
     "B.cells", "B cells naive",
-    # "B.cells", "B cells memory",
+    "B.cells", "B cells memory",
     "CD4.T.cells", "T cells CD4 naive", 
     "CD4.T.cells", "T cells CD4 memory resting", 
     "CD4.T.cells", "T cells CD4 memory activated",
@@ -72,8 +72,6 @@ translation_df <- tibble::tribble(
     "monocytic.lineage", "Macrophages M2",
     "monocytic.lineage", "Dendritic cells resting",
     "monocytic.lineage", "Dendritic cells activated"
-    # "fibroblasts", "non.immune",
-    # "endothelial.cells", "non.immune"
 )
 
 

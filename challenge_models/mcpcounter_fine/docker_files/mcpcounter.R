@@ -57,18 +57,9 @@ probesets <- as.data.frame(readr::read_csv("probesets.csv"))
 ## mapped MCP-Counter's T cell output as our CD4 T cell prediction.
 translation_df <- tibble::tribble(
     ~cell.type, ~mcpcounter.cell.type,
-    # "memory.B.cells",  "B lineage",
-    # "naive.B.cells", "B lineage",
-    # "memory.CD4.T.cells", "T cells",
-    # "naive.CD4.T.cells", "T cells",
-    # "regulatory.T.cells", "T cells",
-    # "memory.CD8.T.cells", "CD8 T cells",
-    # "naive.CD8.T.cells", "CD8 T cells",
     "NK.cells", "NK cells",
     "neutrophils", "Neutrophils",
-    # "monocytes", "Monocytic lineage",
     "myeloid.dendritic.cells", "Myeloid dendritic cells",
-    # "macrophages", "Monocytic lineage",
     "fibroblasts", "Fibroblasts",
     "endothelial.cells", "Endothelial cells"
 )

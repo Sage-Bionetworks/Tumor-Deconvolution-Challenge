@@ -56,8 +56,6 @@ translation_df <- tibble::tribble(
     "memory.CD4.T.cells", "T cells CD4 memory resting",
     "naive.CD4.T.cells", "T cells CD4 naive",
     "regulatory.T.cells", "T cells regulatory (Tregs)",
-    # "memory.CD8.T.cells", "T cells CD8",
-    # "naive.CD8.T.cells", "T cells CD8",
     "NK.cells", "NK cells resting",
     "NK.cells", "NK cells activated",
     "neutrophils", "Neutrophils",
@@ -67,8 +65,6 @@ translation_df <- tibble::tribble(
     "macrophages", "Macrophages M0",
     "macrophages", "Macrophages M1",
     "macrophages", "Macrophages M2"
-    # "fibroblasts", "non.immune",
-    # "endothelial.cells", "non.immune"
 )
 
 ## Execute Cibersort against a dataset.

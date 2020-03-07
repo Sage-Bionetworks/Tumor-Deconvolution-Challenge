@@ -69,7 +69,6 @@ probesets <- as.data.frame(readr::read_csv("probesets.csv"))
 translation_df <- tibble::tribble(
     ~cell.type, ~mcpcounter.cell.type,
     "B.cells", "B lineage",
-    # "CD4.T.cells", "T cells",
     "CD8.T.cells", "CD8 T cells",
     "NK.cells", "NK cells",
     "neutrophils", "Neutrophils",
