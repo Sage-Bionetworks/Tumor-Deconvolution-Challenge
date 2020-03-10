@@ -62,7 +62,7 @@ translation_df <- tibble::tribble(
     "CD4.T.cells", "T cells regulatory (Tregs)", 
     "CD4.T.cells", "T cells follicular helper",
     "CD8.T.cells", "T cells CD8",
-    "CD8.T.cells", "T cells delta gamma", 
+    "CD8.T.cells", "T cells gamma delta", 
     "NK.cells", "NK cells resting", 
     "NK.cells", "NK cells activated",
     "neutrophils", "Neutrophils",
@@ -156,7 +156,6 @@ result_dfs <- purrr::pmap(
 
 ## Combine all results into one dataframe
 combined_result_df <- dplyr::bind_rows(result_dfs)
-
 tmp <- as.data.frame(translation_df)
 col <- "cibersort.cell.type"
 flag <- !(tmp[, col] %in% as.data.frame(combined_result_df)[,col])
