@@ -253,6 +253,10 @@ generate.random.admixtures.w.cancer <- function(immune.populations, population.m
                             long <- merge(long, spike.in.df)
                             long$challenge.population <- as.character(long$challenge.population)
                             long$spike.in.pop <- as.character(long$spike.in.pop)
+
+                            flag <- long$spike.in.pop == long$challenge.population
+                            long$spike.in.prop <- NA
+                            long[flag, "spike.in.prop"] <- long[flag, "prop"]
                             
                             pop.df$challenge.population <- as.character(pop.df$challenge.population)
                             col <- "sample"
@@ -598,8 +602,6 @@ cat("Done\n")
 save.image(".Rdata")
 cat("Done saving\n")
 
-q(status = 0)
-
 ## Create the gold standards
 ## gold standard files should be csvs with columns: dataset.name,sample.id,cell.type,measured
 
@@ -670,6 +672,7 @@ admixtures <-
               mxs
           })
 
+
 print(warnings())
 
 ## Write out the admixtures and store to synapse
@@ -691,6 +694,8 @@ for(nm in nms) {
 }
 
 cat("Writing input.csv")
+
+## working
 
 ## Create the input.csv file
 
@@ -734,3 +739,4 @@ synStore(f)
 
 
 cat("Exiting\n")
+q(status = 0)

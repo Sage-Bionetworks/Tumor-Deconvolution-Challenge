@@ -5,8 +5,14 @@ suppressPackageStartupMessages(p_load(plyr))
 suppressPackageStartupMessages(p_load(dplyr))
 suppressPackageStartupMessages(p_load(tidyr))
 suppressPackageStartupMessages(p_load(gridExtra))
+suppressPackageStartupMessages(p_load(synapser))
 
-res <- read.table("all-leaderboard-results.csv", sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
+synLogin()
+
+file <- "all-leaderboard-results.tsv"
+synId <- "syn21714436"
+file <- synGet(synId, downloadFile = TRUE)$path
+res <- read.table(file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
 
 ## Limit to the final (of two) submissions for each group
 ## and the baseline methods (which were all submitted by Andrew L
