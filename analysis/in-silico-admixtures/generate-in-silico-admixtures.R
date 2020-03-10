@@ -141,11 +141,19 @@ create.rand.admixture.wo.cancer <- function(populations, spike.ins) {
                      tmp <- admixs
                      colnames(tmp) <- populations
                      tmp.name <- colnames(tmp)[1]
-                     colnames(tmp)[1] <- colnames(tmp)[i]
+                     spike.in.pop <- colnames(tmp)[i]
+                     colnames(tmp)[1] <- spike.in.pop
                      colnames(tmp)[i] <- tmp.name
                      tmp[, populations]
                  })
-    return(ret)
+    spike.in.df <-
+        ldply(1:num.pops,
+                 .fun = function(i) {
+                     tmp <- admixs
+                     colnames(tmp) <- populations
+                     data.frame(spike.in.pop = colnames(tmp)[i], spike.in.prop = tmp[,1])
+                 })
+    return(list("ret" = ret, "spike.in.df" = spike.in.df))
 }
 
 create.rand.admixture.w.cancer <- function(non.cancer.populations, cancer, spike.ins) {
@@ -162,7 +170,10 @@ create.rand.admixture.w.cancer <- function(non.cancer.populations, cancer, spike
 
     colnames(admixs) <- c(cancer, non.cancer.populations)
 
-    admixs
+    spike.in.df <-
+        data.frame(spike.in.pop = cancer, spike.in.prop = admixs[,1])
+    
+    return(list("admixs" = admixs, "spike.in.df" = spike.in.df))
 }
 
 generate.random.admixtures.wo.cancer <- function(immune.populations, population.maps, spike.ins) {
@@ -170,10 +181,20 @@ generate.random.admixtures.wo.cancer <- function(immune.populations, population.
     rand.admixtures <-
         ldply(population.maps,
               .fun = function(pop.df) {
-                  ret <- create.rand.admixture.wo.cancer(immune.populations, spike.ins)
+                  rt <- create.rand.admixture.wo.cancer(immune.populations, spike.ins)
+                  ret <- rt[["ret"]]
+                  spike.in.df <- rt[["spike.in.df"]]
+                  spike.in.df$admixture <- 1:nrow(spike.in.df)
                   long <- melt(as.matrix(ret))
                   colnames(long) <- c("admixture", "challenge.population", "prop")
+                  long <- merge(long, spike.in.df)
                   long$challenge.population <- as.character(long$challenge.population)
+
+                  long$spike.in.pop <- as.character(long$spike.in.pop)
+                  flag <- long$spike.in.pop == long$challenge.population
+                  long$spike.in.prop <- NA
+                  long[flag, "spike.in.prop"] <- long[flag, "prop"]
+
                   pop.df$challenge.population <- as.character(pop.df$challenge.population)
                   col <- "sample"
                   long <- merge(long, pop.df[, c("challenge.population", col)], all.x = TRUE)
@@ -189,9 +210,12 @@ generate.random.admixtures.wo.cancer <- function(immune.populations, population.
                                 df$prop <- df$prop * props
                                 df
                             })
-                  long <- long[, c("admixture", col, "prop")]
+                  ## long <- long[, c("admixture", col, "prop")]
+                  long <- long[, c("admixture", col, "prop", "spike.in.pop", "spike.in.prop")]
                   long[,col] <- as.character(long[,col])
                   long[,"prop"] <- as.numeric(long[,"prop"])
+                  long[,"spike.in.prop"] <- as.numeric(long[,"spike.in.prop"])                  
+                  long[,"spike.in.pop"] <- as.character(long[,"spike.in.pop"])                  
                   long
               })
     
@@ -203,7 +227,11 @@ generate.random.admixtures.wo.cancer <- function(immune.populations, population.
         ddply(rand.admixtures, .variables = c("admixture"),
               .fun = function(df) sum(df$prop))
     eps <- 10^-5
-    if(!(all(abs(sums$V1 - 1) < eps))) { stop("Some admixtures don't sum to one\n") }
+    flag <- abs(sums$V1 - 1) < eps 
+    if(!(all(flag))) {
+        print(head(sums[!flag,]))
+        stop("Some admixtures don't sum to one\n")
+    }
 
     rand.admixtures
 }
@@ -216,10 +244,15 @@ generate.random.admixtures.w.cancer <- function(immune.populations, population.m
               .fun = function(cancer) {
                   tmp <- ldply(population.maps,
                         .fun = function(pop.df) {
-                            ret <- create.rand.admixture.w.cancer(immune.populations, cancer, spike.ins)
+                            rt <- create.rand.admixture.w.cancer(immune.populations, cancer, spike.ins)
+                            ret <- rt[["admixs"]]
+                            spike.in.df <- rt[["spike.in.df"]]
+                            spike.in.df$admixture <- 1:nrow(spike.in.df)
                             long <- melt(as.matrix(ret))
                             colnames(long) <- c("admixture", "challenge.population", "prop")
+                            long <- merge(long, spike.in.df)
                             long$challenge.population <- as.character(long$challenge.population)
+                            long$spike.in.pop <- as.character(long$spike.in.pop)
                             
                             pop.df$challenge.population <- as.character(pop.df$challenge.population)
                             col <- "sample"
@@ -236,9 +269,12 @@ generate.random.admixtures.w.cancer <- function(immune.populations, population.m
                                           df$prop <- df$prop * props
                                           df
                                       })
-                            long <- long[, c("admixture", col, "prop")]
+                            ## long <- long[, c("admixture", col, "prop")]
+                            long <- long[, c("admixture", col, "prop", "spike.in.pop", "spike.in.prop")]
                             long[,col] <- as.character(long[,col])
                             long[,"prop"] <- as.numeric(long[,"prop"])
+                            long[,"spike.in.prop"] <- as.numeric(long[,"spike.in.prop"])                  
+                            long[,"spike.in.pop"] <- as.character(long[,"spike.in.pop"])                  
                             long
                         })
                   colnames(tmp)[1] <- "pop.id"
@@ -254,7 +290,11 @@ generate.random.admixtures.w.cancer <- function(immune.populations, population.m
         ddply(rand.admixtures, .variables = c("admixture"),
               .fun = function(df) sum(df$prop))
     eps <- 10^-5
-    if(!(all(abs(sums$V1 - 1) < eps))) { stop("Some admixtures don't sum to one\n") }
+    flag <- abs(sums$V1 - 1) < eps 
+    if(!(all(flag))) {
+        print(head(sums[!flag,]))
+        stop("Some admixtures don't sum to one\n")
+    }
 
     rand.admixtures
 }
@@ -270,11 +310,11 @@ names(cancer.spike.ins) <- cancer.spike.ins
 
 set.seed(100)
 
-fine.grained.rand.admixtures.wo.cancer <-
-    generate.random.admixtures.wo.cancer(immune.fine.grained.populations, fine.grained.pop.maps, spike.ins)
-
 coarse.grained.rand.admixtures.wo.cancer <-
     generate.random.admixtures.wo.cancer(immune.coarse.grained.populations, coarse.grained.pop.maps, spike.ins)
+
+fine.grained.rand.admixtures.wo.cancer <-
+    generate.random.admixtures.wo.cancer(immune.fine.grained.populations, fine.grained.pop.maps, spike.ins)
 
 fine.grained.rand.admixtures.w.cancer <-
     generate.random.admixtures.w.cancer(immune.fine.grained.populations, fine.grained.pop.maps, cancer.spike.ins,
@@ -283,7 +323,6 @@ fine.grained.rand.admixtures.w.cancer <-
 coarse.grained.rand.admixtures.w.cancer <-
     generate.random.admixtures.w.cancer(immune.coarse.grained.populations, coarse.grained.pop.maps, cancer.spike.ins,
                                         cancer = c("CRC", "Breast"))
-
 
 flat.model <- define.biological.model(unname(unlist(populations)), cache.dir = cache_dir)
 
@@ -351,7 +390,9 @@ generate.biological.admixtures <- function(model, spike.in.population, other.pop
                   long <- melt(as.matrix(ret))
                   colnames(long) <- c("admixture", "challenge.population", "prop")
                   long$challenge.population <- as.character(long$challenge.population)
-                            
+                  long$spike.in.pop <- as.character(spike.in.population)
+                  flag <- long$spike.in.pop == long$challenge.population
+                  long[flag, "spike.in.prop"] <- long[flag, "prop"]
                   pop.df$challenge.population <- as.character(pop.df$challenge.population)
                   col <- "sample"
                   long <- merge(long, pop.df[, c("challenge.population", col)], all.x = TRUE)
@@ -376,9 +417,12 @@ generate.biological.admixtures <- function(model, spike.in.population, other.pop
                                 }
                                 df
                             })
-                  long <- long[, c("admixture", col, "prop")]
+                  ## long <- long[, c("admixture", col, "prop")]
+                  long <- long[, c("admixture", col, "prop", "spike.in.pop", "spike.in.prop")]
                   long[,col] <- as.character(long[,col])
                   long[,"prop"] <- as.numeric(long[,"prop"])
+                  long[,"spike.in.prop"] <- as.numeric(long[,"spike.in.prop"])                  
+                  long[,"spike.in.pop"] <- as.character(long[,"spike.in.pop"])                  
                   long
               })
     colnames(admixtures)[1] <- "pop.id"
@@ -427,7 +471,6 @@ flat.model.no.cancer.coarse["min", "CD8.T.cells"] <- 0.01
 
 tmp <- subset(coarse.grained.map.df, challenge.population %in% colnames(flat.model.no.cancer.coarse))
 flat.model.no.cancer.coarse <- flat.model.no.cancer.coarse[, unique(as.character(tmp$challenge.population))]
-
 
 ## Generate fine-grained biological admixtures w/o cancer
 ## Generate 5 replicates for each of the two sets of samples
@@ -506,10 +549,6 @@ if(!(".id" %in% colnames(coarse.grained.bio.admixtures.w.cancer))) {
 coarse.grained.bio.admixtures.w.cancer$admixture <- paste0(coarse.grained.bio.admixtures.w.cancer$.id, coarse.grained.bio.admixtures.w.cancer$admixture)
 coarse.grained.bio.admixtures.w.cancer <- coarse.grained.bio.admixtures.w.cancer[, !(colnames(coarse.grained.bio.admixtures.w.cancer) %in% ".id")]
 
-cat("Done\n")
-save.image(".Rdata")
-cat("Done saving\n")
-
 fine.grained.datasets <- list(
     fine.grained.rand.admixtures.wo.cancer,
     fine.grained.bio.admixtures.wo.cancer)
@@ -555,31 +594,37 @@ names(coarse.grained.datasets) <- LETTERS[strt:(strt+length(coarse.grained.datas
 names(coarse.grained.dataset.tumor.types) <- LETTERS[strt:(strt+length(coarse.grained.datasets)-1)]
 
 
+cat("Done\n")
+save.image(".Rdata")
+cat("Done saving\n")
+
+q(status = 0)
+
 ## Create the gold standards
 ## gold standard files should be csvs with columns: dataset.name,sample.id,cell.type,measured
 
 coarse.gs <- ldply(coarse.grained.datasets, .fun = function(df) df)
-colnames(coarse.gs) <- c("dataset.name", "sample.id", "sample", "measured")
+colnames(coarse.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
 old.sz <- nrow(coarse.gs)
 coarse.gs <- merge(coarse.gs, coarse.grained.pop.df[, c("sample", "challenge.population")], by = "sample")
 new.sz <- nrow(coarse.gs)
 if(old.sz != new.sz) { stop(paste0("Size changed from ", old.sz, " to ", new.sz, "\n")) }
-coarse.gs <- coarse.gs[, c("dataset.name", "sample.id", "challenge.population", "measured")]
-colnames(coarse.gs) <- c("dataset.name", "sample.id", "sample", "measured")
+coarse.gs <- coarse.gs[, c("dataset.name", "sample.id", "challenge.population", "measured", "spike.in.pop", "spike.in.prop")]
+colnames(coarse.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
 
 fine.gs <- ldply(fine.grained.datasets, .fun = function(df) df)
-colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "measured")
+colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
 old.sz <- nrow(fine.gs)
 fine.gs <- merge(fine.gs, fine.grained.pop.df[, c("sample", "challenge.population")], by = "sample")
 new.sz <- nrow(fine.gs)
 if(old.sz != new.sz) { stop(paste0("Size changed from ", old.sz, " to ", new.sz, "\n")) }
-fine.gs <- fine.gs[, c("dataset.name", "sample.id", "challenge.population", "measured")]
-colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "measured")
+fine.gs <- fine.gs[, c("dataset.name", "sample.id", "challenge.population", "measured", "spike.in.pop", "spike.in.prop")]
+colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
 
-write.table(file = "invitro_val_fine.csv", fine.gs, row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
-write.table(file = "invitro_val_coarse.csv", coarse.gs, row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
+write.table(file = "in-silico-val-fine.csv", fine.gs, row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
+write.table(file = "in-silico-val-coarse.csv", coarse.gs, row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
 
-l <- list("invitro_val_fine.csv" = fine.gs, "invitro_val_coarse.csv" = coarse.gs)
+l <- list("in-silico-val-fine.csv" = fine.gs, "in-silico-val-coarse.csv" = coarse.gs)
 for(nm in names(l)) {
     parent.id <- "syn21647466"
     file <- nm

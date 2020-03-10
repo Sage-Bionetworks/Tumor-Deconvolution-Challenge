@@ -6,13 +6,27 @@ suppressPackageStartupMessages(p_load(dplyr))
 suppressPackageStartupMessages(p_load(tidyr))
 suppressPackageStartupMessages(p_load(gridExtra))
 
-res <- read.table("validation-results.csv", sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
+
+## Get the validation results ("all_predictions.csv")
+synLogin()
+synId <- "syn21715094"
+## validation.results.file <- "validation-results.csv"
+validation.results.file <- synGet(synId, downloadFile = TRUE)$path
+
+res <- read.table(validation.results.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
+## print(head(subset(res, method == "cibersort" & subchallenge == "fine" & cell.type == "fibroblasts" & dataset.name == "DS5")))
+
+## res <- read.table("validation-results.csv", sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
 
 ## Limit to the final (of two) submissions for each group
 ## and the baseline methods (which were all submitted by Andrew L
 ## and hence only one of which is_latest)
 ## res <- subset(res, ( is_latest == TRUE ) | ( grepl(repo_name, pattern = "baseline")))
-res <- subset(res, !is.na(measured))
+## res <- subset(res, !is.na(measured))
+## Unlike for the leaderboard data, validation data is only composed of measured cell types.
+## So, if something is NA, that means it was not present.
+flag <- is.na(res$measured)
+res[flag, "measured"] <- 0
 
 exclude.purified <- TRUE
 if(exclude.purified) {
@@ -25,13 +39,13 @@ if(exclude.purified) {
     ## This creates problems. Not only do we need to add an epsilon, but methods actually score it well with
     ## low values, which will be uncorrelated since magnitude is not taken into account when during a correlation.
     ## Neither were naive.CD8.T.cells or memory.B.cells
-    flag <- res$cell.type != "neutrophils"
-    res <- res[flag, ]
-    exclude <- c("memory.B.cells", "naive.CD8.T.cells")
-    if(any(res$cell.type %in% exclude)) {
-        print(head(res[res$cell.type %in% exclude,]))
-        stop("Was not expecting memory.B.cells or naive.CD8.T.cells in admixtures\n")
-    }
+    flag <- res$cell.type %in% c("neutrophils", "memory.B.cells", "naive.CD8.T.cells")
+    res <- res[!flag, ]
+    ## exclude <- c("memory.B.cells", "naive.CD8.T.cells")
+    ## if(any(res$cell.type %in% exclude)) {
+    ##    print(head(res[res$cell.type %in% exclude,]))
+    ##    stop("Was not expecting memory.B.cells or naive.CD8.T.cells in admixtures\n")
+    ## }
 }
 
 trans <-
