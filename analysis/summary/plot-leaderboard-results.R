@@ -6,6 +6,8 @@ suppressPackageStartupMessages(p_load(dplyr))
 suppressPackageStartupMessages(p_load(tidyr))
 suppressPackageStartupMessages(p_load(gridExtra))
 suppressPackageStartupMessages(p_load(synapser))
+suppressPackageStartupMessages(p_load(ComplexHeatmap))
+suppressPackageStartupMessages(p_load(reshape2))
 
 synLogin()
 
@@ -157,7 +159,7 @@ plot.bootstraps <- function(df) {
     g1 <- g1 + geom_hline(data = int.data, aes(yintercept = mean), linetype = "dashed")
     g1 <- g1 + coord_flip()
     g1 <- g1 + ylab("Pearson Correlation\nAvg over Dataset & Cell Type")
-    g1 <- g1 + theme(text = element_text(size=20), axis.text.y = element_text(size = 10),
+    g1 <- g1 + theme(text = element_text(size=20), axis.text.y = element_text(size = 20),
                      axis.text.x = element_text(angle = 45, hjust = 1),
                      panel.spacing = unit(1, "lines"))
     g1 <- g1 + xlab("Method")
@@ -201,18 +203,35 @@ means.by.cell.type.method <-
               data.frame(cor = mean(ret$cor))
           })
 
-plot.cell.type.correlation.heatmap <- function(df) {
-    means <- ddply(df, .variables = c("cell.type"),
-                   .fun = function(tmp) mean(tmp$cor, na.rm=TRUE))
-    means <- means[order(means$V1),]
-    df$cell.type <- factor(df$cell.type, levels = means$cell.type)
+plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE) {
+
+    df <- df[, c("id", "cell.type", "cor")]
+    df$id <- as.character(df$id)
+    df$cell.type <- as.character(df$cell.type)
     
-    means <- ddply(df, .variables = c("id"),
-                   .fun = function(tmp) mean(tmp$cor, na.rm=TRUE))
-    means <- means[order(means$V1),]
-    df$id <- factor(df$id, levels = means$id)
+    cell.type.means <- ddply(df, .variables = c("cell.type"),
+                             .fun = function(tmp) data.frame(id = "mean", cor = mean(tmp$cor, na.rm=TRUE)))
+    cell.type.means <- cell.type.means[order(cell.type.means$cor),]
+    
+    method.means <- ddply(df, .variables = c("id"),
+                   .fun = function(tmp) data.frame(cell.type = "mean", cor = mean(tmp$cor, na.rm=TRUE)))
+    method.means <- method.means[order(method.means$cor),]
+
+
+    cell.type.levels <- c(cell.type.means$cell.type[cell.type.means$cell.type != "mean"], "mean")
+    id.levels <- c("mean", method.means$id[method.means$id != "mean"])
+
+    df <- rbind(df, cell.type.means[, c("id", "cell.type", "cor")])
+    df <- rbind(df, method.means[, c("id", "cell.type", "cor")])    
+    df$cell.type <- factor(df$cell.type, levels = cell.type.levels)
+    df$id <- factor(df$id, levels = id.levels)
+
+    df$cor.label <- formatC(df$cor, format="f", digits=2)
     g <- ggplot(data = df, aes(y = id, x = cell.type, fill = cor))
     g <- g + geom_tile()
+    if(show.corr.text) {
+        g <- g + geom_text(aes(label = cor.label))
+    }
     g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
                    axis.text.y = element_text(size = 5), title = element_text(size = 8))
     g <- g + ylab("Method") + xlab("")
@@ -222,6 +241,26 @@ plot.cell.type.correlation.heatmap <- function(df) {
     g <- g + scale_fill_gradient2("Correlation", limits = c(-1,1), low = "red", high = "blue", mid = "white", na.value = "black")
     ## g <- g + theme(text = element_text(size=20))
     g
+}
+
+plot.cell.type.correlation.complex.heatmap <- function(df, show.corr.text = FALSE) {
+    means <- ddply(df, .variables = c("cell.type"),
+                   .fun = function(tmp) mean(tmp$cor, na.rm=TRUE))
+    means <- means[order(means$V1),]
+    cell.type.levels <- means$cell.type
+    df$cell.type <- factor(df$cell.type, levels = cell.type.levels)
+    
+    means <- ddply(df, .variables = c("id"),
+                   .fun = function(tmp) mean(tmp$cor, na.rm=TRUE))
+    means <- means[order(means$V1),]
+    id.levels <- means$id
+    df$id <- factor(df$id, levels = id.levels)
+    
+
+    mat <- as.matrix(acast(df[, c("cell.type", "id", "cor")], id ~ cell.type))
+    mat <- mat[id.levels, cell.type.levels]
+    Heatmap(mat)
+
 }
 
 glist <-
@@ -234,10 +273,22 @@ glist <-
               g
           })
 
-
 png("leaderboard-coarse-cell-type.png")
 do.call("grid.arrange", c(glist, nrow = 2, top = "Coarse-Grained Sub-Challenge (Leaderboard Rounds)"))
 d <- dev.off()
+
+d_ply(subset(means.by.cell.type.method, subchallenge == "coarse"),
+      .variables = c("round"),
+      .fun = function(df) {
+          g <- plot.cell.type.correlation.heatmap(df, show.corr.text = TRUE)
+          rnd <- df$round[1]
+          g <- g + ggtitle(paste0("Coarse-Grained Sub-Challenge\nRound ", rnd))
+          g <- g + theme(text = element_text(size = 15), title = element_text(size = 15),
+                         axis.text.x = element_text(size = 15), axis.text.y = element_text(size = 15))
+          png(paste0("leaderboard-coarse-cell-type-round-", rnd, ".png"))
+          print(g)
+          d <- dev.off()
+      })
 
 glist <-
     dlply(subset(means.by.cell.type.method, subchallenge == "fine"),
@@ -252,6 +303,19 @@ glist <-
 png("leaderboard-fine-cell-type.png")
 do.call("grid.arrange", c(glist, nrow = 2, top = "Fine-Grained Sub-Challenge (Leaderboard Rounds)"))
 d <- dev.off()
+
+d_ply(subset(means.by.cell.type.method, subchallenge == "fine"),
+      .variables = c("round"),
+      .fun = function(df) {
+          g <- plot.cell.type.correlation.heatmap(df, show.corr.text = TRUE)
+          rnd <- df$round[1]
+          g <- g + ggtitle(paste0("Fine-Grained Sub-Challenge\nRound ", rnd))
+          g <- g + theme(text = element_text(size = 15), title = element_text(size = 15),
+                         axis.text.x = element_text(size = 15), axis.text.y = element_text(size = 15))
+          png(paste0("leaderboard-fine-cell-type-round-", rnd, ".png"), width = 2 * 480)
+          print(g)
+          d <- dev.off()
+      })
 
 ## Plot the rank of the top n (e.g., n = 5) across the 3 rounds
 plot.ranks <- function(df, n.top = 5) {

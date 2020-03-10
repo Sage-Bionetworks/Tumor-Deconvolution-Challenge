@@ -5,6 +5,7 @@ suppressPackageStartupMessages(p_load(plyr))
 suppressPackageStartupMessages(p_load(dplyr))
 suppressPackageStartupMessages(p_load(tidyr))
 suppressPackageStartupMessages(p_load(gridExtra))
+suppressPackageStartupMessages(p_load(synapser))
 
 
 ## Get the validation results ("all_predictions.csv")
@@ -176,7 +177,51 @@ means.by.cell.type.method <-
               data.frame(cor = mean(ret$cor))
           })
 
-plot.cell.type.correlation.heatmap <- function(df) {
+plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.var = "modelId") {
+
+    df <- df[, c(id.var, "cell.type", "cor")]
+    df[, id.var] <- as.character(df[, id.var])
+    df$cell.type <- as.character(df$cell.type)
+    
+    cell.type.means <- ddply(df, .variables = c("cell.type"),
+                             .fun = function(tmp) {
+                                 ret <- data.frame(id = "mean", cor = mean(tmp$cor, na.rm=TRUE))
+                                 colnames(ret)[1] <- id.var
+                                 ret
+                             })
+    cell.type.means <- cell.type.means[order(cell.type.means$cor),]
+    
+    method.means <- ddply(df, .variables = c(id.var),
+                   .fun = function(tmp) data.frame(cell.type = "mean", cor = mean(tmp$cor, na.rm=TRUE)))
+    method.means <- method.means[order(method.means$cor),]
+
+
+    cell.type.levels <- c(cell.type.means$cell.type[cell.type.means$cell.type != "mean"], "mean")
+    id.levels <- c("mean", method.means[method.means[, id.var] != "mean", id.var])
+
+    df <- rbind(df, cell.type.means[, c(id.var, "cell.type", "cor")])
+    df <- rbind(df, method.means[, c(id.var, "cell.type", "cor")])    
+    df$cell.type <- factor(df$cell.type, levels = cell.type.levels)
+    df[, id.var] <- factor(df[, id.var], levels = id.levels)
+
+    df$cor.label <- formatC(df$cor, format="f", digits=2)
+    g <- ggplot(data = df, aes_string(y = id.var, x = "cell.type", fill = "cor"))
+    g <- g + geom_tile()
+    if(show.corr.text) {
+        g <- g + geom_text(aes(label = cor.label))
+    }
+    g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
+                   text = element_text(size=15))
+    g <- g + ylab("Method") + xlab("")
+    ## g <- g + scale_fill_continuous("Pearson\ncorrelation", limits = c(-1,1))
+    ## g <- g + scale_fill_gradient2("Pearson\ncorrelation", limits = c(-1,1),
+    ##                               low = "red", high = "blue", mid = "white", na.value = "black")
+    g <- g + scale_fill_gradient2("Correlation", limits = c(-1,1), low = "red", high = "blue", mid = "white", na.value = "black")
+    ## g <- g + theme(text = element_text(size=20))
+    g
+}
+
+plot.cell.type.correlation.heatmap.old <- function(df) {
     means <- ddply(df, .variables = c("cell.type"),
                    .fun = function(tmp) mean(tmp$cor, na.rm=TRUE))
     means <- means[order(means$V1),]
@@ -186,8 +231,10 @@ plot.cell.type.correlation.heatmap <- function(df) {
                    .fun = function(tmp) mean(tmp$cor, na.rm=TRUE))
     means <- means[order(means$V1),]
     df$modelId <- factor(df$modelId, levels = means$modelId)
+    df$cor.label <- formatC(df$cor, format="f", digits=2)
     g <- ggplot(data = df, aes(y = modelId, x = cell.type, fill = cor))
     g <- g + geom_tile()
+    g <- g + geom_text(aes(label = cor.label))
     g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
                    title = element_text(size = 8))
     g <- g + ylab("Method") + xlab("")
@@ -201,28 +248,30 @@ plot.cell.type.correlation.heatmap <- function(df) {
 
 df <- subset(bootstrapped.scores, subchallenge == "coarse")
 g1 <- plot.bootstraps(df)
-g1 <- g1 + ggtitle("Coarse-Grained Sub-Challenge (Validation)")
+g1 <- g1 + ggtitle("Coarse-Grained Sub-Challenge\n(Validation)")
 ## pdf("validation-coarse-bootstrap.pdf", width = 14)
-png("validation-coarse-bootstrap.png", width = 480 * 2)
+png("validation-coarse-bootstrap.png", width = 480 * 1)
 print(g1)
 d <- dev.off()
 
 df <- subset(bootstrapped.scores, subchallenge == "fine")
 g2 <- plot.bootstraps(df)
-g2 <- g2 + ggtitle("Fine-Grained Sub-Challenge (Validation)")
+g2 <- g2 + ggtitle("Fine-Grained Sub-Challenge\n(Validation)")
 ## pdf("validation-fine-bootstrap.pdf", width = 14)
-png("validation-fine-bootstrap.png", width = 480 * 2)
+png("validation-fine-bootstrap.png", width = 480 * 1)
 print(g2)
 d <- dev.off()
 
-png("validation-coarse-cell-type.png")
-g3 <- plot.cell.type.correlation.heatmap(subset(means.by.cell.type.method, subchallenge == "coarse"))
+png("validation-coarse-cell-type.png", width = 1 * 480)
+g3 <- plot.cell.type.correlation.heatmap(subset(means.by.cell.type.method, subchallenge == "coarse"),
+                                         show.corr.text = TRUE, id.var = "modelId")
 g3 <- g3 + ggtitle("Coarse-Grained Sub-Challenge (Validation)")
 print(g3)
 d <- dev.off()
 
-png("validation-fine-cell-type.png")
-g4 <- plot.cell.type.correlation.heatmap(subset(means.by.cell.type.method, subchallenge == "fine"))
+png("validation-fine-cell-type.png", width = 1 * 480)
+g4 <- plot.cell.type.correlation.heatmap(subset(means.by.cell.type.method, subchallenge == "fine"),
+                                         show.corr.text = TRUE, id.var = "modelId")
 g4 <- g4 + ggtitle("Fine-Grained Sub-Challenge (Validation)")
 print(g4)
 d <- dev.off()
