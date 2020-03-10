@@ -484,6 +484,7 @@ names(spike.in.populations) <- LETTERS[1:length(spike.in.populations)]
 cat("Generating fine-grained biological admixtures w/o cancer\n")
 fine.grained.bio.admixtures.wo.cancer <-
     ldply(spike.in.populations,
+          .parallel = TRUE,
           .fun = function(spike.in.population) {
               other.populations <-
                   colnames(flat.model.no.cancer)[!(colnames(flat.model.no.cancer) %in% c(spike.in.population, "tumor.fraction"))]
@@ -504,6 +505,7 @@ names(spike.in.populations) <- LETTERS[1:length(spike.in.populations)]
 cat("Generating coarse-grained biological admixtures w/o cancer\n")
 coarse.grained.bio.admixtures.wo.cancer <-
     ldply(spike.in.populations,
+          .parallel = TRUE,
           .fun = function(spike.in.population) {
               other.populations <-
                   colnames(flat.model.no.cancer.coarse)[!(colnames(flat.model.no.cancer.coarse) %in% c(spike.in.population, "tumor.fraction"))]
@@ -524,6 +526,7 @@ spike.in.populations <- list("C" = "CRC", "D" = "Breast")
 cat("Generating fine-grained biological admixtures w/ cancer\n")
 fine.grained.bio.admixtures.w.cancer <-
     ldply(spike.in.populations,
+          .parallel = TRUE,
           .fun = function(spike.in.population) {
               other.populations <-
                   colnames(flat.model.no.cancer)[!(colnames(flat.model.no.cancer) %in% c(spike.in.population, "tumor.fraction"))]
@@ -541,6 +544,7 @@ fine.grained.bio.admixtures.w.cancer <- fine.grained.bio.admixtures.w.cancer[, !
 cat("Generating coarse-grained biological admixtures w/ cancer\n")
 coarse.grained.bio.admixtures.w.cancer <-
     ldply(spike.in.populations,
+          .parallel = TRUE,
           .fun = function(spike.in.population) {
               other.populations <-
                   colnames(flat.model.no.cancer.coarse)[!(colnames(flat.model.no.cancer.coarse) %in% c(spike.in.population, "tumor.fraction"))]
