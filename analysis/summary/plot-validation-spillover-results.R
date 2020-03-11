@@ -5,6 +5,7 @@ suppressPackageStartupMessages(p_load(ggplot2))
 suppressPackageStartupMessages(p_load(plyr))
 suppressPackageStartupMessages(p_load(dplyr))
 suppressPackageStartupMessages(p_load(tidyr))
+suppressPackageStartupMessages(p_load(grid))
 suppressPackageStartupMessages(p_load(gridExtra))
 suppressPackageStartupMessages(p_load(synapser))
 
@@ -141,7 +142,8 @@ plot.cell.type.score.heatmap <- function(df, score.col = "prediction",
     g <- ggplot(data = df, aes_string(y = "sample.id", x = "cell.type", fill = score.col))
     g <- g + geom_tile()
     g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
-                   title = element_text(size = 8))
+                   text = element_text(size = 20))
+##                   title = element_text(size = 8))
     g <- g + ylab("Actual Cell Type") + xlab("Predicted Cell Type")
     if(normalized.score) {
         g <- g + scale_fill_gradient2("Normalized\nPrediction", 
@@ -155,30 +157,47 @@ plot.cell.type.score.heatmap <- function(df, score.col = "prediction",
 }
 
 png("validation-deconv-coarse-grained-spillover.png", width = 2 * 480)
-g <- plot.cell.type.score.heatmap(subset(deconv.res, subchallenge == "coarse"))
-g <- g + ggtitle("Coarse-Grained Sub-Challenge (Validation)")
-print(g)
+g1 <- plot.cell.type.score.heatmap(subset(deconv.res, subchallenge == "coarse"))
+g1 <- g1 + ggtitle("Coarse-Grained Sub-Challenge (Validation)")
+print(g1)
 d <- dev.off()
 
 png("validation-deconv-fine-grained-spillover.png", width = 2 * 480)
-g <- plot.cell.type.score.heatmap(subset(deconv.res, subchallenge == "fine"))
-g <- g + ggtitle("Fine-Grained Sub-Challenge (Validation)")
-print(g)
+g2 <- plot.cell.type.score.heatmap(subset(deconv.res, subchallenge == "fine"))
+g2 <- g2 + ggtitle("Fine-Grained Sub-Challenge (Validation)")
+print(g2)
 d <- dev.off()
 
 non.deconv.res <- merge(non.deconv.res, purified.scores)
 non.deconv.res$norm.score <- non.deconv.res$prediction / non.deconv.res$pure.score
 
 png("validation-non-deconv-coarse-grained-spillover.png", width = 2 * 480)
-g <- plot.cell.type.score.heatmap(subset(non.deconv.res, subchallenge == "coarse"),
+g3 <- plot.cell.type.score.heatmap(subset(non.deconv.res, subchallenge == "coarse"),
                                   score.col = "norm.score", normalized.score = TRUE)
-g <- g + ggtitle("Coarse-Grained Sub-Challenge (Validation)")
-print(g)
+g3 <- g3 + ggtitle("Coarse-Grained Sub-Challenge (Validation)")
+print(g3)
 d <- dev.off()
 
 png("validation-non-deconv-fine-grained-spillover.png", width = 2 * 480)
-g <- plot.cell.type.score.heatmap(subset(non.deconv.res, subchallenge == "fine"),
+g4 <- plot.cell.type.score.heatmap(subset(non.deconv.res, subchallenge == "fine"),
                                   score.col = "norm.score", normalized.score = TRUE)
-g <- g + ggtitle("Fine-Grained Sub-Challenge (Validation)")
-print(g)
+g4 <- g4 + ggtitle("Fine-Grained Sub-Challenge (Validation)")
+print(g4)
 d <- dev.off()
+
+png("validation-coarse-grained-spillover.png", width = 2 * 480, height = 2 * 480)
+g1 <- g1 + ggtitle("")
+g3 <- g3 + ggtitle("")
+title <- "Coarse-Grained Sub-Challenge (Validation)"
+g <- grid.arrange(g1, g3, nrow = 2, top = textGrob(title, gp = gpar(fontsize = 25)))
+grid.draw(g)
+d <- dev.off()
+
+png("validation-fine-grained-spillover.png", width = 2 * 480, height = 2 * 480)
+g2 <- g2 + ggtitle("")
+g4 <- g4 + ggtitle("")
+title <- "Fine-Grained Sub-Challenge (Validation)"
+g <- grid.arrange(g2, g4, nrow = 2, top = textGrob(title, gp = gpar(fontsize = 25)))
+grid.draw(g)
+d <- dev.off()
+

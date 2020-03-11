@@ -602,10 +602,6 @@ names(coarse.grained.datasets) <- LETTERS[strt:(strt+length(coarse.grained.datas
 names(coarse.grained.dataset.tumor.types) <- LETTERS[strt:(strt+length(coarse.grained.datasets)-1)]
 
 
-cat("Done\n")
-save.image(".Rdata")
-cat("Done saving\n")
-
 ## Create the gold standards
 ## gold standard files should be csvs with columns: dataset.name,sample.id,cell.type,measured
 
@@ -629,14 +625,6 @@ colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike
 
 write.table(file = "in-silico-val-fine.csv", fine.gs, row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
 write.table(file = "in-silico-val-coarse.csv", coarse.gs, row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
-
-l <- list("in-silico-val-fine.csv" = fine.gs, "in-silico-val-coarse.csv" = coarse.gs)
-for(nm in names(l)) {
-    parent.id <- "syn21647466"
-    file <- nm
-    f <- File(file, parentId = parent.id, synapseStore = TRUE)
-    synStore(f)
-}
 
 synId <- "syn21576632"
 obj <- synGet(synId, downloadFile = TRUE)
@@ -675,9 +663,21 @@ admixtures <-
               mxs <- cbind(Gene = rownames(cpm.expr), mxs)
               mxs
           })
-
-
 print(warnings())
+
+cat("Done\n")
+save.image(".Rdata")
+cat("Done saving\n")
+
+stop("stop")
+
+l <- list("in-silico-val-fine.csv" = fine.gs, "in-silico-val-coarse.csv" = coarse.gs)
+for(nm in names(l)) {
+    parent.id <- "syn21647466"
+    file <- nm
+    f <- File(file, parentId = parent.id, synapseStore = TRUE)
+    synStore(f)
+}
 
 ## Write out the admixtures and store to synapse
 nms <- names(admixtures)
