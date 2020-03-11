@@ -623,8 +623,12 @@ if(old.sz != new.sz) { stop(paste0("Size changed from ", old.sz, " to ", new.sz,
 fine.gs <- fine.gs[, c("dataset.name", "sample.id", "challenge.population", "measured", "spike.in.pop", "spike.in.prop")]
 colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
 
-write.table(file = "in-silico-val-fine.csv", fine.gs, row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
-write.table(file = "in-silico-val-coarse.csv", coarse.gs, row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
+non.spike.in.cols <- c("dataset.name", "sample.id", "sample", "measured")
+write.table(file = "in-silico-val-fine.csv", fine.gs[, non.spike.in.cols], row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
+write.table(file = "in-silico-val-coarse.csv", coarse.gs[, non.spike.in.cols], row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
+
+write.table(file = "in-silico-val-fine-spike-in-annotations.csv", fine.gs, row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
+write.table(file = "in-silico-val-coarse-spike-in-annotations.csv", coarse.gs, row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
 
 synId <- "syn21576632"
 obj <- synGet(synId, downloadFile = TRUE)
