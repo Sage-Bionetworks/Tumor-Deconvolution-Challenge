@@ -648,7 +648,7 @@ all.gs <- rbind(coarse.gs, fine.gs)
 ## First column is Gene
 
 admixtures <-
-    dlply(subset(all.gs, sample.id %in% c("A1", "A2", "A3")),
+    dlply(all.gs,
           .parallel = TRUE,
           .variables = c("dataset.name"),
           .fun = function(df) {
