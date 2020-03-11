@@ -17,6 +17,7 @@ suppressPackageStartupMessages(p_load("ComplexHeatmap"))
 suppressPackageStartupMessages(p_load("gplots"))
 suppressPackageStartupMessages(p_load("scales"))
 
+suppressPackageStartupMessages(p_load("preprocessCore")) # for normalize.quantiles
 synLogin()
 
 ## Load the TPM validation data
@@ -279,14 +280,62 @@ insilico.admixtures <- do.call(cbind, insilico.admixtures)
 admix.names <- intersect(colnames(insilico.admixtures), colnames(admixture.expr))
 insilico.admixtures <- insilico.admixtures[, admix.names]
 admixture.expr <- admixture.expr[, admix.names]
+
+insilico.mat <- cbind(Gene = rownames(purified.mat), insilico.admixtures)
+
+rand.cols <- c("Gene", colnames(insilico.mat)[grepl(colnames(insilico.mat), pattern="^R")])
+bio.cols <- c("Gene", colnames(insilico.mat)[grepl(colnames(insilico.mat), pattern="^B")])
+rand.mat <- insilico.mat[, rand.cols]
+bio.mat <- insilico.mat[, bio.cols]
+
+write.table(file = "insilico-admixture.csv", insilico.mat, row.names = FALSE, col.names = TRUE, quote = FALSE, sep = ",")
+datasets <- list("A" = rand.mat, "B" = bio.mat)
+for(nm in names(datasets)) {
+    write.table(file = paste0(nm, "_input.csv"), datasets[[nm]], row.names = FALSE, col.names = TRUE, quote = FALSE, sep = ",")
+}
+
+nms <- names(datasets)
+names(nms) <- nms
+input.tbl <-
+    ldply(nms,
+          .fun = function(nm) {
+              params <- list(
+                  "dataset.name" = nm,
+                  "cancer.type" = NA,
+                  "platform" = "Illumina",
+                  "scale" = "Linear",
+                  "normalization" = "CPM",
+                  "native.probe.type" = "Hugo",
+                  "native.expr.file" = paste0(nm, "_input.csv"),
+                  "hugo.expr.file" = paste0(nm, "_input.csv"),
+                  "ensg.expr.file" = NA,
+                  "symbol.compression.function" = "identity",
+                  "ensg.compression.function" = NA,
+                  "native.expr.est.counts.file" = NA,
+                  "hugo.expr.est.counts.file" = NA,
+                  "ensg.expr.est.counts.file" = NA,
+                  "symbol.compression.est.counts.function" = NA,
+                  "ensg.compression.est.counts.function" = NA,
+                  "symbol.to.native.mapping.file" = NA,
+                  "ensg.to.native.mapping.file" = NA,
+                  "fastq1.files" = NA,
+                  "fastq2.files" = NA,
+                  "fastq.samples" = NA
+              )
+              as.data.frame(params)
+          })
+
+file <- "input.csv"
+write.table(file = file, input.tbl, col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
+
 colnames(insilico.admixtures) <- paste0(colnames(insilico.admixtures), "i")
 mat <- cbind(insilico.admixtures, admixture.expr)
 
 batch <- c(rep(0, ncol(insilico.admixtures)), rep(1, ncol(admixture.expr)))
 flag <- apply(mat, 1, function(row) all(row == row[1]))
 mat.c <- ComBat(as.matrix(mat)[!flag,], batch = batch)
-str(as.dendrogram(hc))
-cr <- cor(mat.c)
+##str(as.dendrogram(hc))
+##cr <- cor(mat.c)
 
 ## NB: correlations are all very high.
 ## Limit to deconv genes
@@ -369,7 +418,13 @@ suppressPackageStartupMessages(p_load("immunedeconv"))
 xcell.deconv.genes <-
     sort(unique(unlist(lapply(xCell.data$signatures, function(x) x@geneIds))))
 
-lm22 <- read.table("/home/bwhite/LM22.txt", sep="\t", header=TRUE)
+files <- c("/home/bwhite/LM22.txt", "/Users/Brian/Downloads/new-cibersort-code/LM22.txt")
+for(file in files) {
+    if(file.exists(file)) {
+        lm22 <- read.table(file, sep="\t", header=TRUE)
+    }
+}
+
 cibersort.deconv.genes <- as.character(lm22$Gene.symbol)
 mcp.deconv.genes <-
     sort(unique(
@@ -398,8 +453,6 @@ cov.genes <- names(tail(cov[order(cov)],n=100))
 deconv.genes <-
     sort(unique(c(cibersort.deconv.genes, mcp.deconv.genes, epic.deconv.genes, quantiseq.deconv.genes)))
 deconv.genes <- deconv.genes
-
-stop("stop")
 
 dst <- dist(t(as.matrix(mat.c[rownames(mat.c) %in% deconv.genes,])))
 hc <- hclust(dst^2, "cen")
@@ -784,3 +837,27 @@ coarse.grained.gold.standard <- coarse.grained.gold.standard[, c("dataset.name",
 
 write.table(file = "val_coarse.csv", coarse.grained.gold.standard, sep=",", row.names = FALSE, col.names = TRUE, quote = FALSE)
 write.table(file = "val_fine.csv", fine.grained.gold.standard, sep=",", row.names = FALSE, col.names = TRUE, quote = FALSE)
+
+cat("Exiting\n")
+q(status = 0)
+
+library(plyr)
+library(dplyr)
+library(ggplot2)
+val <- read.table("../input/invitro_val_coarse.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+pred <- read.table("predictions.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+sample.ids <- subset(val, (sample == "Breast") & (measured == 0))$sample.id
+m <- merge(pred, subset(val, sample.id %in% sample.ids), by.x = c("sample.id", "cell.type"), by.y = c("sample.id", "sample"))
+plts <-
+    dlply(m, .variables = c("dataset.name.x"),
+          .fun = function(df) {
+              for(ct in unique(df$cell.type)) {
+                  sub <- subset(df, cell.type == ct)
+                  print(cor(sub$measured, sub$prediction))
+              }
+              g <- ggplot(data = df, aes(x = measured, y = prediction))
+              g <- g + geom_point()
+              g <- g + facet_wrap(~ cell.type)
+              g
+          })
+v <- subset(val, sample.id %in% sample.ids)

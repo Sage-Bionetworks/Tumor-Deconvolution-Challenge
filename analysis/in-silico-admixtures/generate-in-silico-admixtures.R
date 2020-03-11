@@ -634,9 +634,9 @@ rownames(cpm.expr) <- as.character(cpm.expr$Gene)
 cpm.expr <- cpm.expr[, !(colnames(cpm.expr) %in% c("Gene"))]
 
 coarse.gs <- ldply(coarse.grained.datasets, .fun = function(df) df)
-colnames(coarse.gs) <- c("dataset.name", "sample.id", "sample", "measured")
+colnames(coarse.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
 fine.gs <- ldply(fine.grained.datasets, .fun = function(df) df)
-colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "measured")
+colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
 
 all.gs <- rbind(coarse.gs, fine.gs)
 
@@ -644,7 +644,7 @@ all.gs <- rbind(coarse.gs, fine.gs)
 ## First column is Gene
 
 admixtures <-
-    dlply(all.gs,
+    dlply(subset(all.gs, sample.id %in% c("A1", "A2", "A3")),
           .parallel = TRUE,
           .variables = c("dataset.name"),
           .fun = function(df) {
@@ -654,6 +654,10 @@ admixtures <-
                         .fun = function(sdf) {
                             cols <- as.character(sdf$sample)
                             fracs <- as.numeric(sdf$measured)
+                            if(!all(cols %in% colnames(cpm.expr))) {
+                                print(cols)
+                                stop("Missing some columns\n")
+                            }
                             mat <- cpm.expr[, cols]
                             ret <- as.matrix(mat) %*% fracs
                             colnames(ret) <- sdf$sample.id[1]
@@ -669,39 +673,9 @@ cat("Done\n")
 save.image(".Rdata")
 cat("Done saving\n")
 
-stop("stop")
-
-l <- list("in-silico-val-fine.csv" = fine.gs, "in-silico-val-coarse.csv" = coarse.gs)
-for(nm in names(l)) {
-    parent.id <- "syn21647466"
-    file <- nm
-    f <- File(file, parentId = parent.id, synapseStore = TRUE)
-    synStore(f)
-}
-
-## Write out the admixtures and store to synapse
-nms <- names(admixtures)
-names(nms) <- nms
-for(nm in nms) {
-    cat(paste0("Writing ", nm, " : ", nrow(admixtures[[nm]]), " x ", ncol(admixtures[[nm]]), "\n"))
-    file <- paste0(nm, "_symbol_tpm.csv")
-    write.table(file = file, admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
-}
-
-for(nm in nms) {
-    cat(paste0("Writing ", nm, "\n"))
-    parent.id <- "syn21647466"
-    file <- paste0(nm, "_symbol_tpm.csv")
-    cat(paste0("Storing ", nm, " to synapse\n"))
-    f <- File(file, parentId = parent.id, synapseStore = TRUE)
-    synStore(f)
-}
+## Create the input.csv file
 
 cat("Writing input.csv")
-
-## working
-
-## Create the input.csv file
 
 tumor.types <- c(fine.grained.dataset.tumor.types, coarse.grained.dataset.tumor.types)
 datasets <- unique(all.gs$dataset.name)
@@ -734,9 +708,40 @@ input.tbl <-
               as.data.frame(params)
           })
 
-parent.id <- "syn21647466"
 file <- "input.csv"
 write.table(file = file, input.tbl, col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
+
+nms <- names(admixtures)
+names(nms) <- nms
+for(nm in nms) {
+    cat(paste0("Writing ", nm, " : ", nrow(admixtures[[nm]]), " x ", ncol(admixtures[[nm]]), "\n"))
+    file <- paste0(nm, "_symbol_tpm.csv")
+    write.table(file = file, admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+}
+
+cat("Stopping before writing back to synapse\n")
+stop("stop")
+
+## Write out the admixtures and store to synapse
+l <- list("in-silico-val-fine.csv" = fine.gs, "in-silico-val-coarse.csv" = coarse.gs)
+for(nm in names(l)) {
+    parent.id <- "syn21647466"
+    file <- nm
+    f <- File(file, parentId = parent.id, synapseStore = TRUE)
+    synStore(f)
+}
+
+
+for(nm in nms) {
+    parent.id <- "syn21647466"
+    file <- paste0(nm, "_symbol_tpm.csv")
+    cat(paste0("Storing ", nm, " to synapse\n"))
+    f <- File(file, parentId = parent.id, synapseStore = TRUE)
+    synStore(f)
+}
+
+parent.id <- "syn21647466"
+file <- "input.csv"
 cat(paste0("Storing ", file, " to synapse\n"))
 f <- File(file, parentId = parent.id, synapseStore = TRUE)
 synStore(f)
