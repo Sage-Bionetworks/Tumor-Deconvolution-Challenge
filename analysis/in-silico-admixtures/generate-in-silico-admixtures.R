@@ -669,10 +669,6 @@ admixtures <-
           })
 print(warnings())
 
-cat("Done\n")
-save.image(".Rdata")
-cat("Done saving\n")
-
 ## Create the input.csv file
 
 cat("Writing input.csv")
@@ -718,6 +714,11 @@ for(nm in nms) {
     file <- paste0(nm, "_symbol_tpm.csv")
     write.table(file = file, admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
 }
+
+cat("Done\n")
+save.image(".Rdata")
+cat("Done saving\n")
+
 
 cat("Stopping before writing back to synapse\n")
 stop("stop")
