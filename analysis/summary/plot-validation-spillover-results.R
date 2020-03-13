@@ -156,6 +156,53 @@ plot.cell.type.score.heatmap <- function(df, score.col = "prediction",
     g
 }
 
+all.res <- merge(res, purified.scores, all.x = TRUE)
+all.res$norm.score <- all.res$prediction / all.res$pure.score
+
+coarse.res <- subset(all.res, subchallenge == "coarse")
+fine.res <- subset(all.res, subchallenge == "fine")
+
+non.deconv.methods <- unique(as.character(all.res$method))
+non.deconv.methods <- non.deconv.methods[!(non.deconv.methods %in% deconv.methods)]
+names(deconv.methods) <- deconv.methods
+names(non.deconv.methods) <- non.deconv.methods
+l_ply(deconv.methods,
+      .fun = function(meth) {
+          g <- plot.cell.type.score.heatmap(subset(coarse.res, method == meth))
+          g <- g + ggtitle("Coarse-Grained Sub-Challenge\n(Validation)") + theme(plot.title = element_text(hjust = 0.5))
+          file <- paste0("validation-coarse-grained-spillover-", meth, ".png")
+          png(file)
+          print(g)
+          d <- dev.off()
+          
+          g <- plot.cell.type.score.heatmap(subset(fine.res, method == meth))
+          g <- g + ggtitle("Fine-Grained Sub-Challenge\n(Validation)") + theme(plot.title = element_text(hjust = 0.5))
+          file <- paste0("validation-fine-grained-spillover-", meth, ".png")
+          png(file)
+          print(g)
+          d <- dev.off()
+      })
+
+l_ply(non.deconv.methods,
+      .fun = function(meth) {
+          g <- plot.cell.type.score.heatmap(subset(coarse.res, method == meth),
+                                            score.col = "norm.score", normalized.score = TRUE)
+          g <- g + ggtitle("Coarse-Grained Sub-Challenge\n(Validation)") + theme(plot.title = element_text(hjust = 0.5))
+          file <- paste0("validation-coarse-grained-spillover-", meth, ".png")
+          png(file)
+          print(g)
+          d <- dev.off()
+          
+          g <- plot.cell.type.score.heatmap(subset(fine.res, method == meth),
+                                            score.col = "norm.score", normalized.score = TRUE)
+          g <- g + ggtitle("Fine-Grained Sub-Challenge\n(Validation)") + theme(plot.title = element_text(hjust = 0.5))
+          file <- paste0("validation-fine-grained-spillover-", meth, ".png")
+          png(file)
+          print(g)
+          d <- dev.off()
+      })
+
+
 png("validation-deconv-coarse-grained-spillover.png", width = 2 * 480)
 g1 <- plot.cell.type.score.heatmap(subset(deconv.res, subchallenge == "coarse"))
 g1 <- g1 + ggtitle("Coarse-Grained Sub-Challenge (Validation)")

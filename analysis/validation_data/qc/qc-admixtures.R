@@ -844,20 +844,135 @@ q(status = 0)
 library(plyr)
 library(dplyr)
 library(ggplot2)
-val <- read.table("../input/invitro_val_coarse.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
-pred <- read.table("predictions.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
-sample.ids <- subset(val, (sample == "Breast") & (measured == 0))$sample.id
-m <- merge(pred, subset(val, sample.id %in% sample.ids), by.x = c("sample.id", "cell.type"), by.y = c("sample.id", "sample"))
+## val <- read.table("input/in-silico-val-coarse.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+file <- "in-silico-val-coarse.csv"
+file <- synGet("syn21763908", downloadFile = TRUE)$path
+val1 <- read.table(file, header=TRUE, sep=",", stringsAsFactors = FALSE)
+file <- "in-silico-val-fine.csv"
+file <- synGet("syn21763907", downloadFile = TRUE)$path
+val2 <- read.table(file, header=TRUE, sep=",", stringsAsFactors = FALSE)
+val1$subchallenge <- "coarse"
+val2$subchallenge <- "fine"
+
+fine.grained.datasets <- c("A", "B", "C", "D", "E", "F")
+coarse.grained.datasets <- c("G", "H", "I", "J", "K", "L")
+
+val1 <- subset(val1, dataset.name %in% coarse.grained.datasets)
+val2 <- subset(val2, dataset.name %in% fine.grained.datasets)
+
+
+
+## NB: these need to be sum'ed across cell populations that map to the same challenge subtype
+val1 <- ddply(val1,
+              .variables = c("dataset.name", "sample.id", "sample", "subchallenge"),
+              .fun = function(df) data.frame(measured = sum(df$measured)))
+## For fine-grained, there is no need to collapse sub-populations
+## val2 <- ddply(val2,
+##              .variables = c("dataset.name", "sample.id", "sample", "subchallenge"),
+##              .fun = function(df) data.frame(measured = sum(df$measured)))
+val <- rbind(val1, val2)
+pred <- read.table("all-predictions.tsv", header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+## pred <- read.table("output/predictions.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+## Exclude any samples with non-zero CRC or Breast
+sample.ids <- subset(val, ( (sample == "Breast") & (measured > 0) ) | ( (sample == "CRC") & (measured > 0) ))$sample.id
+m <- merge(pred, subset(val, !(sample.id %in% sample.ids)),
+           by.x = c("sample.id", "cell.type", "subchallenge"), by.y = c("sample.id", "sample", "subchallenge"))
+m.all <- merge(pred, val, by.x = c("sample.id", "cell.type", "subchallenge"), by.y = c("sample.id", "sample", "subchallenge"))
+
+## Plot all correlations
 plts <-
-    dlply(m, .variables = c("dataset.name.x"),
+dlply(m, .variables = c("method", "dataset.name.x"),
+      .fun = function(df.ds) {
+          g <- ggplot(df.ds, aes(x = measured, y = prediction))
+          g <- g + geom_point()
+          g <- g + facet_wrap(~ cell.type, scales = "free")
+          g
+      })
+          
+          
+
+res <-
+    ddply(m, .variables = c("dataset.name.x", "cell.type", "method"),
           .fun = function(df) {
-              for(ct in unique(df$cell.type)) {
-                  sub <- subset(df, cell.type == ct)
-                  print(cor(sub$measured, sub$prediction))
-              }
-              g <- ggplot(data = df, aes(x = measured, y = prediction))
+              data.frame(cor = cor(df$measured, df$prediction))
+          })
+means <- ddply(res, .variables = c("dataset.name.x", "method"), .fun = function(df) data.frame(mean.cor = mean(df$cor)))
+
+
+cplts <-
+    dlply(val1,
+          .variables = c("dataset.name"),
+          .fun = function(df) {
+              df <- df[, c("sample.id", "sample", "measured")]
+              mat <- acast(df, sample ~ sample.id)
+              g <- plot.admixtures(mat)
+
+          })
+
+fplts <-
+    dlply(val2,
+          .variables = c("dataset.name"),
+          .fun = function(df) {
+              df <- df[, c("sample.id", "sample", "measured")]
+              mat <- acast(df, sample ~ sample.id)
+              g <- plot.admixtures(mat)
+
+          })
+
+cancer.ids <- unique(subset(val[, c("dataset.name", "sample.id", "sample", "measured")], sample %in% c("Breast", "CRC")))
+colnames(cancer.ids) <- c("dataset.name", "sample.id", "cancer.type", "spike.in")
+
+cg.rand.m <- subset(m.all, dataset.name.x %in% c("C", "D", "I", "J"))
+cg.rand.m <- merge(cg.rand.m, cancer.ids)
+
+res <-
+    ddply(cg.rand.m,
+          .variables = c("dataset.name.x", "cell.type", "cancer.type", "spike.in", "method", "subchallenge"),
+          .fun = function(df) {
+              data.frame(cor = cor(df$measured, df$prediction))
+          })
+
+res$spike.in <- factor(res$spike.in, levels = sort(unique(res$spike.in), decreasing = FALSE))
+
+firstup <- function(x) {
+  substr(x, 1, 1) <- toupper(substr(x, 1, 1))
+  x
+}
+
+d_ply(res,
+      .variables = c("method", "subchallenge"),
+      .fun = function(df) {
+          g <- ggplot(data = df, aes(x = spike.in, y = cor, colour = cancer.type))
+          g <- g + geom_point()
+          g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+          g <- g + facet_wrap(~ cell.type, scales = "free")
+          meth <- df$method[1]
+          sc <- df$subchallenge[1]
+          g <- g + ggtitle(paste0(meth, " (", firstup(sc), "-Grained)"))
+          file <- make.names(paste0(meth, "-", sc, "-cancer-impact"))
+          file <- gsub(file, pattern="\\.", replacement="-")
+          file <- paste0(file, ".png")
+          png(file)
+          print(g)
+          d <- dev.off()
+      })
+
+## g <- ggplot(data = res, aes(x = spike.in, y = cor, colour = cancer.type, shape = dataset.name.x))
+
+png("mcp-cancer-impact.png")
+print(g)
+d <- dev.off()
+
+
+plts <-
+    dlply(res, .variables = c("dataset.name.x"),
+          .fun = function(df) {
+              g <- ggplot(data = df, aes(x = measured, y = prediction, colour = ))
               g <- g + geom_point()
               g <- g + facet_wrap(~ cell.type)
               g
           })
+
+## Let's limit to one of the rand datasets
+
 v <- subset(val, sample.id %in% sample.ids)

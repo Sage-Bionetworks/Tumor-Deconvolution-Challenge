@@ -4,8 +4,12 @@ suppressPackageStartupMessages(p_load(ggplot2))
 suppressPackageStartupMessages(p_load(plyr))
 suppressPackageStartupMessages(p_load(dplyr))
 suppressPackageStartupMessages(p_load(tidyr))
+suppressPackageStartupMessages(p_load(grid))
 suppressPackageStartupMessages(p_load(gridExtra))
 suppressPackageStartupMessages(p_load(synapser))
+
+suppressPackageStartupMessages(p_load("openxlsx"))
+suppressPackageStartupMessages(p_load("reshape2"))
 
 
 ## Get the validation results ("all_predictions.csv")
@@ -16,6 +20,15 @@ validation.results.file <- synGet(synId, downloadFile = TRUE)$path
 
 res <- read.table(validation.results.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
 ## print(head(subset(res, method == "cibersort" & subchallenge == "fine" & cell.type == "fibroblasts" & dataset.name == "DS5")))
+
+source("../utils.R")
+val.metadata <- get.validation.metadata()
+## flag <- !is.na(val.metadata$mixture.type) & (val.metadata$mixture.type == "BM")
+## val.metadata$mixture.type[flag] <- "Biological"
+## flag <- !is.na(val.metadata$mixture.type) & (val.metadata$mixture.type == "RM")
+## val.metadata$mixture.type[flag] <- "Random"
+    
+res <- merge(res, val.metadata, all.x = TRUE, by.x = c("sample.id", "dataset.name"), by.y = c("id", "dataset"))
 
 ## res <- read.table("validation-results.csv", sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
 
@@ -79,7 +92,7 @@ bootstrapped.cors <-
                         ldply(bootstraps,
                           .fun = function(i) {
                               ret <-
-                                  ddply(df.sc, .variables = c("dataset.name"),
+                                  ddply(df.sc, .variables = c("dataset.name", "mixture.type"),
                                         .fun = function(df.ds) {
                                             sample.ids <- unique(df.ds$sample.id)
                                             ## NB: use the same bootstrap samples across datasets and celltypes (nested below)
@@ -99,18 +112,26 @@ bootstrapped.cors <-
                                                                         boot.samples <- boot.samples[boot.samples %in% rownames(df.ct)]
                                                                         if(length(boot.samples) < 2) { return(NULL) }
                                                                         boot.df <- df.ct[boot.samples, c("prediction", "measured")]
-                                                                        val <- 0
+                                                                        cor.p <- 0
+                                                                        cor.s <- 0
                                                                         ## In some cases all measured values are zero, if so just add
                                                                         ## a little noise
                                                                         if(!all(boot.df$measured == boot.df$measured[1])) { ev <- 0 }
                                                                         if(var(boot.df$prediction) != 0) {
-                                                                            val <- cor(boot.df$prediction, boot.df$measured + ev)
-                                                                            if(is.na(val)) {
+                                                                            cor.p <- cor(boot.df$prediction, boot.df$measured + ev,
+                                                                                         method = "pearson")
+                                                                            if(is.na(cor.p)) {
+                                                                                print(boot.df)
+                                                                                stop("stop")
+                                                                            }
+                                                                            cor.s <- cor(boot.df$prediction, boot.df$measured + ev,
+                                                                                         method = "spearman")
+                                                                            if(is.na(cor.s)) {
                                                                                 print(boot.df)
                                                                                 stop("stop")
                                                                             }
                                                                         }
-                                                                        data.frame(cor = val)
+                                                                        data.frame(cor.p = cor.p, cor.s = cor.s)
                                                                     }) # function(df.ct)
                                                       }) # function(df.method)
                                         }) # function(df.ds)
@@ -131,7 +152,7 @@ bootstrapped.scores <-
               res.ds <-
                   ddply(df, .variables = c("dataset.name"),
                         .fun = function(df.ds) {
-                            data.frame(ds.score = mean(df$cor))
+                            data.frame(ds.score = mean(df$cor.p))
                         })
               data.frame(score = mean(res.ds$ds.score))
           })
@@ -171,55 +192,34 @@ means.by.cell.type.method <-
               ## first, average over bootstrap
               ret <- ddply(df, .variables = c("dataset.name"),
                            .fun = function(df) {
-                               data.frame(cor = mean(df$cor, na.rm=TRUE))
+                               data.frame(cor.p = mean(df$cor.p, na.rm=TRUE), cor.s = mean(df$cor.s, na.rm=TRUE))
                            })
               ## now, average over dataset
-              data.frame(cor = mean(ret$cor))
+              data.frame(cor.p = mean(ret$cor.p), cor.s = mean(ret$cor.s))
           })
 
-plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.var = "modelId") {
+means.by.cell.type.method.dataset <-
+    ddply(bootstrapped.cors,
+          .variables = c("subchallenge", "modelId", "cell.type", "dataset.name", "mixture.type"),
+          .fun = function(df) {
+              ## average over bootstrap
+              data.frame(cor.p = mean(df$cor.p), cor.s = mean(df$cor.s))
+          })
 
-    df <- df[, c(id.var, "cell.type", "cor")]
-    df[, id.var] <- as.character(df[, id.var])
-    df$cell.type <- as.character(df$cell.type)
-    
-    cell.type.means <- ddply(df, .variables = c("cell.type"),
-                             .fun = function(tmp) {
-                                 ret <- data.frame(id = "mean", cor = mean(tmp$cor, na.rm=TRUE))
-                                 colnames(ret)[1] <- id.var
-                                 ret
-                             })
-    cell.type.means <- cell.type.means[order(cell.type.means$cor),]
-    
-    method.means <- ddply(df, .variables = c(id.var),
-                   .fun = function(tmp) data.frame(cell.type = "mean", cor = mean(tmp$cor, na.rm=TRUE)))
-    method.means <- method.means[order(method.means$cor),]
+means.by.cell.type.method.mixture.type <-
+    ddply(bootstrapped.cors,
+          .variables = c("subchallenge", "modelId", "cell.type", "mixture.type"),
+          .fun = function(df) {
+              ## first, average over bootstrap
+              ret <- ddply(df, .variables = c("dataset.name"),
+                           .fun = function(df) {
+                               data.frame(cor.p = mean(df$cor.p, na.rm=TRUE), cor.s = mean(df$cor.s, na.rm=TRUE))
+                           })
+              ## now, average over dataset
+              data.frame(cor.p = mean(ret$cor.p), cor.s = mean(ret$cor.s))
+          })
 
 
-    cell.type.levels <- c(cell.type.means$cell.type[cell.type.means$cell.type != "mean"], "mean")
-    id.levels <- c("mean", method.means[method.means[, id.var] != "mean", id.var])
-
-    df <- rbind(df, cell.type.means[, c(id.var, "cell.type", "cor")])
-    df <- rbind(df, method.means[, c(id.var, "cell.type", "cor")])    
-    df$cell.type <- factor(df$cell.type, levels = cell.type.levels)
-    df[, id.var] <- factor(df[, id.var], levels = id.levels)
-
-    df$cor.label <- formatC(df$cor, format="f", digits=2)
-    g <- ggplot(data = df, aes_string(y = id.var, x = "cell.type", fill = "cor"))
-    g <- g + geom_tile()
-    if(show.corr.text) {
-        g <- g + geom_text(aes(label = cor.label))
-    }
-    g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
-                   text = element_text(size=15))
-    g <- g + ylab("Method") + xlab("")
-    ## g <- g + scale_fill_continuous("Pearson\ncorrelation", limits = c(-1,1))
-    ## g <- g + scale_fill_gradient2("Pearson\ncorrelation", limits = c(-1,1),
-    ##                               low = "red", high = "blue", mid = "white", na.value = "black")
-    g <- g + scale_fill_gradient2("Correlation", limits = c(-1,1), low = "red", high = "blue", mid = "white", na.value = "black")
-    ## g <- g + theme(text = element_text(size=20))
-    g
-}
 
 plot.cell.type.correlation.heatmap.old <- function(df) {
     means <- ddply(df, .variables = c("cell.type"),
@@ -277,3 +277,82 @@ print(g4)
 d <- dev.off()
 
 
+cor.types <- list("Pearson" = "Pearson", "Spearman" = "Spearman")
+ds.plts <-
+    llply(cor.types,
+          .fun = function(cor.type) {
+              dlply(means.by.cell.type.method.dataset,
+                    .variables = c("subchallenge", "dataset.name"),
+                    .fun = function(df) {
+                        cor.var <- "cor.p"
+                        if(cor.type == "Spearman") { cor.var <- "cor.s" }
+                        g <- plot.cell.type.correlation.heatmap(df, show.corr.text = TRUE, id.var = "modelId",
+                                                                cor.var = cor.var, cor.type.label = cor.type)
+                        sc <- as.character(df$subchallenge[1])
+                        ds <- as.character(df$dataset.name[1])
+                        mt <- as.character(df$mixture.type[1])
+                        g <- g + ggtitle(paste0(firstup(sc), "-Grained Sub-Challenge\n(Validation; ", ds, "; ", mt, ")"))
+                        g
+                    })
+          })
+
+mt.plts <-
+    llply(cor.types,
+          .fun = function(cor.type) {
+              dlply(means.by.cell.type.method.mixture.type,
+                    .variables = c("subchallenge", "mixture.type"),
+                    .fun = function(df) {
+                        cor.var <- "cor.p"
+                        if(cor.type == "Spearman") { cor.var <- "cor.s" }
+                        g <- plot.cell.type.correlation.heatmap(df, show.corr.text = TRUE, id.var = "modelId",
+                                                                cor.var = cor.var, cor.type.label = cor.type)
+                        sc <- as.character(df$subchallenge[1])
+                        mt <- as.character(df$mixture.type[1])
+                        g <- g + ggtitle(paste0(firstup(sc), "-Grained Sub-Challenge\n(Validation; ", mt, ")"))
+                        g
+                    })
+          })
+
+for(cor.type in c("pearson", "spearman")) {
+    for(sc in c("coarse", "fine")) {
+        g1 <- mt.plts[[firstup(cor.type)]][[paste0(sc, ".Random")]]
+        g1 <- g1 + ggtitle("Random Admixtures")
+        g2 <- mt.plts[[firstup(cor.type)]][[paste0(sc, ".Biological")]]
+        g2 <- g2 + ggtitle("Biological Admixtures")
+        title <- paste0(firstup(sc), "-Grained Sub-Challenge (Validation)")
+        png(paste0("validation-", sc, "-bio-and-rand-", cor.type, ".png"), width = 2 * 480)
+        g <- grid.arrange(g1, g2, ncol = 2, top = textGrob(title, gp = gpar(fontsize = 25)))
+        grid.draw(g)
+        d <- dev.off()
+    }
+}
+
+
+## Collect the ground truth data
+##gt <- unique(res[, c("sample.id", "subchallenge", "dataset.name", "mixture.type", "tumor.type", "cell.type", "measured")])
+gt <- get.validation.ground.truth()
+
+plts <- 
+    dlply(gt,
+          .variables = c("mixture.type"),
+          .fun = function(df) {
+              mt <- as.character(df$mixture.type[1])
+              ds <- as.character(df$dataset.name[1])
+              df <- df[, c("sample.id", "cell.type", "measured")]
+              mat <- acast(df, cell.type ~ sample.id)
+              g <- plot.admixtures(mat)
+              ## g <- g + ggtitle(paste0(firstup(sc), "-Grained Sub-Challenge\n(Validation; ", ds, "; ", mt, ")"))
+              ## g <- g + ggtitle(paste0("Validation Ground Truth: ", ds, ", ", mt))
+              g <- g + ggtitle(paste0("Validation Ground Truth:\n", mt, " Admxitures"))
+              g
+          })
+
+png(paste0("validation-admixtures", ".png"), width = 2 * 480)
+g1 <- plts[["Random"]]
+g1 <- g1 + ggtitle("Random Admixtures")
+g2 <- plts[["Biological"]]
+g2 <- g2 + ggtitle("Biological Admixtures")
+title <- "Validation Admixture Proportions"
+g <- grid.arrange(g1, g2, ncol = 2, top = textGrob(title, gp = gpar(fontsize = 25)))
+grid.draw(g)
+d <- dev.off()

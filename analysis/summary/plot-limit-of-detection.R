@@ -16,13 +16,24 @@ synId <- "syn21739521"
 in.silico.results.file <- synGet(synId, downloadFile = TRUE)$path
 res <- read.table(in.silico.results.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
 
-res <- subset(res, dataset.name %in% c("A", "B", "G", "H"))
+source("../utils.R")
 
-synId <- "syn21752552"
+val.metadata <- get.in.silico.metadata()
+res <- merge(res, val.metadata, all.x = TRUE, by = c("dataset.name", "subchallenge"))
+
+## We want to use the datasets that did not have cancer
+res <- res[is.na(res$tumor.type),]
+
+## This would effectively limit to the same datasets:
+## res <- subset(res, dataset.name %in% c("A", "B", "G", "H"))
+
+## synId <- "syn21752552"
+synId <- "syn21763908"
 in.silico.coarse.admixture.file <- synGet(synId, downloadFile = TRUE)$path
 in.silico.coarse.admixtures <- read.table(in.silico.coarse.admixture.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
 
-synId <- "syn21752551"
+## synId <- "syn21752551"
+synId <- "syn21763907"
 in.silico.fine.admixture.file <- synGet(synId, downloadFile = TRUE)$path
 in.silico.fine.admixtures <- read.table(in.silico.fine.admixture.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
 
@@ -191,10 +202,9 @@ res.matrices <-
     llply(spike.in.res,
           .fun = function(res) {
               ddply(res,
-                    .variables = c("subchallenge", "cell.type", "dataset.name", "repo_name"),
+                    .variables = c("subchallenge", "cell.type", "dataset.name", "repo_name", "mixture.type"),
                     .fun = function(df) {
                         df <- df[order(df$measured),,drop=F]
-                        print(df)
                         sci <- formatC(as.numeric(as.character(df$measured)), format="e", digits=2)
                         df$measured <- factor(sci, levels = unique(sci))
                         
@@ -222,40 +232,36 @@ all.plots <-
           .fun = function(nm) {
               res <- res.matrices[[nm]]
               subplots <-
-                  dlply(res, .variables = c("dataset.name"),
+                  dlply(res, .variables = c("mixture.type"),
                         .fun = function(res.ds) {
 
-                            res.ds$label <- formatC(as.numeric(as.character(res.ds$min.diff.prop)), format="e", digits=1)
+                            ## res.ds$label <- formatC(as.numeric(as.character(res.ds$min.diff.prop)), format="e", digits=1)
+                            my.format <- function(x) ifelse(x < 0.01, formatC(x, format="e", digits=1),
+                                                            formatC(x, format="f", digits=2, drop0trailing = TRUE))
+                            ## res.ds$label <- formatC(as.numeric(as.character(100 * res.ds$min.diff.prop)), format="e", digits=1)
+                            res.ds$label <- my.format(as.numeric(as.character(100 * res.ds$min.diff.prop)))
                             g <- ggplot(data = res.ds, aes(y = repo_name, x = cell.type, fill = log2(min.diff.prop)))
                             g <- g + geom_tile()
                             g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
-                                           title = element_text(size = 8))
+                                           text = element_text(size = 20),
+                                           title = element_text(size = 20))                                           
                             g <- g + ylab("Method") + xlab("")
-                            g <- g + scale_fill_gradient2("LoD", limits = c(min(unname(log2(spike.ins[spike.ins>0]))),log2(1)), low = "red", high = "blue", mid = "white", na.value = "black")
+                            limits = c(min(unname(log2(spike.ins[spike.ins>0]))),log2(1))
+                            my.labeller <- function(x) { my.format(100*(2^x)) }
+                            g <- g + scale_fill_gradient2("LoD (Percent)", labels = my.labeller, limits = limits, 
+                                                          low = "red", high = "blue", mid = "white", na.value = "black")
                             g <- g + geom_text(aes(label = label))
-                            title <- "blank"
-                            if(res.ds[1,"dataset.name"] %in% c("A", "G")) {
-                                title <- "Random Admixtures"
-                            }
-                            if(res.ds[1,"dataset.name"] %in% c("B", "H")) {
-                                title <- "Biological Admixtures"
-                            }
+                            mt <- as.character(res.ds$mixture.type[1])
+                            title <- paste0(mt, " Admixtures")
                             g <- g + ggtitle(title)
                         })
               subplot.names <- names(subplots)
               names(subplot.names) <- subplot.names
               l_ply(subplot.names,
                     .fun = function(sb.nm) {
-                        title <- "blank"
-                        prefix <- "none"
-                        if(sb.nm %in% c("A", "G")) {
-                            title <- "Random Admixtures"
-                            prefix <- "rand"
-                        }
-                        if(sb.nm %in% c("B", "H")) {
-                            title <- "Biological Admixtures"
-                            prefix <- "bio"
-                        }
+                        mt <- sb.nm
+                        prefix <- mt
+                        title <- paste0(mt, " Admixtures")
                         g <- subplots[[sb.nm]]
                         g <- g + ggtitle(paste0(firstup(nm), "-Grained Sub-Challenge (Validation; ", title, ")"))
                         g <- g + theme(text = element_text(size = 20), title = element_text(size = 20))
@@ -264,16 +270,17 @@ all.plots <-
                         print(g)
                         d <- dev.off()
                     })
-              file <- paste0("validation-lod-summary-", nm, ".png")
-              png(file, width = 2 * 480)
-              g <- do.call("grid.arrange", c(subplots, nrow = 2, top = paste0(firstup(nm), "-Grained Sub-Challenge (Validation)")))
-              grid.draw(g)
-              d <- dev.off()
+              ## file <- paste0("validation-lod-summary-", nm, ".png")
+              ## png(file, width = 2 * 480)
+              ## title <- paste0(firstup(nm), "-Grained Sub-Challenge (Validation)")
+              ## g <- do.call("grid.arrange", c(subplots, nrow = 2, top = textGrob(title, gp=gpar(fontsize=25))))
+              ## grid.draw(g)
+              ## d <- dev.off()
               subplots
           })
 
-g1 <- (all.plots[["coarse"]][["G"]])
-g2 <- (all.plots[["fine"]][["A"]])
+g1 <- (all.plots[["coarse"]][["Random"]])
+g2 <- (all.plots[["fine"]][["Random"]])
 g1 <- g1 + ggtitle("Coarse-Grained Sub-Challenge")
 g1 <- g1 + theme(text = element_text(size = 20), title = element_text(size = 20))
 g2 <- g2 + ggtitle("Fine-Grained Sub-Challenge")
@@ -281,6 +288,34 @@ g2 <- g2 + theme(text = element_text(size = 20), title = element_text(size = 20)
 file <- paste0("validation-lod-summary-random", ".png")
 png(file, width = 2 * 480, height = 2 * 480)
 title <- "Random Admixtures (Validation)"
+## g <- do.call("grid.arrange", c(list(g1,g2), nrow = 2, top = title))
+g <- grid.arrange(g1, g2, nrow = 2, top = textGrob(title, gp=gpar(fontsize=25)))
+grid.draw(g)
+d <- dev.off()
+
+g1 <- (all.plots[["coarse"]][["Random"]])
+g2 <- (all.plots[["coarse"]][["Biological"]])
+g1 <- g1 + ggtitle("Random Admixtures")
+g1 <- g1 + theme(text = element_text(size = 20), title = element_text(size = 20))
+g2 <- g2 + ggtitle("Biological Admixtures")
+g2 <- g2 + theme(text = element_text(size = 20), title = element_text(size = 20))
+file <- paste0("validation-lod-summary-coarse", ".png")
+png(file, width = 2 * 480, height = 2 * 480)
+title <- "Coarse-Grained Sub-Challenge (Validation)"
+## g <- do.call("grid.arrange", c(list(g1,g2), nrow = 2, top = title))
+g <- grid.arrange(g1, g2, nrow = 2, top = textGrob(title, gp=gpar(fontsize=25)))
+grid.draw(g)
+d <- dev.off()
+
+g1 <- (all.plots[["fine"]][["Random"]])
+g2 <- (all.plots[["fine"]][["Biological"]])
+g1 <- g1 + ggtitle("Random Admixtures")
+g1 <- g1 + theme(text = element_text(size = 20), title = element_text(size = 20))
+g2 <- g2 + ggtitle("Biological Admixtures")
+g2 <- g2 + theme(text = element_text(size = 20), title = element_text(size = 20))
+file <- paste0("validation-lod-summary-fine", ".png")
+png(file, width = 2 * 480, height = 2 * 480)
+title <- "Fine-Grained Sub-Challenge (Validation)"
 ## g <- do.call("grid.arrange", c(list(g1,g2), nrow = 2, top = title))
 g <- grid.arrange(g1, g2, nrow = 2, top = textGrob(title, gp=gpar(fontsize=25)))
 grid.draw(g)
@@ -296,7 +331,7 @@ l_ply(nms,
                 .fun = function(df) {
                     subplots <-
                         dlply(df,
-                              .variables = c("dataset.name"),
+                              .variables = c("mixture.type"),
                               .fun = function(df.ds) {
 
                                   df.ds <- df.ds[order(df.ds$measured),]
@@ -316,13 +351,8 @@ l_ply(nms,
                                   g <- g + geom_beeswarm()
                                   g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
                                   g <- g + xlab("Spike-in Proportion") + ylab("Score")
-                                  title <- "blank"
-                                  if(df.ds[1,"dataset.name"] %in% c("A", "G")) {
-                                      title <- "Random Admixtures"
-                                  }
-                                  if(df.ds[1,"dataset.name"] %in% c("B", "H")) {
-                                      title <- "Biological Admixtures"
-                                  }
+                                  mt <- as.character(df.ds$mixture.type[1])
+                                  title <- paste0(mt, " Admixtures")
                                   g <- g + ggtitle(title)
                                   g
                               })
@@ -332,16 +362,9 @@ l_ply(nms,
                     names(subplot.names) <- subplot.names
                     l_ply(subplot.names,
                           .fun = function(sb.nm) {
-                              title <- "blank"
-                              prefix <- "none"
-                              if(sb.nm %in% c("A", "G")) {
-                                  title <- "Random Admixtures"
-                                  prefix <- "rand"
-                              }
-                              if(sb.nm %in% c("B", "H")) {
-                                  title <- "Biological Admixtures"
-                                  prefix <- "bio"
-                              }
+                              mt <- sb.nm
+                              prefix <- mt
+                              title <- paste0(mt, " Admixtures")
                               g <- subplots[[sb.nm]]
                               g <- g + ggtitle(paste0(firstup(nm), "-Grained Sub-Challenge (Validation; ", title, "):\n", ct, " ", meth))
                               g <- g + theme(text = element_text(size = 20), title = element_text(size = 20))

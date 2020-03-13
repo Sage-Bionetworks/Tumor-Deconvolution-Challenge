@@ -320,13 +320,19 @@ coarse.grained.rand.admixtures.wo.cancer <-
 fine.grained.rand.admixtures.wo.cancer <-
     generate.random.admixtures.wo.cancer(immune.fine.grained.populations, fine.grained.pop.maps, spike.ins)
 
-fine.grained.rand.admixtures.w.cancer <-
-    generate.random.admixtures.w.cancer(immune.fine.grained.populations, fine.grained.pop.maps, cancer.spike.ins,
-                                        cancers = c("CRC", "Breast"))
+num.w.cancer.datasets <- 5
 
-coarse.grained.rand.admixtures.w.cancer <-
-    generate.random.admixtures.w.cancer(immune.coarse.grained.populations, coarse.grained.pop.maps, cancer.spike.ins,
-                                        cancer = c("CRC", "Breast"))
+fine.grained.rand.admixtures.w.cancers <-
+    llply(1:num.w.cancer.datasets,
+          function(i) 
+              generate.random.admixtures.w.cancer(immune.fine.grained.populations, fine.grained.pop.maps, cancer.spike.ins,
+                                                  cancers = c("CRC", "Breast")))
+
+coarse.grained.rand.admixtures.w.cancers <-
+    llply(1:num.w.cancer.datasets,
+          function(i) 
+              generate.random.admixtures.w.cancer(immune.coarse.grained.populations, coarse.grained.pop.maps, cancer.spike.ins,
+                                                  cancer = c("CRC", "Breast")))
 
 flat.model <- define.biological.model(unname(unlist(populations)), cache.dir = cache_dir)
 
@@ -524,104 +530,146 @@ coarse.grained.bio.admixtures.wo.cancer <- coarse.grained.bio.admixtures.wo.canc
 spike.in.populations <- list("C" = "CRC", "D" = "Breast")
 
 cat("Generating fine-grained biological admixtures w/ cancer\n")
-fine.grained.bio.admixtures.w.cancer <-
-    ldply(spike.in.populations,
-          .parallel = TRUE,
-          .fun = function(spike.in.population) {
-              other.populations <-
-                  colnames(flat.model.no.cancer)[!(colnames(flat.model.no.cancer) %in% c(spike.in.population, "tumor.fraction"))]
-              ret <- generate.biological.admixtures(flat.model.no.cancer, spike.in.population, other.populations,
-                                                    fine.grained.pop.maps, cancer.spike.ins, n = 10)
+fine.grained.bio.admixtures.w.cancers <-
+    llply(1:num.w.cancer.datasets,
+          function(i) {
+              fine.grained.bio.admixtures.w.cancer <-
+                  ldply(spike.in.populations,
+                        .parallel = TRUE,
+                        .fun = function(spike.in.population) {
+                            other.populations <-
+                                colnames(flat.model.no.cancer)[!(colnames(flat.model.no.cancer) %in% c(spike.in.population, "tumor.fraction"))]
+                            ret <- generate.biological.admixtures(flat.model.no.cancer, spike.in.population, other.populations,
+                                                                  fine.grained.pop.maps, cancer.spike.ins, n = 10)
+                        })
+              
+              if(!(".id" %in% colnames(fine.grained.bio.admixtures.w.cancer))) {
+                  stop(paste0(".id not in fine.grained.bio.admixtures.w.cancer\n"))
+              }
+              fine.grained.bio.admixtures.w.cancer$admixture <- paste0(fine.grained.bio.admixtures.w.cancer$.id, fine.grained.bio.admixtures.w.cancer$admixture)
+              fine.grained.bio.admixtures.w.cancer <- fine.grained.bio.admixtures.w.cancer[, !(colnames(fine.grained.bio.admixtures.w.cancer) %in% ".id")]
+              fine.grained.bio.admixtures.w.cancer
           })
-
-if(!(".id" %in% colnames(fine.grained.bio.admixtures.w.cancer))) {
-    stop(paste0(".id not in fine.grained.bio.admixtures.w.cancer\n"))
-}
-fine.grained.bio.admixtures.w.cancer$admixture <- paste0(fine.grained.bio.admixtures.w.cancer$.id, fine.grained.bio.admixtures.w.cancer$admixture)
-fine.grained.bio.admixtures.w.cancer <- fine.grained.bio.admixtures.w.cancer[, !(colnames(fine.grained.bio.admixtures.w.cancer) %in% ".id")]
 
 ## Generate coarse-grained biological admixtures w/ cancer
 cat("Generating coarse-grained biological admixtures w/ cancer\n")
-coarse.grained.bio.admixtures.w.cancer <-
-    ldply(spike.in.populations,
-          .parallel = TRUE,
-          .fun = function(spike.in.population) {
-              other.populations <-
-                  colnames(flat.model.no.cancer.coarse)[!(colnames(flat.model.no.cancer.coarse) %in% c(spike.in.population, "tumor.fraction"))]
-              ret <- generate.biological.admixtures(flat.model.no.cancer.coarse, spike.in.population, other.populations,
-                                                    coarse.grained.pop.maps, cancer.spike.ins, n = 10)
+coarse.grained.bio.admixtures.w.cancers <-
+    llply(1:num.w.cancer.datasets,
+          function(i) {
+              coarse.grained.bio.admixtures.w.cancer <-
+                  ldply(spike.in.populations,
+                        .parallel = TRUE,
+                        .fun = function(spike.in.population) {
+                            other.populations <-
+                                colnames(flat.model.no.cancer.coarse)[!(colnames(flat.model.no.cancer.coarse) %in% c(spike.in.population, "tumor.fraction"))]
+                            ret <- generate.biological.admixtures(flat.model.no.cancer.coarse, spike.in.population, other.populations,
+                                                                  coarse.grained.pop.maps, cancer.spike.ins, n = 10)
+                        })
+              if(!(".id" %in% colnames(coarse.grained.bio.admixtures.w.cancer))) {
+                  stop(paste0(".id not in coarse.grained.bio.admixtures.w.cancer\n"))
+              }
+              coarse.grained.bio.admixtures.w.cancer$admixture <- paste0(coarse.grained.bio.admixtures.w.cancer$.id, coarse.grained.bio.admixtures.w.cancer$admixture)
+              coarse.grained.bio.admixtures.w.cancer <- coarse.grained.bio.admixtures.w.cancer[, !(colnames(coarse.grained.bio.admixtures.w.cancer) %in% ".id")]
+              coarse.grained.bio.admixtures.w.cancer
           })
-if(!(".id" %in% colnames(coarse.grained.bio.admixtures.w.cancer))) {
-    stop(paste0(".id not in coarse.grained.bio.admixtures.w.cancer\n"))
-}
-coarse.grained.bio.admixtures.w.cancer$admixture <- paste0(coarse.grained.bio.admixtures.w.cancer$.id, coarse.grained.bio.admixtures.w.cancer$admixture)
-coarse.grained.bio.admixtures.w.cancer <- coarse.grained.bio.admixtures.w.cancer[, !(colnames(coarse.grained.bio.admixtures.w.cancer) %in% ".id")]
 
-fine.grained.datasets <- list(
-    fine.grained.rand.admixtures.wo.cancer,
-    fine.grained.bio.admixtures.wo.cancer)
+nxt.letter <- 1
+datasets <- list()
 
-## Dummies
-fine.grained.dataset.tumor.types <- list("CRC", "BRCA")
+datasets[[LETTERS[nxt.letter]]] <-
+    list("data" = fine.grained.rand.admixtures.wo.cancer, "mixture.type" = "Random", "subchallenge" = "fine", "tumor.type" = NA)
+nxt.letter <- nxt.letter + 1
 
-coarse.grained.datasets <- list(
-    coarse.grained.rand.admixtures.wo.cancer,
-    coarse.grained.bio.admixtures.wo.cancer)
+datasets[[LETTERS[nxt.letter]]] <-
+    list("data" = fine.grained.bio.admixtures.wo.cancer, "mixture.type" = "Biological", "subchallenge" = "fine", "tumor.type" = NA)
+nxt.letter <- nxt.letter + 1    
 
-## Dummies
-coarse.grained.dataset.tumor.types <- list("CRC", "BRCA")
+datasets[[LETTERS[nxt.letter]]] <-
+    list("data" = coarse.grained.rand.admixtures.wo.cancer, "mixture.type" = "Random", "subchallenge" = "coarse", "tumor.type" = NA)
+nxt.letter <- nxt.letter + 1
 
-## mixtures beginning with AC/CA or BC/CB are CRC
-l <- list(fine.grained.rand.admixtures.w.cancer, fine.grained.bio.admixtures.w.cancer)
+datasets[[LETTERS[nxt.letter]]] <-
+    list("data" = coarse.grained.bio.admixtures.wo.cancer, "mixture.type" = "Biological", "subchallenge" = "coarse", "tumor.type" = NA)
+nxt.letter <- nxt.letter + 1    
+
+l <- fine.grained.rand.admixtures.w.cancers
 for(ds in l) {
-    flag <- grepl(ds$admixture, pattern="^AC") | grepl(ds$admixture, pattern="^CA")
-    flag <- flag | grepl(ds$admixture, pattern="^BC") | grepl(ds$admixture, pattern="^CB")
+    flag <- ds$spike.in.pop == "CRC"
     crc.ds <- ds[flag,]
-    breast.ds <- ds[!flag,]
-    fine.grained.datasets[[length(fine.grained.datasets)+1]] <- crc.ds
-    fine.grained.dataset.tumor.types[[length(fine.grained.dataset.tumor.types)+1]] <- "CRC"
-    fine.grained.datasets[[length(fine.grained.datasets)+1]] <- breast.ds
-    fine.grained.dataset.tumor.types[[length(fine.grained.dataset.tumor.types)+1]] <- "BRCA"    
+    flag <- ds$spike.in.pop == "Breast"    
+    breast.ds <- ds[flag,]
+    datasets[[LETTERS[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Random", "subchallenge" = "fine", "tumor.type" = "CRC")
+    nxt.letter <- nxt.letter + 1
+    datasets[[LETTERS[nxt.letter]]] <- breast.ds   
+    nxt.letter <- nxt.letter + 1
 }
-names(fine.grained.datasets) <- LETTERS[1:length(fine.grained.datasets)]
-names(fine.grained.dataset.tumor.types) <- LETTERS[1:length(fine.grained.datasets)]
 
-l <- list(coarse.grained.rand.admixtures.w.cancer, coarse.grained.bio.admixtures.w.cancer)
+l <- fine.grained.bio.admixtures.w.cancers
 for(ds in l) {
-    flag <- grepl(ds$admixture, pattern="^AC") | grepl(ds$admixture, pattern="^CA")
-    flag <- flag | grepl(ds$admixture, pattern="^BC") | grepl(ds$admixture, pattern="^CB")
+    flag <- ds$spike.in.pop == "CRC"
     crc.ds <- ds[flag,]
-    breast.ds <- ds[!flag,]
-    coarse.grained.datasets[[length(coarse.grained.datasets)+1]] <- crc.ds
-    coarse.grained.dataset.tumor.types[[length(coarse.grained.dataset.tumor.types)+1]] <- "CRC"
-    coarse.grained.datasets[[length(coarse.grained.datasets)+1]] <- breast.ds
-    coarse.grained.dataset.tumor.types[[length(coarse.grained.dataset.tumor.types)+1]] <- "BRCA"    
+    flag <- ds$spike.in.pop == "Breast"    
+    breast.ds <- ds[flag,]
+    datasets[[LETTERS[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Biological", "subchallenge" = "fine", "tumor.type" = "CRC")
+    nxt.letter <- nxt.letter + 1
+    datasets[[LETTERS[nxt.letter]]] <- breast.ds   
+    nxt.letter <- nxt.letter + 1
 }
-strt <- length(fine.grained.datasets)+1
-names(coarse.grained.datasets) <- LETTERS[strt:(strt+length(coarse.grained.datasets)-1)]
-names(coarse.grained.dataset.tumor.types) <- LETTERS[strt:(strt+length(coarse.grained.datasets)-1)]
 
+l <- coarse.grained.rand.admixtures.w.cancers
+for(ds in l) {
+    flag <- ds$spike.in.pop == "CRC"
+    crc.ds <- ds[flag,]
+    flag <- ds$spike.in.pop == "Breast"    
+    breast.ds <- ds[flag,]
+    datasets[[LETTERS[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Random", "subchallenge" = "coarse", "tumor.type" = "CRC")
+    nxt.letter <- nxt.letter + 1
+    datasets[[LETTERS[nxt.letter]]] <- breast.ds   
+    nxt.letter <- nxt.letter + 1
+}
+
+l <- coarse.grained.bio.admixtures.w.cancers
+for(ds in l) {
+    flag <- ds$spike.in.pop == "CRC"
+    crc.ds <- ds[flag,]
+    flag <- ds$spike.in.pop == "Breast"    
+    breast.ds <- ds[flag,]
+    datasets[[LETTERS[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Biological", "subchallenge" = "coarse", "tumor.type" = "CRC")
+    nxt.letter <- nxt.letter + 1
+    datasets[[LETTERS[nxt.letter]]] <- breast.ds   
+    nxt.letter <- nxt.letter + 1
+}
+
+metadata <- ldply(datasets, .fun = function(entry) as.data.frame(entry, stringsAsFactors = FALSE))
+colnames(metadata)[1] <- "dataset.name"
+coarse.datasets <- subset(metadata, subchallenge == "coarse")$dataset.name
+fine.datasets <- subset(metadata, subchallenge == "fine")$dataset.name
 
 ## Create the gold standards
 ## gold standard files should be csvs with columns: dataset.name,sample.id,cell.type,measured
 
-coarse.gs <- ldply(coarse.grained.datasets, .fun = function(df) df)
+## NB: these need to be sum'ed across cell populations that map to the same challenge subtype
+## NB: ideally, include both in the ground truth
+
+coarse.gs <- ldply(datasets, .fun = function(df) df$data)
 colnames(coarse.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
+coarse.gs <- subset(coarse.gs, dataset.name %in% coarse.datasets)
 old.sz <- nrow(coarse.gs)
 coarse.gs <- merge(coarse.gs, coarse.grained.pop.df[, c("sample", "challenge.population")], by = "sample")
 new.sz <- nrow(coarse.gs)
 if(old.sz != new.sz) { stop(paste0("Size changed from ", old.sz, " to ", new.sz, "\n")) }
-coarse.gs <- coarse.gs[, c("dataset.name", "sample.id", "challenge.population", "measured", "spike.in.pop", "spike.in.prop")]
-colnames(coarse.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
+coarse.gs <- coarse.gs[, c("dataset.name", "sample.id", "challenge.population", "sample", "measured", "spike.in.pop", "spike.in.prop")]
+colnames(coarse.gs) <- c("dataset.name", "sample.id", "sample", "vendor.sample", "measured", "spike.in.pop", "spike.in.prop")
 
-fine.gs <- ldply(fine.grained.datasets, .fun = function(df) df)
+fine.gs <- ldply(datasets, .fun = function(df) df$data)
 colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
+fine.gs <- subset(fine.gs, dataset.name %in% coarse.datasets)
 old.sz <- nrow(fine.gs)
 fine.gs <- merge(fine.gs, fine.grained.pop.df[, c("sample", "challenge.population")], by = "sample")
 new.sz <- nrow(fine.gs)
 if(old.sz != new.sz) { stop(paste0("Size changed from ", old.sz, " to ", new.sz, "\n")) }
-fine.gs <- fine.gs[, c("dataset.name", "sample.id", "challenge.population", "measured", "spike.in.pop", "spike.in.prop")]
-colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
+fine.gs <- fine.gs[, c("dataset.name", "sample.id", "challenge.population", "sample", "measured", "spike.in.pop", "spike.in.prop")]
+colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "vendor.sample", "measured", "spike.in.pop", "spike.in.prop")
 
 non.spike.in.cols <- c("dataset.name", "sample.id", "sample", "measured")
 write.table(file = "in-silico-val-fine.csv", fine.gs[, non.spike.in.cols], row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
@@ -637,10 +685,13 @@ cpm.expr <- read.table(obj$path, sep = ",", header = TRUE)
 rownames(cpm.expr) <- as.character(cpm.expr$Gene)
 cpm.expr <- cpm.expr[, !(colnames(cpm.expr) %in% c("Gene"))]
 
-coarse.gs <- ldply(coarse.grained.datasets, .fun = function(df) df)
+coarse.gs <- ldply(datasets, .fun = function(df) df$data)
 colnames(coarse.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
-fine.gs <- ldply(fine.grained.datasets, .fun = function(df) df)
+coarse.gs <- subset(coarse.gs, dataset.name %in% coarse.datasets)
+
+fine.gs <- ldply(datasets, .fun = function(df) df$data)
 colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
+fine.gs <- subset(fine.gs, dataset.name %in% coarse.datasets)
 
 all.gs <- rbind(coarse.gs, fine.gs)
 
@@ -677,14 +728,14 @@ print(warnings())
 
 cat("Writing input.csv")
 
-tumor.types <- c(fine.grained.dataset.tumor.types, coarse.grained.dataset.tumor.types)
-datasets <- unique(all.gs$dataset.name)
 input.tbl <-
-    ldply(datasets,
-          .fun = function(ds) {
+    ldply(1:nrow(metadata),
+          .fun = function(i) {
+              ds <- as.character(metadata[i, "dataset.name"])
+              ct <- as.character(metadata[i, "tumor.type"])
               params <- list(
                   "dataset.name" = ds,
-                  "cancer.type" = tumor.types[[ds]],
+                  "cancer.type" = ct,
                   "platform" = "Illumina",
                   "scale" = "Linear",
                   "normalization" = "CPM",
@@ -724,11 +775,9 @@ save.image(".Rdata")
 cat("Done saving\n")
 
 
-cat("Stopping before writing back to synapse\n")
-stop("stop")
-
 ## Write out the admixtures and store to synapse
-l <- list("in-silico-val-fine.csv" = fine.gs, "in-silico-val-coarse.csv" = coarse.gs)
+l <- list("in-silico-val-fine.csv" = fine.gs, "in-silico-val-coarse.csv" = coarse.gs,
+          "in-silico-val-fine-spike-in-annotations.csv" = fine.gs, "in-silico-val-coarse-spike-in-annotations.csv" = coarse.gs)
 for(nm in names(l)) {
     parent.id <- "syn21647466"
     file <- nm
