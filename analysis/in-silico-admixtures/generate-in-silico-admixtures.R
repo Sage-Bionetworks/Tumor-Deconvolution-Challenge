@@ -779,6 +779,8 @@ cat("Done\n")
 save.image(".Rdata")
 cat("Done saving\n")
 
+parent.id <- "syn21647466"
+
 file <- metadata.file
 f <- File(file, parentId = parent.id, synpaseStore = TRUE)
 synStore(f)
@@ -787,7 +789,6 @@ synStore(f)
 l <- list("in-silico-val-fine.csv" = fine.gs, "in-silico-val-coarse.csv" = coarse.gs,
           "in-silico-val-fine-spike-in-annotations.csv" = fine.gs, "in-silico-val-coarse-spike-in-annotations.csv" = coarse.gs)
 for(nm in names(l)) {
-    parent.id <- "syn21647466"
     file <- nm
     f <- File(file, parentId = parent.id, synapseStore = TRUE)
     synStore(f)
@@ -795,14 +796,12 @@ for(nm in names(l)) {
 
 
 for(nm in nms) {
-    parent.id <- "syn21647466"
     file <- paste0(nm, "_symbol_tpm.csv")
     cat(paste0("Storing ", nm, " to synapse\n"))
     f <- File(file, parentId = parent.id, synapseStore = TRUE)
     synStore(f)
 }
 
-parent.id <- "syn21647466"
 file <- "input.csv"
 cat(paste0("Storing ", file, " to synapse\n"))
 f <- File(file, parentId = parent.id, synapseStore = TRUE)
