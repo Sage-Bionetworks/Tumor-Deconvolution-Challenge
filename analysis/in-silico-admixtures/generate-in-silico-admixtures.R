@@ -487,6 +487,8 @@ flat.model.no.cancer.coarse <- flat.model.no.cancer.coarse[, unique(as.character
 spike.in.populations <- colnames(flat.model.no.cancer)
 names(spike.in.populations) <- LETTERS[1:length(spike.in.populations)]
 
+my.letters <- c(LETTERS, paste0("A", LETTERS))
+
 cat("Generating fine-grained biological admixtures w/o cancer\n")
 fine.grained.bio.admixtures.wo.cancer <-
     ldply(spike.in.populations,
@@ -576,19 +578,19 @@ coarse.grained.bio.admixtures.w.cancers <-
 nxt.letter <- 1
 datasets <- list()
 
-datasets[[LETTERS[nxt.letter]]] <-
+datasets[[my.letters[nxt.letter]]] <-
     list("data" = fine.grained.rand.admixtures.wo.cancer, "mixture.type" = "Random", "subchallenge" = "fine", "tumor.type" = NA)
 nxt.letter <- nxt.letter + 1
 
-datasets[[LETTERS[nxt.letter]]] <-
+datasets[[my.letters[nxt.letter]]] <-
     list("data" = fine.grained.bio.admixtures.wo.cancer, "mixture.type" = "Biological", "subchallenge" = "fine", "tumor.type" = NA)
 nxt.letter <- nxt.letter + 1    
 
-datasets[[LETTERS[nxt.letter]]] <-
+datasets[[my.letters[nxt.letter]]] <-
     list("data" = coarse.grained.rand.admixtures.wo.cancer, "mixture.type" = "Random", "subchallenge" = "coarse", "tumor.type" = NA)
 nxt.letter <- nxt.letter + 1
 
-datasets[[LETTERS[nxt.letter]]] <-
+datasets[[my.letters[nxt.letter]]] <-
     list("data" = coarse.grained.bio.admixtures.wo.cancer, "mixture.type" = "Biological", "subchallenge" = "coarse", "tumor.type" = NA)
 nxt.letter <- nxt.letter + 1    
 
@@ -598,9 +600,9 @@ for(ds in l) {
     crc.ds <- ds[flag,]
     flag <- ds$spike.in.pop == "Breast"    
     breast.ds <- ds[flag,]
-    datasets[[LETTERS[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Random", "subchallenge" = "fine", "tumor.type" = "CRC")
+    datasets[[my.letters[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Random", "subchallenge" = "fine", "tumor.type" = "CRC")
     nxt.letter <- nxt.letter + 1
-    datasets[[LETTERS[nxt.letter]]] <- breast.ds   
+    datasets[[my.letters[nxt.letter]]] <- list("data" = breast.ds, "mixture.type" = "Random", "subchallenge" = "fine", "tumor.type" = "Breast")
     nxt.letter <- nxt.letter + 1
 }
 
@@ -610,9 +612,9 @@ for(ds in l) {
     crc.ds <- ds[flag,]
     flag <- ds$spike.in.pop == "Breast"    
     breast.ds <- ds[flag,]
-    datasets[[LETTERS[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Biological", "subchallenge" = "fine", "tumor.type" = "CRC")
+    datasets[[my.letters[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Biological", "subchallenge" = "fine", "tumor.type" = "CRC")
     nxt.letter <- nxt.letter + 1
-    datasets[[LETTERS[nxt.letter]]] <- breast.ds   
+    datasets[[my.letters[nxt.letter]]] <- list("data" = breast.ds, "mixture.type" = "Biological", "subchallenge" = "fine", "tumor.type" = "Breast")
     nxt.letter <- nxt.letter + 1
 }
 
@@ -622,9 +624,9 @@ for(ds in l) {
     crc.ds <- ds[flag,]
     flag <- ds$spike.in.pop == "Breast"    
     breast.ds <- ds[flag,]
-    datasets[[LETTERS[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Random", "subchallenge" = "coarse", "tumor.type" = "CRC")
+    datasets[[my.letters[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Random", "subchallenge" = "coarse", "tumor.type" = "CRC")
     nxt.letter <- nxt.letter + 1
-    datasets[[LETTERS[nxt.letter]]] <- breast.ds   
+    datasets[[my.letters[nxt.letter]]] <- list("data" = breast.ds, "mixture.type" = "Random", "subchallenge" = "coarse", "tumor.type" = "Breast")
     nxt.letter <- nxt.letter + 1
 }
 
@@ -634,16 +636,19 @@ for(ds in l) {
     crc.ds <- ds[flag,]
     flag <- ds$spike.in.pop == "Breast"    
     breast.ds <- ds[flag,]
-    datasets[[LETTERS[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Biological", "subchallenge" = "coarse", "tumor.type" = "CRC")
+    datasets[[my.letters[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Biological", "subchallenge" = "coarse", "tumor.type" = "CRC")
     nxt.letter <- nxt.letter + 1
-    datasets[[LETTERS[nxt.letter]]] <- breast.ds   
+    datasets[[my.letters[nxt.letter]]] <- list("data" = breast.ds, "mixture.type" = "Biological", "subchallenge" = "coarse", "tumor.type" = "Breast")
     nxt.letter <- nxt.letter + 1
 }
 
-metadata <- ldply(datasets, .fun = function(entry) as.data.frame(entry, stringsAsFactors = FALSE))
+metadata <- ldply(datasets, .fun = function(entry) as.data.frame(entry[names(entry) != "data"], stringsAsFactors = FALSE))
 colnames(metadata)[1] <- "dataset.name"
 coarse.datasets <- subset(metadata, subchallenge == "coarse")$dataset.name
 fine.datasets <- subset(metadata, subchallenge == "fine")$dataset.name
+
+metadata.file <- "in-silico-metadata.csv"
+write.table(file = metadata.file, metadata, row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
 
 ## Create the gold standards
 ## gold standard files should be csvs with columns: dataset.name,sample.id,cell.type,measured
@@ -774,6 +779,9 @@ cat("Done\n")
 save.image(".Rdata")
 cat("Done saving\n")
 
+file <- metadata.file
+f <- File(file, parentId = parent.id, synpaseStore = TRUE)
+synStore(f)
 
 ## Write out the admixtures and store to synapse
 l <- list("in-silico-val-fine.csv" = fine.gs, "in-silico-val-coarse.csv" = coarse.gs,
