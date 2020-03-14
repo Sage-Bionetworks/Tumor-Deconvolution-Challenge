@@ -668,7 +668,7 @@ colnames(coarse.gs) <- c("dataset.name", "sample.id", "sample", "vendor.sample",
 
 fine.gs <- ldply(datasets, .fun = function(df) df$data)
 colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
-fine.gs <- subset(fine.gs, dataset.name %in% coarse.datasets)
+fine.gs <- subset(fine.gs, dataset.name %in% fine.datasets)
 old.sz <- nrow(fine.gs)
 fine.gs <- merge(fine.gs, fine.grained.pop.df[, c("sample", "challenge.population")], by = "sample")
 new.sz <- nrow(fine.gs)
@@ -696,7 +696,7 @@ coarse.gs <- subset(coarse.gs, dataset.name %in% coarse.datasets)
 
 fine.gs <- ldply(datasets, .fun = function(df) df$data)
 colnames(fine.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
-fine.gs <- subset(fine.gs, dataset.name %in% coarse.datasets)
+fine.gs <- subset(fine.gs, dataset.name %in% fine.datasets)
 
 all.gs <- rbind(coarse.gs, fine.gs)
 
