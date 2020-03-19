@@ -30,6 +30,9 @@ validation.results.file <- synGet(synId, downloadFile = TRUE)$path
 res <- read.table(validation.results.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
 ## print(head(subset(res, method == "cibersort" & subchallenge == "fine" & cell.type == "fibroblasts" & dataset.name == "DS5")))
 
+## Let's exclude memory.B.cells (which always have measured == 0, which causes problems with correlation)
+res <- subset(res, !(cell.type == "memory.B.cells"))
+
 ## Limit to the final (of two) submissions for each group
 ## and the baseline methods (which were all submitted by Andrew L
 ## and hence only one of which is_latest)
@@ -46,6 +49,8 @@ res <- res[flag, ]
 
 flag <- res$sample.id == "Breast"
 res[flag, "sample.id"] <- "BRCA"
+
+average.replicates <- FALSE
 
 sample.levels <- c(
     "Naive_B_cells",
@@ -64,6 +69,32 @@ sample.levels <- c(
     "BRCA",
     "CRC"
 )
+
+if(average.replicates == FALSE) {
+    sample.levels <- c(
+        "Naive_B_cells_1",
+        "Memory_CD4_T_cells_1",
+        "Memory_CD4_T_cells_2",        
+        "Naive_CD4_T_cells_1",
+        "Tregs",
+        "Memory_CD8_T_cells_1",
+        "Memory_CD8_T_cells_2",        
+        "Naive_CD8_T_cells_2",
+        "NK_cells_1",
+        "NK_cells_2",        
+        "Neutrophils_2",
+        "Monocytes_1",
+        "Monocytes_2",        
+        "Dendritic_cells_1",
+        "Dendritic_cells_2",           
+        "Macrophages_1",
+        "Macrophages_2",        
+        "Endothelial_cells",
+        "Fibroblasts",
+        "BRCA",
+        "CRC"
+    )
+}
 
 cell.type.levels <- c(
     "B.cells",
@@ -105,11 +136,13 @@ if(any(flag)) {
   stop("Was not expecting andy BM or RM admixtures in dataset D5\n")
 }
 
-## Average replicates -- no so by removing _1 and _2
-res$sample.id <- gsub(res$sample.id, pattern = "_1", replacement = "")
-res$sample.id <- gsub(res$sample.id, pattern = "_2", replacement = "")
-
+## Average replicates -- do so by removing _1 and _2
+if(average.replicates) {
+    res$sample.id <- gsub(res$sample.id, pattern = "_1", replacement = "")
+    res$sample.id <- gsub(res$sample.id, pattern = "_2", replacement = "")
+}
 res$sample.id <- factor(res$sample.id, levels = sample.levels)
+    
 res$cell.type <- factor(res$cell.type, levels = cell.type.levels)
 
 res <-

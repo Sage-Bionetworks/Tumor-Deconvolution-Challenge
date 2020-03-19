@@ -12,36 +12,17 @@ suppressPackageStartupMessages(p_load(grid))
 suppressPackageStartupMessages(p_load(ggbeeswarm))
 
 synLogin()
-
-use.synapse.predictions <- FALSE
-res <- NULL
+synId <- "syn21739521"
+in.silico.results.file <- synGet(synId, downloadFile = TRUE)$path
+res <- read.table(in.silico.results.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
 
 source("../utils.R")
 
-if(use.synapse.predictions) {
-    synId <- "syn21739521"
-    in.silico.results.file <- synGet(synId, downloadFile = TRUE)$path
-    res <- read.table(in.silico.results.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
-
-    val.metadata <- get.in.silico.metadata()
-    res <- merge(res, val.metadata, all.x = TRUE, by = c("dataset.name", "subchallenge"))
-} else {
-    in.silico.results.file <- "all-predictions.tsv"
-    res <- read.table(in.silico.results.file, sep="\t", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
-    source("../utils.R")
-    res$repo_name <- res$method
-    
-    val.metadata <- get.in.silico.metadata()
-    ## res <- merge(res, val.metadata, all.x = TRUE, by = c("dataset.name", "subchallenge"))
-    res <- merge(res, val.metadata, all.x = FALSE, by = c("dataset.name", "subchallenge"))
-}
-
-## Let's exclude memory.B.cells (which always have measured == 0, which causes problems with correlation)
-res <- subset(res, !(cell.type == "memory.B.cells"))
+val.metadata <- get.in.silico.metadata()
+res <- merge(res, val.metadata, all.x = TRUE, by = c("dataset.name", "subchallenge"))
 
 ## We want to use the datasets that did not have cancer
 res <- res[is.na(res$tumor.type),]
-cat(paste0("Summarizing the following datasets: ", paste0(unique(sort(res$dataset.name)), collapse = ", "), "\n"))
 
 ## This would effectively limit to the same datasets:
 ## res <- subset(res, dataset.name %in% c("A", "B", "G", "H"))
@@ -50,28 +31,11 @@ cat(paste0("Summarizing the following datasets: ", paste0(unique(sort(res$datase
 synId <- "syn21763908"
 in.silico.coarse.admixture.file <- synGet(synId, downloadFile = TRUE)$path
 in.silico.coarse.admixtures <- read.table(in.silico.coarse.admixture.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
-if(!use.synapse.predictions) {
-    in.silico.coarse.admixtures <- in.silico.coarse.admixtures[, c("dataset.name", "sample", "sample.id", "spike.in.pop", "spike.in.prop", "measured")]
-    colnames(in.silico.coarse.admixtures) <- c("dataset.name", "cell.type", "sample.id", "spike.in.pop", "spike.in.prop", "measured")
-    in.silico.coarse.admixtures <-
-        ddply(in.silico.coarse.admixtures,
-              .variables = c("dataset.name", "cell.type", "sample.id", "spike.in.pop", "spike.in.prop"),
-              .fun = function(df) {
-                  df$measured <- sum(df$measured)
-                  df[1,,drop=F]
-              })
-}
 
 ## synId <- "syn21752551"
 synId <- "syn21763907"
 in.silico.fine.admixture.file <- synGet(synId, downloadFile = TRUE)$path
 in.silico.fine.admixtures <- read.table(in.silico.fine.admixture.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
-## in.silico.fine.admixtures <- subset(in.silico.fine.admixtures, spike.in.pop %in% c("Breast", "CRC"))
-if(!use.synapse.predictions) {
-    in.silico.fine.admixtures <- in.silico.fine.admixtures[, c("dataset.name", "sample", "sample.id", "spike.in.pop", "spike.in.prop", "measured")]
-    colnames(in.silico.fine.admixtures) <- c("dataset.name", "cell.type", "sample.id", "spike.in.pop", "spike.in.prop", "measured")
-}
-
 
 ## Plot scores for cell type x as a function of spike in for cell type x for each cell type, method, subchallenge
 
@@ -187,19 +151,17 @@ spike.in.res[["coarse"]] <- subset(res, subchallenge == "coarse")
 ## monocytic.lineage = DCs
 ## we want their measured sum (which corresponds to the 3 samples in this example).
 ## The predictions should all be the same (i.e., for monocytic.lineage)
-if(use.synapse.predictions) {
-    spike.in.res[["coarse"]] <-
-        ddply(spike.in.res[["coarse"]],
-              .variables = c("dataset.name", "sample.id", "repo_name", "cell.type"),
-              .fun = function(df) {
-                  if(!all(df$prediction == df$prediction[1])) {
-                      print(df)
-                      stop("Got different measured values\n")
-                  }
-                  df$measured <- sum(df$measured)
-                  df[1,,drop=F]
-              })
-}
+spike.in.res[["coarse"]] <-
+    ddply(spike.in.res[["coarse"]],
+          .variables = c("dataset.name", "sample.id", "repo_name", "cell.type"),
+          .fun = function(df) {
+              if(!all(df$prediction == df$prediction[1])) {
+                  print(df)
+                  stop("Got different measured values\n")
+              }
+              df$measured <- sum(df$measured)
+              df[1,,drop=F]
+          })
 if(infer.spike.in.cell.types) {
     spike.in.res[["coarse"]] <- subset(spike.in.res[["coarse"]], measured %in% unname(spike.ins))
     spike.in.res[["coarse"]] <- subset(spike.in.res[["coarse"]], cell.type %in% coarse.grained.map.df$challenge.population)
@@ -221,11 +183,7 @@ if(infer.spike.in.cell.types) {
                   })
     }
 } else {
-    cols <- c("dataset.name", "sample.id", "spike.in.pop", "spike.in.prop")
-    if(!use.synapse.predictions) {
-        cols <- c(cols, "measured")
-    }
-    tmp <- na.omit(unique(in.silico.coarse.admixtures[, cols]))
+    tmp <- na.omit(unique(in.silico.coarse.admixtures[, c("dataset.name", "sample.id", "spike.in.pop", "spike.in.prop")]))
     spike.in.res[["coarse"]] <- merge(spike.in.res[["coarse"]], tmp, by.x = c("dataset.name", "sample.id", "cell.type"),
                                   by.y = c("dataset.name", "sample.id", "spike.in.pop"))
 } ## infer.spike.in.cell.types
@@ -235,11 +193,7 @@ if(infer.spike.in.cell.types) {
     spike.in.res[["fine"]] <- subset(spike.in.res[["fine"]], measured %in% unname(spike.ins))
     spike.in.res[["fine"]] <- subset(spike.in.res[["fine"]], cell.type %in% fine.grained.map.df$challenge.population)
 } else {
-    cols <- c("dataset.name", "sample.id", "spike.in.pop", "spike.in.prop")
-    if(!use.synapse.predictions) {
-        cols <- c(cols, "measured")
-    }
-    tmp <- na.omit(unique(in.silico.fine.admixtures[, cols]))
+    tmp <- na.omit(unique(in.silico.fine.admixtures[, c("dataset.name", "sample.id", "spike.in.pop", "spike.in.prop")]))
     spike.in.res[["fine"]] <- merge(spike.in.res[["fine"]], tmp, by.x = c("dataset.name", "sample.id", "cell.type"),
                                   by.y = c("dataset.name", "sample.id", "spike.in.pop"))
 } # if(infer.spike.in.cell.types)
@@ -253,6 +207,7 @@ res.matrices <-
                         df <- df[order(df$measured),,drop=F]
                         sci <- formatC(as.numeric(as.character(df$measured)), format="e", digits=2)
                         df$measured <- factor(sci, levels = unique(sci))
+                        
                         cmps <- as.data.frame(compare_means(prediction ~ measured,  data = df))
                         cmps <- cmps[cmps$group1 == "0.00e+00",]
                         ret <- cmps[, c("group1", "group2", "p")]

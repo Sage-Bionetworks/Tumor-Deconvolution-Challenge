@@ -114,24 +114,31 @@ bootstrapped.cors <-
                                                                         boot.df <- df.ct[boot.samples, c("prediction", "measured")]
                                                                         cor.p <- 0
                                                                         cor.s <- 0
+                                                                        cor.p.pval <- NA
+                                                                        cor.s.pval <- NA
                                                                         ## In some cases all measured values are zero, if so just add
                                                                         ## a little noise
                                                                         if(!all(boot.df$measured == boot.df$measured[1])) { ev <- 0 }
                                                                         if(var(boot.df$prediction) != 0) {
-                                                                            cor.p <- cor(boot.df$prediction, boot.df$measured + ev,
-                                                                                         method = "pearson")
+                                                                            cor.p.out <- cor.test(boot.df$prediction, boot.df$measured + ev,
+                                                                                                  method = "pearson")
+                                                                            cor.p <- as.numeric(cor.p.out$estimate)
+                                                                            cor.p.pval <- as.numeric(cor.p.out$p.value)
                                                                             if(is.na(cor.p)) {
                                                                                 print(boot.df)
                                                                                 stop("stop")
                                                                             }
-                                                                            cor.s <- cor(boot.df$prediction, boot.df$measured + ev,
-                                                                                         method = "spearman")
+                                                                            cor.s.out <- cor.test(boot.df$prediction, boot.df$measured + ev,
+                                                                                                  method = "spearman")
+                                                                            cor.s <- as.numeric(cor.s.out$estimate)
+                                                                            cor.s.pval <- as.numeric(cor.s.out$p.value)
                                                                             if(is.na(cor.s)) {
                                                                                 print(boot.df)
                                                                                 stop("stop")
                                                                             }
                                                                         }
-                                                                        data.frame(cor.p = cor.p, cor.s = cor.s)
+                                                                        data.frame(cor.p = cor.p, cor.p.pval = cor.p.pval,
+                                                                                   cor.s = cor.s, cor.s.pval = cor.s.pval)
                                                                     }) # function(df.ct)
                                                       }) # function(df.method)
                                         }) # function(df.ds)
@@ -192,10 +199,12 @@ means.by.cell.type.method <-
               ## first, average over bootstrap
               ret <- ddply(df, .variables = c("dataset.name"),
                            .fun = function(df) {
-                               data.frame(cor.p = mean(df$cor.p, na.rm=TRUE), cor.s = mean(df$cor.s, na.rm=TRUE))
+                               data.frame(cor.p = mean(df$cor.p, na.rm=TRUE), cor.p.pval = mean(df$cor.p.pval, na.rm=TRUE),
+                                          cor.s = mean(df$cor.s, na.rm=TRUE), cor.s.pval = mean(df$cor.s.pval, na.rm=TRUE))
                            })
               ## now, average over dataset
-              data.frame(cor.p = mean(ret$cor.p), cor.s = mean(ret$cor.s))
+              data.frame(cor.p = mean(ret$cor.p), cor.p.pval = mean(ret$cor.p.pval),
+                         cor.s = mean(ret$cor.s), cor.s.pval = mean(ret$cor.s.pval))
           })
 
 means.by.cell.type.method.dataset <-
@@ -203,7 +212,8 @@ means.by.cell.type.method.dataset <-
           .variables = c("subchallenge", "modelId", "cell.type", "dataset.name", "mixture.type"),
           .fun = function(df) {
               ## average over bootstrap
-              data.frame(cor.p = mean(df$cor.p), cor.s = mean(df$cor.s))
+              data.frame(cor.p = mean(df$cor.p), cor.p.pval = mean(df$cor.p.pval),
+                         cor.s = mean(df$cor.s), cor.s.pval = mean(df$cor.s.pval))
           })
 
 means.by.cell.type.method.mixture.type <-
@@ -213,10 +223,12 @@ means.by.cell.type.method.mixture.type <-
               ## first, average over bootstrap
               ret <- ddply(df, .variables = c("dataset.name"),
                            .fun = function(df) {
-                               data.frame(cor.p = mean(df$cor.p, na.rm=TRUE), cor.s = mean(df$cor.s, na.rm=TRUE))
+                               data.frame(cor.p = mean(df$cor.p, na.rm=TRUE), cor.p.pval = mean(df$cor.p.pval, na.rm=TRUE),
+                                          cor.s = mean(df$cor.s, na.rm=TRUE), cor.s.pval = mean(df$cor.s.pval, na.rm=TRUE))
                            })
               ## now, average over dataset
-              data.frame(cor.p = mean(ret$cor.p), cor.s = mean(ret$cor.s))
+              data.frame(cor.p = mean(ret$cor.p), cor.p.pval = mean(ret$cor.p.pval),
+                         cor.s = mean(ret$cor.s), cor.s.pval = mean(ret$cor.s.pval))
           })
 
 
@@ -285,9 +297,11 @@ ds.plts <-
                     .variables = c("subchallenge", "dataset.name"),
                     .fun = function(df) {
                         cor.var <- "cor.p"
-                        if(cor.type == "Spearman") { cor.var <- "cor.s" }
+                        pval.var <- "cor.p.pval"
+                        if(cor.type == "Spearman") { cor.var <- "cor.s"; pval.var <- "cor.s.pval" }
                         g <- plot.cell.type.correlation.heatmap(df, show.corr.text = TRUE, id.var = "modelId",
-                                                                cor.var = cor.var, cor.type.label = cor.type)
+                                                                cor.var = cor.var, cor.type.label = paste0(cor.type, "\nCorrelation"),
+                                                                pval.var = pval.var)
                         sc <- as.character(df$subchallenge[1])
                         ds <- as.character(df$dataset.name[1])
                         mt <- as.character(df$mixture.type[1])
@@ -303,9 +317,11 @@ mt.plts <-
                     .variables = c("subchallenge", "mixture.type"),
                     .fun = function(df) {
                         cor.var <- "cor.p"
-                        if(cor.type == "Spearman") { cor.var <- "cor.s" }
+                        pval.var <- "cor.p.pval"
+                        if(cor.type == "Spearman") { cor.var <- "cor.s"; pval.var <- "cor.s.pval" }
                         g <- plot.cell.type.correlation.heatmap(df, show.corr.text = TRUE, id.var = "modelId",
-                                                                cor.var = cor.var, cor.type.label = cor.type)
+                                                                cor.var = cor.var, cor.type.label = paste0(cor.type, "\nCorrelation"),
+                                                                pval.var = pval.var)
                         sc <- as.character(df$subchallenge[1])
                         mt <- as.character(df$mixture.type[1])
                         g <- g + ggtitle(paste0(firstup(sc), "-Grained Sub-Challenge\n(Validation; ", mt, ")"))
@@ -346,6 +362,42 @@ plts <-
               g <- g + ggtitle(paste0("Validation Ground Truth:\n", mt, " Admxitures"))
               g
           })
+
+d_ply(res,
+      .variables = c("cell.type", "subchallenge", "modelId"),
+      .fun = function(df) {
+          ct <- as.character(df$cell.type[1])
+          sc <- as.character(df$subchallenge[1])
+          meth <- as.character(df$modelId[1])
+          mt <- "Biological"
+          sub <- subset(df, mixture.type == mt)
+
+          g1 <- ggplot(sub, aes(x = measured, y = prediction))
+          g1 <- g1 + geom_point()
+          g1 <- g1 + facet_wrap(~ dataset.name, scales = "free")
+          g1 <- g1 + geom_smooth(method = "lm")
+          g1 <- g1 + ggtitle("Biological Admixtures")
+          g1 <- g1 + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+          
+          mt <- "Random"
+          sub <- subset(df, mixture.type == mt)          
+          
+          g2 <- ggplot(sub, aes(x = measured, y = prediction))
+          g2 <- g2 + geom_point()
+          g2 <- g2 + facet_wrap(~ dataset.name, scales = "free")
+          g2 <- g2 + geom_smooth(method = "lm")
+          g2 <- g2 + ggtitle("Random Admixtures")
+          g2 <- g2 + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+          
+          title <- paste0(meth, " ", ct, " (", firstup(sc), "-Grained Sub-Challenge)")
+          g <- grid.arrange(g2, g1, ncol = 2, top = textGrob(title, gp = gpar(fontsize = 25)))
+
+          png(paste0("validation-admixtures-", "method-", meth, "-", ct, "-", sc, ".png"), width = 2 * 480)
+          grid.draw(g)
+          d <- dev.off()
+      })
+
+
 
 png(paste0("validation-admixtures", ".png"), width = 2 * 480)
 g1 <- plts[["Random"]]

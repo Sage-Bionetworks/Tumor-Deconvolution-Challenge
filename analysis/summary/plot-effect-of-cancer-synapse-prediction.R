@@ -31,47 +31,36 @@ res <- subset(res, !(cell.type == "memory.B.cells"))
 synId <- "syn21763908"
 in.silico.coarse.admixture.file <- synGet(synId, downloadFile = TRUE)$path
 in.silico.coarse.admixtures <- read.table(in.silico.coarse.admixture.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
-## in.silico.coarse.admixtures <- subset(in.silico.coarse.admixtures, spike.in.pop %in% c("Breast", "CRC"))
-in.silico.coarse.admixtures <- in.silico.coarse.admixtures[, c("dataset.name", "sample", "sample.id", "spike.in.pop", "spike.in.prop", "measured")]
-colnames(in.silico.coarse.admixtures) <- c("dataset.name", "cell.type", "sample.id", "spike.in.pop", "spike.in.prop", "measured")
-in.silico.coarse.admixtures <-
-    ddply(in.silico.coarse.admixtures,
-          .variables = c("dataset.name", "cell.type", "sample.id", "spike.in.pop", "spike.in.prop"),
+in.silico.coarse.admixtures <- subset(in.silico.coarse.admixtures, spike.in.pop %in% c("Breast", "CRC"))
+in.silico.coarse.admixtures <- in.silico.coarse.admixtures[, c("dataset.name", "sample.id", "spike.in.pop", "spike.in.prop", "measured")]
+in.silico.coarse.admixtures <- na.omit(in.silico.coarse.admixtures)
+
+          .variables = c("dataset.name", "sample.id", "repo_name", "cell.type"),
           .fun = function(df) {
+              if(!all(df$prediction == df$prediction[1])) {
+                  print(df)
+                  stop("Got different measured values\n")
+              }
               df$measured <- sum(df$measured)
               df[1,,drop=F]
-          })
-tmp <- na.omit(unique(in.silico.coarse.admixtures[, c("dataset.name", "sample.id", "spike.in.pop", "spike.in.prop")]))
-tmp <- subset(tmp, spike.in.pop %in% c("CRC", "BRCA", "Breast", "breast"))
-in.silico.coarse.admixtures <- merge(in.silico.coarse.admixtures[, !(colnames(in.silico.coarse.admixtures) %in% c("spike.in.pop", "spike.in.prop"))],
-                                     tmp)
 
 
 ## synId <- "syn21752551"
 synId <- "syn21763907"
 in.silico.fine.admixture.file <- synGet(synId, downloadFile = TRUE)$path
 in.silico.fine.admixtures <- read.table(in.silico.fine.admixture.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
-## in.silico.fine.admixtures <- subset(in.silico.fine.admixtures, spike.in.pop %in% c("Breast", "CRC"))
-in.silico.fine.admixtures <- in.silico.fine.admixtures[, c("dataset.name", "sample", "sample.id", "spike.in.pop", "spike.in.prop", "measured")]
-colnames(in.silico.fine.admixtures) <- c("dataset.name", "cell.type", "sample.id", "spike.in.pop", "spike.in.prop", "measured")
-
-tmp <- na.omit(unique(in.silico.fine.admixtures[, c("dataset.name", "sample.id", "spike.in.pop", "spike.in.prop")]))
-tmp <- subset(tmp, spike.in.pop %in% c("CRC", "BRCA", "Breast", "breast"))
-in.silico.fine.admixtures <- merge(in.silico.fine.admixtures[, !(colnames(in.silico.fine.admixtures) %in% c("spike.in.pop", "spike.in.prop"))],
-                                     tmp)
-
-
+in.silico.fine.admixtures <- subset(in.silico.fine.admixtures, spike.in.pop %in% c("Breast", "CRC"))
+in.silico.fine.admixtures <- in.silico.fine.admixtures[, c("dataset.name", "sample.id", "spike.in.pop", "spike.in.prop", "measured")]
+in.silico.fine.admixtures <- na.omit(in.silico.fine.admixtures)
 
 res.coarse <- merge(subset(res, subchallenge == "coarse"), in.silico.coarse.admixtures)
 res.fine <- merge(subset(res, subchallenge == "fine"), in.silico.fine.admixtures)
 
 all.gt <- rbind(in.silico.coarse.admixtures, in.silico.fine.admixtures)
 all.gt <- subset(all.gt, spike.in.pop %in% c("Breast", "CRC"))
-all.gt <- unique(all.gt[, c("dataset.name", "cell.type", "sample.id", "spike.in.pop", "spike.in.prop", "measured")])
-
-
-## all.gt <- na.omit(all.gt)
-flag <- !is.na(all.gt$spike.in.pop) & (all.gt$spike.in.pop == "Breast")
+all.gt <- unique(all.gt[, c("dataset.name", "sample.id", "spike.in.pop", "spike.in.prop")])
+all.gt <- na.omit(all.gt)
+flag <- all.gt$spike.in.pop == "Breast"
 all.gt$spike.in.pop[flag] <- "BRCA"
 res <- merge(res, all.gt)
 
@@ -170,61 +159,22 @@ cancer.cor <-
           .fun = function(df) {
               cor.of.cor.p <- cor(df$cor.p, df$spike.in.prop, method = "pearson")
               cor.of.cor.s <- cor(df$cor.p, df$spike.in.prop, method = "spearman")
-              lm.p <- lm(data = df, cor.p ~ spike.in.prop)
-              coeffs.p <- coefficients(summary(lm.p))
-              lm.p.effect <- coeffs.p["spike.in.prop","Estimate"]
-              lm.p.pval <- coeffs.p["spike.in.prop","Pr(>|t|)"]
-              lm.s <- lm(data = df, cor.s ~ spike.in.prop)
-              coeffs.s <- coefficients(summary(lm.s))
-              lm.s.effect <- coeffs.s["spike.in.prop","Estimate"]
-              lm.s.pval <- coeffs.s["spike.in.prop","Pr(>|t|)"]
-              data.frame(cor.of.cor.p = cor.of.cor.p, cor.of.cor.s = cor.of.cor.s,
-                         lm.p.effect = lm.p.effect, lm.p.pval = lm.p.pval,
-                         lm.s.effect = lm.s.effect, lm.s.pval = lm.s.pval)
+              data.frame(cor.of.cor.p = cor.of.cor.p, cor.of.cor.s = cor.of.cor.s)
           })
 
 
-if(FALSE) {
 cancer.cor.plots <-
     llply(cor.types,
           .fun = function(cor.type) {
               cor.var <- "null"
               if(cor.type == "Pearson") { cor.var <- "cor.of.cor.p" }
               if(cor.type == "Spearman") { cor.var <- "cor.of.cor.s" }
-              
               dlply(cancer.cor,
                     .variables = c("subchallenge", "mixture.type"),
                     .fun = function(df) {
                         g <- plot.cell.type.correlation.heatmap(df, show.corr.text = TRUE,
                                                                 id.var = "repo_name", cor.var = cor.var,
                                                                 cor.type.label = cor.type, digits = 1)
-                        g
-                    })
-              
-          })
-}
-cancer.cor.plots <-
-    llply(cor.types,
-          .fun = function(cor.type) {
-              cor.var <- "null"
-              pval.var <- "null"
-              if(cor.type == "Pearson") {
-                  cor.var <- "lm.p.effect"
-                  pval.var <- "lm.p.pval"
-              }
-              if(cor.type == "Spearman") {
-                  cor.var <- "lm.s.effect"
-                  pval.var <- "lm.s.pval"                  
-              }
-              dlply(cancer.cor,
-                    .variables = c("subchallenge", "mixture.type"),
-                    .fun = function(df) {
-                        label <- paste0("Effect on\n", cor.type, "\nCorrelation")
-                        g <- plot.cell.type.correlation.heatmap(df, show.corr.text = TRUE,
-                                                                id.var = "repo_name", cor.var = cor.var,
-                                                                pval.var = pval.var,
-                                                                cor.type.label = label, digits = 1,
-                                                                limits = c(-1,1))
                         g
                     })
               
@@ -244,145 +194,6 @@ for(cor.type in c("pearson", "spearman")) {
     }
 }
 
-for(cor.type in cor.types) {
-    d_ply(res.cor,
-          .variables = c("repo_name", "subchallenge", "mixture.type"),
-          .fun = function(df) {
-              mt <- as.character(df$mixture.type[1])
-              meth <- as.character(df$repo_name[1])
-              sc <- as.character(df$subchallenge[1])
-              cor.var <- "null"
-              if(cor.type == "Pearson") {
-                  cor.var <- "cor.p"
-              }
-              if(cor.type == "Spearman") {
-                  cor.var <- "cor.s"
-              }
-
-              g <- ggplot(df, aes_string(x = "spike.in.percent", y = cor.var))
-              g <- g + geom_boxplot()
-              g <- g + geom_beeswarm()
-              g <- g + facet_wrap(~ cell.type, scales = "free")
-              g <- g + xlab("Cancer (%)") + ylab(paste0(firstup(cor.type), " Correlation"))
-              sz <- 15
-              g <- g + theme(text = element_text(size = sz), title = element_text(size = sz))
-              g <- g + ggtitle(paste0(meth, ": ", mt, "\n(", firstup(sc), "-Grained Sub-Challenge)"))
-              g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))              
-              file <- paste0("validation-cancer-method-", meth, "-", sc, "-", mt, "-", cor.type, ".png")
-              print(file)
-              png(file)
-              print(g)
-              d <- dev.off()
-          })
-}
-
-for(cor.type in cor.types) {
-    d_ply(res.cor,
-          .variables = c("repo_name", "subchallenge"),
-          .fun = function(df) {
-              mt <- as.character(df$mixture.type[1])
-              meth <- as.character(df$repo_name[1])
-              sc <- as.character(df$subchallenge[1])
-              cor.var <- "null"
-              if(cor.type == "Pearson") {
-                  cor.var <- "cor.p"
-              }
-              if(cor.type == "Spearman") {
-                  cor.var <- "cor.s"
-              }
-              sz <- 15
-
-              df.rand <- subset(df, mixture.type == "Random")
-              df.bio <- subset(df, mixture.type == "Biological")              
-
-              g1 <- ggplot(df.rand, aes_string(x = "spike.in.percent", y = cor.var))
-              g1 <- g1 + geom_boxplot()
-              g1 <- g1 + geom_beeswarm()
-              g1 <- g1 + facet_wrap(~ cell.type, scales = "free")
-              g1 <- g1 + xlab("Cancer (%)") + ylab(paste0(firstup(cor.type), " Correlation"))
-              g1 <- g1 + theme(text = element_text(size = sz), title = element_text(size = sz))
-              g1 <- g1 + ggtitle(paste0(meth, ": ", mt, "\n(", firstup(sc), "-Grained Sub-Challenge)"))
-              g1 <- g1 + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-              g1 <- g1 + ggtitle("Random Admixtures")
-
-              g2 <- ggplot(df.bio, aes_string(x = "spike.in.percent", y = cor.var))
-              g2 <- g2 + geom_boxplot()
-              g2 <- g2 + geom_beeswarm()
-              g2 <- g2 + facet_wrap(~ cell.type, scales = "free")
-              g2 <- g2 + xlab("Cancer (%)") + ylab(paste0(firstup(cor.type), " Correlation"))
-              g2 <- g2 + theme(text = element_text(size = sz), title = element_text(size = sz))
-              g2 <- g2 + ggtitle(paste0(meth, ": ", mt, "\n(", firstup(sc), "-Grained Sub-Challenge)"))
-              g2 <- g2 + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-              g2 <- g2 + ggtitle("Biological Admixtures")
-
-              file <- paste0("validation-cancer-method-", meth, "-", sc, "-", cor.type, ".png")
-              print(file)
-              png(file, width = 2 * 480)
-              title <- paste0(meth, " (", firstup(sc), "-Grained Sub-Challenge)")
-              g <- grid.arrange(g1, g2, ncol = 2, top = textGrob(title, gp=gpar(fontsize=20)))
-              ## print(g)
-              d <- dev.off()
-          })
-}
-
-d_ply(res.cor,
-      .variables = c("cell.type", "repo_name", "subchallenge"),
-      .fun = function(df) {
-          ct <- as.character(df$cell.type[1])
-          meth <- as.character(df$repo_name[1])
-          sc <- as.character(df$subchallenge[1])
-          cor.var <- NULL
-          df.melt <- data.frame(mixture.type = paste0(df$mixture.type, " Admixture"),
-                                correlation = df$cor.p,
-                                correlation.type = "Pearson",
-                                spike.in.percent = df$spike.in.percent)
-          df.melt <- rbind(df.melt,
-                           data.frame(mixture.type = paste0(df$mixture.type, " Admixture"),
-                                      correlation = df$cor.s,
-                                      correlation.type = "Spearman",
-                                      spike.in.percent = df$spike.in.percent))
-          g <- ggplot(df.melt, aes(x = spike.in.percent, y = correlation))
-          ## g <- g + geom_point()
-          g <- g + geom_boxplot()
-          ## g <- g + geom_violin()
-          g <- g + geom_beeswarm()
-          g <- g + facet_grid(correlation.type ~ mixture.type)
-          g <- g + xlab("Cancer (%)") + ylab("Correlation")
-          sz <- 25
-          g <- g + theme(text = element_text(size = sz), title = element_text(size = sz))
-          g <- g + ggtitle(paste0(meth, ": ", ct, " (", firstup(sc), "-Grained Sub-Challenge)"))
-          file <- paste0("validation-cancer-cell-type-", ct, "-", meth, "-", sc, ".png")
-          print(file)
-          png(file, width = 2 * 480, height = 2 * 480)
-          print(g)
-          d <- dev.off()
-      })
-
-sub <- subset(res, cell.type == "B.cells" & subchallenge == "coarse" & repo_name == "MCP-counter" &
-                   spike.in.prop == 0 & mixture.type == "Biological")
-
-g <- ggplot(sub, aes(x = measured, y = prediction))
-g <- g + geom_point()
-g <- g + facet_wrap(~ dataset.name, scales = "free")
-g <- g + geom_smooth(method = "lm")
-g <- g + ggtitle(paste0("MCP-counter B-cells (0% Cancer; Biological)"))
-g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-png("validation-cancer-MCP-counter-B-cell-no-cancer-biological.png")
-print(g)
-d <- dev.off()
-
-sub <- subset(res, cell.type == "B.cells" & subchallenge == "coarse" & repo_name == "MCP-counter" &
-                   spike.in.prop == 0 & mixture.type == "Random")
-
-g <- ggplot(sub, aes(x = measured, y = prediction))
-g <- g + geom_point()
-g <- g + facet_wrap(~ dataset.name, scales = "free")
-g <- g + geom_smooth(method = "lm")
-g <- g + ggtitle(paste0("MCP-counter B-cells (0% Cancer; Random)"))
-g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-png("validation-cancer-MCP-counter-B-cell-no-cancer-random.png")
-print(g)
-d <- dev.off()
 
 cat("Exiting successfully\n")
 stop("stop")
@@ -398,7 +209,7 @@ for(meth in unique(res.cor$repo_name)) {
             g2 <- plts[[cor.type]][[paste0(sc, ".", meth, ".", "Biological")]]
             g2 <- g2 + ggtitle("Biological Admixtures")
             g2 <- g2 + theme(text = element_text(size = sz), title = element_text(size = sz))
-            title <- paste0(meth, " (", firstup(sc), "-Grained Sub-Challenge)")
+            title <- paste0(meth, " ", firstup(sc), "-Grained Sub-Challenge)")
             g <- grid.arrange(g1, g2, ncol = 2, top = textGrob(title, gp=gpar(fontsize=20)))
             file <- paste0("validation-cancer-", meth, "-", sc, "-", cor.type, ".png")
             png(file, width = 2 * 480, height = 2 * 480)

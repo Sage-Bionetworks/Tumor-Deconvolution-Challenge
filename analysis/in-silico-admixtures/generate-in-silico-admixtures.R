@@ -602,7 +602,7 @@ for(ds in l) {
     breast.ds <- ds[flag,]
     datasets[[my.letters[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Random", "subchallenge" = "fine", "tumor.type" = "CRC")
     nxt.letter <- nxt.letter + 1
-    datasets[[my.letters[nxt.letter]]] <- list("data" = breast.ds, "mixture.type" = "Random", "subchallenge" = "fine", "tumor.type" = "Breast")
+    datasets[[my.letters[nxt.letter]]] <- list("data" = breast.ds, "mixture.type" = "Random", "subchallenge" = "fine", "tumor.type" = "BRCA")
     nxt.letter <- nxt.letter + 1
 }
 
@@ -614,7 +614,7 @@ for(ds in l) {
     breast.ds <- ds[flag,]
     datasets[[my.letters[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Biological", "subchallenge" = "fine", "tumor.type" = "CRC")
     nxt.letter <- nxt.letter + 1
-    datasets[[my.letters[nxt.letter]]] <- list("data" = breast.ds, "mixture.type" = "Biological", "subchallenge" = "fine", "tumor.type" = "Breast")
+    datasets[[my.letters[nxt.letter]]] <- list("data" = breast.ds, "mixture.type" = "Biological", "subchallenge" = "fine", "tumor.type" = "BRCA")
     nxt.letter <- nxt.letter + 1
 }
 
@@ -626,7 +626,7 @@ for(ds in l) {
     breast.ds <- ds[flag,]
     datasets[[my.letters[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Random", "subchallenge" = "coarse", "tumor.type" = "CRC")
     nxt.letter <- nxt.letter + 1
-    datasets[[my.letters[nxt.letter]]] <- list("data" = breast.ds, "mixture.type" = "Random", "subchallenge" = "coarse", "tumor.type" = "Breast")
+    datasets[[my.letters[nxt.letter]]] <- list("data" = breast.ds, "mixture.type" = "Random", "subchallenge" = "coarse", "tumor.type" = "BRCA")
     nxt.letter <- nxt.letter + 1
 }
 
@@ -638,7 +638,7 @@ for(ds in l) {
     breast.ds <- ds[flag,]
     datasets[[my.letters[nxt.letter]]] <- list("data" = crc.ds, "mixture.type" = "Biological", "subchallenge" = "coarse", "tumor.type" = "CRC")
     nxt.letter <- nxt.letter + 1
-    datasets[[my.letters[nxt.letter]]] <- list("data" = breast.ds, "mixture.type" = "Biological", "subchallenge" = "coarse", "tumor.type" = "Breast")
+    datasets[[my.letters[nxt.letter]]] <- list("data" = breast.ds, "mixture.type" = "Biological", "subchallenge" = "coarse", "tumor.type" = "BRCA")
     nxt.letter <- nxt.letter + 1
 }
 
