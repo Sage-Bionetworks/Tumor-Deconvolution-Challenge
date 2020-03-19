@@ -229,7 +229,7 @@ limit.matrix.to.protein.coding <- function(mat, use.symbols = TRUE) {
         keys <- as.character(pc.tbl$external_gene_name)
         if(!use.symbols) { keys <- as.character(pc.tbl$ensembl_gene_id) }
         mat <- mat[rownames(mat) %in% keys,]
-        mat <- sweep(mat, 2, colSums(mat), `/`)
+        mat <- sweep(mat, 2, colSums(mat), `/`) * 10^6
         return(mat)
     }
     if(exclude.mt) { stop("Have not implemented exclude.mt for annotationHub -- but is easy\n") }
