@@ -21,6 +21,44 @@ validation.results.file <- synGet(synId, downloadFile = TRUE)$path
 res <- read.table(validation.results.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
 ## print(head(subset(res, method == "cibersort" & subchallenge == "fine" & cell.type == "fibroblasts" & dataset.name == "DS5")))
 
+prefix <- "all-genes-"
+title.postfix <- "; All Genes"
+validation.results.file <- "all-predictions-all-genes.tsv"
+csx.results.file <- "/Users/Brian/work/sage/deconvolution/Tumor-Deconvolution-Challenge/cibersortx/csx-all-gene-predictions.tsv"
+
+use.protein.coding.only <- FALSE
+if(use.protein.coding.only) {
+
+    prefix <- "only-pc-"
+    title.postfix <- "; Protein-Coding Genes"
+    title.postfix <- ""
+    validation.results.file <- "all-predictions-pc-only.tsv"
+    csx.results.file <- "/Users/Brian/work/sage/deconvolution/Tumor-Deconvolution-Challenge/cibersortx/csx-pc-only-predictions.tsv"
+    
+}
+res <- read.table(validation.results.file, sep="\t", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
+csx.res <- read.table(csx.results.file, sep="\t", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
+res <- rbind(res, csx.res)
+
+synId <- "syn21590364"
+path <- synGet(synId, downloadFile = TRUE)$path
+val.coarse <- read.table(path, sep = ",", header = TRUE, stringsAsFactors = FALSE)
+val.coarse$subchallenge <- "coarse"
+
+synId <- "syn21590365"
+path <- synGet(synId, downloadFile = TRUE)$path
+val.fine <- read.table(path, sep = ",", header = TRUE, stringsAsFactors = FALSE)
+val.fine$subchallenge <- "fine"
+
+val.all <- rbind(val.coarse, val.fine)
+flag <- val.all$sample.id == "Breast"
+val.all[flag, "sample.id"] <- "BRCA"
+
+flag <- res$sample.id == "Breast"
+res[flag, "sample.id"] <- "BRCA"
+
+res <- merge(res[, !(colnames(res) == "measured")], val.all)
+
 source("../utils.R")
 val.metadata <- get.validation.metadata()
 ## flag <- !is.na(val.metadata$mixture.type) & (val.metadata$mixture.type == "BM")
@@ -64,6 +102,7 @@ if(exclude.purified) {
 
 trans <-
     list("cibersort" = "CIBERSORT",
+         "CIBERSORTx" = "CIBERSORTx",
          "quantiseq" = "quanTIseq",
          "mcpcounter" = "MCP-counter",
          "epic" = "EPIC",
@@ -260,31 +299,31 @@ plot.cell.type.correlation.heatmap.old <- function(df) {
 
 df <- subset(bootstrapped.scores, subchallenge == "coarse")
 g1 <- plot.bootstraps(df)
-g1 <- g1 + ggtitle("Coarse-Grained Sub-Challenge\n(Validation)")
+g1 <- g1 + ggtitle(paste0("Coarse-Grained Sub-Challenge\n(Validation", title.postfix, ")"))
 ## pdf("validation-coarse-bootstrap.pdf", width = 14)
-png("validation-coarse-bootstrap.png", width = 480 * 1)
+png(paste0(prefix, "validation-results-coarse-bootstrap.png"), width = 480 * 1)
 print(g1)
 d <- dev.off()
 
 df <- subset(bootstrapped.scores, subchallenge == "fine")
 g2 <- plot.bootstraps(df)
-g2 <- g2 + ggtitle("Fine-Grained Sub-Challenge\n(Validation)")
+g2 <- g2 + ggtitle(paste0("Fine-Grained Sub-Challenge\n(Validation", title.postfix, ")"))
 ## pdf("validation-fine-bootstrap.pdf", width = 14)
-png("validation-fine-bootstrap.png", width = 480 * 1)
+png(paste0(prefix, "validation-results-fine-bootstrap.png"), width = 480 * 1)
 print(g2)
 d <- dev.off()
 
-png("validation-coarse-cell-type.png", width = 1 * 480)
+png(paste0(prefix, "validation-results-coarse-cell-type.png"), width = 1 * 480)
 g3 <- plot.cell.type.correlation.heatmap(subset(means.by.cell.type.method, subchallenge == "coarse"),
                                          show.corr.text = TRUE, id.var = "modelId")
-g3 <- g3 + ggtitle("Coarse-Grained Sub-Challenge (Validation)")
+g3 <- g3 + ggtitle(paste0("Coarse-Grained Sub-Challenge (Validation", title.postfix, ")"))
 print(g3)
 d <- dev.off()
 
-png("validation-fine-cell-type.png", width = 1 * 480)
+png(paste0(prefix, "validation-results-fine-cell-type.png"), width = 1 * 480)
 g4 <- plot.cell.type.correlation.heatmap(subset(means.by.cell.type.method, subchallenge == "fine"),
                                          show.corr.text = TRUE, id.var = "modelId")
-g4 <- g4 + ggtitle("Fine-Grained Sub-Challenge (Validation)")
+g4 <- g4 + ggtitle(paste0("Fine-Grained Sub-Challenge (Validation", title.postfix, ")"))
 print(g4)
 d <- dev.off()
 
@@ -305,7 +344,7 @@ ds.plts <-
                         sc <- as.character(df$subchallenge[1])
                         ds <- as.character(df$dataset.name[1])
                         mt <- as.character(df$mixture.type[1])
-                        g <- g + ggtitle(paste0(firstup(sc), "-Grained Sub-Challenge\n(Validation; ", ds, "; ", mt, ")"))
+                        g <- g + ggtitle(paste0(firstup(sc), "-Grained Sub-Challenge\n(Validation; ", ds, "; ", mt, title.postfix, ")"))
                         g
                     })
           })
@@ -324,7 +363,7 @@ mt.plts <-
                                                                 pval.var = pval.var)
                         sc <- as.character(df$subchallenge[1])
                         mt <- as.character(df$mixture.type[1])
-                        g <- g + ggtitle(paste0(firstup(sc), "-Grained Sub-Challenge\n(Validation; ", mt, ")"))
+                        g <- g + ggtitle(paste0(firstup(sc), "-Grained Sub-Challenge\n(Validation; ", mt, title.postfix, ")"))
                         g
                     })
           })
@@ -335,8 +374,8 @@ for(cor.type in c("pearson", "spearman")) {
         g1 <- g1 + ggtitle("Random Admixtures")
         g2 <- mt.plts[[firstup(cor.type)]][[paste0(sc, ".Biological")]]
         g2 <- g2 + ggtitle("Biological Admixtures")
-        title <- paste0(firstup(sc), "-Grained Sub-Challenge (Validation)")
-        png(paste0("validation-", sc, "-bio-and-rand-", cor.type, ".png"), width = 2 * 480)
+        title <- paste0(firstup(sc), "-Grained Sub-Challenge (Validation", title.postfix, ")")
+        png(paste0(prefix, "validation-results-", sc, "-bio-and-rand-", cor.type, ".png"), width = 2 * 480)
         g <- grid.arrange(g1, g2, ncol = 2, top = textGrob(title, gp = gpar(fontsize = 25)))
         grid.draw(g)
         d <- dev.off()
@@ -346,7 +385,8 @@ for(cor.type in c("pearson", "spearman")) {
 
 ## Collect the ground truth data
 ##gt <- unique(res[, c("sample.id", "subchallenge", "dataset.name", "mixture.type", "tumor.type", "cell.type", "measured")])
-gt <- get.validation.ground.truth()
+##gt <- get.specified.validation.ground.truth()
+gt <- get.actual.validation.ground.truth()
 
 plts <- 
     dlply(gt,
@@ -359,7 +399,7 @@ plts <-
               g <- plot.admixtures(mat)
               ## g <- g + ggtitle(paste0(firstup(sc), "-Grained Sub-Challenge\n(Validation; ", ds, "; ", mt, ")"))
               ## g <- g + ggtitle(paste0("Validation Ground Truth: ", ds, ", ", mt))
-              g <- g + ggtitle(paste0("Validation Ground Truth:\n", mt, " Admxitures"))
+              g <- g + ggtitle(paste0("Validation Ground Truth:\n", mt, " Admxitures", title.postfix))
               g
           })
 
@@ -389,22 +429,45 @@ d_ply(res,
           g2 <- g2 + ggtitle("Random Admixtures")
           g2 <- g2 + theme(axis.text.x = element_text(angle = 45, hjust = 1))
           
-          title <- paste0(meth, " ", ct, " (", firstup(sc), "-Grained Sub-Challenge)")
+          title <- paste0(meth, " ", ct, " (", firstup(sc), "-Grained Sub-Challenge", title.postfix, ")")
           g <- grid.arrange(g2, g1, ncol = 2, top = textGrob(title, gp = gpar(fontsize = 25)))
 
-          png(paste0("validation-admixtures-", "method-", meth, "-", ct, "-", sc, ".png"), width = 2 * 480)
+          png(paste0(prefix, "validation-results-admixtures-", "method-", meth, "-", ct, "-", sc, ".png"), width = 2 * 480)
           grid.draw(g)
           d <- dev.off()
       })
 
-
-
-png(paste0("validation-admixtures", ".png"), width = 2 * 480)
+png(paste0(prefix, "validation-results-admixtures", ".png"), width = 2 * 480)
 g1 <- plts[["Random"]]
 g1 <- g1 + ggtitle("Random Admixtures")
 g2 <- plts[["Biological"]]
 g2 <- g2 + ggtitle("Biological Admixtures")
-title <- "Validation Admixture Proportions"
+title <- paste0("Validation Admixture Proportions", title.postfix)
 g <- grid.arrange(g1, g2, ncol = 2, top = textGrob(title, gp = gpar(fontsize = 25)))
 grid.draw(g)
 d <- dev.off()
+
+g1 <- plts[["Random"]]
+g1 <- g1 + theme(plot.title = element_blank()) + xlab("Admixture")
+png(paste0(prefix, "validation-results-random-admixtures", ".png"))
+print(g1)
+d <- dev.off()
+
+## Plot one example
+
+ct <- "CD4.T.cells"
+sc <- "coarse"
+meth <- "CIBERSORTx"
+mt <- "Random"
+ds <- "DS3"
+sub <- subset(res, mixture.type == mt & cell.type == ct & subchallenge == sc & modelId == meth & dataset.name == ds)
+g1 <- ggplot(sub, aes(x = measured, y = prediction))
+g1 <- g1 + geom_point()
+g1 <- g1 + xlab("Measured") + ylab("Predicted")
+g1 <- g1 + geom_smooth(method = "lm")
+g1 <- g1 + ggtitle(paste0(meth, ": ", ct, "\n(", firstup(sc), "-Grained Sub-Challenge)"))
+g1 <- g1 + theme(text = element_text(size=20))
+png(paste0(prefix, "validation-results-individual-", meth, "-", ct, "-", sc, "-", mt, ".png"))
+print(g1)
+d <- dev.off()
+      

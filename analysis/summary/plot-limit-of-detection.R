@@ -28,7 +28,6 @@ if(use.synapse.predictions) {
 } else {
     in.silico.results.file <- "all-predictions.tsv"
     res <- read.table(in.silico.results.file, sep="\t", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
-    source("../utils.R")
     res$repo_name <- res$method
     
     val.metadata <- get.in.silico.metadata()
@@ -244,6 +243,8 @@ if(infer.spike.in.cell.types) {
                                   by.y = c("dataset.name", "sample.id", "spike.in.pop"))
 } # if(infer.spike.in.cell.types)
 
+use.segmented <- FALSE
+
 res.matrices <-
     llply(spike.in.res,
           .fun = function(res) {
@@ -251,23 +252,33 @@ res.matrices <-
                     .variables = c("subchallenge", "cell.type", "dataset.name", "repo_name", "mixture.type"),
                     .fun = function(df) {
                         df <- df[order(df$measured),,drop=F]
-                        sci <- formatC(as.numeric(as.character(df$measured)), format="e", digits=2)
-                        df$measured <- factor(sci, levels = unique(sci))
-                        cmps <- as.data.frame(compare_means(prediction ~ measured,  data = df))
-                        cmps <- cmps[cmps$group1 == "0.00e+00",]
-                        ret <- cmps[, c("group1", "group2", "p")]
                         min.diff.prop <- 1
-                        if(any(ret$p < 0.01)) {
-                            flag <- ret$p < 0.01
-                            min.diff.prop <- min(as.numeric(ret[flag,"group2"]))
+                        if(!use.segmented) {
+                            sci <- formatC(as.numeric(as.character(df$measured)), format="e", digits=2)
+                            df$measured <- factor(sci, levels = unique(sci))
+                            cmps <- as.data.frame(compare_means(prediction ~ measured,  data = df))
+                            cmps <- cmps[cmps$group1 == "0.00e+00",]
+                            ret <- cmps[, c("group1", "group2", "p")]
+                            if(any(ret$p < 0.01)) {
+                                ## flag <- ret$p < 0.01
+                                ## min.diff.prop <- min(as.numeric(ret[flag,"group2"]))
+                                ## Require all values > group2 to be sig
+                                for(i in 1:nrow(ret)) {
+                                    if(all(ret[i:nrow(ret), "p"] < 0.01)) {
+                                        min.diff.prop <- min(as.numeric(ret[i, "group2"]))
+                                        break
+                                    }
+                                }
+                            }
                         }
                         data.frame(min.diff.prop = min.diff.prop)
                     })
           })
 
-firstup <- function(x) {
-  substr(x, 1, 1) <- toupper(substr(x, 1, 1))
-  x
+my.format <- function(x) {
+    ifelse(x == 0, 0,
+           ifelse(x < 0.01, formatC(x, format="e", digits=1),
+                  formatC(x, format="f", digits=2, drop0trailing = TRUE)))
 }
 
 nms <- names(res.matrices)
@@ -280,11 +291,51 @@ all.plots <-
                   dlply(res, .variables = c("mixture.type"),
                         .fun = function(res.ds) {
 
+                            var <- "min.diff.prop"
+                            id.var <- "repo_name"
+
+                            res.ds$cell.type <- as.character(res.ds$cell.type)
+                            res.ds[,id.var] <- as.character(res.ds[,id.var])
+
+                            ## Add mean row and column
+                            row.summary.name <- "mean"
+                            row.summary.fun <- mean
+                            col.summary.name <- "min"
+                            col.summary.fun <- min
+                            cell.type.summaries <- ddply(res.ds, .variables = c("cell.type"),
+                                                         .fun = function(tmp) {
+                                                             ret <- data.frame(id = col.summary.name, cor = col.summary.fun(tmp[, var], na.rm=TRUE))
+                                                             colnames(ret)[1] <- id.var
+                                                             colnames(ret)[2] <- var                                 
+                                                             ret
+                                                         })
+                            cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, var], decreasing = TRUE),]
+    
+                            method.summaries <- ddply(res.ds, .variables = c(id.var),
+                                                      .fun = function(tmp) {
+                                                          ret <- data.frame(cell.type = row.summary.name, cor = row.summary.fun(tmp[, var], na.rm=TRUE))
+                                                          colnames(ret)[2] <- var
+                                                          ret
+                                                      })
+    
+                            method.summaries <- method.summaries[order(method.summaries[, var], decreasing = TRUE),]
+
+
+                            cell.type.levels <- c(cell.type.summaries$cell.type[cell.type.summaries$cell.type != row.summary.name], row.summary.name)
+                            id.levels <- c(col.summary.name, method.summaries[method.summaries[, id.var] != col.summary.name, id.var])
+
+                            
+                            res.ds <- rbind(res.ds[, c(id.var, "cell.type", var)], cell.type.summaries[, c(id.var, "cell.type", var)])
+                            res.ds <- rbind(res.ds, method.summaries[, c(id.var, "cell.type", var)])    
+
+                            
                             ## res.ds$label <- formatC(as.numeric(as.character(res.ds$min.diff.prop)), format="e", digits=1)
-                            my.format <- function(x) ifelse(x < 0.01, formatC(x, format="e", digits=1),
-                                                            formatC(x, format="f", digits=2, drop0trailing = TRUE))
                             ## res.ds$label <- formatC(as.numeric(as.character(100 * res.ds$min.diff.prop)), format="e", digits=1)
+
                             res.ds$label <- my.format(as.numeric(as.character(100 * res.ds$min.diff.prop)))
+                            res.ds$cell.type <- factor(res.ds$cell.type, levels = cell.type.levels)
+                            res.ds[, id.var] <- factor(res.ds[, id.var], levels = id.levels)
+                            
                             g <- ggplot(data = res.ds, aes(y = repo_name, x = cell.type, fill = log2(min.diff.prop)))
                             g <- g + geom_tile()
                             g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -308,7 +359,7 @@ all.plots <-
                         prefix <- mt
                         title <- paste0(mt, " Admixtures")
                         g <- subplots[[sb.nm]]
-                        g <- g + ggtitle(paste0(firstup(nm), "-Grained Sub-Challenge (Validation; ", title, ")"))
+                        g <- g + ggtitle(paste0(firstup(nm), "-Grained Sub-Challenge (", title, ")"))
                         g <- g + theme(text = element_text(size = 20), title = element_text(size = 20))
                         file <- paste0("validation-lod-summary-", prefix, "-", nm, ".png")
                         png(file, width = 2 * 480)
@@ -332,7 +383,7 @@ g2 <- g2 + ggtitle("Fine-Grained Sub-Challenge")
 g2 <- g2 + theme(text = element_text(size = 20), title = element_text(size = 20))
 file <- paste0("validation-lod-summary-random", ".png")
 png(file, width = 2 * 480, height = 2 * 480)
-title <- "Random Admixtures (Validation)"
+title <- "Random Admixtures"
 ## g <- do.call("grid.arrange", c(list(g1,g2), nrow = 2, top = title))
 g <- grid.arrange(g1, g2, nrow = 2, top = textGrob(title, gp=gpar(fontsize=25)))
 grid.draw(g)
@@ -346,7 +397,7 @@ g2 <- g2 + ggtitle("Biological Admixtures")
 g2 <- g2 + theme(text = element_text(size = 20), title = element_text(size = 20))
 file <- paste0("validation-lod-summary-coarse", ".png")
 png(file, width = 2 * 480, height = 2 * 480)
-title <- "Coarse-Grained Sub-Challenge (Validation)"
+title <- "Coarse-Grained Sub-Challenge"
 ## g <- do.call("grid.arrange", c(list(g1,g2), nrow = 2, top = title))
 g <- grid.arrange(g1, g2, nrow = 2, top = textGrob(title, gp=gpar(fontsize=25)))
 grid.draw(g)
@@ -360,11 +411,12 @@ g2 <- g2 + ggtitle("Biological Admixtures")
 g2 <- g2 + theme(text = element_text(size = 20), title = element_text(size = 20))
 file <- paste0("validation-lod-summary-fine", ".png")
 png(file, width = 2 * 480, height = 2 * 480)
-title <- "Fine-Grained Sub-Challenge (Validation)"
+title <- "Fine-Grained Sub-Challenge"
 ## g <- do.call("grid.arrange", c(list(g1,g2), nrow = 2, top = title))
 g <- grid.arrange(g1, g2, nrow = 2, top = textGrob(title, gp=gpar(fontsize=25)))
 grid.draw(g)
 d <- dev.off()
+
 
 nms <- names(spike.in.res)
 names(nms) <- nms
@@ -374,34 +426,43 @@ l_ply(nms,
           d_ply(res,
                 .variables = c("cell.type", "repo_name"),
                 .fun = function(df) {
+                    ct <- as.character(df$cell.type[1])
                     subplots <-
                         dlply(df,
                               .variables = c("mixture.type"),
                               .fun = function(df.ds) {
 
                                   df.ds <- df.ds[order(df.ds$measured),]
-                                  sci <- formatC(as.numeric(as.character(df.ds$measured)), format="e", digits=2)
-                                  df.ds$measured <- factor(sci, levels = unique(sci))
-                                  cmps <- as.data.frame(compare_means(prediction ~ measured,  data = df.ds))
-                                  cmps <- cmps[cmps$group1 == "0.00e+00",]
-                                  cmps <- cmps[cmps$p < 0.1,]
-                                  my_comparisons <-
-                                      llply(1:nrow(cmps),
-                                            .fun = function(i) c(cmps[i,2], cmps[i,3]))
+                                  df.ds$val <- as.numeric(as.character(df.ds$measured)) * 100
+                                  ## sci <- formatC(as.numeric(as.character(df.ds$measured))*100, format="e", digits=2)
+                                  sci <- my.format(df.ds$val)
+                                  if(!use.segmented) {
+                                      df.ds$val <- factor(sci, levels = unique(sci))
+                                      cmps <- as.data.frame(compare_means(prediction ~ val,  data = df.ds))
+                                      ## cmps <- cmps[cmps$group1 == "0.00e+00",]
+                                      cmps <- cmps[cmps$group1 == "0",]
+                                      display.p.cutoff <- 0.1
+                                      display.p.cutoff <- 0.01
+                                      cmps <- cmps[cmps$p < display.p.cutoff,]
+                                      my_comparisons <-
+                                          llply(1:nrow(cmps),
+                                                .fun = function(i) c(cmps[i,2], cmps[i,3]))
+                                  }
                                   
-                                  
-                                  g <- ggplot(data = df.ds, aes(x = measured, y = prediction))
+                                  g <- ggplot(data = df.ds, aes(x = val, y = prediction))
                                   g <- g + geom_boxplot()
-                                  g <- g + stat_compare_means(comparisons = my_comparisons, size = 5)
+                                  if(!use.segmented) {
+                                      g <- g + stat_compare_means(comparisons = my_comparisons, size = 5)
+                                  }
                                   g <- g + geom_beeswarm()
                                   g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-                                  g <- g + xlab("Spike-in Proportion") + ylab("Score")
+                                  xlab <- paste0(fix.string(ct), " Spike-in (%)")
+                                  g <- g + xlab(xlab) + ylab("Score")
                                   mt <- as.character(df.ds$mixture.type[1])
                                   title <- paste0(mt, " Admixtures")
                                   g <- g + ggtitle(title)
                                   g
                               })
-                    ct <- as.character(df$cell.type[1])
                     meth <- as.character(df$repo_name[1])
                     subplot.names <- names(subplots)
                     names(subplot.names) <- subplot.names
@@ -411,7 +472,7 @@ l_ply(nms,
                               prefix <- mt
                               title <- paste0(mt, " Admixtures")
                               g <- subplots[[sb.nm]]
-                              g <- g + ggtitle(paste0(firstup(nm), "-Grained Sub-Challenge (Validation; ", title, "):\n", ct, " ", meth))
+                              g <- g + ggtitle(paste0(meth, ": ", ct, "\n", firstup(nm), "-Grained Sub-Challenge (", title, ")"))
                               g <- g + theme(text = element_text(size = 20), title = element_text(size = 20))
                               file <- paste0("validation-lod-ct-", prefix, "-", ct, "-", meth, "-", nm)
                               file <- gsub(file, pattern = "\\.", replacement = "-")
@@ -420,8 +481,8 @@ l_ply(nms,
                               print(g)
                               d <- dev.off()
                     })
-                    
-                    top <- paste0(firstup(nm), "-Grained Sub-Challenge (Validation):\n", ct, " ", meth)
+
+                    top <- paste0(meth, ": ", ct, "\n", firstup(nm), "-Grained Sub-Challenge")
                     plt <- do.call("grid.arrange", c(subplots, nrow = 2, top = top))
                     file <- make.names(paste0("validation-lod-ct-", ct, "-", meth, "-", nm))
                     file <- gsub(file, pattern = "\\.", replacement = "-")

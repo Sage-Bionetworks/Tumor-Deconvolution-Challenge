@@ -38,12 +38,12 @@ cols <- colnames(expr.mat)
 ##cols <- cols[!(grepl(cols, pattern="BM"))]
 ##cols <- cols[!(grepl(cols, pattern="RM"))]
 
-
 sample.levels <- c(
     "Naive_B_cells_1",
     "Memory_CD4_T_cells_1",
     "Memory_CD4_T_cells_2",        
     "Naive_CD4_T_cells_1",
+    "Naive_CD4_T_cells_2",    
     "Tregs",
     "Memory_CD8_T_cells_1",
     "Memory_CD8_T_cells_2",        
@@ -74,17 +74,22 @@ marker.file <- "immune-cell-markers.xlsx"
 marker.tbl <- read.xlsx(marker.file, sheet=1)
 
 plot.marker.heatmap <- function(mat, marker.tbl, marker.gene.id.col = "marker.symbol", zscore = TRUE) {
+    title <- "Expression"
     if(zscore) {
         mat <- t(scale(t(mat), scale = TRUE, center = TRUE))
+        title <- "Expression\n(z-scored)"
     }
     rownames(marker.tbl) <- as.character(marker.tbl[, marker.gene.id.col])
     common <- intersect(rownames(mat), as.character(marker.tbl[, marker.gene.id.col]))
     mtbl <- marker.tbl[rownames(marker.tbl) %in% common,]
     mat <- mat[as.character(mtbl[, marker.gene.id.col]),]
     
-    split <- factor(mtbl$cell.type, levels = unique(mtbl$cell.type))
+    split <- factor(mtbl$cell.type, levels = unique(rev(mtbl$cell.type)))
     h <- Heatmap(mat, cluster_rows = FALSE, show_column_names = TRUE, split = split, cluster_columns = FALSE,
-                 row_title_rot = 0, cluster_row_slices = FALSE, column_names_rot = 90)
+                 row_title_rot = 0, cluster_row_slices = FALSE, column_names_rot = 90,
+                 heatmap_legend_param = list(title = title),
+                 row_names_gp = gpar(fontsize = 10), row_title_gp = gpar(fontsize = 12))                 
+##                 row_names_gp = gpar(fontsize = 8), gap = unit(2, "mm"))
     h
 }
 
@@ -98,6 +103,11 @@ pc.expr.mat <- rbind(pc.expr.mat, CD45RO = as.numeric(trans.expr.mat[cd45ro.enst
 
 h2 <- plot.marker.heatmap(as.matrix(pc.expr.mat), marker.tbl)
 ##draw(h1, column_title = "All genes")
+
+png("purified-samples-marker-heatmap-protein-coding-genes-no-title.png")
+draw(h2)
+d <- dev.off()
+
 h2@column_title <- "Protein-coding genes"
 
 png("purified-samples-marker-heatmap.png", width = 2 * 480)

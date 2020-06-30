@@ -21,16 +21,31 @@ suppressPackageStartupMessages(p_load(openxlsx))
 ##        mean_{cell.type in predicted.cell.type} score(cell.type, predicted.cell.type)
 ##        e.g., mean_{x in Memory_CD4_T_cells_1, Memory_CD4_T_cells_2, Naive_CD4_T_cells_1, Naive_CD4_T_cells_2, Tregs} score(x, CD4.T.cell)
 
-prefix <- "only-pc-"
-
 ## Get the validation results ("all_predictions.csv")
 synLogin()
 synId <- "syn21715094"
 validation.results.file <- synGet(synId, downloadFile = TRUE)$path
 ## validation.results.file <- "validation-results.csv"
 ## res <- read.table(validation.results.file, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
-validation.results.file <- "../../challenge_models/all-predictions.tsv"
+
+prefix <- "all-genes-"
+title.postfix <- "; All Genes"
+validation.results.file <- "all-predictions-all-genes.tsv"
+csx.results.file <- "/Users/Brian/work/sage/deconvolution/Tumor-Deconvolution-Challenge/cibersortx/csx-all-gene-predictions.tsv"
+
+use.protein.coding.only <- TRUE
+if(use.protein.coding.only) {
+
+    prefix <- "only-pc-"
+    title.postfix <- "; Protein-Coding Genes"
+    title.postfix <- ""
+    validation.results.file <- "all-predictions-pc-only.tsv"
+    csx.results.file <- "/Users/Brian/work/sage/deconvolution/Tumor-Deconvolution-Challenge/cibersortx/csx-pc-only-predictions.tsv"
+    
+}
 res <- read.table(validation.results.file, sep="\t", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
+csx.res <- read.table(csx.results.file, sep="\t", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
+res <- rbind(res, csx.res)
 
 synId <- "syn21590364"
 path <- synGet(synId, downloadFile = TRUE)$path
@@ -140,6 +155,7 @@ cell.type.levels <- c(
 
 trans <-
     list("cibersort" = "CIBERSORT",
+         "CIBERSORTx" = "CIBERSORTx",
          "quantiseq" = "quanTIseq",
          "mcpcounter" = "MCP-counter",
          "epic" = "EPIC",
@@ -150,7 +166,7 @@ for(nm in names(trans)) {
     res[flag, "method"] <- trans[[nm]]
 }
 
-deconv.methods <- c("CIBERSORT", "EPIC", "quanTIseq")
+deconv.methods <- c("CIBERSORT", "CIBERSORTx", "EPIC", "quanTIseq")
 
 flag <- grepl(res$sample.id, pattern="BM") | grepl(res$sample.id, pattern="RM")
 if(any(flag)) {
@@ -196,7 +212,7 @@ plot.cell.type.score.heatmap <- function(df, score.col = "prediction",
     g <- ggplot(data = df, aes_string(y = "sample.id", x = "cell.type", fill = score.col))
     g <- g + geom_tile()
     g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
-                   text = element_text(size = 20))
+                   text = element_text(size = 16))
 ##                   title = element_text(size = 8))
     g <- g + ylab("Actual Cell Type") + xlab("Predicted Cell Type")
     if(normalized.score) {
@@ -206,7 +222,7 @@ plot.cell.type.score.heatmap <- function(df, score.col = "prediction",
         g <- g + scale_fill_gradient2("Prediction", limits = c(0,1),
                                       low = "red", high = "blue", mid = "white", na.value = "black")
     }
-    g <- g + facet_wrap(~ method)
+    g <- g + facet_wrap(~ method, nrow = 1)
     g
 }
 
@@ -223,15 +239,15 @@ names(non.deconv.methods) <- non.deconv.methods
 l_ply(deconv.methods,
       .fun = function(meth) {
           g <- plot.cell.type.score.heatmap(subset(coarse.res, method == meth))
-          g <- g + ggtitle("Coarse-Grained Sub-Challenge\n(Validation)") + theme(plot.title = element_text(hjust = 0.5))
-          file <- paste0(prefix, "validation-coarse-grained-spillover-", meth, ".png")
+          g <- g + ggtitle(paste0("Coarse-Grained Sub-Challenge\n(Validation", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
+          file <- paste0(prefix, "validation-spillover-coarse-grained-", meth, ".png")
           png(file)
           print(g)
           d <- dev.off()
           
           g <- plot.cell.type.score.heatmap(subset(fine.res, method == meth))
-          g <- g + ggtitle("Fine-Grained Sub-Challenge\n(Validation)") + theme(plot.title = element_text(hjust = 0.5))
-          file <- paste0(prefix, "validation-fine-grained-spillover-", meth, ".png")
+          g <- g + ggtitle(paste0("Fine-Grained Sub-Challenge\n(Validation", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
+          file <- paste0(prefix, "validation-spillover-fine-grained-", meth, ".png")
           png(file)
           print(g)
           d <- dev.off()
@@ -241,63 +257,67 @@ l_ply(non.deconv.methods,
       .fun = function(meth) {
           g <- plot.cell.type.score.heatmap(subset(coarse.res, method == meth),
                                             score.col = "norm.score", normalized.score = TRUE)
-          g <- g + ggtitle("Coarse-Grained Sub-Challenge\n(Validation)") + theme(plot.title = element_text(hjust = 0.5))
-          file <- paste0(prefix, "validation-coarse-grained-spillover-", meth, ".png")
+          g <- g + ggtitle(paste0("Coarse-Grained Sub-Challenge\n(Validation", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
+          file <- paste0(prefix, "validation-spillover-coarse-grained-", meth, ".png")
           png(file)
           print(g)
           d <- dev.off()
           
           g <- plot.cell.type.score.heatmap(subset(fine.res, method == meth),
                                             score.col = "norm.score", normalized.score = TRUE)
-          g <- g + ggtitle("Fine-Grained Sub-Challenge\n(Validation)") + theme(plot.title = element_text(hjust = 0.5))
-          file <- paste0(prefix, "validation-fine-grained-spillover-", meth, ".png")
+          g <- g + ggtitle(paste0("Fine-Grained Sub-Challenge\n(Validation", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
+          file <- paste0(prefix, "validation-spillover-fine-grained-", meth, ".png")
           png(file)
           print(g)
           d <- dev.off()
       })
 
 
-png(paste0(prefix, "validation-deconv-coarse-grained-spillover.png"), width = 2 * 480)
+png(paste0(prefix, "validation-spillover-deconv-coarse-grained.png"), width = 2 * 480)
 g1 <- plot.cell.type.score.heatmap(subset(deconv.res, subchallenge == "coarse"))
-g1 <- g1 + ggtitle("Coarse-Grained Sub-Challenge (Validation)")
+g1 <- g1 + ggtitle(paste0("Coarse-Grained Sub-Challenge (Validation", title.postfix, ")"))
 print(g1)
 d <- dev.off()
 
-png(paste0(prefix, "validation-deconv-fine-grained-spillover.png"), width = 2 * 480)
+png(paste0(prefix, "validation-spillover-deconv-fine-grained.png"), width = 2 * 480)
 g2 <- plot.cell.type.score.heatmap(subset(deconv.res, subchallenge == "fine"))
-g2 <- g2 + ggtitle("Fine-Grained Sub-Challenge (Validation)")
+g2 <- g2 + ggtitle(paste0("Fine-Grained Sub-Challenge (Validation", title.postfix, ")"))
 print(g2)
 d <- dev.off()
 
 non.deconv.res <- merge(non.deconv.res, purified.scores)
 non.deconv.res$norm.score <- non.deconv.res$prediction / non.deconv.res$pure.score
 
-png(paste0(prefix, "validation-non-deconv-coarse-grained-spillover.png"), width = 2 * 480)
+png(paste0(prefix, "validation-spillover-non-deconv-coarse-grained.png"), width = 2 * 480)
 g3 <- plot.cell.type.score.heatmap(subset(non.deconv.res, subchallenge == "coarse"),
                                   score.col = "norm.score", normalized.score = TRUE)
-g3 <- g3 + ggtitle("Coarse-Grained Sub-Challenge (Validation)")
+g3 <- g3 + ggtitle(paste0("Coarse-Grained Sub-Challenge (Validation", title.postfix, ")"))
 print(g3)
 d <- dev.off()
 
-png(paste0(prefix, "validation-non-deconv-fine-grained-spillover.png"), width = 2 * 480)
+png(paste0(prefix, "validation-spillover-non-deconv-fine-grained.png"), width = 2 * 480)
 g4 <- plot.cell.type.score.heatmap(subset(non.deconv.res, subchallenge == "fine"),
                                   score.col = "norm.score", normalized.score = TRUE)
-g4 <- g4 + ggtitle("Fine-Grained Sub-Challenge (Validation)")
+g4 <- g4 + ggtitle(paste0("Fine-Grained Sub-Challenge (Validation", title.postfix, ")"))
 print(g4)
 d <- dev.off()
 
-png(paste0(prefix, "validation-coarse-grained-spillover.png"), width = 2 * 480, height = 2 * 480)
+png(paste0(prefix, "validation-spillover-all-coarse-grained.png"), width = 4 * 480, height = 2 * 480)
 g1 <- g1 + ggtitle("")
 g3 <- g3 + ggtitle("")
-title <- "Coarse-Grained Sub-Challenge (Validation)"
+g1 <- g1 + theme(axis.text.x = element_text(size = 15))
+g3 <- g3 + theme(axis.text.x = element_text(size = 15))
+title <- paste0("Coarse-Grained Sub-Challenge (Validation", title.postfix, ")")
 g <- grid.arrange(g1, g3, nrow = 2, top = textGrob(title, gp = gpar(fontsize = 25)))
 grid.draw(g)
 d <- dev.off()
 
-png(paste0(prefix, "validation-fine-grained-spillover.png"), width = 2 * 480, height = 2 * 480)
+png(paste0(prefix, "validation-spillover-all-fine-grained.png"), width = 4 * 480, height = 2 * 480)
 g2 <- g2 + ggtitle("")
 g4 <- g4 + ggtitle("")
-title <- "Fine-Grained Sub-Challenge (Validation)"
+g2 <- g2 + theme(axis.text.x = element_text(size = 15))
+g4 <- g4 + theme(axis.text.x = element_text(size = 15))
+title <- paste0("Fine-Grained Sub-Challenge (Validation", title.postfix, ")")
 g <- grid.arrange(g2, g4, nrow = 2, top = textGrob(title, gp = gpar(fontsize = 25)))
 grid.draw(g)
 d <- dev.off()

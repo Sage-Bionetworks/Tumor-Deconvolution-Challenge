@@ -126,7 +126,7 @@ plts <-
                         meth <- df$repo_name[1]
                         sc <- df$subchallenge[1]
                         mt <- df$mixture.type[1]
-                        g <- g + xlab("Cancer (%)") + ylab(ylab)
+                        g <- g + xlab("Cancer Spike-in (%)") + ylab(ylab)
                         g <- g + ggtitle(paste0(meth, " (", firstup(sc), "-Grained Sub-Challenge; ", mt, " Admixtures)"))
                         g <- g + labs(colour = "Cancer Type")
                         g
@@ -157,7 +157,7 @@ all.plts <-
                         sc <- df$subchallenge[1]
                         mt <- df$mixture.type[1]
                         ct <- df$cell.type[1]
-                        g <- g + xlab("Cancer (%)") + ylab(ylab)
+                        g <- g + xlab("Cancer Spike-in (%)") + ylab(ylab)
                         g <- g + ggtitle(paste0(meth, " ", ct, "\n(", firstup(sc), "-Grained Sub-Challenge; ", mt, " Admixtures)"))
                         g <- g + labs(colour = "Cancer Type")
                         g
@@ -263,7 +263,7 @@ for(cor.type in cor.types) {
               g <- g + geom_boxplot()
               g <- g + geom_beeswarm()
               g <- g + facet_wrap(~ cell.type, scales = "free")
-              g <- g + xlab("Cancer (%)") + ylab(paste0(firstup(cor.type), " Correlation"))
+              g <- g + xlab("Cancer Spike-in (%)") + ylab(paste0(firstup(cor.type), " Correlation"))
               sz <- 15
               g <- g + theme(text = element_text(size = sz), title = element_text(size = sz))
               g <- g + ggtitle(paste0(meth, ": ", mt, "\n(", firstup(sc), "-Grained Sub-Challenge)"))
@@ -299,7 +299,7 @@ for(cor.type in cor.types) {
               g1 <- g1 + geom_boxplot()
               g1 <- g1 + geom_beeswarm()
               g1 <- g1 + facet_wrap(~ cell.type, scales = "free")
-              g1 <- g1 + xlab("Cancer (%)") + ylab(paste0(firstup(cor.type), " Correlation"))
+              g1 <- g1 + xlab("Cancer Spike-in (%)") + ylab(paste0(firstup(cor.type), " Correlation"))
               g1 <- g1 + theme(text = element_text(size = sz), title = element_text(size = sz))
               g1 <- g1 + ggtitle(paste0(meth, ": ", mt, "\n(", firstup(sc), "-Grained Sub-Challenge)"))
               g1 <- g1 + theme(axis.text.x = element_text(angle = 45, hjust = 1))
@@ -309,7 +309,7 @@ for(cor.type in cor.types) {
               g2 <- g2 + geom_boxplot()
               g2 <- g2 + geom_beeswarm()
               g2 <- g2 + facet_wrap(~ cell.type, scales = "free")
-              g2 <- g2 + xlab("Cancer (%)") + ylab(paste0(firstup(cor.type), " Correlation"))
+              g2 <- g2 + xlab("Cancer Spike-in (%)") + ylab(paste0(firstup(cor.type), " Correlation"))
               g2 <- g2 + theme(text = element_text(size = sz), title = element_text(size = sz))
               g2 <- g2 + ggtitle(paste0(meth, ": ", mt, "\n(", firstup(sc), "-Grained Sub-Challenge)"))
               g2 <- g2 + theme(axis.text.x = element_text(angle = 45, hjust = 1))
@@ -347,7 +347,7 @@ d_ply(res.cor,
           ## g <- g + geom_violin()
           g <- g + geom_beeswarm()
           g <- g + facet_grid(correlation.type ~ mixture.type)
-          g <- g + xlab("Cancer (%)") + ylab("Correlation")
+          g <- g + xlab("Cancer Spike-in (%)") + ylab("Correlation")
           sz <- 25
           g <- g + theme(text = element_text(size = sz), title = element_text(size = sz))
           g <- g + ggtitle(paste0(meth, ": ", ct, " (", firstup(sc), "-Grained Sub-Challenge)"))
