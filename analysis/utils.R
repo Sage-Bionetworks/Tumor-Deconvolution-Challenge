@@ -1,3 +1,109 @@
+coarse.cell.types <-
+  c("B.cells", "CD4.T.cells", "CD8.T.cells", "NK.cells", "neutrophils", "monocytic.lineage",
+    "fibroblasts", "endothelial.cells")
+
+get.baseline.translation <- function() {
+    baseline.method.trans <-
+        list("baseline_method1" = "CIBERSORT",
+             "baseline_method2" = "MCP-counter",
+             "baseline_method3" = "quanTIseq",
+             "baseline_method4" = "xCell",
+             "baseline_method5" = "EPIC",
+             "baseline_method6" = "TIMER",
+             "baseline_method7" = "CIBERSORTx")
+    baseline.method.trans
+}
+
+assign.baseline.names <- function(df, from.col = "repo_name", to.col = "repo_name") {
+    baseline.method.trans <- get.baseline.translation()
+    for(nm in names(baseline.method.trans)) {
+        flag <- (grepl(df[, from.col], pattern = nm))
+        df[flag, to.col] <- baseline.method.trans[[nm]]
+    }
+    df
+}
+
+define.baseline.method.flag <- function(res, method.name.col) {
+    baseline.method.trans <- get.baseline.translation()    
+    baseline.methods <- unname(unlist(baseline.method.trans))
+    baseline.method.flag <- grepl(res[, method.name.col], pattern="baseline") |
+        ( res[, method.name.col] %in% baseline.methods )
+    baseline.method.flag
+}
+
+## Assign rounds to assignments based on objectId < object Id Y then X was
+## submitted before Y
+
+## context.cols: the combination of columns that select all versions/submissions of a method
+## i.e., for the raw prediction results, context.cols = c(subchallenge.col, submitter.id.col)
+## For the leaderboard resulst (already separated by leaderboard), it is
+## context.cols = c(submitter.id.col)
+## method.name.col: probably repo_name
+assign.submission.rounds <- function(res, object.id.col, context.cols, method.name.col,
+                                     assign.latest = TRUE) {
+    baseline.method.flag <-
+        define.baseline.method.flag(res, method.name.col)
+    tmp <- unique(res[!baseline.method.flag, c(context.cols, object.id.col)])
+    ret <-
+        ddply(tmp,
+              .variables = context.cols,
+              .fun = function(df) {
+                  if(length(unique(df[, object.id.col])) != nrow(df)) {
+                      stop("Was only expecting unique object IDs\n")
+                  }
+                  o <- order(df[, object.id.col], decreasing = FALSE)
+                  df <- df[o, ]
+                  ret.df <- data.frame(df, submission = 1:nrow(df))
+                  if(assign.latest) {
+                      ret.df <- rbind(ret.df, ret.df[nrow(ret.df),,drop=F])
+                      ret.df[nrow(ret.df), "submission"] <- "latest"
+                  }
+                  ret.df
+              })
+    ret <- merge(res[!baseline.method.flag, ], ret, all.x = TRUE)
+
+    ## Handle baselines, where all submissions of the same method
+    ## should have the same method name
+    tmp <- unique(res[baseline.method.flag, c(context.cols, object.id.col, method.name.col)])
+    baseline.ret <-
+        ddply(tmp,
+              .variables = c(context.cols, method.name.col),
+              .fun = function(df) {
+                  if(length(unique(df[, object.id.col])) != nrow(df)) {
+                      stop("Was only expecting unique object IDs\n")
+                  }
+                  o <- order(df[, object.id.col], decreasing = FALSE)
+                  df <- df[o, ]
+                  ret.df <- data.frame(df, submission = 1:nrow(df))
+                  if(assign.latest) {
+                      ret.df <- rbind(ret.df, ret.df[nrow(ret.df),,drop=F])
+                      ret.df[nrow(ret.df), "submission"] <- "latest"
+                  }
+                  ret.df
+              })
+    baseline.ret <- merge(res[baseline.method.flag, ], baseline.ret, all.x = TRUE)    
+
+    rbind(ret, baseline.ret)
+}
+
+simplify.submitter.names <- function(df, col = "submitter") {
+    df[, col] <- as.character(df[, col])
+    trans <-
+        list("Northwestern Polytechnical University" = "NPU",
+             "TJU and the renegade mouse" = "TJU")
+    for(nm in names(trans)) {
+        flag <- grepl(df[, col], pattern = nm)
+        df[flag, col] <- trans[[nm]]
+    }
+    df
+    
+}
+
+translate.submitterId <- function(submitterId) {
+    tryCatch(synGetTeam(submitterId)$name,
+             error = function(e) synGetUserProfile(submitterId)$userName)
+}
+
 ggplot_smooth_scatter <- function(data, mapping, pwr = 0.25, n = 200){
       p <- ggplot(data = data, mapping = mapping) + 
         stat_density2d(aes(fill=..density..^pwr), geom="tile", contour = FALSE, n = n) +
