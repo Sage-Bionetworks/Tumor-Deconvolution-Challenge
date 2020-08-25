@@ -15,7 +15,7 @@ setwd(cache_dir)
 source("utils.R")
 source("load-data.R")
 setwd(cur_dir)
-source("define-biological-models.R")
+source("../define-biological-models.R")
 
 ## Spike-in dilution experiment. 
 
@@ -307,6 +307,9 @@ fine.grained.pop.maps <- list("A" = fine.grained.pop1.df, "B" = fine.grained.pop
 coarse.grained.pop.maps <- list("A" = coarse.grained.pop1.df, "B" = coarse.grained.pop2.df)
 
 spike.ins <- c(1/(2^seq(from=2,to=12,by=1)), 0)
+spike.ins <- unique(c(0, seq(from=0,to=0.1,by=0.01), seq(from=0.1,to=1,by=0.1), seq(from=1,to=20,by=1), seq(from=20,to=40,by=2))) / 100
+spike.ins <- sort(spike.ins, decreasing=TRUE)
+print(spike.ins)
 names(spike.ins) <- spike.ins
 
 cancer.spike.ins <- c(3/4, 1/2, 1/4, 1/8, 1/16, 1/32, 0)
@@ -594,6 +597,7 @@ datasets[[my.letters[nxt.letter]]] <-
     list("data" = coarse.grained.bio.admixtures.wo.cancer, "mixture.type" = "Biological", "subchallenge" = "coarse", "tumor.type" = NA)
 nxt.letter <- nxt.letter + 1    
 
+if(FALSE) {
 l <- fine.grained.rand.admixtures.w.cancers
 for(ds in l) {
     flag <- ds$spike.in.pop == "CRC"
@@ -640,6 +644,7 @@ for(ds in l) {
     nxt.letter <- nxt.letter + 1
     datasets[[my.letters[nxt.letter]]] <- list("data" = breast.ds, "mixture.type" = "Biological", "subchallenge" = "coarse", "tumor.type" = "BRCA")
     nxt.letter <- nxt.letter + 1
+}
 }
 
 metadata <- ldply(datasets, .fun = function(entry) as.data.frame(entry[names(entry) != "data"], stringsAsFactors = FALSE))
@@ -764,8 +769,25 @@ input.tbl <-
               as.data.frame(params)
           })
 
+parent.id <- "syn21647466"
+
 file <- "input.csv"
 write.table(file = file, input.tbl, col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
+cat(paste0("Storing ", file, " to synapse\n"))
+f <- File(file, parentId = parent.id, synapseStore = TRUE)
+synStore(f)
+
+file <- "fine-input.csv"
+write.table(file = file, subset(input.tbl, dataset.name %in% fine.datasets), col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
+cat(paste0("Storing ", file, " to synapse\n"))
+f <- File(file, parentId = parent.id, synapseStore = TRUE)
+synStore(f)
+
+file <- "coarse-input.csv"
+write.table(file = file, subset(input.tbl, dataset.name %in% coarse.datasets), col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
+cat(paste0("Storing ", file, " to synapse\n"))
+f <- File(file, parentId = parent.id, synapseStore = TRUE)
+synStore(f)
 
 nms <- names(admixtures)
 names(nms) <- nms
@@ -773,13 +795,14 @@ for(nm in nms) {
     cat(paste0("Writing ", nm, " : ", nrow(admixtures[[nm]]), " x ", ncol(admixtures[[nm]]), "\n"))
     file <- paste0(nm, "_symbol_tpm.csv")
     write.table(file = file, admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+    f <- File(file, parentId = parent.id, synapseStore = TRUE)
+    synStore(f)
+    file.remove(file)
 }
 
 cat("Done\n")
 save.image(".Rdata")
 cat("Done saving\n")
-
-parent.id <- "syn21647466"
 
 file <- metadata.file
 f <- File(file, parentId = parent.id, synpaseStore = TRUE)
@@ -793,20 +816,6 @@ for(nm in names(l)) {
     f <- File(file, parentId = parent.id, synapseStore = TRUE)
     synStore(f)
 }
-
-
-for(nm in nms) {
-    file <- paste0(nm, "_symbol_tpm.csv")
-    cat(paste0("Storing ", nm, " to synapse\n"))
-    f <- File(file, parentId = parent.id, synapseStore = TRUE)
-    synStore(f)
-}
-
-file <- "input.csv"
-cat(paste0("Storing ", file, " to synapse\n"))
-f <- File(file, parentId = parent.id, synapseStore = TRUE)
-synStore(f)
-
 
 cat("Exiting\n")
 q(status = 0)

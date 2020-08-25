@@ -12,8 +12,6 @@ synLogin()
 synId <- "syn21820376"
 
 file <- synGet(synId, downloadFile=TRUE)$path
-
-
 fine.grained.gold.standard.tbl <- read.table(file, sep=",", header=TRUE, stringsAsFactors = FALSE)
 
 translate.fine.grained.gold.standard <- function(fine.grained.gold.standard.tbl) {
@@ -56,6 +54,20 @@ trans.tbl <-
 folder.synId <- "syn21820011"
 file <- "coarse-translated-from-fine.csv"
 write.table(file = file, trans.tbl, sep=",", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
+obj <- File(file, parent = folder.synId)
+synStore(obj)
+
+## Also, create the input file (by subsetting the one used for the challenge to just the fine-grained datasets)
+synId <- "syn21821122"
+file <- synGet(synId, downloadFile=TRUE)$path
+input.tbl <- read.table(file, sep=",", header=TRUE, stringsAsFactors = FALSE)
+
+revised.input.tbl <- subset(input.tbl, dataset.name %in% trans.tbl$dataset.name)
+
+folder.synId <- "syn21821096"
+file <- "input-translated-from-fine.csv"
+write.table(file = file, revised.input.tbl, sep=",", row.names=FALSE, col.names=TRUE, quote=TRUE)
 
 obj <- File(file, parent = folder.synId)
 synStore(obj)

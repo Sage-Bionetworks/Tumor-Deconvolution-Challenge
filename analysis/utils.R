@@ -2,6 +2,10 @@ coarse.cell.types <-
   c("B.cells", "CD4.T.cells", "CD8.T.cells", "NK.cells", "neutrophils", "monocytic.lineage",
     "fibroblasts", "endothelial.cells")
 
+get.comparators <- function() {
+    c("cibersort", "mcp", "quantiseq", "xcell", "epic", "timer", "cibersortx")
+}
+
 get.baseline.translation <- function() {
     baseline.method.trans <-
         list("baseline_method1" = "CIBERSORT",
@@ -10,7 +14,15 @@ get.baseline.translation <- function() {
              "baseline_method4" = "xCell",
              "baseline_method5" = "EPIC",
              "baseline_method6" = "TIMER",
-             "baseline_method7" = "CIBERSORTx")
+             "baseline_method7" = "CIBERSORTx",
+             "cibersortx" = "CIBERSORTx",
+             "CIBERSORTx" = "CIBERSORTx",             
+             "cibersort" = "CIBERSORT",
+             "mcp" = "MCP-counter",
+             "quantiseq" = "quanTIseq",
+             "xcell" = "xCell",
+             "epic" = "EPIC",
+             "timer" = "TIMER")
     baseline.method.trans
 }
 
@@ -26,8 +38,11 @@ assign.baseline.names <- function(df, from.col = "repo_name", to.col = "repo_nam
 define.baseline.method.flag <- function(res, method.name.col) {
     baseline.method.trans <- get.baseline.translation()    
     baseline.methods <- unname(unlist(baseline.method.trans))
-    baseline.method.flag <- grepl(res[, method.name.col], pattern="baseline") |
-        ( res[, method.name.col] %in% baseline.methods )
+    baseline.method.flag <- grepl(res[, method.name.col], pattern="baseline")
+    for(baseline.method in baseline.methods) {
+        baseline.method.flag <- baseline.method.flag |
+            grepl(res[, method.name.col], pattern=baseline.method, ignore.case=TRUE)
+    }
     baseline.method.flag
 }
 
@@ -36,7 +51,7 @@ define.baseline.method.flag <- function(res, method.name.col) {
 
 ## context.cols: the combination of columns that select all versions/submissions of a method
 ## i.e., for the raw prediction results, context.cols = c(subchallenge.col, submitter.id.col)
-## For the leaderboard resulst (already separated by leaderboard), it is
+## For the leaderboard results (already separated by leaderboard), it is
 ## context.cols = c(submitter.id.col)
 ## method.name.col: probably repo_name
 assign.submission.rounds <- function(res, object.id.col, context.cols, method.name.col,
