@@ -15,13 +15,20 @@ suppressPackageStartupMessages(library(tibble))
 suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(reshape2))
 
+cat(paste0("Run on a machine with Docker installed\n"))
+cat(paste0("I ran on tdaws2: 10.23.19.191\n"))
+
 ## To re-run validation data
 ## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
 ##   --input-file-synId=syn22267272 --input-folder-synId=syn21821096 --output-folder-synId=syn22320184 --prefix=validation
 
-## To run in silico admixtures
+## To run fine-grained in silico admixtures
 ## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
-##   --input-file-synId=syn21753454 --input-folder-synId=syn21647466 --output-folder-synId=syn22331159 --prefix=in-silico-spikeins
+##   --input-file-synId=syn22332679 --input-folder-synId=syn21647466 --output-folder-synId=syn22331159 --prefix=fine-in-silico-spikeins
+
+## To run coarse-grained in silico admixtures
+## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
+##   --input-file-synId=syn22332680 --input-folder-synId=syn21647466 --output-folder-synId=syn22331159 --prefix=coarse-in-silico-spikeins
 
 ## To run purified admixtures
 ## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
