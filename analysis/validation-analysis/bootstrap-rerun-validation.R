@@ -138,7 +138,7 @@ geom_boxplotMod <- function(mapping = NULL, data = NULL, stat = "boxplot",
     }
 
 do.bootstrap.analysis <-
-    function(res.input, boostraps, 
+    function(res.input, bootstraps, 
              method.name.col, 
              model.id.col, subchallenge.col, measured.col, cell.type.col,
              dataset.name.col, sample.id.col, prediction.col,
@@ -362,6 +362,7 @@ do.bootstrap.analysis <-
             g1 <- g1 + coord_flip()
             g1 <- g1 + xlab("Method")
             g1 <- g1 + ylab("Pearson Correlation")
+            g1 <- g1 + ylim(c(-0.25, 1))
             g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20))
 
             g2 <- ggplot(data = mean.scores)
@@ -369,6 +370,7 @@ do.bootstrap.analysis <-
             g2 <- g2 + coord_flip()
             g2 <- g2 + xlab("Method")
             g2 <- g2 + ylab("Spearman Correlation")
+            g2 <- g2 + ylim(c(-0.25, 1))            
             g2 <- g2 + theme(text = element_text(size=18))    
             g2 <- g2 + theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
                              axis.ticks.y = element_blank())
@@ -514,6 +516,10 @@ do.bootstrap.analysis <-
         
 }
 
+for(nm in names(bootstraps)) {
+  
+}
+
 results <- list()
 for(round in c("1", "2", "3", "latest")) {
     postfix <- paste0("-round-", round)
@@ -541,6 +547,14 @@ for(round in c("1", "2", "3", "latest")) {
 }
 
 save.image(".Rdata.bootstrap.validation")
+
+rds.file <- "bootstraps.rds"
+saveRDS(bootstraps, rds.file)
+
+folder.synId <- "syn22320184"
+f <- File(rds.file, parentId = folder.synId, synapseStore = TRUE)
+synStore(f)
+
 
 cat("Exiting successfully\n")
 q(status=0)

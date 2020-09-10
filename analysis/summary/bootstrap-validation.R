@@ -147,6 +147,18 @@ calculate.empirical.bayes <-
 
 bootstraps <- calculate.bootstraps(res.all)
 
+rds.file <- "bootstraps.rds"
+saveRDS(bootstraps, rds.file)
+
+## Save the bootstraps in the "original-validation" folder
+folder.synId <- "syn22344981"
+f <- File(rds.file, parentId = folder.synId, synapseStore = TRUE)
+synStore(f)
+
+cat("Exiting successfully\n")
+q(status=0)
+
+
 do.bootstrap.analysis <-
     function(res.input, boostraps, 
              method.name.col, object.id.col, submitter.id.col,
