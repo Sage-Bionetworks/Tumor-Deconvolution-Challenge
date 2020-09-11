@@ -769,6 +769,30 @@ admixtures <-
 print(warnings())
 }
 
+## Create in silico admixtures from the purified profiles
+## sample.ratios is a data frame with columns sample.col (indicating the name of a sample
+## admixture), cell.type.col (indicating a cell type within the sample), and fraction.col
+## (indicating the fraction of the corresponding cell type within the sample). Note that
+## the cell types indicated in cell.type.col should exist in mat, which provides the
+## profiles that are mixed together.
+create.in.silico.admixtures <- function(mat, sample.ratios,
+                                        sample.col = "sample", cell.type.col = "cell.type",
+                                        fraction.col = "actual") {
+    insilico.admixtures <-
+        dlply(sample.ratios,
+              .variables = sample.col,
+              .fun = function(df) {
+                  cols <- as.character(df[, cell.type.col])
+                  fracs <- as.numeric(df[, fraction.col])
+                  tmp.mat <- mat[, cols]
+                  ret <- as.matrix(tmp.mat) %*% fracs
+                  colnames(ret) <- df[1, sample.col]
+                  ret
+              })
+    insilico.admixtures <- do.call(cbind, insilico.admixtures)
+    insilico.admixtures
+}
+
 admixtures <-
     dlply(all.gs,
           .parallel = TRUE,
