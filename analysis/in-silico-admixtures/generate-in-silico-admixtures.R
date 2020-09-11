@@ -695,12 +695,38 @@ write.table(file = "in-silico-val-coarse.csv", coarse.gs[, non.spike.in.cols], r
 write.table(file = "in-silico-val-fine-spike-in-annotations.csv", fine.gs, row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
 write.table(file = "in-silico-val-coarse-spike-in-annotations.csv", coarse.gs, row.names = FALSE, col.names = TRUE, sep = ",", quote = FALSE)
 
+## this is symbol_tpm.csv
 synId <- "syn21576632"
 obj <- synGet(synId, downloadFile = TRUE)
 cpm.expr <- read.table(obj$path, sep = ",", header = TRUE)
 
 rownames(cpm.expr) <- as.character(cpm.expr$Gene)
 cpm.expr <- cpm.expr[, !(colnames(cpm.expr) %in% c("Gene"))]
+
+## this is ensg_tpm.csv
+synId <- "syn21576631"
+obj <- synGet(synId, downloadFile = TRUE)
+ensg.cpm.expr <- read.table(obj$path, sep = ",", header = TRUE)
+
+rownames(ensg.cpm.expr) <- as.character(ensg.cpm.expr$Gene)
+ensg.cpm.expr <- ensg.cpm.expr[, !(colnames(ensg.cpm.expr) %in% c("Gene"))]
+
+## Load the counts
+## this is symbol_counts.csv
+synId <- "syn21576630"
+obj <- synGet(synId, downloadFile = TRUE)
+cnts.expr <- read.table(obj$path, sep = ",", header = TRUE)
+
+rownames(cnts.expr) <- as.character(cnts.expr$Gene)
+cnts.expr <- cnts.expr[, !(colnames(cnts.expr) %in% c("Gene"))]
+
+## this is ensg_counts.csv
+synId <- "syn21576629"
+obj <- synGet(synId, downloadFile = TRUE)
+ensg.cnts.expr <- read.table(obj$path, sep = ",", header = TRUE)
+
+rownames(ensg.cnts.expr) <- as.character(ensg.cnts.expr$Gene)
+ensg.cnts.expr <- ensg.cnts.expr[, !(colnames(ensg.cnts.expr) %in% c("Gene"))]
 
 coarse.gs <- ldply(datasets, .fun = function(df) df$data)
 colnames(coarse.gs) <- c("dataset.name", "sample.id", "sample", "measured", "spike.in.pop", "spike.in.prop")
@@ -715,6 +741,7 @@ all.gs <- rbind(coarse.gs, fine.gs)
 ## Create the expression files
 ## First column is Gene
 
+if(FALSE) {
 admixtures <-
     dlply(all.gs,
           .parallel = TRUE,
@@ -740,6 +767,81 @@ admixtures <-
               mxs
           })
 print(warnings())
+}
+
+admixtures <-
+    dlply(all.gs,
+          .parallel = TRUE,
+          .variables = c("dataset.name"),
+          .fun = function(df) {
+              mat <- as.matrix(cpm.expr)
+              mxs <- create.in.silico.admixtures(mat, df,
+                                                 sample.col = "sample.id", cell.type.col = "sample",
+                                                 fraction.col = "measured")
+              mxs <- cbind(Gene = rownames(mat), mxs)
+              mxs
+          })
+
+ensg.admixtures <-
+    dlply(all.gs,
+          .parallel = TRUE,
+          .variables = c("dataset.name"),
+          .fun = function(df) {
+              mat <- as.matrix(ensg.cpm.expr)
+              mxs <- create.in.silico.admixtures(mat, df,
+                                                 sample.col = "sample.id", cell.type.col = "sample",
+                                                 fraction.col = "measured")
+              mxs <- cbind(Gene = rownames(mat), mxs)
+              mxs
+          })
+
+## Create the same admixtures, but for count matrices
+purified.samples <- sort(as.character(unique(all.gs$sample)))
+
+purified.cnts.expr <- cnts.expr[, purified.samples]
+rownames(purified.cnts.expr) <- cnts.expr$Gene
+tot.purified.cnts <- colSums(purified.cnts.expr)
+median.tot.purified.cnts <- median(tot.purified.cnts)
+
+norm.purified.cnts.expr <- sweep(purified.cnts.expr, 2, colSums(purified.cnts.expr),`/`) * median.tot.purified.cnts
+rownames(norm.purified.cnts.expr) <- rownames(cnts.expr)
+
+ensg.purified.cnts.expr <- ensg.cnts.expr[, purified.samples]
+rownames(ensg.purified.cnts.expr) <- ensg.cnts.expr$Gene
+ensg.tot.purified.cnts <- colSums(ensg.purified.cnts.expr)
+ensg.median.tot.purified.cnts <- median(ensg.tot.purified.cnts)
+
+ensg.norm.purified.cnts.expr <- sweep(ensg.purified.cnts.expr, 2, colSums(ensg.purified.cnts.expr),`/`) * ensg.median.tot.purified.cnts
+rownames(ensg.norm.purified.cnts.expr) <- rownames(ensg.cnts.expr)
+
+cnts.admixtures <-
+    dlply(all.gs,
+          .parallel = TRUE,
+          .variables = c("dataset.name"),
+          .fun = function(df) {
+              mat <- as.matrix(norm.purified.cnts.expr)
+              mxs <- create.in.silico.admixtures(mat, df,
+                                                 sample.col = "sample.id", cell.type.col = "sample",
+                                                 fraction.col = "measured")
+              mxs <- cbind(Gene = rownames(mat), mxs)
+              mxs
+          })
+
+ensg.cnts.admixtures <-
+    dlply(all.gs,
+          .parallel = TRUE,
+          .variables = c("dataset.name"),
+          .fun = function(df) {
+              mat <- as.matrix(ensg.norm.purified.cnts.expr)
+              mxs <- create.in.silico.admixtures(mat, df,
+                                                 sample.col = "sample.id", cell.type.col = "sample",
+                                                 fraction.col = "measured")
+              mxs <- cbind(Gene = rownames(mat), mxs)
+              mxs
+          })
+
+
+print(warnings())
 
 ## Create the input.csv file
 
@@ -755,28 +857,28 @@ input.tbl <-
                   "cancer.type" = ct,
                   "platform" = "Illumina",
                   "scale" = "Linear",
-                  "normalization" = "CPM",
-                  "native.probe.type" = "Hugo",
-                  "native.expr.file" = paste0(ds, "_symbol_tpm.csv"),
-                  "hugo.expr.file" = paste0(ds, "_symbol_tpm.csv"),
-                  "ensg.expr.file" = NA,
-                  "symbol.compression.function" = "identity",
-                  "ensg.compression.function" = NA,
-                  "native.expr.est.counts.file" = NA,
-                  "hugo.expr.est.counts.file" = NA,
-                  "ensg.expr.est.counts.file" = NA,
-                  "symbol.compression.est.counts.function" = NA,
-                  "ensg.compression.est.counts.function" = NA,
-                  "symbol.to.native.mapping.file" = NA,
-                  "ensg.to.native.mapping.file" = NA,
+                  "normalization" = "TPM",
+                  "native.probe.type" = "ENSG",
+                  "symbol.compression.function" = "colMeans",
+                  "ensg.compression.function" = "colMeans",
+                  "symbol.to.native.mapping.file" = "native_to_hugo.tsv",
+                  "ensg.to.native.mapping.file" = "native_to_ensg.tsv",
+                  "hugo.expr.file" = paste0(ds, "_symbol_val_tpm.csv"),
+                  "hugo.expr.est.counts.file" = paste0(ds, "_symbol_val_cnts.csv"),
+                  "ensg.expr.file" = paste0(ds, "_ensg_val_tpm.csv"),
+                  "ensg.expr.est.counts.file" = paste0(ds, "_ensg_val_cnts.csv"),
+                  "fastq.samples" = NA,                  
                   "fastq1.files" = NA,
                   "fastq2.files" = NA,
-                  "fastq.samples" = NA
+                  "native.expr.file" = paste0(ds, "_ensg_val_tpm.csv"),
+                  "native.expr.est.counts.file" = paste0(ds, "_ensg_val_cnts.csv"),
+                  "symbol.compression.est.counts.function" = "colMeans",
+                  "ensg.compression.est.counts.function" = "colMeans"
               )
               as.data.frame(params)
           })
 
-parent.id <- "syn21647466"
+parent.id <- "syn22361008"
 
 file <- "input.csv"
 write.table(file = file, input.tbl, col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
@@ -800,11 +902,44 @@ nms <- names(admixtures)
 names(nms) <- nms
 for(nm in nms) {
     cat(paste0("Writing ", nm, " : ", nrow(admixtures[[nm]]), " x ", ncol(admixtures[[nm]]), "\n"))
-    file <- paste0(nm, "_symbol_tpm.csv")
+    file <- paste0(nm, "_symbol_val_tpm.csv")
     write.table(file = file, admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+    cat(paste0("Storing ", nm, " to synapse\n"))
     f <- File(file, parentId = parent.id, synapseStore = TRUE)
     synStore(f)
-    file.remove(file)
+}
+
+nms <- names(ensg.admixtures)
+names(nms) <- nms
+for(nm in nms) {
+    cat(paste0("Writing ", nm, " : ", nrow(ensg.admixtures[[nm]]), " x ", ncol(ensg.admixtures[[nm]]), "\n"))
+    file <- paste0(nm, "_ensg_val_tpm.csv")
+    write.table(file = file, ensg.admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+    cat(paste0("Storing ", nm, " to synapse\n"))
+    f <- File(file, parentId = parent.id, synapseStore = TRUE)
+    synStore(f)
+}
+
+nms <- names(cnts.admixtures)
+names(nms) <- nms
+for(nm in nms) {
+    cat(paste0("Writing ", nm, " : ", nrow(cnts.admixtures[[nm]]), " x ", ncol(cnts.admixtures[[nm]]), "\n"))
+    file <- paste0(nm, "_symbol_val_cnts.csv")
+    write.table(file = file, cnts.admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+    cat(paste0("Storing ", nm, " to synapse\n"))
+    f <- File(file, parentId = parent.id, synapseStore = TRUE)
+    synStore(f)
+}
+
+nms <- names(ensg.cnts.admixtures)
+names(nms) <- nms
+for(nm in nms) {
+    cat(paste0("Writing ", nm, " : ", nrow(ensg.cnts.admixtures[[nm]]), " x ", ncol(ensg.cnts.admixtures[[nm]]), "\n"))
+    file <- paste0(nm, "_ensg_val_cnts.csv")
+    write.table(file = file, ensg.cnts.admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+    cat(paste0("Storing ", nm, " to synapse\n"))
+    f <- File(file, parentId = parent.id, synapseStore = TRUE)
+    synStore(f)
 }
 
 cat("Done\n")
