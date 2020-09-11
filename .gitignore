@@ -15,5 +15,6 @@ challenge_models/*/docker_files/output/
 *.pptx
 *.ppt
 *.tsv
+*.csv
 *.png
 .Rproj.user
