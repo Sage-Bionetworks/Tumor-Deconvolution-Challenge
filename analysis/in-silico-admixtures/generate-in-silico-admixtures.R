@@ -21,7 +21,7 @@ source("../define-biological-models.R")
 
 cat(paste0("This script (may) require a lot of memory\n"))
 cat(paste0("I've run in successfully on the bassh2 node\n"))
-cat(paset0("i.e., bwhite-beat-aml-bioc-again\n"))
+cat(paste0("i.e., bwhite-beat-aml-bioc-again\n"))
 cat(paste0("Private IP: 10.23.19.117\n"))
 cat(paste0("Instance type r3.4xlarge\n"))
 cat(paste0("ami-08333c98cd3b5ada7\n"))
