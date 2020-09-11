@@ -907,6 +907,7 @@ for(nm in nms) {
     cat(paste0("Storing ", nm, " to synapse\n"))
     f <- File(file, parentId = parent.id, synapseStore = TRUE)
     synStore(f)
+    file.remove(file)
 }
 
 nms <- names(ensg.admixtures)
@@ -918,6 +919,7 @@ for(nm in nms) {
     cat(paste0("Storing ", nm, " to synapse\n"))
     f <- File(file, parentId = parent.id, synapseStore = TRUE)
     synStore(f)
+    file.remove(file)    
 }
 
 nms <- names(cnts.admixtures)
@@ -929,6 +931,7 @@ for(nm in nms) {
     cat(paste0("Storing ", nm, " to synapse\n"))
     f <- File(file, parentId = parent.id, synapseStore = TRUE)
     synStore(f)
+    file.remove(file)    
 }
 
 nms <- names(ensg.cnts.admixtures)
@@ -940,6 +943,7 @@ for(nm in nms) {
     cat(paste0("Storing ", nm, " to synapse\n"))
     f <- File(file, parentId = parent.id, synapseStore = TRUE)
     synStore(f)
+    file.remove(file)    
 }
 
 cat("Done\n")
