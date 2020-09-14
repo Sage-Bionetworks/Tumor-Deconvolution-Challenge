@@ -134,9 +134,9 @@ colnames(coarse.grained.gold.standard) <- c("sample.id", "cell.type", "measured"
 coarse.grained.gold.standard <- cbind(dataset.name = "DS5",
                                       coarse.grained.gold.standard)
 
-gold.standards <- list("sensitivity-coarse-gold-standard.csv" =
+gold.standards <- list("specificity-coarse-gold-standard.csv" =
                            coarse.grained.gold.standard,
-                       "sensitivity-fine-gold-standard.csv" =
+                       "specificity-fine-gold-standard.csv" =
                            fine.grained.gold.standard)
 
 
