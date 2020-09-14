@@ -3,7 +3,7 @@ library(magrittr)
 synapser::synLogin()
 devtools::source_url("https://raw.githubusercontent.com/Sage-Bionetworks/synapse_tidy_utils/master/utils.R")
 
-dataset_file_id <- 
+dataset_file_id <- "syn21590362"
 expr_file_id    <- "syn21576632"
 coarse_gs_id    <- "syn21590364"
 fine_gs_id      <- "syn21590365"
