@@ -34,6 +34,13 @@ cat(paste0("I ran on tdaws2: 10.23.19.191\n"))
 ## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
 ##   --input-file-synId=syn22331293 --input-folder-synId=syn21782473 --output-folder-synId=syn21576641 --prefix=purified
 
+## To run specificity analysis (which should be same data as "purified admixtures" above):
+## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
+##   --input-file-synId=syn22392156 --input-folder-synId=syn22392130 --output-folder-synId=syn22725783 --prefix=specificity-coarse
+
+## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
+##   --input-file-synId=syn22392155 --input-folder-synId=syn22392130 --output-folder-synId=syn22725783 --prefix=specificity-fine
+
 
 option_list <- list(
     make_option(c("--prefix"), action="store",

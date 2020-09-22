@@ -41,21 +41,37 @@ source("../utils.R")
 
 res <- assign.result.team.names.and.rounds(res, error.fun = warning)
 
-include.csx.results <- FALSE
+include.csx.results <- TRUE
 if(include.csx.results) {
-  synId <- "syn22331789"
-  csx.results.file <- synGet(synId, downloadFile = TRUE)$path
-  csx.res <- read.table(csx.results.file, sep="\t", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
-  flag <- colnames(csx.res) == "method.name"
-  colnames(csx.res)[flag] <- "method"
-
-  measured <- unique(res[, c("subchallenge", "dataset.name", "sample.id", "cell.type", "measured")])
-  csx.res <- merge(csx.res, measured)
+    synIds <- list("coarse" = "syn22725972", "fine" = "syn22726111")
+    nms <- names(synIds)
+    names(nms) <- nms
+    csx.res <-
+        ldply(nms,
+              .fun = function(nm) {
+                  synId <- synIds[[nm]]
+                  csx.results.file <- synGet(synId, downloadFile = TRUE)$path
+                  tbl <- read.table(csx.results.file, sep="\t", header=TRUE, as.is=TRUE, stringsAsFactors = FALSE)
+                  flag <- tbl$subchallenge == nm
+                  tbl <- tbl[flag, ]
+                  tbl$objectId <- "CIBERSORTx"
+                  tbl$repo_name <- "CIBERSORTx"
+                  tbl$comparator <- TRUE
+                  tbl$submitterId <- NA
+                  tbl1 <- tbl
+                  tbl2 <- tbl
+                  tbl1$submission <- "1"
+                  tbl2$submission <- "latest"                  
+                  rbind(tbl1, tbl2, stringsAsFactors = FALSE)
+              })
+    measured <- unique(res[, c("subchallenge", "dataset.name", "sample.id", "cell.type", "measured")])
+    csx.res <- merge(csx.res, measured)
   
-  cols <- intersect(colnames(res), colnames(csx.res))
+    cols <- intersect(colnames(res), colnames(csx.res))
 
-  res <- rbind(res[, cols], csx.res[, cols])
+    res <- rbind(res[, cols], csx.res[, cols])
 }
+
 
 flag <- res$sample.id == "Breast"
 res[flag, "sample.id"] <- "BRCA"
