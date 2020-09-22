@@ -74,17 +74,6 @@ if(!all(flag)) {
     stop("Some post-competitive objectIds are not in competitive results\n")
 }
 
-safe.merge <- function(x, y, ...) {
-
-    orig.nrow <- nrow(x)
-    x <- merge(x, y, ...)
-    new.nrow <- nrow(x)
-    if(orig.nrow != new.nrow) {
-        stop("Changed rows\n")
-    }
-    x
-}
-
 res.all <- safe.merge(res.all, unique(res.comp[, c("objectId", "submitterId")]), all.x=TRUE)
 
 ## Append CIBERSORTx results

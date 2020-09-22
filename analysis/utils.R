@@ -2,6 +2,86 @@ coarse.cell.types <-
   c("B.cells", "CD4.T.cells", "CD8.T.cells", "NK.cells", "neutrophils", "monocytic.lineage",
     "fibroblasts", "endothelial.cells")
 
+safe.merge <- function(x, y, ...) {
+
+    orig.nrow <- nrow(x)
+    x <- merge(x, y, ...)
+    new.nrow <- nrow(x)
+    if(orig.nrow != new.nrow) {
+        stop("Changed rows\n")
+    }
+    x
+}
+
+## Assign team names and rounds to results
+assign.result.team.names.and.rounds <- function(res, error.fun = stop) {
+    ## Read in the final predictions from the competitive phase (i.e., when coarse- and fine-grained
+    ## datasets differed)
+    synId <- "syn22149603"
+    obj <- synGet(synId, downloadFile=TRUE)
+    res.comp <- read.table(obj$path, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
+
+    ## Use the competitive phase results to translate objectIds to teams / submitters
+    ## The final name in the "path" of the repo_name for the post-competitive phase is the
+    ## objectId in the competitive phase (except for the baselines)
+    res$objectId <-
+        unlist(llply(as.character(res$repo_name),
+                     .fun = function(str) {
+                         strs <- unlist(strsplit(str, "/"))
+                         strs[length(strs)]
+                     }))
+
+    res$comparator <-
+        unlist(lapply(as.character(res$objectId),
+                      function(str) {
+                          comps <- get.comparators()
+                          for(comp in comps) {
+                              if(grepl(str, pattern=comp, ignore.case=TRUE)) { return(TRUE) }
+                          }
+                          return(FALSE)
+                      }))
+
+    ## Ensure that all objectIds match between competitive and post-competitive
+    flag <- grepl(res.comp$repo_name, pattern="baseline") | (res.comp$objectId %in% res$objectId)
+    if(!all(flag)) {
+        print(unique(res.comp[!flag, c("repo_name", "objectId", "submitterId")]))
+        print(translate.submitterId(unique(res.comp[!flag, "submitterId"])))
+        error.fun("Some competitive objectIds are not in post-competitive results\n")
+    }
+    
+    flag <- (res$comparator == TRUE) | (res$objectId %in% res.comp$objectId)
+    if(!all(flag)) {
+        error.fun("Some post-competitive objectIds are not in competitive results\n")
+    }
+    
+    res <- safe.merge(res, unique(res.comp[, c("objectId", "submitterId")]), all.x=TRUE)
+
+    ## Assign the team name
+    
+    team.name.tbl <- unique(res[, c("objectId", "subchallenge", "submitterId", "comparator")])
+    flag <- !(team.name.tbl$comparator == TRUE)
+    
+    team.name.tbl$method.name <- NA
+    team.name.tbl[flag, "method.name"] <-
+        unlist(lapply(as.character(team.name.tbl[flag, "submitterId"]),
+                      function(str) translate.submitterId(str)))
+    
+    team.name.tbl <-
+        assign.baseline.names(team.name.tbl, from.col = "objectId", to.col = "method.name")
+    
+    
+    team.name.tbl <- simplify.submitter.names(team.name.tbl, col = "method.name")
+    
+    ## Assign the round
+    team.name.tbl <-
+        assign.submission.rounds(team.name.tbl, object.id.col = "objectId",
+                                 context.cols = c("subchallenge", "submitterId"),
+                                 method.name.col = "method.name")
+    
+    res <- merge(res, team.name.tbl, all.x = TRUE)
+    res
+}
+
 get.comparators <- function() {
     c("cibersort", "mcp", "quantiseq", "xcell", "epic", "timer", "cibersortx")
 }
@@ -730,6 +810,72 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     g <- g + scale_fill_gradient2(cor.type.label, limits = limits,
                                   low = "red", high = "blue", mid = "white", na.value = "black")
     ## g <- g + theme(text = element_text(size=20))
+    g
+}
+
+plot.cell.type.correlation.strip.plots <- function(df, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
+                                                   cor.type.label = "Pearson\nCorrelation", digits = 2, limits = c(-1, 1),
+                                                   pval.var = NULL) {
+    orig.df <- df
+    df <- df[, c(id.var, cell.type.var, cor.var)]
+    df[, id.var] <- as.character(df[, id.var])
+    df[, cell.type.var] <- as.character(df[, cell.type.var])
+
+    row.summary.name <- "mean"
+    row.summary.fun <- mean
+    col.summary.name <- "max"
+    col.summary.fun <- max
+    na.rm <- TRUE
+    cell.type.summaries <- ddply(df, .variables = cell.type.var,
+                             .fun = function(tmp) {
+                                 ret <- data.frame(id = col.summary.name, cor = col.summary.fun(tmp[, cor.var], na.rm=TRUE))
+                                 colnames(ret)[1] <- id.var
+                                 colnames(ret)[2] <- cor.var                                 
+                                 ret
+                             })
+    cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, cor.var]),]
+    
+    method.summaries <- ddply(df, .variables = c(id.var),
+                          .fun = function(tmp) {
+                              ret <- data.frame(cell.type = row.summary.name, cor = row.summary.fun(tmp[, cor.var], na.rm=na.rm))
+                              colnames(ret) <- c(cell.type.var, cor.var)
+                              ret
+                          })
+    
+    method.summaries <- method.summaries[order(method.summaries[, cor.var]),]
+
+    ##    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.name, cell.type.var], row.summary.name)
+    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.name, cell.type.var])
+    id.levels <- c(col.summary.name, method.summaries[method.summaries[, id.var] != col.summary.name, id.var])
+##    df <- rbind(df, cell.type.summaries[, c(id.var, cell.type.var, cor.var)])
+##    df <- rbind(df, method.summaries[, c(id.var, cell.type.var, cor.var)])    
+
+    df$cor.label <- formatC(df[, cor.var], format="f", digits=digits)
+    if(!is.null(pval.var)) {
+        p_load(gtools)
+        df <- merge(df, orig.df[, c(id.var, cell.type.var, pval.var)], all.x = TRUE)
+        flag <- is.na(df[, pval.var])
+        df[flag, pval.var] <- 1
+        df$cor.label <- paste0(stars.pval(df[, pval.var]), "\n", df$cor.label)
+    }
+    ## This re-ordering o works with as.table = FALSE to respect the
+    ## the ordering we want from cell.type.levels
+    ntot <- length(cell.type.levels)
+    nrow <- 3
+    ncol <- ceiling(ntot / nrow)
+    o <- unlist(llply(1:(nrow-1), .fun = function(i) (i*ncol):(1+((i-1)*ncol))))
+    o <- c(o, ntot:(max(o)+1))
+    df[, cell.type.var] <- factor(df[, cell.type.var], levels = cell.type.levels[o])
+    df[, id.var] <- factor(df[, id.var], levels = id.levels)
+    g <- ggplot(data = df, aes_string(y = id.var, x = cor.var))
+    g <- g + geom_boxplot(outlier.shape = NA)
+    g <- g + facet_wrap(cell.type.var, as.table = FALSE, nrow = nrow)
+    ##    g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), text = element_text(size=15))
+    strip.text.sz <- 15
+    if(ntot > 10) { strip.text.sz <- 8 }
+    g <- g + theme(axis.text.y = element_text(size = 6), text = element_text(size=15), strip.text = element_text(size = strip.text.sz))
+    
+    g <- g + xlab("Pearson Correlation") + ylab("")
     g
 }
 
