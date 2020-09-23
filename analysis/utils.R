@@ -2,6 +2,36 @@ coarse.cell.types <-
   c("B.cells", "CD4.T.cells", "CD8.T.cells", "NK.cells", "neutrophils", "monocytic.lineage",
     "fibroblasts", "endothelial.cells")
 
+get.cell.type.translation <- function() {
+    list("naive.B.cells" = "naive B",
+         "memory.B.cells" = "memory B",
+         "fibroblasts" = "fibroblasts",
+         "neutrophils" = "neutrophils",
+         "endothelial.cells" = "endothelial",
+         "monocytes" = "monocytes",
+         "NK.cells" = "NK",
+         "macrophages" = "macrophages",
+         "memory.CD8.T.cells" = "memory CD8 T",
+         "regulatory.T.cells" = "Tregs",
+         "B.cells" = "B",
+         "naive.CD8.T.cells" = "naive CD8 T",
+         "monocytic.lineage" = "monocytic lineage",
+         "naive.CD4.T.cells" = "naive CD4 T",
+         "myeloid.dendritic.cells" = "myeloid DCs",
+         "CD8.T.cells" = "CD8 T",
+         "memory.CD4.T.cells" = "memory CD4 T",
+         "CD4.T.cells" = "CD4 T")         
+}
+
+rename.cell.types <- function(df, from.col = "cell.type", to.col = "cell.type") {
+    cell.type.trans <- get.cell.type.translation()
+    for(nm in names(cell.type.trans)) {
+        flag <- (grepl(df[, from.col], pattern = nm))
+        df[flag, to.col] <- cell.type.trans[[nm]]
+    }
+    df
+}
+
 safe.merge <- function(x, y, ...) {
 
     orig.nrow <- nrow(x)
@@ -748,38 +778,35 @@ plot.admixtures <- function(mat) {
 
 plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
                                                cor.type.label = "Pearson\nCorrelation", digits = 2, limits = c(-1, 1),
-                                               pval.var = NULL) {
+                                               pval.var = NULL, row.summary.fun = "mean", col.summary.fun = "max",
+                                               order.decreasing = FALSE) {
     orig.df <- df
     df <- df[, c(id.var, cell.type.var, cor.var)]
     df[, id.var] <- as.character(df[, id.var])
     df[, cell.type.var] <- as.character(df[, cell.type.var])
 
-    row.summary.name <- "mean"
-    row.summary.fun <- mean
-    col.summary.name <- "max"
-    col.summary.fun <- max
     na.rm <- FALSE
     cell.type.summaries <- ddply(df, .variables = cell.type.var,
                              .fun = function(tmp) {
-                                 ret <- data.frame(id = col.summary.name, cor = col.summary.fun(tmp[, cor.var], na.rm=TRUE))
+                                 ret <- data.frame(id = col.summary.fun, cor = do.call(col.summary.fun, list(tmp[, cor.var], na.rm=TRUE)))
                                  colnames(ret)[1] <- id.var
                                  colnames(ret)[2] <- cor.var                                 
                                  ret
                              })
-    cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, cor.var]),]
+    cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, cor.var], decreasing = order.decreasing),]
     
     method.summaries <- ddply(df, .variables = c(id.var),
                           .fun = function(tmp) {
-                              ret <- data.frame(cell.type = row.summary.name, cor = row.summary.fun(tmp[, cor.var], na.rm=na.rm))
+                              ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=na.rm)))
                               colnames(ret) <- c(cell.type.var, cor.var)
                               ret
                           })
     
-    method.summaries <- method.summaries[order(method.summaries[, cor.var]),]
+    method.summaries <- method.summaries[order(method.summaries[, cor.var], decreasing = order.decreasing),]
 
 
-    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.name, cell.type.var], row.summary.name)
-    id.levels <- c(col.summary.name, method.summaries[method.summaries[, id.var] != col.summary.name, id.var])
+    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var], row.summary.fun)
+    id.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
 
     df <- rbind(df, cell.type.summaries[, c(id.var, cell.type.var, cor.var)])
     df <- rbind(df, method.summaries[, c(id.var, cell.type.var, cor.var)])    
@@ -813,44 +840,40 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     g
 }
 
-plot.cell.type.correlation.strip.plots <- function(df, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
-                                                   cor.type.label = "Pearson\nCorrelation", digits = 2, limits = c(-1, 1),
-                                                   pval.var = NULL) {
+plot.strip.plots <- function(df, id.var = "modelId", cell.type.var = "cell.type", var = "cor.p",
+                             label = "Pearson\nCorrelation", digits = 2, limits = c(-1, 1),
+                             pval.var = NULL, col.summary.fun = "max", row.summary.fun = "mean", order.decreasing = FALSE) {
     orig.df <- df
-    df <- df[, c(id.var, cell.type.var, cor.var)]
+    df <- df[, c(id.var, cell.type.var, var)]
     df[, id.var] <- as.character(df[, id.var])
     df[, cell.type.var] <- as.character(df[, cell.type.var])
 
-    row.summary.name <- "mean"
-    row.summary.fun <- mean
-    col.summary.name <- "max"
-    col.summary.fun <- max
     na.rm <- TRUE
     cell.type.summaries <- ddply(df, .variables = cell.type.var,
                              .fun = function(tmp) {
-                                 ret <- data.frame(id = col.summary.name, cor = col.summary.fun(tmp[, cor.var], na.rm=TRUE))
+                                 ret <- data.frame(id = col.summary.fun, cor = do.call(col.summary.fun, list(tmp[, var], na.rm=TRUE)))
                                  colnames(ret)[1] <- id.var
-                                 colnames(ret)[2] <- cor.var                                 
+                                 colnames(ret)[2] <- var                                 
                                  ret
                              })
-    cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, cor.var]),]
+    cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, var], decreasing = order.decreasing),]
     
     method.summaries <- ddply(df, .variables = c(id.var),
                           .fun = function(tmp) {
-                              ret <- data.frame(cell.type = row.summary.name, cor = row.summary.fun(tmp[, cor.var], na.rm=na.rm))
-                              colnames(ret) <- c(cell.type.var, cor.var)
+                              ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, var], na.rm=na.rm)))
+                              colnames(ret) <- c(cell.type.var, var)
                               ret
                           })
     
-    method.summaries <- method.summaries[order(method.summaries[, cor.var]),]
+    method.summaries <- method.summaries[order(method.summaries[, var], decreasing = order.decreasing),]
 
-    ##    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.name, cell.type.var], row.summary.name)
-    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.name, cell.type.var])
-    id.levels <- c(col.summary.name, method.summaries[method.summaries[, id.var] != col.summary.name, id.var])
-##    df <- rbind(df, cell.type.summaries[, c(id.var, cell.type.var, cor.var)])
-##    df <- rbind(df, method.summaries[, c(id.var, cell.type.var, cor.var)])    
+    ##    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var], row.summary.fun)
+    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var])
+    id.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
+##    df <- rbind(df, cell.type.summaries[, c(id.var, cell.type.var, var)])
+##    df <- rbind(df, method.summaries[, c(id.var, cell.type.var, var)])    
 
-    df$cor.label <- formatC(df[, cor.var], format="f", digits=digits)
+    df$cor.label <- formatC(df[, var], format="f", digits=digits)
     if(!is.null(pval.var)) {
         p_load(gtools)
         df <- merge(df, orig.df[, c(id.var, cell.type.var, pval.var)], all.x = TRUE)
@@ -867,7 +890,7 @@ plot.cell.type.correlation.strip.plots <- function(df, id.var = "modelId", cell.
     o <- c(o, ntot:(max(o)+1))
     df[, cell.type.var] <- factor(df[, cell.type.var], levels = cell.type.levels[o])
     df[, id.var] <- factor(df[, id.var], levels = id.levels)
-    g <- ggplot(data = df, aes_string(y = id.var, x = cor.var))
+    g <- ggplot(data = df, aes_string(y = id.var, x = var))
     g <- g + geom_boxplot(outlier.shape = NA)
     g <- g + facet_wrap(cell.type.var, as.table = FALSE, nrow = nrow)
     ##    g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), text = element_text(size=15))
@@ -875,7 +898,7 @@ plot.cell.type.correlation.strip.plots <- function(df, id.var = "modelId", cell.
     if(ntot > 10) { strip.text.sz <- 8 }
     g <- g + theme(axis.text.y = element_text(size = 6), text = element_text(size=15), strip.text = element_text(size = strip.text.sz))
     
-    g <- g + xlab("Pearson Correlation") + ylab("")
+    g <- g + xlab(label) + ylab("")
     g
 }
 
