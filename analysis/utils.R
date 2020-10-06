@@ -54,15 +54,19 @@ assign.result.team.names.and.rounds <- function(res, error.fun = stop) {
     ## Use the competitive phase results to translate objectIds to teams / submitters
     ## The final name in the "path" of the repo_name for the post-competitive phase is the
     ## objectId in the competitive phase (except for the baselines)
-    res$objectId <-
-        unlist(llply(as.character(res$repo_name),
-                     .fun = function(str) {
-                         strs <- unlist(strsplit(str, "/"))
-                         strs[length(strs)]
-                     }))
+    cat("Assigning objectId\n")
+    map <- data.frame(repo_name = as.character(unique(res$repo_name)), stringsAsFactors = FALSE)
 
-    res$comparator <-
-        unlist(lapply(as.character(res$objectId),
+    map$objectId <-
+        unlist(lapply(map$repo_name,
+                      function(str) {
+                          strs <- unlist(strsplit(str, "/"))
+                          strs[length(strs)]
+                      }))
+
+    cat("Assigning comparator\n")
+    map$comparator <-
+        unlist(lapply(as.character(map$objectId),
                       function(str) {
                           comps <- get.comparators()
                           for(comp in comps) {
@@ -70,12 +74,19 @@ assign.result.team.names.and.rounds <- function(res, error.fun = stop) {
                           }
                           return(FALSE)
                       }))
+    
+    res <- res[, !(colnames(res) %in% c("objectId", "comparator"))]
+    res <- safe.merge(res, map, by = c("repo_name"))
 
+    cat("Ensuring\n")
+    
     ## Ensure that all objectIds match between competitive and post-competitive
     flag <- grepl(res.comp$repo_name, pattern="baseline") | (res.comp$objectId %in% res$objectId)
     if(!all(flag)) {
+        print(table(flag))
         print(unique(res.comp[!flag, c("repo_name", "objectId", "submitterId")]))
-        print(translate.submitterId(unique(res.comp[!flag, "submitterId"])))
+        l_ply(unique(res.comp[!flag, "submitterId"]),
+              .fun = function(id) print(translate.submitterId(id)))
         error.fun("Some competitive objectIds are not in post-competitive results\n")
     }
     
@@ -83,11 +94,13 @@ assign.result.team.names.and.rounds <- function(res, error.fun = stop) {
     if(!all(flag)) {
         error.fun("Some post-competitive objectIds are not in competitive results\n")
     }
-    
+
+    cat("Merging with res.comp\n")
     res <- safe.merge(res, unique(res.comp[, c("objectId", "submitterId")]), all.x=TRUE)
 
     ## Assign the team name
-    
+
+    cat("Defining team name tbl\n")
     team.name.tbl <- unique(res[, c("objectId", "subchallenge", "submitterId", "comparator")])
     flag <- !(team.name.tbl$comparator == TRUE)
     
@@ -101,14 +114,18 @@ assign.result.team.names.and.rounds <- function(res, error.fun = stop) {
     
     
     team.name.tbl <- simplify.submitter.names(team.name.tbl, col = "method.name")
-    
+
     ## Assign the round
     team.name.tbl <-
         assign.submission.rounds(team.name.tbl, object.id.col = "objectId",
                                  context.cols = c("subchallenge", "submitterId"),
                                  method.name.col = "method.name")
-    
+
+    cat("Merging team name tbl\n")
+    print(colnames(team.name.tbl))
     res <- merge(res, team.name.tbl, all.x = TRUE)
+    cat("Done merging team name tbl\n")
+    
     res
 }
 
@@ -777,9 +794,10 @@ plot.admixtures <- function(mat) {
 }
 
 plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
-                                               cor.type.label = "Pearson\nCorrelation", digits = 2, limits = c(-1, 1),
+                                               cor.type.label = "Pearson\nCorrelation", limits = c(-1, 1),
                                                pval.var = NULL, row.summary.fun = "mean", col.summary.fun = "max",
-                                               order.decreasing = FALSE) {
+                                               order.decreasing = FALSE,
+                                               formatter = function(x) formatC(x, format="f", digits=2)) {
     orig.df <- df
     df <- df[, c(id.var, cell.type.var, cor.var)]
     df[, id.var] <- as.character(df[, id.var])
@@ -811,7 +829,9 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     df <- rbind(df, cell.type.summaries[, c(id.var, cell.type.var, cor.var)])
     df <- rbind(df, method.summaries[, c(id.var, cell.type.var, cor.var)])    
 
-    df$cor.label <- formatC(df[, cor.var], format="f", digits=digits)
+    ## df$cor.label <- formatC(df[, cor.var], format="f", digits=digits)
+    ## formatter <- function(x) formatC(x, format="f", digits=2)
+    df$cor.label <- formatter(df[, cor.var])    
     if(!is.null(pval.var)) {
         p_load(gtools)
         df <- merge(df, orig.df[, c(id.var, cell.type.var, pval.var)], all.x = TRUE)
@@ -900,6 +920,65 @@ plot.strip.plots <- function(df, id.var = "modelId", cell.type.var = "cell.type"
     
     g <- g + xlab(label) + ylab("")
     g
+}
+
+plot.correlation <- function(x, y, labels = NULL, colors = NULL, display.r2 = FALSE, method = "pearson", display.pval = FALSE, xoffset = 0.5, ...) {
+  df <- data.frame(x = x, y = y)
+  if(!is.null(labels)) {
+    df$labels <- labels
+  }
+  g <- NULL
+  if(is.null(labels)) {
+    g <- ggplot(df, aes(x = x, y = y))
+  } else {
+    g <- ggplot(df, aes(x = x, y = y, label = labels))
+  }
+  if(!is.null(colors)) {
+    g <- g + geom_point(aes(colour = colors))
+  } else {
+    g <- g + geom_point()
+  }
+  if(!is.null(labels)) {
+    g <- g + geom_text(vjust = "inward", hjust = "inward")
+##    suppressPackageStartupMessages(p_load(ggrepel))
+##    g <- g + geom_text_repel(point.padding = NA, box.padding = 1)
+  }
+##  g <- g + theme(legend.position="none")
+  g <- g + geom_smooth(data = df, aes(x = x, y = y), method='lm')
+  x.min <- min(df$x, na.rm=TRUE)
+  x.max <- max(df$x, na.rm=TRUE)
+  y.min <- min(df$y, na.rm=TRUE)
+  y.max <- max(df$y, na.rm=TRUE)
+
+  ylimits <- NULL
+if(FALSE) {
+  use.ggplot.2.2.1.limit.code <- TRUE
+  if(use.ggplot.2.2.1.limit.code) {
+    ylimits <- ggplot_build(g)$layout$panel_ranges[[1]]$y.range
+    xlimits <- ggplot_build(g)$layout$panel_ranges[[1]]$x.range
+  } else {
+    ylimits <- ggplot_build(g)$layout$panel_params[[1]]$y.range
+    xlimits <- ggplot_build(g)$layout$panel_params[[1]]$x.range
+  }
+}
+  xlimits <- ggplot_build(g)$layout$panel_params[[1]]$x.range
+  ylimits <- ggplot_build(g)$layout$panel_params[[1]]$y.range
+
+## to see why geom_text(size = sz) sz is different than in theme see: ratio of 14/5
+## https://stackoverflow.com/questions/25061822/ggplot-geom-text-font-size-control/25062509 
+##  g <- g + geom_text(x = x.min + 0.5 * (x.max - x.min), y = y.min + 1 * (y.max - y.min), label = lm_corr_eqn(df, method = method, display.r2 = display.r2, display.pval = display.pval), parse=TRUE, ...)
+##  g <- g + geom_text(x = x.min + 0.5 * (x.max - x.min), y = y.min + 0.8 * (y.max - y.min), label = lm_corr_eqn(df, method = method, display.r2 = display.r2, display.pval = display.pval), parse=TRUE, ...)
+##  g <- g + geom_text(x = x.min + 0.5 * (x.max - x.min), y = 0.8 * ylimits[2], label = lm_corr_eqn(df, method = method, display.r2 = display.r2, display.pval = display.pval), parse=TRUE, ...)
+  sz <- 25
+  g <- g + geom_text(x = xlimits[1] + xoffset * (xlimits[2] - xlimits[1]), y = ylimits[1] + 0.8 * (ylimits[2] - ylimits[1]), label = lm_corr_eqn(df, method = method, display.r2 = display.r2, display.pval = display.pval), parse=TRUE, ...)
+  g <- g +theme(text = element_text(size = sz),
+             axis.text.x = element_text(size=sz),
+             axis.text.y = element_text(size=sz),
+             axis.title.x = element_text(size=sz),
+             axis.title.y = element_text(size=sz),
+             title = element_text(size=sz),
+             plot.title = element_text(hjust = 0.5, size=sz))
+  g
 }
 
 limit.matrix.to.protein.coding <- function(mat, use.symbols = TRUE) {

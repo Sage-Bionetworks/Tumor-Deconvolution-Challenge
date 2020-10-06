@@ -16,31 +16,36 @@ suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(reshape2))
 
 cat(paste0("Run on a machine with Docker installed\n"))
-cat(paste0("I ran on tdaws2: 10.23.19.191\n"))
+cat(paste0("I ran on tdaws2: 10.23.19.191 in //home/bwhite/\n"))
+
+## path=/home/bwhite/Tumor-Deconvolution-Challenge/analysis/validation-analysis/
 
 ## To re-run validation data
-## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
+## Rscript $path/run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
 ##   --input-file-synId=syn22267272 --input-folder-synId=syn21821096 --output-folder-synId=syn22320184 --prefix=validation
 
 ## To run fine-grained in silico admixtures
-## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
+## Rscript $path/run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
 ##   --input-file-synId=syn22332679 --input-folder-synId=syn21647466 --output-folder-synId=syn22331159 --prefix=fine-in-silico-spikeins
 
 ## To run coarse-grained in silico admixtures
-## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
+## Rscript $path/run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
 ##   --input-file-synId=syn22332680 --input-folder-synId=syn21647466 --output-folder-synId=syn22331159 --prefix=coarse-in-silico-spikeins
 
 ## To run purified admixtures
-## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
+## Rscript $path/run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
 ##   --input-file-synId=syn22331293 --input-folder-synId=syn21782473 --output-folder-synId=syn21576641 --prefix=purified
 
 ## To run specificity analysis (which should be same data as "purified admixtures" above):
-## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
+## Rscript $path/run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
 ##   --input-file-synId=syn22392156 --input-folder-synId=syn22392130 --output-folder-synId=syn22725783 --prefix=specificity-coarse
 
-## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
+## Rscript $path/run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
 ##   --input-file-synId=syn22392155 --input-folder-synId=syn22392130 --output-folder-synId=syn22725783 --prefix=specificity-fine
 
+## To run B-all analysis
+## Rscript $path/run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
+##   --input-file-synId=syn22780464 --input-folder-synId=syn22492020 --output-folder-synId=syn22780563 --prefix=b-all
 
 option_list <- list(
     make_option(c("--prefix"), action="store",
