@@ -92,7 +92,8 @@ spikein.annotation <-
               ddply(tbl,
                     .variables = c("dataset.name", "sample.id", "spike.in.pop"),
                     .fun = function(df) {
-                        sm <- sum(df$measured)
+                        ## Need this rounding because sometimes the sum is like 0.00499999999999999
+                        sm <- round(sum(df$measured), digits = 5)
                         data.frame(measured = sm)
                     })
           })
@@ -137,7 +138,8 @@ res <-
                   print(df)
                   stop("Was not expecting different predicted results\n")
               }
-              measured.sum <- sum(df$measured)
+              ## Need this rounding because sometimes the sum is like 0.00499999999999999              
+              measured.sum <- round(sum(df$measured), digits = 5)
               if(measured.sum > 1) {
                   print(df)
                   stop("df > 1")
