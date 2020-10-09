@@ -60,10 +60,19 @@ extract.id <- function(str) {
 }
 
 freq.mappings <- lapply(freq.mappings, function(vec) paste0(vec, ".count"))
-norm.col <- "Live.cells.count"
+## norm.col <- "Live.cells.count"
+## From Kara Davis:
+## The library prep did not filter for live cells, that I know of. I would normalize by the “Cells.count” column as these are the cells that I gated as actual cells, not just debris.
+norm.col <- "Cells.count"
+print(colnames(tbls[["freq"]]))
 translated.freqs <- translate.cell.types(tbls[["freq"]], freq.mappings, norm.col = norm.col)
 translated.freqs$id <-
     unlist(lapply(translated.freqs$file, extract.id))
+
+anno.tbl <- translated.freqs[, c("id", "Patient.ID", "Timepoint")]
+flag <- is.na(anno.tbl$Timepoint)
+anno.tbl[flag, "Timepoint"] <- "Normal"
+
 translated.freqs <- translated.freqs[, c("id", names(freq.mappings))]
 translated.freqs <- melt(translated.freqs)
 colnames(translated.freqs) <- c("sample.id", "cell.type", "measured")
@@ -73,6 +82,12 @@ parent.id <- "syn22781213"
 
 file <- "b-all-ground-truth.csv"
 write.table(file = file, translated.freqs, col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
+cat(paste0("Storing ", file, " to synapse\n"))
+f <- File(file, parentId = parent.id, synapseStore = TRUE)
+synStore(f)
+
+file <- "b-all-annotation.csv"
+write.table(file = file, anno.tbl, col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
 cat(paste0("Storing ", file, " to synapse\n"))
 f <- File(file, parentId = parent.id, synapseStore = TRUE)
 synStore(f)

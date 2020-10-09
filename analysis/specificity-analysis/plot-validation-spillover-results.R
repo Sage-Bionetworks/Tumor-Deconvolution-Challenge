@@ -10,6 +10,8 @@ suppressPackageStartupMessages(p_load(gridExtra))
 suppressPackageStartupMessages(p_load(synapser))
 suppressPackageStartupMessages(p_load(openxlsx))
 suppressPackageStartupMessages(p_load(reshape2))
+suppressPackageStartupMessages(p_load(cowplot))
+suppressPackageStartupMessages(p_load(ggbeeswarm))
 
 ## spillover -- cell type x to cell type y != x
 ##  - deconv (cibersort, epic, quantiseq); heatmap of fractions
@@ -21,6 +23,9 @@ suppressPackageStartupMessages(p_load(reshape2))
 ##        case we normalized by
 ##        mean_{cell.type in predicted.cell.type} score(cell.type, predicted.cell.type)
 ##        e.g., mean_{x in Memory_CD4_T_cells_1, Memory_CD4_T_cells_2, Naive_CD4_T_cells_1, Naive_CD4_T_cells_2, Tregs} score(x, CD4.T.cell)
+
+figs.dir <- "figs/"
+dir.create(figs.dir, showWarnings = FALSE)
 
 ## Get the sensitivity results
 synLogin()
@@ -157,9 +162,11 @@ df <- rename.cell.types(df, from.col = "cell.type", to.col = "cell.type")
 cell.type.levels <- as.character(df$cell.type)
 
 
-deconv.methods <- c("CIBERSORT", "EPIC", "quanTIseq")
-if(include.csx.results) {
-    deconv.methods <- c("CIBERSORTx", deconv.methods)
+if(FALSE) {
+    deconv.methods <- c("CIBERSORT", "EPIC", "quanTIseq")
+    if(include.csx.results) {
+        deconv.methods <- c("CIBERSORTx", deconv.methods)
+    }
 }
 
 flag <- grepl(res$sample.id, pattern="BM") | grepl(res$sample.id, pattern="RM")
@@ -212,12 +219,40 @@ plot.cell.type.score.heatmap <- function(df, score.col = "prediction",
         g <- g + scale_fill_gradient2("Normalized\nPrediction", 
                                       low = "red", high = "blue", mid = "white", na.value = "black")
     } else {
-        g <- g + scale_fill_gradient2("Prediction", limits = c(0,1),
+        limits <- c(0,1)
+        limits <- c(min(df[, score.col], na.rm=TRUE), 1)
+        g <- g + scale_fill_gradient2("Prediction", limits = limits,
                                       low = "red", high = "blue", mid = "white", na.value = "black")
     }
+    
     g <- g + facet_wrap(method.name.col, as.table = FALSE, nrow = nrow)
     g
 }
+
+deconv.fraction.methods <-
+    list(
+        ## "REGGEN_LAB" = NA,
+         "NPU" = NA,
+         "CCB" = NA,
+         "DA_505" = NA,
+         "Aginome-XMU" = "1",
+         "D3Team" = NA,
+         "IZI" = NA,
+         "LeiliLab" = NA,         
+         "CIBERSORT" = NA,
+         "CIBERSORTx" = NA,
+         "quanTIseq" = NA,
+         "EPIC" = NA,
+         "TIMER" = NA)
+deconv.score.methods <-
+    list("NYIT_glomerular" = NA, "Biogem" = NA, "Patrick" = NA, "TJU" = NA)
+
+deconv.summary <-
+    rbind(data.frame(method = names(deconv.fraction.methods), submission = unlist(deconv.fraction.methods), output = "fraction",
+                     stringsAsFactors = FALSE)
+##          data.frame(method = names(deconv.score.methods), submission = unlist(deconv.score.methods), output = "score",
+##                     stringsAsFactors = FALSE)
+          )
 
 perform.spillover.analysis <- function(res.input,
                                        method.name.col, 
@@ -299,9 +334,21 @@ perform.spillover.analysis <- function(res.input,
     ## The teams we invited to participate in the collaborative phase
     top.performers <- c("Aginome-XMU", "DA_505", "mitten_TDC19", "Biogem")
     priority.methods <- unique(c(top.performers, unique(subset(all.res, comparator==TRUE)[, method.name.col])))
-    
-    flag <- all.res[, method.name.col] %in% deconv.methods
+
+    ##    flag <- all.res[, method.name.col] %in% deconv.methods
+    flags <-
+        llply(1:nrow(deconv.summary),
+              .fun = function(i) {
+                  flag <- all.res[, method.name.col] == deconv.summary[i, "method"]
+                  if(!is.na(deconv.summary[i, "submission"])) {
+                      flag <- flag & ( all.res[, round.col] == deconv.summary[i, "submission"])
+                  }
+                  flag
+              })
+    flag <- Reduce("|", flags)    
+
     deconv.res <- all.res[flag, ]
+    deconv.methods <- unique(as.character(deconv.res[, method.name.col]))
     non.deconv.res <- all.res[!flag, ]
     
     flag <- all.res[, subchallenge.col] == "coarse"
@@ -316,49 +363,58 @@ perform.spillover.analysis <- function(res.input,
     
     names(deconv.methods) <- deconv.methods
     names(non.deconv.methods) <- non.deconv.methods
-    l_ply(deconv.methods,
-          .fun = function(meth) {
-              flag <- coarse.res[, method.name.col] == meth
-              g <- plot.cell.type.score.heatmap(coarse.res[flag, ])
-              g <- g + ggtitle(paste0("Coarse-Grained Sub-Challenge\n(", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
-              file <- paste0("spillover-coarse-grained-", make.names(meth), postfix, ".png")
-              png(file)
-              print(g)
-              d <- dev.off()
 
-              flag <- fine.res[, method.name.col] == meth              
-              g <- plot.cell.type.score.heatmap(fine.res[flag,])
-              g <- g + ggtitle(paste0("Fine-Grained Sub-Challenge\n(", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
-              file <- paste0("spillover-fine-grained-", make.names(meth), postfix, ".png")
-              png(file)
-              print(g)
-              d <- dev.off()
-          })
+    method.plots <- list()
+
+    for(meth in deconv.methods) {
+        flag <- coarse.res[, method.name.col] == meth
+        if(any(flag)) {              
+            g <- plot.cell.type.score.heatmap(coarse.res[flag, ])
+            ## g <- g + ggtitle(paste0("Coarse-Grained Sub-Challenge\n(", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
+            ## file <- paste0(figs.dir, "spillover-coarse-grained-", make.names(meth), postfix, ".png")
+            ## png(file)
+            ## print(g)
+            ## d <- dev.off()
+            method.plots[[paste0(make.names(meth), "-", "coarse")]] <- g
+        }
+        
+        flag <- fine.res[, method.name.col] == meth
+        if(any(flag)) {
+            g <- plot.cell.type.score.heatmap(fine.res[flag,])
+            ## g <- g + ggtitle(paste0("Fine-Grained Sub-Challenge\n(", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
+            ## file <- paste0(figs.dir, "spillover-fine-grained-", make.names(meth), postfix, ".png")
+            ## png(file)
+            ## print(g)
+            ## d <- dev.off()
+            method.plots[[paste0(make.names(meth), "-", "fine")]] <- g
+        }
+    }
     
-    l_ply(non.deconv.methods,
-          .fun = function(meth) {
-              flag <- coarse.res[, method.name.col] == meth                            
-              tmp <- coarse.res[flag, ]
-              if(nrow(tmp) > 0) {
-                  g <- plot.cell.type.score.heatmap(tmp, score.col = "norm.score", normalized.score = TRUE)
-                  g <- g + ggtitle(paste0("Coarse-Grained Sub-Challenge\n(", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
-                  file <- paste0("spillover-coarse-grained-", make.names(meth), postfix, ".png")
-                  png(file)
-                  print(g)
-                  d <- dev.off()
-              }
-
-              flag <- fine.res[, method.name.col] == meth                                          
-              tmp <- fine.res[flag, ]
-              if(nrow(tmp) > 0) {          
-                  g <- plot.cell.type.score.heatmap(tmp, score.col = "norm.score", normalized.score = TRUE)
-                  g <- g + ggtitle(paste0("Fine-Grained Sub-Challenge\n(", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
-                  file <- paste0("spillover-fine-grained-", make.names(meth), postfix, ".png")
-                  png(file)
-                  print(g)
-                  d <- dev.off()
-              }
-          })
+    for(meth in non.deconv.methods) {
+        flag <- coarse.res[, method.name.col] == meth                            
+        tmp <- coarse.res[flag, ]
+        if(nrow(tmp) > 0) {
+            g <- plot.cell.type.score.heatmap(tmp, score.col = "norm.score", normalized.score = TRUE)
+            ## g <- g + ggtitle(paste0("Coarse-Grained Sub-Challenge\n(", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
+            ## file <- paste0(figs.dir, "spillover-coarse-grained-", make.names(meth), postfix, ".png")
+            ## png(file)
+            ## print(g)
+            ## d <- dev.off()
+            method.plots[[paste0(make.names(meth), "-", "coarse")]] <- g
+        }
+        
+        flag <- fine.res[, method.name.col] == meth                                          
+        tmp <- fine.res[flag, ]
+        if(nrow(tmp) > 0) {          
+            g <- plot.cell.type.score.heatmap(tmp, score.col = "norm.score", normalized.score = TRUE)
+            ## g <- g + ggtitle(paste0("Fine-Grained Sub-Challenge\n(", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
+            ## file <- paste0(figs.dir, "spillover-fine-grained-", make.names(meth), postfix, ".png")
+            ## png(file)
+            ## print(g)
+            ## d <- dev.off()
+            method.plots[[paste0(make.names(meth), "-", "fine")]] <- g
+        }
+    }
     
 
     l <- list("coarse" = subset(coarse.res, measured == 0), "fine" = subset(fine.res, measured == 0))
@@ -379,7 +435,7 @@ perform.spillover.analysis <- function(res.input,
                   })
 
     
-    png(paste0("spillover-deconv-coarse-grained", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-deconv-coarse-grained", postfix, ".png"), width = 2 * 480)
     flag <- deconv.res[, subchallenge.col] == "coarse"
     g1 <- plot.cell.type.score.heatmap(deconv.res[flag, ])
     g1 <- g1 + ggtitle(paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")"))
@@ -392,7 +448,7 @@ perform.spillover.analysis <- function(res.input,
                                           order.decreasing = TRUE)
     g.strip.deconv.coarse <- g.strip.deconv.coarse + ggtitle(paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")"))
     
-    png(paste0("spillover-deconv-fine-grained", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-deconv-fine-grained", postfix, ".png"), width = 2 * 480)
     flag <- deconv.res[, subchallenge.col] == "fine"    
     g2 <- plot.cell.type.score.heatmap(deconv.res[flag, ])
     g2 <- g2 + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")"))
@@ -405,7 +461,7 @@ perform.spillover.analysis <- function(res.input,
                                             order.decreasing = TRUE)
     g.strip.deconv.fine <- g.strip.deconv.fine + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")"))
     
-    png(paste0("spillover-non-deconv-coarse-grained", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-non-deconv-coarse-grained", postfix, ".png"), width = 2 * 480)
     flag <- non.deconv.res[, subchallenge.col] == "coarse"        
     sub <- non.deconv.res[flag, ]
     g3 <- plot.cell.type.score.heatmap(sub, score.col = "norm.score", normalized.score = TRUE)
@@ -420,7 +476,7 @@ perform.spillover.analysis <- function(res.input,
     g.strip.non.deconv.coarse <- g.strip.non.deconv.coarse + ggtitle(paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")"))
 
     
-    png(paste0("spillover-non-deconv-fine-grained", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-non-deconv-fine-grained", postfix, ".png"), width = 2 * 480)
     flag <- non.deconv.res[, subchallenge.col] == "fine"        
     sub <- non.deconv.res[flag, ]
     g4 <- plot.cell.type.score.heatmap(sub, score.col = "norm.score", normalized.score = TRUE)
@@ -436,7 +492,7 @@ perform.spillover.analysis <- function(res.input,
 
 
     
-    png(paste0("spillover-all-coarse-grained", postfix, ".png"), width = 4 * 480, height = 2 * 480)
+    png(paste0(figs.dir, "spillover-all-coarse-grained", postfix, ".png"), width = 4 * 480, height = 2 * 480)
     g1 <- g1 + ggtitle("")
     g3 <- g3 + ggtitle("")
     g1 <- g1 + theme(axis.text.x = element_text(size = 15))
@@ -446,24 +502,28 @@ perform.spillover.analysis <- function(res.input,
     grid.draw(g)
     d <- dev.off()
 
-    png(paste0("spillover-all-scores-coarse-grained", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-all-scores-coarse-grained", postfix, ".png"), width = 2 * 480)
     sub <- coarse.res
     g.all.coarse <- plot.cell.type.score.heatmap(sub, score.col = "norm.score", normalized.score = TRUE, nrow = 2)
+    g.all.coarse <- g.all.coarse + theme(axis.text.x = element_text(size = 15))    
     g.all.coarse <- g.all.coarse + ggtitle(paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")"))
     print(g.all.coarse)
     d <- dev.off()
 
     ## Top-performers only
-    png(paste0("spillover-all-scores-coarse-grained-top", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-all-scores-coarse-grained-top", postfix, ".png"), width = 2 * 480)
     sub <- coarse.res
     flag <- sub[, method.name.col] %in% priority.methods
     sub <- sub[flag, ]
     g.all.coarse.top <- plot.cell.type.score.heatmap(sub, score.col = "norm.score", normalized.score = TRUE, nrow = 2)
     g.all.coarse.top <- g.all.coarse.top + ggtitle(paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")"))
+    g.all.coarse.top <- g.all.coarse.top + theme(axis.text.x = element_text(size = 10))
+    g.all.coarse.top <- g.all.coarse.top + theme(axis.text.y = element_text(size = 10))        
+
     print(g.all.coarse.top)
     d <- dev.off()
-    
-    png(paste0("spillover-all-coarse-grained-strip", postfix, ".png"), width = 4 * 480, height = 2 * 480)
+
+    png(paste0(figs.dir, "spillover-all-coarse-grained-strip", postfix, ".png"), width = 4 * 480, height = 2 * 480)
     g.strip.deconv.coarse <- g.strip.deconv.coarse + ggtitle("")
     g.strip.non.deconv.coarse <- g.strip.non.deconv.coarse + ggtitle("")
     g.strip.deconv.coarse <- g.strip.deconv.coarse + theme(axis.text.x = element_text(size = 15))
@@ -473,7 +533,7 @@ perform.spillover.analysis <- function(res.input,
     grid.draw(g)
     d <- dev.off()
 
-    png(paste0("spillover-all-scores-coarse-grained-strip", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-all-scores-coarse-grained-strip", postfix, ".png"), width = 2 * 480)
     sub <- coarse.res
     g.all.strip.coarse <- plot.strip.plots(subset(sub, measured == 0),
                                            id.var = method.name.col, cell.type.var = cell.type.col,
@@ -484,7 +544,7 @@ perform.spillover.analysis <- function(res.input,
     d <- dev.off()
 
     ## Top-performers only
-    png(paste0("spillover-all-scores-coarse-grained-strip-top", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-all-scores-coarse-grained-strip-top", postfix, ".png"), width = 2 * 480)
     sub <- coarse.res
     flag <- sub[, method.name.col] %in% priority.methods
     sub <- sub[flag, ]
@@ -493,10 +553,11 @@ perform.spillover.analysis <- function(res.input,
                                                var = "norm.score", label = "Normalized Score", col.summary.fun = "mean",
                                                order.decreasing = TRUE)
     g.all.strip.coarse.top <- g.all.strip.coarse.top + ggtitle(paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")"))
+    
     print(g.all.strip.coarse.top)
     d <- dev.off()
     
-    png(paste0("spillover-all-fine-grained", postfix, ".png"), width = 4 * 480, height = 2 * 480)
+    png(paste0(figs.dir, "spillover-all-fine-grained", postfix, ".png"), width = 4 * 480, height = 2 * 480)
     g2 <- g2 + ggtitle("")
     g4 <- g4 + ggtitle("")
     g2 <- g2 + theme(axis.text.x = element_text(size = 15))
@@ -506,24 +567,27 @@ perform.spillover.analysis <- function(res.input,
     grid.draw(g)
     d <- dev.off()
 
-    png(paste0("spillover-all-scores-fine-grained", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-all-scores-fine-grained", postfix, ".png"), width = 2 * 480)
     sub <- fine.res
     g.all.fine <- plot.cell.type.score.heatmap(sub, score.col = "norm.score", normalized.score = TRUE, nrow = 2)
     g.all.fine <- g.all.fine + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")"))
+    g.all.fine <- g.all.fine + theme(axis.text.x = element_text(size = 15))
     print(g.all.fine)
     d <- dev.off()
 
     ## Top-performers only    
-    png(paste0("spillover-all-scores-fine-grained-top", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-all-scores-fine-grained-top", postfix, ".png"), width = 2 * 480)
     sub <- fine.res
     flag <- sub[, method.name.col] %in% priority.methods
     sub <- sub[flag, ]
     g.all.fine.top <- plot.cell.type.score.heatmap(sub, score.col = "norm.score", normalized.score = TRUE, nrow = 2)
     g.all.fine.top <- g.all.fine.top + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")"))
+    g.all.fine.top <- g.all.fine.top + theme(axis.text.x = element_text(size = 10))
+    g.all.fine.top <- g.all.fine.top + theme(axis.text.y = element_text(size = 10))
     print(g.all.fine.top)
     d <- dev.off()
 
-    png(paste0("spillover-all-fine-grained-strip", postfix, ".png"), width = 4 * 480, height = 2 * 480)
+    png(paste0(figs.dir, "spillover-all-fine-grained-strip", postfix, ".png"), width = 4 * 480, height = 2 * 480)
     g.strip.deconv.fine <- g.strip.deconv.fine + ggtitle("")
     g.strip.non.deconv.fine <- g.strip.non.deconv.fine + ggtitle("")
     g.strip.deconv.fine <- g.strip.deconv.fine + theme(axis.text.x = element_text(size = 15))
@@ -533,7 +597,7 @@ perform.spillover.analysis <- function(res.input,
     grid.draw(g)
     d <- dev.off()
 
-    png(paste0("spillover-all-scores-fine-grained-strip", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-all-scores-fine-grained-strip", postfix, ".png"), width = 2 * 480)
     sub <- fine.res
     g.all.strip.fine <- plot.strip.plots(subset(sub, measured == 0),
                                          id.var = method.name.col, cell.type.var = cell.type.col,
@@ -544,7 +608,7 @@ perform.spillover.analysis <- function(res.input,
     d <- dev.off()
 
     ## Top-performers only
-    png(paste0("spillover-all-scores-fine-grained-strip-top", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-all-scores-fine-grained-strip-top", postfix, ".png"), width = 2 * 480)
     sub <- fine.res
     flag <- sub[, method.name.col] %in% priority.methods
     sub <- sub[flag, ]
@@ -563,16 +627,51 @@ perform.spillover.analysis <- function(res.input,
                                                 col.summary.fun = "min", cor.type.label = "Normalized\nScore",
                                                 limits = c(0, 1),
                                                 order.decreasing = TRUE)
-        png(paste0("spillover-all-scores-", sub.challenge, "-grained-heatmap", postfix, ".png"), width = 2 * 480)
+        png(paste0(figs.dir, "spillover-all-scores-", sub.challenge, "-grained-heatmap", postfix, ".png"), width = 2 * 480)
         print(g)
         d <- dev.off()
     }
+
+    mean.spillover <-
+        ddply(all.res,
+              .variables = c(method.name.col, cell.type.col, subchallenge.col),
+              .fun = function(df) {
+                  data.frame(spillover = mean(df$norm.score))
+              })
+    mean.spillover <-
+        ddply(mean.spillover,
+              .variables = c(method.name.col, cell.type.col),
+              .fun = function(df) {
+                  data.frame(spillover = mean(df$spillover))
+              })
+
+    mean.mean.spillover <-
+        ddply(mean.spillover,
+              .variables = c(cell.type.col),
+              .fun = function(df) {
+                  data.frame(spillover = mean(df$spillover))
+              })
+    o <- order(mean.mean.spillover$spillover)
+    levels <- mean.mean.spillover[o, cell.type.col]
+    mean.spillover[, cell.type.col] <-
+        factor(mean.spillover[, cell.type.col], levels = levels)
+
+    g <- ggplot(data = mean.spillover,
+                aes_string(x = cell.type.col, y = "spillover"))
+    g <- g + geom_boxplot(outlier.shape = NA)
+    g <- g + geom_beeswarm()
+    g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    g <- g + xlab("") + ylab("Spillover")
     
-    return(all.res)
+    ret.list <- list("all.res" = all.res, "method.plots" = method.plots,
+                     "spillover.summary.plot" = g)
+    return(ret.list)
 }
 
 results <- list()
-for(round in c("1", "2", "3", "latest")) {
+rounds <- c("1", "2", "3", "latest")
+## rounds <- c("1")
+for(round in rounds) {
     postfix <- paste0("-round-", round)
     cat(paste0("Doing round ", round, "\n"))
 
@@ -581,4 +680,10 @@ for(round in c("1", "2", "3", "latest")) {
     
 }
 
+g1 <- results[["1"]][["method.plots"]][["Biogem-coarse"]]
+g2 <- results[["1"]][["spillover.summary.plot"]]
+g <- plot_grid(g1, g2, labels = c("A", "B"))
 
+png(paste0(figs.dir, "spillover-summary.png"), width = 2 * 480)
+print(g)
+d <- dev.off()

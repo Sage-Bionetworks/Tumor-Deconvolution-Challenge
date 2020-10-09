@@ -860,6 +860,8 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     g
 }
 
+proportion.labels <- function(x) ifelse(x == 0, "0", ifelse(x == 1, "1", x))
+
 plot.strip.plots <- function(df, id.var = "modelId", cell.type.var = "cell.type", var = "cor.p",
                              label = "Pearson\nCorrelation", digits = 2, limits = c(-1, 1),
                              pval.var = NULL, col.summary.fun = "max", row.summary.fun = "mean", order.decreasing = FALSE) {
@@ -918,6 +920,7 @@ plot.strip.plots <- function(df, id.var = "modelId", cell.type.var = "cell.type"
     if(ntot > 10) { strip.text.sz <- 8 }
     g <- g + theme(axis.text.y = element_text(size = 6), text = element_text(size=15), strip.text = element_text(size = strip.text.sz))
     
+    g <- g + scale_x_continuous(labels = proportion.labels)
     g <- g + xlab(label) + ylab("")
     g
 }
