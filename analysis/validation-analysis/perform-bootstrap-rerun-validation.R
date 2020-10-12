@@ -94,31 +94,6 @@ calculate.empirical.bayes <-
         n.num / (n.tot - n.num)
     }
 
-## Modified slightly from
-## https://stackoverflow.com/questions/53170465/how-to-make-a-base-r-style-boxplot-using-ggplot2
-geom_boxplotMod <- function(mapping = NULL, data = NULL, stat = "boxplot", 
-    position = "dodge2", ..., outlier.colour = NULL, outlier.color = NULL, 
-    outlier.fill = NULL, outlier.shape = 1, outlier.size = 1.5, 
-    outlier.stroke = 0.5, outlier.alpha = NULL, notch = FALSE, notchwidth = 0.5,
-    varwidth = FALSE, na.rm = FALSE, show.legend = NA, inherit.aes = TRUE,
-    linetype = "dashed") # to know how these come here use: args(geom_boxplot)
-    {
-    list(geom_boxplot(
-            mapping = mapping, data = data, stat = stat, position = position,
-            outlier.colour = outlier.colour, outlier.color = outlier.color, 
-            outlier.fill = outlier.fill, outlier.shape = outlier.shape, 
-            outlier.size = outlier.size, outlier.stroke = outlier.stroke, 
-            outlier.alpha = outlier.alpha, notch = notch, 
-            notchwidth = notchwidth, varwidth = varwidth, na.rm = na.rm, 
-            show.legend = show.legend, inherit.aes = inherit.aes, linetype = 
-            linetype, ...),
-        stat_boxplot(geom = "errorbar", aes(ymin = ..ymax..), width = 0.25),
-        #the width of the error-bar heads are decreased
-        stat_boxplot(geom = "errorbar", aes(ymax = ..ymin..), width = 0.25),
-        stat_boxplot(aes(ymin = ..lower.., ymax = ..upper..), ...)
-        )
-    }
-
 do.bootstrap.analysis <-
     function(res.input, bootstraps, 
              method.name.col, 
@@ -261,19 +236,19 @@ do.bootstrap.analysis <-
                   .fun = function(sub.challenge) {
                       df <- bootstrapped.cors[[sub.challenge]]
                       flag <- res.round[, subchallenge.col] == sub.challenge
-                      un <- unique(res.round[flag, c(method.id.col, method.name.col)])
+                      un <- unique(res.round[flag, unique(c(method.id.col, method.name.col))])
                       df <- merge(df, un)
                       ## Average over cell type (within method and dataset and bootstrap sample)
                       df <- ddply(df,
                                   .variables = c(method.id.col, dataset.name.col, "boot.i"),
                                   .fun = function(tmp) {
-                                      data.frame(pearson = mean(tmp$pearson), spearman = mean(tmp$spearman))
+                                      data.frame(pearson = mean(tmp$pearson), spearman = mean(tmp$spearman), rmse = mean(tmp$rmse))
                                   })
                       ## Average over dataset (within method and bootstrap sample)
                       df <- ddply(df,
                                   .variables = c(method.id.col, "boot.i"),
                                   .fun = function(tmp) {
-                                      data.frame(pearson = mean(tmp$pearson), spearman = mean(tmp$spearman))
+                                      data.frame(pearson = mean(tmp$pearson), spearman = mean(tmp$spearman), rmse = mean(tmp$rmse))
                                   })
                       df
                   })
@@ -286,7 +261,7 @@ do.bootstrap.analysis <-
                       df <- ddply(df,
                                   .variables = c(method.id.col),
                                   .fun = function(tmp) {
-                                      data.frame(pearson = mean(tmp$pearson), spearman = mean(tmp$spearman))
+                                      data.frame(pearson = mean(tmp$pearson), spearman = mean(tmp$spearman), rmse = mean(tmp$rmse))
                                   })
                       o <- order(df$pearson, decreasing = TRUE)
                       df <- df[o,]
@@ -374,7 +349,8 @@ do.bootstrap.analysis <-
                       ret
                   })
 
-        ret.list <- list("bootstrapped.cors" = bootstrapped.cors,
+        ret.list <- list("res.round" = res.round,
+                         "bootstrapped.cors" = bootstrapped.cors,
                          "bootstrapped.scores" = bootstrapped.scores,
                          "mean.bootstrapped.scores" = mean.bootstrapped.scores,
                          "means.by.cell.type.method" = means.by.cell.type.method,
@@ -383,183 +359,6 @@ do.bootstrap.analysis <-
                          "bayes.factors" = bayes.factors)
                          
         return(ret.list)
-
-        
-        cat(paste0("Calculating boxplots\n"))
-        for(sub.challenge in sub.challenges) {
-            scores <- bootstrapped.scores[[sub.challenge]]
-            mean.scores <- mean.bootstrapped.scores[[sub.challenge]]
-            flag <- res.round[, subchallenge.col] == sub.challenge            
-            un <- unique(res.round[flag, method.name.col, drop=FALSE])
-            mean.scores <- merge(mean.scores, un)
-            scores <- merge(scores, un)    
-            o <- order(mean.scores$pearson)
-            mean.scores <- mean.scores[o, ]
-            scores[, method.name.col] <- factor(scores[, method.name.col], levels = mean.scores[, method.name.col])
-            scores <- na.omit(scores)
-            
-            g1 <- ggplot(data = scores)
-            g1 <- g1 + geom_boxplot(aes_string(x = method.name.col, y = "pearson"))
-            g1 <- g1 + coord_flip()
-            g1 <- g1 + xlab("Method")
-            g1 <- g1 + ylab("Pearson Correlation")
-            g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20))
-            
-            g2 <- ggplot(data = scores)
-            g2 <- g2 + geom_boxplot(aes_string(x = method.name.col, y = "spearman"))
-            g2 <- g2 + coord_flip()
-            g2 <- g2 + xlab("Method")
-            g2 <- g2 + ylab("Spearman Correlation")
-            g2 <- g2 + theme(text = element_text(size=18))    
-
-            png(paste0(figs.dir, "rerun-validation-score-boxplots-", sub.challenge, postfix, ".png"), width = 2 * 480)
-            title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
-            round.text <- ""
-            if(round == "latest") {
-                round.text <- "Latest Round"
-            } else if (round == "1") {
-                round.text <- "Round 1"
-            } else {
-                round.text <- paste0("Latest Round up to Round ", round)
-            }
-            title <- paste0(title, " (", round.text, ")")
-            grid.arrange(g1, g2, nrow=1, top = textGrob(title, gp = gpar(fontsize = 25)))
-            d <- dev.off()
-        }
-
-        for(sub.challenge in sub.challenges) {
-            scores <- bootstrapped.scores[[sub.challenge]]
-            mean.scores <- mean.bootstrapped.scores[[sub.challenge]]
-            flag <- res.round[, subchallenge.col] == sub.challenge            
-            un <- unique(res.round[flag, method.name.col, drop=FALSE])
-            mean.scores <- merge(mean.scores, un)
-            scores <- merge(scores, un)    
-            o <- order(mean.scores$pearson)
-            mean.scores <- mean.scores[o, ]
-            scores[, method.name.col] <- factor(scores[, method.name.col], levels = mean.scores[, method.name.col])
-            scores <- na.omit(scores)
-            mean.scores[, method.name.col] <- factor(mean.scores[, method.name.col], levels = mean.scores[, method.name.col])
-            mean.scores <- na.omit(mean.scores)
-            
-            g1 <- ggplot(data = scores, aes_string(x = method.name.col, y = "pearson"))
-            g1 <- g1 + geom_boxplotMod(fill = "#56B4E9")
-            g1 <- g1 + coord_flip()
-            g1 <- g1 + xlab("Method")
-            g1 <- g1 + ylab("Pearson Correlation")
-            g1 <- g1 + ylim(c(-0.25, 1))
-            g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20))
-
-            g2 <- ggplot(data = mean.scores)
-            g2 <- g2 + geom_col(aes_string(x = method.name.col, y = "spearman"), fill = "#E69F00")
-            g2 <- g2 + coord_flip()
-            g2 <- g2 + xlab("Method")
-            g2 <- g2 + ylab("Spearman Correlation")
-            g2 <- g2 + ylim(c(-0.25, 1))            
-            g2 <- g2 + theme(text = element_text(size=18))    
-            g2 <- g2 + theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
-                             axis.ticks.y = element_blank())
-
-            png(paste0(figs.dir, "rerun-validation-score-box-and-barplots-", sub.challenge, postfix, ".png"), width = 2 * 480)
-            title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
-            round.text <- ""
-            if(round == "latest") {
-                round.text <- "Latest Round"
-            } else if (round == "1") {
-                round.text <- "Round 1"
-            } else {
-                round.text <- paste0("Latest Round up to Round ", round)
-            }
-            title <- paste0(title, " (", round.text, ")")
-            grid.arrange(g1, g2, nrow=1, widths = c(3, 1), top = textGrob(title, gp = gpar(fontsize = 25)))
-            d <- dev.off()
-        }
-        
-        ## Spot check that the methods have the same scores for coarse- and fine-grained
-        ## NB: some methods may differ between coarse and fine-grained; pick several
-        ## baseline/comparator methods that we know to be the same
-        check.methods <- c("CIBERSORT", "MCP-counter", "CIBERSORTx")
-        check.methods <- sort(unique(c(as.character(means.by.cell.type.method[["coarse"]][["pearson"]][, method.name.col]),
-                                       as.character(means.by.cell.type.method[["fine"]][["pearson"]][, method.name.col]))))
-        for(meth in check.methods) {
-
-            res.coarse <- means.by.cell.type.method[["coarse"]][["pearson"]]
-            res.fine <- means.by.cell.type.method[["fine"]][["pearson"]]            
-            
-            meth.res.coarse <- res.coarse[res.coarse[, method.name.col] == meth, ]
-            meth.res.fine <- res.fine[res.fine[, method.name.col] == meth, ]            
-            m <- merge(meth.res.coarse, meth.res.fine, by = c(cell.type.col))
-            if(nrow(m) == 0) { next }
-            m$diff <- m$cor.x - m$cor.y
-            m <- m[!is.na(m$cor.x),]
-            eps <- 10^-4
-            cat(paste0(meth, " ", postfix, " max diff between coarse and fine-grained is: ", max(abs(m$diff)), "\n"))
-            flag <- abs(m$diff) > eps 
-            if(any(flag)) {
-                print(head(m[flag,,drop=F]))
-                cat(paste0("Max diff exceeded for ", meth, " ", postfix, ": ", max(abs(m$diff)), "\n"))
-            }
-        }
-
-        cat(paste0("Plotting strip plots\n"))
-        for(sub.challenge in sub.challenges) {
-            means <- means.over.dataset[[sub.challenge]][["pearson"]]
-            flag <- res.round[, subchallenge.col] == sub.challenge            
-            un <- unique(res.round[flag, method.name.col, drop=FALSE])
-            means <- merge(means, un)
-            
-            g <- plot.strip.plots(means, id.var = method.name.col, cell.type.var = cell.type.col, var = "cor")
-            title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
-            round.text <- ""
-            if(round == "latest") {
-                round.text <- "Latest Round"
-            } else if (round == "1") {
-                round.text <- "Round 1"
-            } else {
-                round.text <- paste0("Latest Round up to Round ", round)
-            }
-            title <- paste0(title, " (", round.text, ")")
-            
-            g <- g + ggtitle(title)
-            png(paste0(figs.dir, "rerun-validation-bootstrap-cell-strip-plot-", sub.challenge, postfix, ".png"), width = 2 * 480)
-            print(g)
-            d <- dev.off()
-
-        }
-        
-        cat(paste0("Plotting heatmaps\n"))
-        for(sub.challenge in sub.challenges) {
-            means <- means.by.cell.type.method[[sub.challenge]][["pearson"]]
-            flag <- res.round[, subchallenge.col] == sub.challenge            
-            un <- unique(res.round[flag, method.name.col, drop=FALSE])
-            means <- merge(means, un)
-            
-            g <- plot.cell.type.correlation.heatmap(means, show.corr.text = TRUE,
-                                                    id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
-##            g <- plot.cell.type.correlation.strip.plots(means, show.corr.text = TRUE, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
-            title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
-            round.text <- ""
-            if(round == "latest") {
-                round.text <- "Latest Round"
-            } else if (round == "1") {
-                round.text <- "Round 1"
-            } else {
-                round.text <- paste0("Latest Round up to Round ", round)
-            }
-            title <- paste0(title, " (", round.text, ")")
-            
-            g <- g + ggtitle(title)
-            png(paste0(figs.dir, "rerun-validation-bootstrap-cell-heatmap-", sub.challenge, postfix, ".png"), width = 2 * 480)
-            print(g)
-            d <- dev.off()
-        }
-
-        ret.list <- list("bootstrapped.cors" = bootstrapped.cors,
-                         "bootstrapped.scores" = bootstrapped.scores,
-                         "mean.bootstrapped.scores" = mean.bootstrapped.scores,
-                         "top.performers" = top.performers,
-                         "bayes.factors" = bayes.factors,
-                         "means.by.cell.type.method" = means.by.cell.type.method)
-        ret.list
         
 }
 
@@ -598,7 +397,7 @@ for(round in c("2", "1", "3", "latest")) {
     }
 }
 
-save.image(".Rdata.plot.bootstrap")
+## save.image(".Rdata.plot.bootstrap")
 
 ## Store the above results to Synapse
 rounds <- names(results)
@@ -615,72 +414,7 @@ cat(paste0("Storing ", file, " to synapse\n"))
 f <- File(file, parentId = parent.id, executed = script_url, synapseStore = TRUE)
 synStore(f)
 
-if(FALSE) {
-    for(round in rounds) {
-        res <- results[[round]]
-        for(nm in names(res)) {
-            file <- paste0(nm, ".tsv")
-            write.table(file = file, res[[nm]], col.names = TRUE, row.names = FALSE, sep = "\t", quote = FALSE)
-            cat(paste0("Storing ", file, " to synapse\n"))
-            f <- File(file, parentId = parent.id, executed = script_url, synapseStore = TRUE)
-            synStore(f)
-        }
-    }
-}
-
-subchallenges <- c("coarse", "fine")
-names(subchallenges) <- subchallenges
-
-plot.scores.over.rounds <- function(df) {
-    df.latest <- subset(df, Round == "latest")
-    o <- order(df.latest$pearson)
-    lvls <- df.latest[o, "method.name"]
-    df <- subset(df, Round != "latest")
-    df$method.name <- factor(df$method.name, levels = lvls)
-    g <- ggplot()
-    g <- g + geom_point(data = df, aes(x = pearson, y = method.name, colour = Round))
-    g <- g + xlab("Pearson Correlation") + ylab("Method")
-    g
-}
-
-all.means <-
-    llply(subchallenges,
-          .fun = function(subchallenge) {
-              ret <- ldply(results, .fun = function(df) df$mean.bootstrapped.scores[[subchallenge]])
-              colnames(ret)[1] <- "Round"
-              ret <- na.omit(ret)
-              ## Round x score means score at round x or the latest round < x.
-              ## i.e., there may be duplicate results in this table.
-              ## Rather than using duplicated(pearson) to remove them, just
-              ## order by round and they will be overlaid on the plot below.
-              o <- order(ret$Round, decreasing = TRUE)
-              ret <- ret[o,]
-              ret
-          })
-
-g.score.vs.round <-
-    llply(subchallenges, .fun = function(subchallenge) plot.scores.over.rounds(all.means[[subchallenge]]))
-
-l_ply(subchallenges,
-      .fun = function(subchallenge) {
-          g <- g.score.vs.round[[subchallenge]]
-          png(paste0(figs.dir, "rerun-validation-bootstrap-pearson-vs-round-", subchallenge, ".png"))
-          print(g)
-          d <- dev.off()
-      })
-
-g1 <- g.score.vs.round[["coarse"]]
-g1 <- g1 + ggtitle("Coarse-Grained Sub-Challenge")
-g2 <- g.score.vs.round[["fine"]]
-g2 <- g2 + ggtitle("Fine-Grained Sub-Challenge")
-
-png(paste0(figs.dir, "rerun-validation-bootstrap-pearson-vs-round-", "all", postfix, ".png"), width = 2 * 480)                    
-grid.arrange(g1, g2, nrow=1)
-d <- dev.off()
-
-save.image(".Rdata.plot.bootstrap")
-
-stop("stop")
-
 cat("Exiting successfully\n")
 q(status=0)
+
+
