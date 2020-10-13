@@ -284,6 +284,22 @@ do.bootstrap.analysis <-
                                    })
                   })
 
+        means.over.bootstrap <-
+            llply(bootstrapped.cors,
+                  .fun = function(df) {
+                      methods <- c("pearson", "spearman", "rmse")
+                      na.rm <- FALSE
+                      names(methods) <- methods
+                      res <- llply(methods,
+                                   .fun = function(method) {
+                                       ## average over dataset
+                                       ret <- ddply(df, .variables = c(method.id.col, cell.type.col, dataset.name.col),
+                                                    .fun = function(df) {
+                                                        data.frame(cor = mean(df[, method], na.rm=na.rm))
+                                                    })
+                                   })
+                  })
+        
         cat(paste0("Calculating mean by cell type\n"))
         if(FALSE) {
             means.by.cell.type.method <-
@@ -373,6 +389,7 @@ do.bootstrap.analysis <-
                          "mean.bootstrapped.scores" = mean.bootstrapped.scores,
                          "means.by.cell.type.method" = means.by.cell.type.method,
                          "means.over.dataset" = means.over.dataset,
+                         "means.over.bootstrap" = means.over.bootstrap,                         
                          "top.performers" = top.performers,
                          "bayes.factors" = bayes.factors)
                          
