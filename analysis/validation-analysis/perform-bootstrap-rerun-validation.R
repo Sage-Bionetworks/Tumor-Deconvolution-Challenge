@@ -333,9 +333,9 @@ do.bootstrap.analysis <-
                           res <- llply(methods,
                                        .fun = function(method) {
                                            ## average over bootstrap (means.over.dataset has already been averaged over dataset)
-                                           ret <- ddply(df, .variables = c(method.id.col, cell.type.col),
+                                           ret <- ddply(df[[method]], .variables = c(method.id.col, cell.type.col),
                                                         .fun = function(df) {
-                                                            data.frame(cor = mean(df[, method], na.rm=na.rm))
+                                                            data.frame(cor = mean(df$cor, na.rm=na.rm))
                                                         })
                                        })
                       })
