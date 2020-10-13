@@ -824,7 +824,7 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
 
 
     cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var], row.summary.fun)
-    id.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
+    method.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
 
     df <- rbind(df, cell.type.summaries[, c(id.var, cell.type.var, cor.var)])
     df <- rbind(df, method.summaries[, c(id.var, cell.type.var, cor.var)])    
@@ -840,7 +840,7 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
         df$cor.label <- paste0(stars.pval(df[, pval.var]), "\n", df$cor.label)
     }
     df[, cell.type.var] <- factor(df[, cell.type.var], levels = cell.type.levels)
-    df[, id.var] <- factor(df[, id.var], levels = id.levels)
+    df[, id.var] <- factor(df[, id.var], levels = method.levels)
     g <- ggplot(data = df, aes_string(y = id.var, x = cell.type.var, fill = cor.var))
     g <- g + geom_tile()
     if(show.corr.text) {
@@ -891,7 +891,7 @@ plot.strip.plots <- function(df, id.var = "modelId", cell.type.var = "cell.type"
 
     ##    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var], row.summary.fun)
     cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var])
-    id.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
+    method.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
 ##    df <- rbind(df, cell.type.summaries[, c(id.var, cell.type.var, var)])
 ##    df <- rbind(df, method.summaries[, c(id.var, cell.type.var, var)])    
 
@@ -911,7 +911,7 @@ plot.strip.plots <- function(df, id.var = "modelId", cell.type.var = "cell.type"
     o <- unlist(llply(1:(nrow-1), .fun = function(i) (i*ncol):(1+((i-1)*ncol))))
     o <- c(o, ntot:(max(o)+1))
     df[, cell.type.var] <- factor(df[, cell.type.var], levels = cell.type.levels[o])
-    df[, id.var] <- factor(df[, id.var], levels = id.levels)
+    df[, id.var] <- factor(df[, id.var], levels = method.levels)
     g <- ggplot(data = df, aes_string(y = id.var, x = var))
     g <- g + geom_boxplot(outlier.shape = NA)
     g <- g + facet_wrap(cell.type.var, as.table = FALSE, nrow = nrow)

@@ -268,28 +268,6 @@ do.bootstrap.analysis <-
                       df
                   })
 
-        cat(paste0("Calculating mean by cell type\n"))        
-        means.by.cell.type.method <-
-            llply(bootstrapped.cors,
-                  .fun = function(df) {
-                      methods <- c("pearson", "spearman", "rmse")
-                      na.rm <- FALSE
-                      names(methods) <- methods
-                      res <- llply(methods,
-                                   .fun = function(method) {
-                                       ## first, average over bootstrap
-                                       ret <- ddply(df, .variables = c(method.id.col, cell.type.col, dataset.name.col),
-                                                    .fun = function(df) {
-                                                        data.frame(cor = mean(df[, method], na.rm=na.rm))
-                                                    })
-                                       ## now, average over dataset
-                                       ret2 <- ddply(ret, .variables = c(method.id.col, cell.type.col),
-                                                     .fun = function(df) {
-                                                         data.frame(cor = mean(df$cor, na.rm=na.rm))
-                                                     })
-                                   })
-                  })
-
         means.over.dataset <-
             llply(bootstrapped.cors,
                   .fun = function(df) {
@@ -305,6 +283,46 @@ do.bootstrap.analysis <-
                                                     })
                                    })
                   })
+
+        cat(paste0("Calculating mean by cell type\n"))
+        if(FALSE) {
+            means.by.cell.type.method <-
+                llply(bootstrapped.cors,
+                      .fun = function(df) {
+                          methods <- c("pearson", "spearman", "rmse")
+                          na.rm <- FALSE
+                          names(methods) <- methods
+                          res <- llply(methods,
+                                       .fun = function(method) {
+                                           ## first, average over bootstrap
+                                           ret <- ddply(df, .variables = c(method.id.col, cell.type.col, dataset.name.col),
+                                                        .fun = function(df) {
+                                                            data.frame(cor = mean(df[, method], na.rm=na.rm))
+                                                        })
+                                           ## now, average over dataset
+                                           ret2 <- ddply(ret, .variables = c(method.id.col, cell.type.col),
+                                                     .fun = function(df) {
+                                                         data.frame(cor = mean(df$cor, na.rm=na.rm))
+                                                     })
+                                       })
+                      })
+        }
+
+        means.by.cell.type.method <-
+                llply(means.over.dataset,
+                      .fun = function(df) {
+                          methods <- c("pearson", "spearman", "rmse")
+                          na.rm <- FALSE
+                          names(methods) <- methods
+                          res <- llply(methods,
+                                       .fun = function(method) {
+                                           ## average over bootstrap (means.over.dataset has already been averaged over dataset)
+                                           ret <- ddply(df, .variables = c(method.id.col, cell.type.col),
+                                                        .fun = function(df) {
+                                                            data.frame(cor = mean(df[, method], na.rm=na.rm))
+                                                        })
+                                       })
+                      })
 
         cat(paste0("Calculating bayes factors\n"))
         top.performers <-

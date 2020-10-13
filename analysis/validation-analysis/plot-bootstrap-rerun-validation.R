@@ -48,8 +48,6 @@ firstup <- function(x) {
 }
 
 
-stop("stop")
-
 suppressPackageStartupMessages(p_load(grid))
 suppressPackageStartupMessages(p_load(gridExtra))
 
@@ -103,15 +101,6 @@ geom_boxplotMod <- function(mapping = NULL, data = NULL, stat = "boxplot",
     }
 
 
-
-        ret.list <- list("bootstrapped.cors" = bootstrapped.cors,
-                         "bootstrapped.scores" = bootstrapped.scores,
-                         "mean.bootstrapped.scores" = mean.bootstrapped.scores,
-                         "means.by.cell.type.method" = means.by.cell.type.method,
-                         "means.over.dataset" = means.over.dataset,
-                         "top.performers" = top.performers,
-                         "bayes.factors" = bayes.factors)
-
 make.round.text <- function(round, round.str = "Round") {
     round.text <- ""
     if(round == "latest") {
@@ -126,10 +115,13 @@ make.round.text <- function(round, round.str = "Round") {
 
 
 plot.bootstrap.analysis <-
-    function(bootstrapped.scores, mean.bootstrapped.scores,
+    function(res, bootstrapped.scores, mean.bootstrapped.scores,
              means.by.cell.type.method,
              means.over.dataset,
              postfix) {
+
+        top.performers <- c("Aginome-XMU", "DA_505", "mitten_TDC19", "Biogem")
+        priority.methods <- unique(c(top.performers, unique(subset(res, comparator==TRUE)[, method.name.col])))
 
         cat(paste0("Calculating boxplots\n"))
         boxplots <- list()
@@ -242,15 +234,39 @@ plot.bootstrap.analysis <-
             g <- plot.strip.plots(means, id.var = method.name.col, cell.type.var = cell.type.col, var = "cor")
             strip.plots[[sub.challenge]] <- g
             
-            title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
-            round.text <- make.round.text(round)
-            title <- paste0(title, " (", round.text, ")")
-            g <- g + ggtitle(title)
+            ## title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
+            ## round.text <- make.round.text(round)
+            ## title <- paste0(title, " (", round.text, ")")
+            ## g <- g + ggtitle(title)
 
             ## png(paste0(figs.dir, "rerun-validation-bootstrap-cell-strip-plot-", sub.challenge, postfix, ".png"), width = 2 * 480)
             ## print(g)
             ## d <- dev.off()
+
+            flag <- means[, method.name.col] %in% priority.methods
+            g <- plot.strip.plots(means[flag, ], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor")
+            strip.plots[[paste0(sub.challenge, "-priority")]] <- g
+            
         }
+
+        coarse.means <- means.over.dataset[["coarse"]][["pearson"]]
+        fine.means <- means.over.dataset[["fine"]][["pearson"]]        
+        all.means <- rbind(coarse.means, fine.means)
+        
+        all.means <-
+            ddply(all.means, .variables = c(method.name.col, cell.type.col, "boot.i"),
+                  .fun = function(df) {
+                      data.frame(cor = mean(df$cor))
+                  })
+        
+        
+        g <- plot.strip.plots(all.means, id.var = method.name.col, cell.type.var = cell.type.col, var = "cor")
+        strip.plots[["merged"]] <- g
+
+        flag <- all.means[, method.name.col] %in% priority.methods
+        g <- plot.strip.plots(all.means[flag, ], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor")
+        strip.plots[["merged-priority"]] <- g
+
         
         cat(paste0("Plotting heatmaps\n"))
         heatmaps <- list()
@@ -272,7 +288,20 @@ plot.bootstrap.analysis <-
             ## print(g)
             ## d <- dev.off()
         }
-
+        
+        coarse.means <- means.by.cell.type.method[["coarse"]][["pearson"]]
+        fine.means <- means.by.cell.type.method[["fine"]][["pearson"]]        
+        all.means <- rbind(coarse.means, fine.means)
+        
+        all.means <-
+            ddply(all.means, .variables = c(method.name.col, cell.type.col),
+                  .fun = function(df) {
+                      data.frame(cor = mean(df$cor))
+                  })
+        g <- plot.cell.type.correlation.heatmap(all.means, show.corr.text = TRUE,
+                                                id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
+        heatmaps[["merged"]] <- g
+        
         ret.list <- list("boxplots" = boxplots,
                          "barplots" = barplots,
                          "strip.plots" = strip.plots,
@@ -288,15 +317,30 @@ for(round in c("2", "1", "3", "latest")) {
     postfix <- paste0("-round-", round)
     cat(paste0("Doing round ", round, "\n"))
 
+    res.round <- results[[round]][["res.round"]]
     bootstrapped.cors <- results[[round]][["bootstrapped.cors"]]
     bootstrapped.scores <- results[[round]][["bootstrapped.scores"]]
     mean.bootstrapped.scores <- results[[round]][["mean.bootstrapped.scores"]]
     means.by.cell.type.method <- results[[round]][["means.by.cell.type.method"]]
     means.over.dataset <- results[[round]][["means.over.dataset"]]
     top.performers <- results[[round]][["top.performers"]]
-    bayes.factor <- results[[round]][["bayes.factors"]]
+    bayes.factors <- results[[round]][["bayes.factors"]]
 
-    plots[[round]] <- plot.bootstrap.analysis(bootstrapped.scores, mean.bootstrapped.scores,
+    if(FALSE) {
+        ranges <-
+            llply(sub.challenges,
+                  .fun = function(sub.challenge) {
+                      tmp <- res.round[res.round[, subchallenge.col] == sub.challenge, ]
+                      ddply(tmp, .variables = c(cell.type.col, "distribution.type"),
+                            .fun = function(df) {
+                                mn <- min(df[, measured.col], na.rm=TRUE)
+                                mx <- max(df[, measured.col], na.rm=TRUE)
+                                data.frame(min = mn, max = mx, range = mx - mn)
+                            })
+                  })
+    }
+                  
+    plots[[round]] <- plot.bootstrap.analysis(res.round, bootstrapped.scores, mean.bootstrapped.scores,
                                               means.by.cell.type.method,
                                               means.over.dataset,
                                               postfix)
@@ -317,9 +361,10 @@ for(round in c("2", "1", "3", "latest")) {
 }
 
 plot.scores.over.rounds <- function(df) {
-    df.latest <- subset(df, Round == "latest")
-    o <- order(df.latest$pearson)
-    lvls <- df.latest[o, method.name.col]
+    order.round <- "1"
+    df.order <- subset(df, Round == order.round)
+    o <- order(df.order$pearson)
+    lvls <- df.order[o, method.name.col]
     df <- subset(df, Round != "latest")
     df[, method.name.col] <- factor(df[, method.name.col], levels = lvls)
     df$Submission <- df$Round
@@ -357,39 +402,11 @@ if(FALSE) {
           })
 }
 
-            barplots[[paste0(sub.challenge,  "-pearson")]] <- g1
-            barplots[[paste0(sub.challenge,  "-spearman")]] <- g2            
+shift.limit <- function(val) {
+    sign(val) * round(abs(val) + 0.05, digits = 1)
+}
 
-
-g.bootstrap.coarse.pearson.round1 <- plots[["1"]][["barplots"]][["coarse-pearson"]]
-g.bootstrap.coarse.spearman.round1 <- plots[["1"]][["barplots"]][["coarse-spearman"]]
-
-title <- "Coarse-Grained Sub-Challenge (First Submission)"
-g.bootstrap.coarse.round1 <- grid.arrange(g.bootstrap.coarse.pearson.round1,
-                                          g.bootstrap.coarse.spearman.round1, nrow=1, top = textGrob(title, gp = gpar(fontsize = 25)))
-
-g.bootstrap.fine.pearson.round1 <- plots[["1"]][["barplots"]][["fine-pearson"]]
-g.bootstrap.fine.spearman.round1 <- plots[["1"]][["barplots"]][["fine-spearman"]]
-
-title <- "Fine-Grained Sub-Challenge (First Submission)"
-g.bootstrap.fine.round1 <- grid.arrange(g.bootstrap.fine.pearson.round1,
-                                        g.bootstrap.fine.spearman.round1, nrow=1, top = textGrob(title, gp = gpar(fontsize = 25)))
-
-g.round.coarse <- g.score.vs.round[["coarse"]]
-g.round.coarse <- g.round.coarse + ggtitle("Coarse-Grained Sub-Challenge")
-
-g.round.fine <- g.score.vs.round[["fine"]]
-g.round.fine <- g.round.fine + ggtitle("Fine-Grained Sub-Challenge")
-
-g <- plot_grid(g.bootstrap.coarse.round1, g.bootstrap.fine.round1, g.round.coarse, g.round.fine)
-
-png(paste0(figs.dir, "rerun-validation-bootstrap-pearson-vs-round-", "all", postfix, ".png"), width = 2 * 480)                    
-grid.arrange(g1, g2, nrow=1)
-d <- dev.off()
-
-  - bootstraps for coarse (A) and fine (B) (round 1)
-  - performance over rounds for coarse (C) and fine (D)
-
+source("make-validation-performance-figs.R")
 
 cat("Exiting successfully\n")
 q(status=0)
