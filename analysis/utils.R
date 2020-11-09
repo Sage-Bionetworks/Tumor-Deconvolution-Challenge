@@ -793,16 +793,77 @@ plot.admixtures <- function(mat) {
     g
 }
 
+calculate.method.levels <- function(df, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
+                                    row.summary.fun = "mean", col.summary.fun = "max",
+                                    order.decreasing = FALSE) {
+
+    orig.df <- df
+    df <- df[, c(id.var, cell.type.var, cor.var)]
+    df[, id.var] <- as.character(df[, id.var])
+    df[, cell.type.var] <- as.character(df[, cell.type.var])
+
+    na.rm <- FALSE
+    
+    method.summaries <- ddply(df, .variables = c(id.var),
+                          .fun = function(tmp) {
+                              ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=na.rm)))
+                              colnames(ret) <- c(cell.type.var, cor.var)
+                              ret
+                          })
+    
+    method.summaries <- method.summaries[order(method.summaries[, cor.var], decreasing = order.decreasing),]
+
+
+    method.levels <- method.summaries[method.summaries[, id.var] != col.summary.fun, id.var]
+
+    method.levels
+}
+
+calculate.cell.type.levels <- function(df, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
+                                       row.summary.fun = "mean", col.summary.fun = "max",
+                                       order.decreasing = FALSE) {
+
+    orig.df <- df
+    df <- df[, c(id.var, cell.type.var, cor.var)]
+    df[, id.var] <- as.character(df[, id.var])
+    df[, cell.type.var] <- as.character(df[, cell.type.var])
+
+    na.rm <- FALSE
+    
+    cell.type.summaries <- ddply(df, .variables = cell.type.var,
+                             .fun = function(tmp) {
+                                 ret <- data.frame(id = col.summary.fun, cor = do.call(col.summary.fun, list(tmp[, cor.var], na.rm=TRUE)))
+                                 colnames(ret)[1] <- id.var
+                                 colnames(ret)[2] <- cor.var                                 
+                                 ret
+                             })
+    cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, cor.var], decreasing = order.decreasing),]
+    
+    cell.type.levels <- cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var]
+
+    cell.type.levels
+}
+
+
 plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
                                                cor.type.label = "Pearson\nCorrelation", limits = c(-1, 1),
                                                pval.var = NULL, row.summary.fun = "mean", col.summary.fun = "max",
                                                order.decreasing = FALSE,
+                                               method.levels = NULL,
+                                               cell.type.levels = NULL,
                                                formatter = function(x) formatC(x, format="f", digits=2)) {
     orig.df <- df
     df <- df[, c(id.var, cell.type.var, cor.var)]
     df[, id.var] <- as.character(df[, id.var])
     df[, cell.type.var] <- as.character(df[, cell.type.var])
 
+    ## Add NAs for any missing entries
+    df <- acast(df, as.formula(paste0(id.var, " ~ ", cell.type.var)), value.var = cor.var, fill = NA)
+    df <- reshape2::melt(as.matrix(df))
+    colnames(df) <- c(id.var, cell.type.var, cor.var)
+    df[, id.var] <- as.character(df[, id.var])
+    df[, cell.type.var] <- as.character(df[, cell.type.var])
+    
     na.rm <- FALSE
     cell.type.summaries <- ddply(df, .variables = cell.type.var,
                              .fun = function(tmp) {
@@ -823,9 +884,20 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     method.summaries <- method.summaries[order(method.summaries[, cor.var], decreasing = order.decreasing),]
 
 
-    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var], row.summary.fun)
-    method.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
-
+    if(is.null(cell.type.levels)) {
+        cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var], row.summary.fun)
+    } else {
+        cell.type.levels <- c(cell.type.levels, row.summary.fun)
+    }
+    
+    ## method.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
+    if(is.null(method.levels)) {
+        method.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
+    } else {
+        method.levels <- c(col.summary.fun, method.levels)
+    }
+    
+    
     df <- rbind(df, cell.type.summaries[, c(id.var, cell.type.var, cor.var)])
     df <- rbind(df, method.summaries[, c(id.var, cell.type.var, cor.var)])    
 
@@ -848,7 +920,8 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     }
     g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
                    text = element_text(size=15))
-    g <- g + ylab("Method") + xlab("")
+    ## g <- g + ylab("Method") + xlab("")
+    g <- g + theme(axis.title.x = element_blank(), axis.title.y = element_blank())
     ## g <- g + scale_fill_continuous("Pearson\ncorrelation", limits = c(-1,1))
     ## g <- g + scale_fill_gradient2("Pearson\ncorrelation", limits = c(-1,1),
     ##                               low = "red", high = "blue", mid = "white", na.value = "black")
@@ -864,36 +937,42 @@ proportion.labels <- function(x) ifelse(x == 0, "0", ifelse(x == 1, "1", x))
 
 plot.strip.plots <- function(df, id.var = "modelId", cell.type.var = "cell.type", var = "cor.p",
                              label = "Pearson\nCorrelation", digits = 2, limits = c(-1, 1),
-                             pval.var = NULL, col.summary.fun = "max", row.summary.fun = "mean", order.decreasing = FALSE) {
+                             pval.var = NULL, col.summary.fun = "max", row.summary.fun = "mean", order.decreasing = FALSE,
+                             method.levels = NULL,
+                             cell.type.levels = NULL) {
     orig.df <- df
     df <- df[, c(id.var, cell.type.var, var)]
     df[, id.var] <- as.character(df[, id.var])
     df[, cell.type.var] <- as.character(df[, cell.type.var])
 
     na.rm <- TRUE
-    cell.type.summaries <- ddply(df, .variables = cell.type.var,
-                             .fun = function(tmp) {
-                                 ret <- data.frame(id = col.summary.fun, cor = do.call(col.summary.fun, list(tmp[, var], na.rm=TRUE)))
-                                 colnames(ret)[1] <- id.var
-                                 colnames(ret)[2] <- var                                 
-                                 ret
-                             })
-    cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, var], decreasing = order.decreasing),]
+    if(is.null(cell.type.levels)) {
+        cell.type.summaries <- ddply(df, .variables = cell.type.var,
+                                     .fun = function(tmp) {
+                                         ret <- data.frame(id = col.summary.fun, cor = do.call(col.summary.fun, list(tmp[, var], na.rm=TRUE)))
+                                         colnames(ret)[1] <- id.var
+                                         colnames(ret)[2] <- var                                 
+                                         ret
+                                     })
+        cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, var], decreasing = order.decreasing),]
     
-    method.summaries <- ddply(df, .variables = c(id.var),
-                          .fun = function(tmp) {
-                              ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, var], na.rm=na.rm)))
-                              colnames(ret) <- c(cell.type.var, var)
-                              ret
-                          })
-    
-    method.summaries <- method.summaries[order(method.summaries[, var], decreasing = order.decreasing),]
+        ##    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var], row.summary.fun)
+        cell.type.levels <- cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var]
+    } 
+        
+    if(is.null(method.levels)) {
+        method.summaries <- ddply(df, .variables = c(id.var),
+                                  .fun = function(tmp) {
+                                      ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, var], na.rm=na.rm)))
+                                      colnames(ret) <- c(cell.type.var, var)
+                                      ret
+                                  })
+        
+        method.summaries <- method.summaries[order(method.summaries[, var], decreasing = order.decreasing),]
 
-    ##    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var], row.summary.fun)
-    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var])
-    method.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
-##    df <- rbind(df, cell.type.summaries[, c(id.var, cell.type.var, var)])
-##    df <- rbind(df, method.summaries[, c(id.var, cell.type.var, var)])    
+        method.levels <- method.summaries[method.summaries[, id.var] != col.summary.fun, id.var]
+    }
+
 
     df$cor.label <- formatC(df[, var], format="f", digits=digits)
     if(!is.null(pval.var)) {
@@ -903,6 +982,7 @@ plot.strip.plots <- function(df, id.var = "modelId", cell.type.var = "cell.type"
         df[flag, pval.var] <- 1
         df$cor.label <- paste0(stars.pval(df[, pval.var]), "\n", df$cor.label)
     }
+    cat("ggplot'ing\n")
     ## This re-ordering o works with as.table = FALSE to respect the
     ## the ordering we want from cell.type.levels
     ntot <- length(cell.type.levels)
