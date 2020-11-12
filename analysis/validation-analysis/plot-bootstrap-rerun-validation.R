@@ -441,7 +441,7 @@ plot.bootstrap.analysis <-
                   })
 
         ## "boxplots" = boxplots,
-        ret.list <- list(
+        ret.list <- list("mean.bootstrapped.scores" = mean.bootstrapped.scores,
                          "barplots" = barplots,
                          "strip.plots" = strip.plots,
                          "heatmaps" = heatmaps)
@@ -543,6 +543,34 @@ for(round in rounds) {
                        make.names(best.team), ".tsv")
         write.table(file = file, tbl, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
+    }
+}
+
+for(round in c("1")) {
+    for(sub.challenge in sub.challenges) {
+        tbl <- plots[[round]][["mean.bootstrapped.scores"]][[sub.challenge]]
+	tbl <- as.data.frame(table(na.omit(tbl$Method)))
+	colnames(tbl) <- c("Method", "Freq")
+	o <- order(tbl$Freq)
+	tbl <- tbl[o, ]
+	cat(paste0("Round ", round, " ", sub.challenge, " method count:\n"))
+	print(tbl)
+
+        tbl <- plots[[round]][["mean.bootstrapped.scores"]][[sub.challenge]]
+	mean.tbl <- ddply(tbl, .variables = c("Output"),
+	             .fun = function(df) {
+		              data.frame(pearson = mean(df$pearson, na.rm=TRUE),
+			                 spearman = mean(df$spearman, na.rm=TRUE))
+			    })
+	colnames(mean.tbl) <- c("Output", "pearson", "spearman")
+	o <- order(mean.tbl$pearson)
+	mean.tbl <- mean.tbl[o, ]
+	cat(paste0("Round ", round, " ", sub.challenge, " method count:\n"))
+	print(mean.tbl)
+	pwt <- pairwise.wilcox.test(tbl$pearson, tbl$Output, p.adjust.method = "BH")
+	print(pwt)
+
+	
     }
 }
 
