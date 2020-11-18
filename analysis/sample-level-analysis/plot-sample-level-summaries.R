@@ -260,6 +260,29 @@ do.sample.level.analysis <-
                             })
                   })
 
+        ## Plot beeswarm of individuals
+        g.swarm.no.color <-
+            llply(sub.challenges,
+                  .fun = function(sub.challenge) {
+                                tbl <- metric.all.res[[sub.challenge]]
+                                m.tbl <- melt(tbl)
+                                colnames(m.tbl) <- c(method.name.col, dataset.name.col, sample.id.col, "metric", "val")
+                                m.tbl <- na.omit(m.tbl)
+                                m.tbl <- merge(m.tbl, dataset.annotation)
+                                decreasing <- TRUE
+				metric <- "Pearson"
+                                o <- order(metric.sum.res[[sub.challenge]][, firstup(metric)], decreasing = decreasing)
+                                lvls <- metric.sum.res[[sub.challenge]][o, method.name.col]
+                                m.tbl[, method.name.col] <- factor(m.tbl[, method.name.col], levels = lvls)
+                                g <- ggplot()
+				
+                                g <- g + geom_boxplot(data = m.tbl, aes_string(x = method.name.col, y = "val"))
+                                g <- g + facet_wrap("metric", scales = "free_y")
+                                g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+                                g <- g + ylab("") + xlab("")
+                                g
+                  })
+
         ## Plot the correlations
         plot.correlations <- FALSE
         if(plot.correlations) {
@@ -285,7 +308,7 @@ do.sample.level.analysis <-
         }
         
         ret.list <- list("metric.all.res" = metric.all.res, "metric.sum.res" = metric.sum.res,
-                         "g.summaries" = g.summaries, "g.swarm" = g.swarm)
+                         "g.summaries" = g.summaries, "g.swarm" = g.swarm, "g.swarm.no.color" = g.swarm.no.color)
         return(ret.list)
 
 }
@@ -310,15 +333,41 @@ for(round in c("2", "1", "3", "latest")) {
                                                  round.col = "submission", round = round,
                                                  postfix)
 
+    sub.title <- "NA"
+    if(round == "1") {
+        sub.title <- "First Submission"
+    } else if(round == "2") {
+        sub.title <- "Up To Second Submission"
+    } else if(round == "3") {
+        sub.title <- "Up To Third Submission"        
+    } else if(round == "latest") {
+        sub.title <- "Up To Final Submission"                
+    }
+        
     g.sum.coarse <- results[[round]][["g.summaries"]][["coarse"]]
-    g.sum.coarse <- g.sum.coarse + ggtitle("Coarse-Grained Sub-Challenge")
+    title <- paste0("Coarse-Grained (", sub.title, ")")    
+    g.sum.coarse <- g.sum.coarse + ggtitle(title) + theme(plot.title = element_text(hjust = 0.5))
     g.sum.fine <- results[[round]][["g.summaries"]][["fine"]]
-    g.sum.fine <- g.sum.fine + ggtitle("Fine-Grained Sub-Challenge")
+    title <- paste0("Fine-Grained (", sub.title, ")")        
+    g.sum.fine <- g.sum.fine + ggtitle(title) + theme(plot.title = element_text(hjust = 0.5))
     png(paste0("sample-level-metric-summary", postfix, ".png"))
     g <- plot_grid(g.sum.coarse, g.sum.fine, nrow = 2, labels = "AUTO") 
     print(g)
     ## grid.arrange(g.sum.coarse, g.sum.fine)
     d <- dev.off()
+
+    g.swarm.coarse <- results[[round]][["g.swarm.no.color"]][["coarse"]]
+    title <- paste0("Coarse-Grained (", sub.title, ")")    
+    g.swarm.coarse <- g.swarm.coarse + ggtitle(title) + theme(plot.title = element_text(hjust = 0.5))
+    g.swarm.fine <- results[[round]][["g.swarm.no.color"]][["fine"]]
+    title <- paste0("Fine-Grained (", sub.title, ")")        
+    g.swarm.fine <- g.swarm.fine + ggtitle(title) + theme(plot.title = element_text(hjust = 0.5))
+    png(paste0("sample-level-metric-swarm", postfix, ".png"))
+    g <- plot_grid(g.swarm.coarse, g.swarm.fine, nrow = 2, labels = "AUTO") 
+    print(g)
+    ## grid.arrange(g.swarm.coarse, g.swarm.fine)
+    d <- dev.off()
+
 }
 
 
