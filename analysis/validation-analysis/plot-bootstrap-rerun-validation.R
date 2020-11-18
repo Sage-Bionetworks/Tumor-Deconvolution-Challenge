@@ -499,6 +499,8 @@ for(round in rounds) {
     cat(paste0("Doing round ", round, "\n"))
 
     res.round <- results[[round]][["res.round"]]
+    flag <- res.round[, "distribution.type"] == "Random"
+    res.round[flag, "distribution.type"] <- "Unconstrained"
     bootstrapped.cors <- results[[round]][["bootstrapped.cors"]]
     bootstrapped.scores <- results[[round]][["bootstrapped.scores"]]
     mean.bootstrapped.scores <- results[[round]][["mean.bootstrapped.scores"]]
@@ -607,10 +609,13 @@ lm.fits <- ldply(rounds,
                                                      anno <- unique(results[[round]][["res.round"]][, c(dataset.name.col, "mixture.type", "distribution.type")])
                                                      df <- merge(df, anno)
                                                      lm.fit <- lm(cor ~ mixture.type + distribution.type + method.name + cell.type, data = df)
-                                                     cf <- coef(summary(lm.fit))
+						     sm <- summary(lm.fit)
+                                                     cf <- coef(sm)
                                                      flag <- grepl(rownames(cf), pattern="distribution") | grepl(rownames(cf), pattern="mixture")
                                                      ret.df <- cf[flag,]
                                                      ret.df <- cbind(variable = rownames(ret.df), ret.df)
+						     pval <- pf(sm$fstatistic[1],sm$fstatistic[2],sm$fstatistic[3],lower.tail=FALSE)
+						     ret.df <- rbind(ret.df, c("F-statistic", as.numeric(sm$fstatistic[1]), NA, NA, pval))
                                                  })
                                    colnames(ret1)[1] <- "metric"
                                    ret1
@@ -629,10 +634,13 @@ lm.fits <- ldply(rounds,
                                    anno <- unique(results[[round]][["res.round"]][, c(dataset.name.col, "mixture.type", "distribution.type")])
                                    df <- merge(df, anno)
                                    lm.fit <- lm(cor ~ mixture.type + distribution.type + method.name + cell.type, data = df)
-                                   cf <- coef(summary(lm.fit))
+				   sm <- summary(lm.fit)
+                                   cf <- coef(sm)
                                    flag <- grepl(rownames(cf), pattern="distribution") | grepl(rownames(cf), pattern="mixture")
                                    ret.df <- cf[flag,]
                                    ret.df <- cbind(variable = rownames(ret.df), ret.df)
+		                   pval <- pf(sm$fstatistic[1],sm$fstatistic[2],sm$fstatistic[3],lower.tail=FALSE)
+		                   ret.df <- rbind(ret.df, c("F-statistic", as.numeric(sm$fstatistic[1]), NA, NA, pval))
                                })
                  colnames(ret3)[1] <- "metric"
                  ret3 <- cbind("merged", ret3)
@@ -645,6 +653,8 @@ lm.fits[,8] <- as.numeric(as.character(lm.fits[,8]))
 flag <- lm.fits[, 8] < sig.cutoff
 
 plot.mixture.distribution.effect <- function(df) {
+    flag <- df[, "distribution.type"] == "Random"
+    df[flag, "distribution.type"] <- "Unconstrained"
     g <- ggplot(data = df, aes_string(x = dataset.name.col, y = "cor", 
                                                 colour = "mixture.type",
                                                 linetype = "distribution.type"))
@@ -662,6 +672,7 @@ plot.mixture.distribution.effect <- function(df) {
 plot.merged.mixture.distribution.effiect <- function(results, round = "1", metric = "pearson") {
     df <- rbind(results[[round]][["means.over.bootstrap"]][["coarse"]][[metric]],
                 results[[round]][["means.over.bootstrap"]][["fine"]][[metric]])
+
     methods.with.nas <- unique(subset(df, is.na(cor))[, method.name.col])
     flag <- !(df[, method.name.col] %in% methods.with.nas)
     df <- df[flag, ]
