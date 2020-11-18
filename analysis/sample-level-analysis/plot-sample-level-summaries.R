@@ -5,6 +5,7 @@ suppressPackageStartupMessages(p_load(plyr))
 suppressPackageStartupMessages(p_load(dplyr))
 suppressPackageStartupMessages(p_load(gridExtra))
 suppressPackageStartupMessages(p_load(ggbeeswarm))
+suppressPackageStartupMessages(p_load(cowplot)) # for plot_grid
 
 suppressPackageStartupMessages(p_load("foreach"))
 suppressPackageStartupMessages(p_load("parallel"))
@@ -314,7 +315,9 @@ for(round in c("2", "1", "3", "latest")) {
     g.sum.fine <- results[[round]][["g.summaries"]][["fine"]]
     g.sum.fine <- g.sum.fine + ggtitle("Fine-Grained Sub-Challenge")
     png(paste0("sample-level-metric-summary", postfix, ".png"))
-    grid.arrange(g.sum.coarse, g.sum.fine)
+    g <- plot_grid(g.sum.coarse, g.sum.fine, nrow = 2, labels = "AUTO") 
+    print(g)
+    ## grid.arrange(g.sum.coarse, g.sum.fine)
     d <- dev.off()
 }
 
