@@ -267,12 +267,19 @@ do.sample.level.analysis <-
                                 tbl <- metric.all.res[[sub.challenge]]
                                 m.tbl <- melt(tbl)
                                 colnames(m.tbl) <- c(method.name.col, dataset.name.col, sample.id.col, "metric", "val")
-                                m.tbl <- na.omit(m.tbl)
+                                ## m.tbl <- na.omit(m.tbl)
                                 m.tbl <- merge(m.tbl, dataset.annotation)
+				cat(paste0(sub.challenge, ": # unique samples = ", length(unique(m.tbl[, sample.id.col])), "\n"))
                                 decreasing <- TRUE
-				metric <- "Pearson"
-                                o <- order(metric.sum.res[[sub.challenge]][, firstup(metric)], decreasing = decreasing)
-                                lvls <- metric.sum.res[[sub.challenge]][o, method.name.col]
+				metric.order <- "Pearson"
+                                order.by.fun <- mean
+                                order.by.fun <- median	
+                                sm <- ddply(subset(m.tbl, metric == metric.order), .variables = c(method.name.col),
+				            .fun = function(df) {
+						     data.frame("val" = order.by.fun(df[, "val"]))
+						   })
+                                o <- order(sm[, "val"], decreasing = decreasing)
+                                lvls <- sm[o, method.name.col]
                                 m.tbl[, method.name.col] <- factor(m.tbl[, method.name.col], levels = lvls)
                                 g <- ggplot()
 				
