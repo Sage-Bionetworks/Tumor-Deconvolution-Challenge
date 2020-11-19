@@ -54,6 +54,10 @@ firstup <- function(x) {
 suppressPackageStartupMessages(p_load(grid))
 suppressPackageStartupMessages(p_load(gridExtra))
 
+## summary.fun <- mean
+summary.fun <- median
+
+
 ## See https://stackoverflow.com/questions/27803710/ggplot2-divide-legend-into-two-columns-each-with-its-own-title
 plot.anno.heatmap.with.multiple.legends <-
     function(df, id.col, anno.columns, anno.pals) {
@@ -90,7 +94,7 @@ plot.anno.heatmap.with.multiple.legends <-
                          data.frame(val = df[, anno.col], id = df[, id.col])
                      })
         colnames(anno.df)[1] <- "type"
-        print(anno.df)
+
         full.plot <-
             ggplot(anno.df, aes(y = id, x = type, fill = val)) + geom_tile() +
             scale_fill_manual(values = all.colors) +
@@ -189,6 +193,7 @@ plot.bootstrap.analysis <-
         for(sub.challenge in sub.challenges) {
             print(sub.challenge)
             print(head(method.anno.round))
+	    print(method.anno.round)
             print(subchallenge.col)
             flag <- is.na(method.anno.round[, subchallenge.col]) | ( method.anno.round[, subchallenge.col] == sub.challenge )
             print(flag)
@@ -372,11 +377,11 @@ plot.bootstrap.analysis <-
         coarse.means <- means.by.cell.type.method[["coarse"]][["pearson"]]
         fine.means <- means.by.cell.type.method[["fine"]][["pearson"]]        
         all.means <- rbind(coarse.means, fine.means)
-        
+
         all.means <-
             ddply(all.means, .variables = c(method.name.col, cell.type.col),
                   .fun = function(df) {
-                      data.frame(cor = mean(df$cor))
+                      data.frame(cor = summary.fun(df$cor))
                   })
 
         method.levels[["merged"]] <-
@@ -399,7 +404,7 @@ plot.bootstrap.analysis <-
         all.means <-
             ddply(all.means, .variables = c(method.name.col, cell.type.col, "boot.i"),
                   .fun = function(df) {
-                      data.frame(cor = mean(df$cor))
+                      data.frame(cor = summary.fun(df$cor))
                   })
 
         cat(paste0("Plotting strip plots\n"))
@@ -452,7 +457,7 @@ plot.bootstrap.analysis <-
 
 ## for(round in c("1", "2", "3", "latest")) {
 plots <- list()
-rounds <- c("2", "1", "3", "latest")
+rounds <- c("latest", "1", "2", "3")
 ## rounds <- c("1")
 
 ## Get method metadata
@@ -504,6 +509,23 @@ for(round in rounds) {
     bootstrapped.cors <- results[[round]][["bootstrapped.cors"]]
     bootstrapped.scores <- results[[round]][["bootstrapped.scores"]]
     mean.bootstrapped.scores <- results[[round]][["mean.bootstrapped.scores"]]
+
+    ## Recalculate bootstrapped score summary using median
+    mean.bootstrapped.scores <-
+        llply(bootstrapped.scores, .parallel = TRUE,
+              .fun = function(df) {
+                  ## Average over bootstraps
+                  df <- ddply(df,
+                              .variables = c(method.name.col),
+                              .fun = function(tmp) {
+                                  data.frame(pearson = summary.fun(tmp$pearson), spearman = summary.fun(tmp$spearman), rmse = summary.fun(tmp$rmse))
+                              })
+                  o <- order(df$pearson, decreasing = TRUE)
+                  df <- df[o,]
+                  df
+              })
+    
+
     means.by.cell.type.method <- results[[round]][["means.by.cell.type.method"]]
     means.over.dataset <- results[[round]][["means.over.dataset"]]
     top.performers <- results[[round]][["top.performers"]]
@@ -523,9 +545,25 @@ for(round in rounds) {
                   })
     }
 
-    flag <- is.na(method.anno[, round.col]) | (method.anno[, round.col] == round)
-    method.anno.round <- method.anno[flag, ]
-
+    ## Need to take annotation for latest round if there isn't one for current round
+    method.anno.round <-
+      ddply(method.anno,
+            .variables = c(method.name.col, subchallenge.col),
+	    .fun = function(df) {
+                     flag <- is.na(df[, round.col]) | (df[, round.col] == round)
+		     if(any(flag)) {
+		       ret <- df[flag,,drop=F]
+		       if(nrow(ret) != 1) { print(ret); print(df); stop(paste0("Wrong number of rows for ",
+		                                                    df[1,method.name.col], " in ", df[1, subchallenge.col], "!\n")); }
+		       return(ret)
+		     }
+                     flag <- df[, round.col] == "latest"
+		     ret <- df[flag,,drop=F]
+		     if(nrow(ret) != 1) { print(ret); print(df); stop(paste0("Wrong number of rows2 for ",
+		                                                  df[1,method.name.col], " in ", df[1, subchallenge.col], "!\n")); }
+		     return(ret)
+                   })
+	   
     print(head(method.anno.round))
     
     plots[[round]] <- plot.bootstrap.analysis(res.round, bootstrapped.scores, mean.bootstrapped.scores,
