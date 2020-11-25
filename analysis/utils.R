@@ -2,6 +2,129 @@ coarse.cell.types <-
   c("B.cells", "CD4.T.cells", "CD8.T.cells", "NK.cells", "neutrophils", "monocytic.lineage",
     "fibroblasts", "endothelial.cells")
 
+## See https://stackoverflow.com/questions/27803710/ggplot2-divide-legend-into-two-columns-each-with-its-own-title
+plot.anno.heatmap.with.multiple.legends <-
+    function(df, id.col, anno.columns, anno.pals) {
+
+        suppressPackageStartupMessages(p_load("RColorBrewer"))
+        df <- df[, c(id.col, anno.columns)]
+
+        ## Assume annotations are characters
+        ## NB: id.col is a factor
+        for(col in c(anno.columns)) {
+            df[, col] <- as.character(df[, col])
+        }
+
+        columns <- 1:length(anno.columns)
+        names(columns) <- anno.columns
+
+        color.vecs <-
+            llply(columns,
+                  .fun = function(idx) {
+                      anno.col <- anno.columns[idx]
+                      vec <- unique(df[, anno.col])
+                      len <- length(vec)
+                      colors <- brewer.pal(len, anno.pals[idx])
+                      names(colors) <- vec
+                      colors
+                  })
+
+        all.colors <- Reduce("c", color.vecs)
+        names(all.colors) <- Reduce("c", unlist(lapply(color.vecs, names)))
+
+        names(anno.columns) <- anno.columns
+        anno.df <- ldply(anno.columns,
+                     .fun = function(anno.col) {
+                         data.frame(val = df[, anno.col], id = df[, id.col])
+                     })
+        colnames(anno.df)[1] <- "type"
+
+        full.plot <-
+            ggplot(anno.df, aes(y = id, x = type, fill = val)) + geom_tile() +
+            scale_fill_manual(values = all.colors) +
+            theme(legend.position="none")
+
+        full.plot <- full.plot + theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
+                                       axis.ticks.y = element_blank(), text = element_text(size = 18),
+                                       axis.text.x = element_text(angle = 45, hjust = 1),
+                                       axis.title.x = element_blank())
+        
+        
+        legends <-
+            llply(anno.columns,
+                  .fun = function(anno.col) {
+                      flag <- anno.df$type == anno.col
+                      g <- ggplot(anno.df[flag, ], aes_string(x = "id", y = "type", fill = "val"))
+                      g <- g + geom_tile()
+                      g <- g + scale_fill_manual(values = all.colors, name = anno.col)
+                  })
+
+        return(list("full.plot" = full.plot, "legends" = legends))
+    }
+
+get.method.annotations <- function() {
+  synId <- "syn23395242"
+  obj <- synGet(synId, downloadFile = TRUE)
+  method.anno <- read.xlsx(obj$path, sheetIndex = 1)
+  
+  method.anno$method.type <- as.character(method.anno$method.type)
+  method.anno$output.type <- as.character(method.anno$output.type)
+  method.anno[, round.col] <- as.character(method.anno[, round.col])
+  flag <- method.anno[, round.col] == "NA"
+  method.anno[flag, round.col] <- NA
+  method.anno[, subchallenge.col] <- as.character(method.anno[, subchallenge.col])
+  flag <- method.anno[, subchallenge.col] == "NA"
+  method.anno[flag, subchallenge.col] <- NA
+
+  method.rename.list <-
+      list("NNLS" = "NNLS",
+           "summary" = "SUM",
+           "other" = "OTH",
+           "other regression" = "REG",
+           "unknown" = "UNK",
+           "SVR" = "SVR",
+           "DNN" = "DNN",
+           "ensemble" = "ENS",
+           "NMF" = "NMF",
+           "probabilistic inference" = "PI")
+  method.rename.df <- data.frame(method.type = names(method.rename.list), Method = as.character(method.rename.list))
+
+  output.rename.list <-
+      list("fraction" = "Frac",
+           "proportion" = "Prop",
+           "normalized.score" = "Norm",
+           "score" = "Score")
+  output.rename.df <- data.frame(output.type = names(output.rename.list), Output = as.character(output.rename.list))
+
+  method.anno <- merge(method.anno, method.rename.df)
+  method.anno <- merge(method.anno, output.rename.df)
+  method.anno$Output <- as.character(method.anno$Output)
+  method.anno$Method <- as.character(method.anno$Method)
+  method.anno
+}
+
+
+get.round.specific.annotations <- function(method.anno, round) {
+  method.anno.round <-
+    ddply(method.anno,
+          .variables = c(method.name.col, subchallenge.col),
+	  .fun = function(df) {
+                   flag <- is.na(df[, round.col]) | (df[, round.col] == round)
+		   if(any(flag)) {
+		     ret <- df[flag,,drop=F]
+		     if(nrow(ret) != 1) { print(ret); print(df); stop(paste0("Wrong number of rows for ",
+		                                                  df[1,method.name.col], " in ", df[1, subchallenge.col], "!\n")); }
+		     return(ret)
+		   }
+                   flag <- df[, round.col] == "latest"
+		   ret <- df[flag,,drop=F]
+		   if(nrow(ret) != 1) { print(ret); print(df); stop(paste0("Wrong number of rows2 for ",
+		                                                df[1,method.name.col], " in ", df[1, subchallenge.col], "!\n")); }
+		   return(ret)
+                 })
+  method.anno.round
+}
+
 get.cell.type.translation <- function() {
     list("naive.B.cells" = "naive B",
          "memory.B.cells" = "memory B",
