@@ -25,7 +25,7 @@ uploaded_samples <- "syn22364870" %>%
     tidyr::separate("name", sep = "_", into = c("sample", "pair")) %>% 
     tidyr::pivot_wider(names_from = "pair", values_from = "id") %>% 
     dplyr::filter(!sample %in% uploaded_samples) %>% 
-    dplyr::select("fastq1_ids" = "R1", "fastq2_ids" = "R2", "sample_name" = "sample") %>% 
+    dplyr::select("fastq1_ids" = "R1", "fastq2_ids" = "R2", "sample_names" = "sample") %>% 
     as.list() %>% 
     c(parameter_list) %>%
     RJSONIO::toJSON() %>%

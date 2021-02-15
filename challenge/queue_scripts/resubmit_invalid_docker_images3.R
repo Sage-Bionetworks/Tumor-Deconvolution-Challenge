@@ -7,21 +7,21 @@ devtools::source_url(
 source("challenge/queue_scripts/submission_functions.R")
 
 
-fine_images <-  query_synapse_table("SELECT id, status FROM syn22365822")
+fine_images <-  query_synapse_table("SELECT id, status FROM syn22396079")
 dplyr::count(fine_images, status)
 
-coarse_images <- query_synapse_table("SELECT id, status FROM syn22365821")
+coarse_images <- query_synapse_table("SELECT id, status FROM syn22396060")
 dplyr::count(coarse_images, status)
 
 
-# fine_images %>% 
-#     dplyr::filter(status == "INVALID") %>% 
-#     dplyr::pull(id) %>% 
+# fine_images %>%
+#     dplyr::filter(status == "INVALID") %>%
+#     dplyr::pull(id) %>%
 #     purrr::walk(reset_submission)
 # 
-# coarse_images %>% 
-#     dplyr::filter(status == "INVALID") %>% 
-#     dplyr::pull(id) %>% 
+# coarse_images %>%
+#     dplyr::filter(status == "INVALID") %>%
+#     dplyr::pull(id) %>%
 #     purrr::walk(reset_submission)
 
 # fine_images %>%

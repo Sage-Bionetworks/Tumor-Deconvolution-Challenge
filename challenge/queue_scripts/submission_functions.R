@@ -2,9 +2,9 @@ delete_submission <- function(id){
     synapser::synDelete(synapser::synGetSubmission(id))
 }
 
-reset_submission <- function(id){
+reset_submission <- function(id, status_string = "RECEIVED"){
     status <- synapser::synGetSubmissionStatus(id)
-    status$status <- "RECEIVED"
+    status$status <- status_string
     synapser::synStore(status)
 }
 
