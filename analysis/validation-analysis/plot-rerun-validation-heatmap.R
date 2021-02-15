@@ -7,6 +7,7 @@ suppressPackageStartupMessages(p_load(gridExtra))
 
 suppressPackageStartupMessages(p_load("foreach"))
 suppressPackageStartupMessages(p_load("parallel"))
+suppressPackageStartupMessages(p_load("openxlsx"))
 
 source("../utils.R")
 

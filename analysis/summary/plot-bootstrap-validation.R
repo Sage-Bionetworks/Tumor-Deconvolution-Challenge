@@ -1,7 +1,9 @@
 suppressPackageStartupMessages(library(pacman))
 suppressPackageStartupMessages(p_load(synapser))
+suppressPackageStartupMessages(p_load(ggplot2))
 suppressPackageStartupMessages(p_load(plyr))
 suppressPackageStartupMessages(p_load(dplyr))
+suppressPackageStartupMessages(p_load(gridExtra))
 
 suppressPackageStartupMessages(p_load("foreach"))
 suppressPackageStartupMessages(p_load("parallel"))
@@ -20,159 +22,10 @@ if(!is.na(num.cores) && (num.cores > 1)) {
 }
 num.processes <- num.cores - 1
 
-## Sanitize predictions from baseline (except cibersortX, which was
-## run separately) and participant models. i.e., assign them sensible names
-## and submission rounds.
-
-## The predictions are those from the 'rerun-validation' / 'post-competitive' phase, i.e.,
-## where the coarse- and fine-grained challenge use the same data.
-## This is as opposed to the original competitive phase (against which the
-## methods were ranked) where the coarse- and fine-grained challenges
-## differed.
-
-folder.synId <- "syn22320184"
-predictions.synId <- "syn22314641"
-
-## Read in the "post-competitive" predictions 
-obj <- synGet(predictions.synId, downloadFile=TRUE)
-res.all <- read.table(obj$path, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
-
-## Read in the final predictions from the competitive phase (i.e., when coarse- and fine-grained
-## datasets differed)
+## Read in the final predictions
 synId <- "syn22149603"
 obj <- synGet(synId, downloadFile=TRUE)
-res.comp <- read.table(obj$path, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
-
-## Use the competitive phase results to translate objectIds to teams / submitters
-## The final name in the "path" of the repo_name for the post-competitive phase is the
-## objectId in the competitive phase (except for the baselines)
-res.all$objectId <-
-    unlist(llply(as.character(res.all$repo_name),
-                 .fun = function(str) {
-                     strs <- unlist(strsplit(str, "/"))
-                     strs[length(strs)]
-                 }))
-
-res.all$comparator <-
-    unlist(lapply(as.character(res.all$objectId),
-                  function(str) {
-                      comps <- get.comparators()
-                      for(comp in comps) {
-                          if(grepl(str, pattern=comp, ignore.case=TRUE)) { return(TRUE) }
-                      }
-                      return(FALSE)
-                  }))
-
-## Ensure that all objectIds match between competitive and post-competitive
-flag <- grepl(res.comp$repo_name, pattern="baseline") | (res.comp$objectId %in% res.all$objectId)
-if(!all(flag)) {
-    stop("Some competitive objectIds are not in post-competitive results\n")
-}
-
-flag <- (res.all$comparator == TRUE) | (res.all$objectId %in% res.comp$objectId)
-if(!all(flag)) {
-    stop("Some post-competitive objectIds are not in competitive results\n")
-}
-
-res.all <- safe.merge(res.all, unique(res.comp[, c("objectId", "submitterId")]), all.x=TRUE)
-
-## Append CIBERSORTx results
-## cibersortx.res.file <- "validation-csx-all-gene-predictions.tsv"
-add.cibersortx.results <- TRUE
-if(add.cibersortx.results) {
-    cibersortx.res.synId <- "syn22329798"
-    cibersortx.res.file <- synGet(cibersortx.res.synId, downloadFile=TRUE)$path
-    cibersortx.res <- read.table(cibersortx.res.file, sep="\t", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
-    cibersortx.res$objectId <- "CIBERSORTx"
-    cibersortx.res$repo_name <- "CIBERSORTx"
-    cibersortx.res$comparator <- TRUE
-    cibersortx.res$submitterId <- NA
-    measured.tbl <- unique(res.all[, c("dataset.name", "sample.id", "cell.type", "measured", "subchallenge")])
-    cibersortx.res <- merge(cibersortx.res, measured.tbl)
-    cibersortx.res <- cibersortx.res[, colnames(res.all)]
-    res.all <- rbind(res.all, cibersortx.res)
-}
-
-## Assign the team name
-
-team.name.tbl <- unique(res.all[, c("objectId", "subchallenge", "submitterId", "comparator")])
-flag <- !(team.name.tbl$comparator == TRUE)
-
-team.name.tbl$method.name <- NA
-team.name.tbl[flag, "method.name"] <-
-    unlist(lapply(as.character(team.name.tbl[flag, "submitterId"]),
-                  function(str) translate.submitterId(str)))
-
-team.name.tbl <-
-    assign.baseline.names(team.name.tbl, from.col = "objectId", to.col = "method.name")
-
-
-team.name.tbl <- simplify.submitter.names(team.name.tbl, col = "method.name")
-
-## Assign the round
-team.name.tbl <-
-    assign.submission.rounds(team.name.tbl, object.id.col = "objectId",
-                             context.cols = c("subchallenge", "submitterId"),
-                             method.name.col = "method.name")
-
-res.all <- merge(res.all, team.name.tbl, all.x = TRUE)
-
-in.silico.validation.metadata.synId <- "syn22013519"
-obj <- synGet(in.silico.validation.metadata.synId, downloadFile=TRUE)
-in.silico.validation.metadata <- read.table(obj$path, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
-in.silico.validation.metadata <- in.silico.validation.metadata[, c("tumor.type", "mixture.type", "dataset.name")]
-colnames(in.silico.validation.metadata) <- c("tumor.type", "distribution.type", "dataset")
-in.silico.validation.metadata$mixture.type <- "In Silico"
-
-suppressPackageStartupMessages(p_load("openxlsx"))
-in.vitro.validation.metadata <- get.validation.metadata()
-in.vitro.validation.metadata <- unique(in.vitro.validation.metadata[, c(2,4,5)])
-colnames(in.vitro.validation.metadata) <- c("tumor.type", "distribution.type", "dataset")
-in.vitro.validation.metadata$mixture.type <- "In Vitro"
-
-validation.metadata <- rbind(in.silico.validation.metadata, in.vitro.validation.metadata)
-
-## Was this an in silico or an in vitro dataset?
-flag <- res.all$dataset %in% validation.metadata$dataset
-if(!all(flag)) {
-    stop("Some datasets missing\n")
-}
-
-## Merge in distribution.type (random vs in biological), cancer type (tumor.type), and mixture.type (in silico vs in vitro)
-res.all <- safe.merge(res.all, validation.metadata, all.x = TRUE, by.x = "dataset.name", by.y = "dataset")
-
-## Store the results in synapse
-file <- "rerun-validation-sanitized-predictions.csv"
-write.table(file = file, res.all, col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
-cat(paste0("Storing ", file, " to synapse\n"))
-f <- File(file, parentId = folder.synId, synapseStore = TRUE)
-synStore(f)
-
-cat("Exiting successfully\n")
-q(status=0)
-
-stop("stop")
-
-## TODO
-
-## recreate: generate-in-silico-admixtures.R
-
-## TODO
-
-## Sensitivity and specificity
-## - write combine sensitivity results
-## - plot sensitivity heatmap based on combined sensitivity results (plot-limit-of-detection.R)
-
-## Create plots
-## - Fig 1: coarse-grained box and bar (rerun-validation-score-box-and-barplots-coarse-round-latest.png; done)
-## - Fig 2a: coarse-grained heatmap (rerun-validation-bootstrap-cell-heatmap-coarse-round-latest.png; done)
-## - Fig 2b: fine-grained heatmap (rerun-validation-bootstrap-cell-heatmap-fine-round-latest.png; done)
-## - Fig 4: specificity heatmap (open all-genes-validation-spillover-all-coarse-grained.png; done)
-
-## - Fig 3a: sensitivity example (validation-lod-ct-Random-B-cells-EPIC-coarse.png)
-## - Fig 3b: sensitivity heatmap (validation-lod-summary-Random-coarse.png)
-
-
+res.all <- read.table(obj$path, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
 
 subchallenge.col <- "subchallenge"
 measured.col <- "measured"
@@ -231,38 +84,6 @@ my.dup <- function(x) duplicated(x, fromLast = TRUE) | duplicated(x, fromLast = 
 
 sub.challenges <- list("coarse" = "coarse", "fine" = "fine")
 
-calculate.bootstraps <- function(res, n.bootstraps = 1000) {
-
-    bootstraps <-
-        llply(sub.challenges,
-              .fun = function(sub.challenge) {
-                  flag <- res[, subchallenge.col] == sub.challenge
-                  tmp <- res[flag, ]
-                  flag <- !is.na(tmp[, measured.col])
-                  tmp <- tmp[flag, ]
-                  datasets <-
-                      dlply(tmp, .variables = c(dataset.name.col),
-                            .fun = function(df) {
-                                unique(df[, sample.id.col])
-                            })
-                  dataset.names <- names(datasets)
-                  names(dataset.names) <- dataset.names
-                  llply(1:n.bootstraps, .parallel = TRUE,
-                        .fun = function(i) {
-                            ret <- ldply(datasets,
-                                         .fun = function(ds) {
-                                             tmp.r <- data.frame(sample.id = sample(ds, size = length(ds), replace = TRUE))
-                                             colnames(tmp.r)[1] <- sample.id.col
-                                             tmp.r
-                                         })
-                            colnames(ret)[1] <- dataset.name.col
-                            ret$id <- paste0(ret[, dataset.name.col], "-", ret[, sample.id.col])                        
-                            ret
-                        })
-              })
-    bootstraps
-}
-
 firstup <- function(x) {
   substr(x, 1, 1) <- toupper(substr(x, 1, 1))
   x
@@ -292,7 +113,36 @@ calculate.empirical.bayes <-
         n.num / (n.tot - n.num)
     }
 
-bootstraps <- calculate.bootstraps(res.all)
+
+synId <- "syn22344989"
+obj <- synGet(synId, downloadFile=TRUE)
+bootstraps <- readRDS(obj$path)
+
+## Modified slightly from
+## https://stackoverflow.com/questions/53170465/how-to-make-a-base-r-style-boxplot-using-ggplot2
+geom_boxplotMod <- function(mapping = NULL, data = NULL, stat = "boxplot", 
+    position = "dodge2", ..., outlier.colour = NULL, outlier.color = NULL, 
+    outlier.fill = NULL, outlier.shape = 1, outlier.size = 1.5, 
+    outlier.stroke = 0.5, outlier.alpha = NULL, notch = FALSE, notchwidth = 0.5,
+    varwidth = FALSE, na.rm = FALSE, show.legend = NA, inherit.aes = TRUE,
+    linetype = "dashed") # to know how these come here use: args(geom_boxplot)
+    {
+    list(geom_boxplot(
+            mapping = mapping, data = data, stat = stat, position = position,
+            outlier.colour = outlier.colour, outlier.color = outlier.color, 
+            outlier.fill = outlier.fill, outlier.shape = outlier.shape, 
+            outlier.size = outlier.size, outlier.stroke = outlier.stroke, 
+            outlier.alpha = outlier.alpha, notch = notch, 
+            notchwidth = notchwidth, varwidth = varwidth, na.rm = na.rm, 
+            show.legend = show.legend, inherit.aes = inherit.aes, linetype = 
+            linetype, ...),
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymax..), width = 0.25),
+        #the width of the error-bar heads are decreased
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymin..), width = 0.25),
+        stat_boxplot(aes(ymin = ..lower.., ymax = ..upper..), ...)
+        )
+    }
+
 
 do.bootstrap.analysis <-
     function(res.input, boostraps, 
@@ -515,7 +365,7 @@ do.bootstrap.analysis <-
             g2 <- g2 + ylab("Spearman Correlation")
             g2 <- g2 + theme(text = element_text(size=18))    
             
-            png(paste0("validation-score-boxplots-", sub.challenge, postfix, ".png"), width = 2 * 480)
+            png(paste0("original-validation-score-boxplots-", sub.challenge, postfix, ".png"), width = 2 * 480)
             title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
             round.text <- ""
             if(round == "latest") {
@@ -530,6 +380,59 @@ do.bootstrap.analysis <-
             d <- dev.off()
         }
 
+        for(sub.challenge in sub.challenges) {
+            scores <- bootstrapped.scores[[sub.challenge]]
+            mean.scores <- mean.bootstrapped.scores[[sub.challenge]]
+            flag <- res.round[, subchallenge.col] == sub.challenge
+
+
+            un <- unique(res.round[flag, unique(c(method.id.col, method.name.col, submitter.name.col))])
+            mean.scores <- merge(mean.scores, un)
+            scores <- merge(scores, un)    
+            o <- order(mean.scores$pearson)
+            mean.scores <- mean.scores[o, ]
+            ## scores[, method.name.col] <- factor(scores[, method.name.col], levels = mean.scores[, method.name.col])
+            scores[, submitter.name.col] <- factor(scores[, submitter.name.col], levels = mean.scores[, submitter.name.col])
+            scores <- na.omit(scores)
+
+            mean.scores[, submitter.name.col] <- factor(mean.scores[, submitter.name.col], levels = mean.scores[, submitter.name.col])
+            mean.scores <- na.omit(mean.scores)
+            
+            g1 <- ggplot(data = scores, aes_string(x = submitter.name.col, y = "pearson"))
+            g1 <- g1 + geom_boxplotMod(fill = "#56B4E9")
+            g1 <- g1 + coord_flip()
+            g1 <- g1 + xlab("Method")
+            g1 <- g1 + ylab("Pearson Correlation")
+            g1 <- g1 + ylim(c(-0.25, 1))            
+            g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20))
+            
+            g2 <- ggplot(data = mean.scores)
+            g2 <- g2 + geom_col(aes_string(x = submitter.name.col, y = "spearman"), fill = "#E69F00")
+            g2 <- g2 + coord_flip()
+            g2 <- g2 + xlab("Method")
+            g2 <- g2 + ylab("Spearman Correlation")
+            g2 <- g2 + ylim(c(-0.25, 1))                        
+            g2 <- g2 + theme(text = element_text(size=18))    
+            g2 <- g2 + theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
+                             axis.ticks.y = element_blank())
+
+            png(paste0("original-validation-score-box-and-barplots-", sub.challenge, postfix, ".png"), width = 2 * 480)
+            title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
+            round.text <- ""
+            if(round == "latest") {
+                round.text <- "Latest Round"
+            } else if (round == "1") {
+                round.text <- "Round 1"
+            } else {
+                round.text <- paste0("Latest Round up to Round ", round)
+            }
+            title <- paste0(title, " (", round.text, ")")
+            grid.arrange(g1, g2, nrow=1, widths = c(3, 1), top = textGrob(title, gp = gpar(fontsize = 25)))
+            d <- dev.off()
+        }
+        
+
+        
         cat(paste0("Calculating bayes factors\n"))
         top.performers <-
             llply(sub.challenges,
@@ -616,7 +519,7 @@ do.bootstrap.analysis <-
             title <- paste0(title, " (", round.text, ")")
             
             g <- g + ggtitle(title)
-            png(paste0("validation-cell-heatmap-", sub.challenge, postfix, ".png"), width = 2 * 480)
+            png(paste0("original-validation-cell-heatmap-", sub.challenge, postfix, ".png"), width = 2 * 480)
             print(g)
             d <- dev.off()
         }

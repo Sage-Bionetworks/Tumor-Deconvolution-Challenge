@@ -2,6 +2,256 @@ coarse.cell.types <-
   c("B.cells", "CD4.T.cells", "CD8.T.cells", "NK.cells", "neutrophils", "monocytic.lineage",
     "fibroblasts", "endothelial.cells")
 
+## See https://stackoverflow.com/questions/27803710/ggplot2-divide-legend-into-two-columns-each-with-its-own-title
+plot.anno.heatmap.with.multiple.legends <-
+    function(df, id.col, anno.columns, anno.pals) {
+
+        suppressPackageStartupMessages(p_load("RColorBrewer"))
+        df <- df[, c(id.col, anno.columns)]
+
+        ## Assume annotations are characters
+        ## NB: id.col is a factor
+        for(col in c(anno.columns)) {
+            df[, col] <- as.character(df[, col])
+        }
+
+        columns <- 1:length(anno.columns)
+        names(columns) <- anno.columns
+
+        color.vecs <-
+            llply(columns,
+                  .fun = function(idx) {
+                      anno.col <- anno.columns[idx]
+                      vec <- unique(df[, anno.col])
+                      len <- length(vec)
+                      colors <- brewer.pal(len, anno.pals[idx])
+                      names(colors) <- vec
+                      colors
+                  })
+
+        all.colors <- Reduce("c", color.vecs)
+        names(all.colors) <- Reduce("c", unlist(lapply(color.vecs, names)))
+
+        names(anno.columns) <- anno.columns
+        anno.df <- ldply(anno.columns,
+                     .fun = function(anno.col) {
+                         data.frame(val = df[, anno.col], id = df[, id.col])
+                     })
+        colnames(anno.df)[1] <- "type"
+
+        full.plot <-
+            ggplot(anno.df, aes(y = id, x = type, fill = val)) + geom_tile() +
+            scale_fill_manual(values = all.colors) +
+            theme(legend.position="none")
+
+        full.plot <- full.plot + theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
+                                       axis.ticks.y = element_blank(), text = element_text(size = 18),
+                                       axis.text.x = element_text(angle = 45, hjust = 1),
+                                       axis.title.x = element_blank())
+        
+        
+        legends <-
+            llply(anno.columns,
+                  .fun = function(anno.col) {
+                      flag <- anno.df$type == anno.col
+                      g <- ggplot(anno.df[flag, ], aes_string(x = "id", y = "type", fill = "val"))
+                      g <- g + geom_tile()
+                      g <- g + scale_fill_manual(values = all.colors, name = anno.col)
+                  })
+
+        return(list("full.plot" = full.plot, "legends" = legends))
+    }
+
+get.method.annotations <- function() {
+  synId <- "syn23395242"
+  obj <- synGet(synId, downloadFile = TRUE)
+  method.anno <- read.xlsx(obj$path, sheetIndex = 1)
+  
+  method.anno$method.type <- as.character(method.anno$method.type)
+  method.anno$output.type <- as.character(method.anno$output.type)
+  method.anno[, round.col] <- as.character(method.anno[, round.col])
+  flag <- method.anno[, round.col] == "NA"
+  method.anno[flag, round.col] <- NA
+  method.anno[, subchallenge.col] <- as.character(method.anno[, subchallenge.col])
+  flag <- method.anno[, subchallenge.col] == "NA"
+  method.anno[flag, subchallenge.col] <- NA
+
+  method.rename.list <-
+      list("NNLS" = "NNLS",
+           "summary" = "SUM",
+           "other" = "OTH",
+           "other regression" = "REG",
+           "unknown" = "UNK",
+           "SVR" = "SVR",
+           "DNN" = "DNN",
+           "ensemble" = "ENS",
+           "NMF" = "NMF",
+           "probabilistic inference" = "PI")
+  method.rename.df <- data.frame(method.type = names(method.rename.list), Method = as.character(method.rename.list))
+
+  output.rename.list <-
+      list("fraction" = "Frac",
+           "proportion" = "Prop",
+           "normalized.score" = "Norm",
+           "score" = "Score")
+  output.rename.df <- data.frame(output.type = names(output.rename.list), Output = as.character(output.rename.list))
+
+  method.anno <- merge(method.anno, method.rename.df)
+  method.anno <- merge(method.anno, output.rename.df)
+  method.anno$Output <- as.character(method.anno$Output)
+  method.anno$Method <- as.character(method.anno$Method)
+  method.anno
+}
+
+
+get.round.specific.annotations <- function(method.anno, round) {
+  method.anno.round <-
+    ddply(method.anno,
+          .variables = c(method.name.col, subchallenge.col),
+	  .fun = function(df) {
+                   flag <- is.na(df[, round.col]) | (df[, round.col] == round)
+		   if(any(flag)) {
+		     ret <- df[flag,,drop=F]
+		     if(nrow(ret) != 1) { print(ret); print(df); stop(paste0("Wrong number of rows for ",
+		                                                  df[1,method.name.col], " in ", df[1, subchallenge.col], "!\n")); }
+		     return(ret)
+		   }
+                   flag <- df[, round.col] == "latest"
+		   ret <- df[flag,,drop=F]
+		   if(nrow(ret) != 1) { print(ret); print(df); stop(paste0("Wrong number of rows2 for ",
+		                                                df[1,method.name.col], " in ", df[1, subchallenge.col], "!\n")); }
+		   return(ret)
+                 })
+  method.anno.round
+}
+
+get.cell.type.translation <- function() {
+    list("naive.B.cells" = "naive B",
+         "memory.B.cells" = "memory B",
+         "fibroblasts" = "fibroblasts",
+         "neutrophils" = "neutrophils",
+         "endothelial.cells" = "endothelial",
+         "monocytes" = "monocytes",
+         "NK.cells" = "NK",
+         "macrophages" = "macrophages",
+         "memory.CD8.T.cells" = "memory CD8 T",
+         "regulatory.T.cells" = "Tregs",
+         "B.cells" = "B",
+         "naive.CD8.T.cells" = "naive CD8 T",
+         "monocytic.lineage" = "monocytic lineage",
+         "naive.CD4.T.cells" = "naive CD4 T",
+         "myeloid.dendritic.cells" = "myeloid DCs",
+         "CD8.T.cells" = "CD8 T",
+         "memory.CD4.T.cells" = "memory CD4 T",
+         "CD4.T.cells" = "CD4 T")         
+}
+
+rename.cell.types <- function(df, from.col = "cell.type", to.col = "cell.type") {
+    cell.type.trans <- get.cell.type.translation()
+    for(nm in names(cell.type.trans)) {
+        flag <- (grepl(df[, from.col], pattern = nm))
+        df[flag, to.col] <- cell.type.trans[[nm]]
+    }
+    df
+}
+
+safe.merge <- function(x, y, ...) {
+
+    orig.nrow <- nrow(x)
+    x <- merge(x, y, ...)
+    new.nrow <- nrow(x)
+    if(orig.nrow != new.nrow) {
+        stop("Changed rows\n")
+    }
+    x
+}
+
+## Assign team names and rounds to results
+assign.result.team.names.and.rounds <- function(res, error.fun = stop) {
+    ## Read in the final predictions from the competitive phase (i.e., when coarse- and fine-grained
+    ## datasets differed)
+    synId <- "syn22149603"
+    obj <- synGet(synId, downloadFile=TRUE)
+    res.comp <- read.table(obj$path, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
+
+    ## Use the competitive phase results to translate objectIds to teams / submitters
+    ## The final name in the "path" of the repo_name for the post-competitive phase is the
+    ## objectId in the competitive phase (except for the baselines)
+    cat("Assigning objectId\n")
+    map <- data.frame(repo_name = as.character(unique(res$repo_name)), stringsAsFactors = FALSE)
+
+    map$objectId <-
+        unlist(lapply(map$repo_name,
+                      function(str) {
+                          strs <- unlist(strsplit(str, "/"))
+                          strs[length(strs)]
+                      }))
+
+    cat("Assigning comparator\n")
+    map$comparator <-
+        unlist(lapply(as.character(map$objectId),
+                      function(str) {
+                          comps <- get.comparators()
+                          for(comp in comps) {
+                              if(grepl(str, pattern=comp, ignore.case=TRUE)) { return(TRUE) }
+                          }
+                          return(FALSE)
+                      }))
+    
+    res <- res[, !(colnames(res) %in% c("objectId", "comparator"))]
+    res <- safe.merge(res, map, by = c("repo_name"))
+
+    cat("Ensuring\n")
+    
+    ## Ensure that all objectIds match between competitive and post-competitive
+    flag <- grepl(res.comp$repo_name, pattern="baseline") | (res.comp$objectId %in% res$objectId)
+    if(!all(flag)) {
+        print(table(flag))
+        print(unique(res.comp[!flag, c("repo_name", "objectId", "submitterId")]))
+        l_ply(unique(res.comp[!flag, "submitterId"]),
+              .fun = function(id) print(translate.submitterId(id)))
+        error.fun("Some competitive objectIds are not in post-competitive results\n")
+    }
+    
+    flag <- (res$comparator == TRUE) | (res$objectId %in% res.comp$objectId)
+    if(!all(flag)) {
+        error.fun("Some post-competitive objectIds are not in competitive results\n")
+    }
+
+    cat("Merging with res.comp\n")
+    res <- safe.merge(res, unique(res.comp[, c("objectId", "submitterId")]), all.x=TRUE)
+
+    ## Assign the team name
+
+    cat("Defining team name tbl\n")
+    team.name.tbl <- unique(res[, c("objectId", "subchallenge", "submitterId", "comparator")])
+    flag <- !(team.name.tbl$comparator == TRUE)
+    
+    team.name.tbl$method.name <- NA
+    team.name.tbl[flag, "method.name"] <-
+        unlist(lapply(as.character(team.name.tbl[flag, "submitterId"]),
+                      function(str) translate.submitterId(str)))
+    
+    team.name.tbl <-
+        assign.baseline.names(team.name.tbl, from.col = "objectId", to.col = "method.name")
+    
+    
+    team.name.tbl <- simplify.submitter.names(team.name.tbl, col = "method.name")
+
+    ## Assign the round
+    team.name.tbl <-
+        assign.submission.rounds(team.name.tbl, object.id.col = "objectId",
+                                 context.cols = c("subchallenge", "submitterId"),
+                                 method.name.col = "method.name")
+
+    cat("Merging team name tbl\n")
+    print(colnames(team.name.tbl))
+    res <- merge(res, team.name.tbl, all.x = TRUE)
+    cat("Done merging team name tbl\n")
+    
+    res
+}
+
 get.comparators <- function() {
     c("cibersort", "mcp", "quantiseq", "xcell", "epic", "timer", "cibersortx")
 }
@@ -666,45 +916,117 @@ plot.admixtures <- function(mat) {
     g
 }
 
-plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
-                                               cor.type.label = "Pearson\nCorrelation", digits = 2, limits = c(-1, 1),
-                                               pval.var = NULL) {
+calculate.method.levels <- function(df, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
+                                    row.summary.fun = "mean", col.summary.fun = "max",
+                                    order.decreasing = FALSE) {
+
     orig.df <- df
     df <- df[, c(id.var, cell.type.var, cor.var)]
     df[, id.var] <- as.character(df[, id.var])
     df[, cell.type.var] <- as.character(df[, cell.type.var])
 
-    row.summary.name <- "mean"
-    row.summary.fun <- mean
-    col.summary.name <- "max"
-    col.summary.fun <- max
     na.rm <- FALSE
-    cell.type.summaries <- ddply(df, .variables = cell.type.var,
-                             .fun = function(tmp) {
-                                 ret <- data.frame(id = col.summary.name, cor = col.summary.fun(tmp[, cor.var], na.rm=TRUE))
-                                 colnames(ret)[1] <- id.var
-                                 colnames(ret)[2] <- cor.var                                 
-                                 ret
-                             })
-    cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, cor.var]),]
     
     method.summaries <- ddply(df, .variables = c(id.var),
                           .fun = function(tmp) {
-                              ret <- data.frame(cell.type = row.summary.name, cor = row.summary.fun(tmp[, cor.var], na.rm=na.rm))
+                              ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=na.rm)))
                               colnames(ret) <- c(cell.type.var, cor.var)
                               ret
                           })
     
-    method.summaries <- method.summaries[order(method.summaries[, cor.var]),]
+    method.summaries <- method.summaries[order(method.summaries[, cor.var], decreasing = order.decreasing),]
 
 
-    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.name, cell.type.var], row.summary.name)
-    id.levels <- c(col.summary.name, method.summaries[method.summaries[, id.var] != col.summary.name, id.var])
+    method.levels <- method.summaries[method.summaries[, id.var] != col.summary.fun, id.var]
 
+    method.levels
+}
+
+calculate.cell.type.levels <- function(df, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
+                                       row.summary.fun = "mean", col.summary.fun = "max",
+                                       order.decreasing = FALSE) {
+
+    orig.df <- df
+    df <- df[, c(id.var, cell.type.var, cor.var)]
+    df[, id.var] <- as.character(df[, id.var])
+    df[, cell.type.var] <- as.character(df[, cell.type.var])
+
+    na.rm <- FALSE
+    
+    cell.type.summaries <- ddply(df, .variables = cell.type.var,
+                             .fun = function(tmp) {
+                                 ret <- data.frame(id = col.summary.fun, cor = do.call(col.summary.fun, list(tmp[, cor.var], na.rm=TRUE)))
+                                 colnames(ret)[1] <- id.var
+                                 colnames(ret)[2] <- cor.var                                 
+                                 ret
+                             })
+    cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, cor.var], decreasing = order.decreasing),]
+    
+    cell.type.levels <- cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var]
+
+    cell.type.levels
+}
+
+
+plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
+                                               cor.type.label = "Pearson\nCorrelation", limits = c(-1, 1),
+                                               pval.var = NULL, row.summary.fun = "mean", col.summary.fun = "max",
+                                               order.decreasing = FALSE,
+                                               method.levels = NULL,
+                                               cell.type.levels = NULL,
+                                               formatter = function(x) formatC(x, format="f", digits=2)) {
+    orig.df <- df
+    df <- df[, c(id.var, cell.type.var, cor.var)]
+    df[, id.var] <- as.character(df[, id.var])
+    df[, cell.type.var] <- as.character(df[, cell.type.var])
+
+    ## Add NAs for any missing entries
+    df <- acast(df, as.formula(paste0(id.var, " ~ ", cell.type.var)), value.var = cor.var, fill = NA)
+    df <- reshape2::melt(as.matrix(df))
+    colnames(df) <- c(id.var, cell.type.var, cor.var)
+    df[, id.var] <- as.character(df[, id.var])
+    df[, cell.type.var] <- as.character(df[, cell.type.var])
+    
+    na.rm <- FALSE
+    cell.type.summaries <- ddply(df, .variables = cell.type.var,
+                             .fun = function(tmp) {
+                                 ret <- data.frame(id = col.summary.fun, cor = do.call(col.summary.fun, list(tmp[, cor.var], na.rm=TRUE)))
+                                 colnames(ret)[1] <- id.var
+                                 colnames(ret)[2] <- cor.var                                 
+                                 ret
+                             })
+    cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, cor.var], decreasing = order.decreasing),]
+    
+    method.summaries <- ddply(df, .variables = c(id.var),
+                          .fun = function(tmp) {
+                              ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=na.rm)))
+                              colnames(ret) <- c(cell.type.var, cor.var)
+                              ret
+                          })
+    
+    method.summaries <- method.summaries[order(method.summaries[, cor.var], decreasing = order.decreasing),]
+
+
+    if(is.null(cell.type.levels)) {
+        cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var], row.summary.fun)
+    } else {
+        cell.type.levels <- c(cell.type.levels, row.summary.fun)
+    }
+    
+    ## method.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
+    if(is.null(method.levels)) {
+        method.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
+    } else {
+        method.levels <- c(col.summary.fun, method.levels)
+    }
+    
+    
     df <- rbind(df, cell.type.summaries[, c(id.var, cell.type.var, cor.var)])
     df <- rbind(df, method.summaries[, c(id.var, cell.type.var, cor.var)])    
 
-    df$cor.label <- formatC(df[, cor.var], format="f", digits=digits)
+    ## df$cor.label <- formatC(df[, cor.var], format="f", digits=digits)
+    ## formatter <- function(x) formatC(x, format="f", digits=2)
+    df$cor.label <- formatter(df[, cor.var])    
     if(!is.null(pval.var)) {
         p_load(gtools)
         df <- merge(df, orig.df[, c(id.var, cell.type.var, pval.var)], all.x = TRUE)
@@ -713,7 +1035,7 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
         df$cor.label <- paste0(stars.pval(df[, pval.var]), "\n", df$cor.label)
     }
     df[, cell.type.var] <- factor(df[, cell.type.var], levels = cell.type.levels)
-    df[, id.var] <- factor(df[, id.var], levels = id.levels)
+    df[, id.var] <- factor(df[, id.var], levels = method.levels)
     g <- ggplot(data = df, aes_string(y = id.var, x = cell.type.var, fill = cor.var))
     g <- g + geom_tile()
     if(show.corr.text) {
@@ -721,7 +1043,8 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     }
     g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
                    text = element_text(size=15))
-    g <- g + ylab("Method") + xlab("")
+    ## g <- g + ylab("Method") + xlab("")
+    g <- g + theme(axis.title.x = element_blank(), axis.title.y = element_blank())
     ## g <- g + scale_fill_continuous("Pearson\ncorrelation", limits = c(-1,1))
     ## g <- g + scale_fill_gradient2("Pearson\ncorrelation", limits = c(-1,1),
     ##                               low = "red", high = "blue", mid = "white", na.value = "black")
@@ -731,6 +1054,137 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
                                   low = "red", high = "blue", mid = "white", na.value = "black")
     ## g <- g + theme(text = element_text(size=20))
     g
+}
+
+proportion.labels <- function(x) ifelse(x == 0, "0", ifelse(x == 1, "1", x))
+
+plot.strip.plots <- function(df, id.var = "modelId", cell.type.var = "cell.type", var = "cor.p",
+                             label = "Pearson\nCorrelation", digits = 2, limits = c(-1, 1),
+                             pval.var = NULL, col.summary.fun = "max", row.summary.fun = "mean", order.decreasing = FALSE,
+                             method.levels = NULL,
+                             cell.type.levels = NULL) {
+    orig.df <- df
+    df <- df[, c(id.var, cell.type.var, var)]
+    df[, id.var] <- as.character(df[, id.var])
+    df[, cell.type.var] <- as.character(df[, cell.type.var])
+
+    na.rm <- TRUE
+    if(is.null(cell.type.levels)) {
+        cell.type.summaries <- ddply(df, .variables = cell.type.var,
+                                     .fun = function(tmp) {
+                                         ret <- data.frame(id = col.summary.fun, cor = do.call(col.summary.fun, list(tmp[, var], na.rm=TRUE)))
+                                         colnames(ret)[1] <- id.var
+                                         colnames(ret)[2] <- var                                 
+                                         ret
+                                     })
+        cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, var], decreasing = order.decreasing),]
+    
+        ##    cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var], row.summary.fun)
+        cell.type.levels <- cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var]
+    } 
+        
+    if(is.null(method.levels)) {
+        method.summaries <- ddply(df, .variables = c(id.var),
+                                  .fun = function(tmp) {
+                                      ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, var], na.rm=na.rm)))
+                                      colnames(ret) <- c(cell.type.var, var)
+                                      ret
+                                  })
+        
+        method.summaries <- method.summaries[order(method.summaries[, var], decreasing = order.decreasing),]
+
+        method.levels <- method.summaries[method.summaries[, id.var] != col.summary.fun, id.var]
+    }
+
+
+    df$cor.label <- formatC(df[, var], format="f", digits=digits)
+    if(!is.null(pval.var)) {
+        p_load(gtools)
+        df <- merge(df, orig.df[, c(id.var, cell.type.var, pval.var)], all.x = TRUE)
+        flag <- is.na(df[, pval.var])
+        df[flag, pval.var] <- 1
+        df$cor.label <- paste0(stars.pval(df[, pval.var]), "\n", df$cor.label)
+    }
+    cat("ggplot'ing\n")
+    ## This re-ordering o works with as.table = FALSE to respect the
+    ## the ordering we want from cell.type.levels
+    ntot <- length(cell.type.levels)
+    nrow <- 3
+    ncol <- ceiling(ntot / nrow)
+    o <- unlist(llply(1:(nrow-1), .fun = function(i) (i*ncol):(1+((i-1)*ncol))))
+    o <- c(o, ntot:(max(o)+1))
+    df[, cell.type.var] <- factor(df[, cell.type.var], levels = cell.type.levels[o])
+    df[, id.var] <- factor(df[, id.var], levels = method.levels)
+    g <- ggplot(data = df, aes_string(y = id.var, x = var))
+    g <- g + geom_boxplot(outlier.shape = NA)
+    g <- g + facet_wrap(cell.type.var, as.table = FALSE, nrow = nrow)
+    ##    g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), text = element_text(size=15))
+    strip.text.sz <- 15
+    if(ntot > 10) { strip.text.sz <- 8 }
+    g <- g + theme(axis.text.y = element_text(size = 6), text = element_text(size=15), strip.text = element_text(size = strip.text.sz))
+    
+    g <- g + scale_x_continuous(labels = proportion.labels)
+    g <- g + xlab(label) + ylab("")
+    g
+}
+
+plot.correlation <- function(x, y, labels = NULL, colors = NULL, display.r2 = FALSE, method = "pearson", display.pval = FALSE, xoffset = 0.5, ...) {
+  df <- data.frame(x = x, y = y)
+  if(!is.null(labels)) {
+    df$labels <- labels
+  }
+  g <- NULL
+  if(is.null(labels)) {
+    g <- ggplot(df, aes(x = x, y = y))
+  } else {
+    g <- ggplot(df, aes(x = x, y = y, label = labels))
+  }
+  if(!is.null(colors)) {
+    g <- g + geom_point(aes(colour = colors))
+  } else {
+    g <- g + geom_point()
+  }
+  if(!is.null(labels)) {
+    g <- g + geom_text(vjust = "inward", hjust = "inward")
+##    suppressPackageStartupMessages(p_load(ggrepel))
+##    g <- g + geom_text_repel(point.padding = NA, box.padding = 1)
+  }
+##  g <- g + theme(legend.position="none")
+  g <- g + geom_smooth(data = df, aes(x = x, y = y), method='lm')
+  x.min <- min(df$x, na.rm=TRUE)
+  x.max <- max(df$x, na.rm=TRUE)
+  y.min <- min(df$y, na.rm=TRUE)
+  y.max <- max(df$y, na.rm=TRUE)
+
+  ylimits <- NULL
+if(FALSE) {
+  use.ggplot.2.2.1.limit.code <- TRUE
+  if(use.ggplot.2.2.1.limit.code) {
+    ylimits <- ggplot_build(g)$layout$panel_ranges[[1]]$y.range
+    xlimits <- ggplot_build(g)$layout$panel_ranges[[1]]$x.range
+  } else {
+    ylimits <- ggplot_build(g)$layout$panel_params[[1]]$y.range
+    xlimits <- ggplot_build(g)$layout$panel_params[[1]]$x.range
+  }
+}
+  xlimits <- ggplot_build(g)$layout$panel_params[[1]]$x.range
+  ylimits <- ggplot_build(g)$layout$panel_params[[1]]$y.range
+
+## to see why geom_text(size = sz) sz is different than in theme see: ratio of 14/5
+## https://stackoverflow.com/questions/25061822/ggplot-geom-text-font-size-control/25062509 
+##  g <- g + geom_text(x = x.min + 0.5 * (x.max - x.min), y = y.min + 1 * (y.max - y.min), label = lm_corr_eqn(df, method = method, display.r2 = display.r2, display.pval = display.pval), parse=TRUE, ...)
+##  g <- g + geom_text(x = x.min + 0.5 * (x.max - x.min), y = y.min + 0.8 * (y.max - y.min), label = lm_corr_eqn(df, method = method, display.r2 = display.r2, display.pval = display.pval), parse=TRUE, ...)
+##  g <- g + geom_text(x = x.min + 0.5 * (x.max - x.min), y = 0.8 * ylimits[2], label = lm_corr_eqn(df, method = method, display.r2 = display.r2, display.pval = display.pval), parse=TRUE, ...)
+  sz <- 25
+  g <- g + geom_text(x = xlimits[1] + xoffset * (xlimits[2] - xlimits[1]), y = ylimits[1] + 0.8 * (ylimits[2] - ylimits[1]), label = lm_corr_eqn(df, method = method, display.r2 = display.r2, display.pval = display.pval), parse=TRUE, ...)
+  g <- g +theme(text = element_text(size = sz),
+             axis.text.x = element_text(size=sz),
+             axis.text.y = element_text(size=sz),
+             axis.title.x = element_text(size=sz),
+             axis.title.y = element_text(size=sz),
+             title = element_text(size=sz),
+             plot.title = element_text(hjust = 0.5, size=sz))
+  g
 }
 
 limit.matrix.to.protein.coding <- function(mat, use.symbols = TRUE) {

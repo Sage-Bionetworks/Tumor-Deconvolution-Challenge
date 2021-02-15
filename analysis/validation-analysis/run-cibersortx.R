@@ -16,24 +16,39 @@ suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(reshape2))
 
 cat(paste0("Run on a machine with Docker installed\n"))
-cat(paste0("I ran on tdaws2: 10.23.19.191\n"))
+cat(paste0("I ran on tdaws2: 10.23.19.191 in //home/bwhite/\n"))
 
+## path=/home/bwhite/Tumor-Deconvolution-Challenge/analysis/validation-analysis/
+## token=efd223f57902e9a25ace81427862aa8a
+## user=brian.white@sagebase.org
+
+## Suddenly, I need to run docker as sudo, so:
 ## To re-run validation data
-## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
+## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
 ##   --input-file-synId=syn22267272 --input-folder-synId=syn21821096 --output-folder-synId=syn22320184 --prefix=validation
 
 ## To run fine-grained in silico admixtures
-## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
-##   --input-file-synId=syn22332679 --input-folder-synId=syn21647466 --output-folder-synId=syn22331159 --prefix=fine-in-silico-spikeins
+## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
+##   --input-file-synId=syn22332679 --input-folder-synId=syn22361008 --output-folder-synId=syn22331159 --prefix=fine-in-silico-spikeins
 
 ## To run coarse-grained in silico admixtures
-## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
-##   --input-file-synId=syn22332680 --input-folder-synId=syn21647466 --output-folder-synId=syn22331159 --prefix=coarse-in-silico-spikeins
+## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
+##   --input-file-synId=syn22332680 --input-folder-synId=syn22361008 --output-folder-synId=syn22331159 --prefix=coarse-in-silico-spikeins
 
 ## To run purified admixtures
-## Rscript ./run-cibersortx.R --token=c615ba7853a9c42acd63b1aaf2231c1a --username=brian.white@sagebase.org
+## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
 ##   --input-file-synId=syn22331293 --input-folder-synId=syn21782473 --output-folder-synId=syn21576641 --prefix=purified
 
+## To run specificity analysis (which should be same data as "purified admixtures" above):
+## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
+##   --input-file-synId=syn22392156 --input-folder-synId=syn22392130 --output-folder-synId=syn22725783 --prefix=specificity-coarse
+
+## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
+##   --input-file-synId=syn22392155 --input-folder-synId=syn22392130 --output-folder-synId=syn22725783 --prefix=specificity-fine
+
+## To run B-all analysis
+## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
+##   --input-file-synId=syn22780464 --input-folder-synId=syn22492020 --output-folder-synId=syn22780563 --prefix=b-all
 
 option_list <- list(
     make_option(c("--prefix"), action="store",
@@ -125,7 +140,7 @@ df <- do.call(rbind.data.frame, l)
 
 df <- merge(df, input.files, by.x = "name", by.y = "hugo.expr.file")
 
-if(!all(input.files$hugo.expr.file %in% df$name)) { stop(paste0("Missing some input files!\n")) }
+if(!all(input.files$hugo.expr.file %in% df$name)) { print(input.files); print(df$name); stop(paste0("Missing some input files!\n")) }
 
 ## Download each of the input files from Synapse and translate to a tsv (as required by CIBERSORTx)
 indices <- 1:nrow(df)

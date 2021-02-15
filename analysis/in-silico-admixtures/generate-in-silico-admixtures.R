@@ -26,6 +26,10 @@ cat(paste0("Private IP: 10.23.19.117\n"))
 cat(paste0("Instance type r3.4xlarge\n"))
 cat(paste0("ami-08333c98cd3b5ada7\n"))
 
+parent.id <- "syn22361008"
+
+cat(paste0("Store files in ", parent.id, "\n"))
+
 suppressPackageStartupMessages(p_load(synapser))
 suppressPackageStartupMessages(p_load(plyr))
 suppressPackageStartupMessages(p_load(dplyr))
@@ -793,9 +797,10 @@ create.in.silico.admixtures <- function(mat, sample.ratios,
     insilico.admixtures
 }
 
+cat(paste0("Generating cpm expression matrices\n"))
 admixtures <-
     dlply(all.gs,
-          .parallel = TRUE,
+          .parallel = FALSE,
           .variables = c("dataset.name"),
           .fun = function(df) {
               mat <- as.matrix(cpm.expr)
@@ -806,9 +811,25 @@ admixtures <-
               mxs
           })
 
+nms <- names(admixtures)
+names(nms) <- nms
+for(nm in nms) {
+    cat(paste0("Writing ", nm, " : ", nrow(admixtures[[nm]]), " x ", ncol(admixtures[[nm]]), "\n"))
+    file <- paste0(nm, "_symbol_val_tpm.csv")
+    write.table(file = file, admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+    cat(paste0("Storing ", nm, " to synapse\n"))
+    f <- File(file, parentId = parent.id, synapseStore = TRUE)
+    synStore(f)
+    file.remove(file)
+}
+
+rm(admixtures)
+gc()
+
+cat(paste0("Generating ensg expression matrices\n"))
 ensg.admixtures <-
     dlply(all.gs,
-          .parallel = TRUE,
+          .parallel = FALSE,
           .variables = c("dataset.name"),
           .fun = function(df) {
               mat <- as.matrix(ensg.cpm.expr)
@@ -818,6 +839,21 @@ ensg.admixtures <-
               mxs <- cbind(Gene = rownames(mat), mxs)
               mxs
           })
+
+nms <- names(ensg.admixtures)
+names(nms) <- nms
+for(nm in nms) {
+    cat(paste0("Writing ", nm, " : ", nrow(ensg.admixtures[[nm]]), " x ", ncol(ensg.admixtures[[nm]]), "\n"))
+    file <- paste0(nm, "_ensg_val_tpm.csv")
+    write.table(file = file, ensg.admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+    cat(paste0("Storing ", nm, " to synapse\n"))
+    f <- File(file, parentId = parent.id, synapseStore = TRUE)
+    synStore(f)
+    file.remove(file)    
+}
+
+rm(ensg.admixtures)
+gc()
 
 ## Create the same admixtures, but for count matrices
 purified.samples <- sort(as.character(unique(all.gs$sample)))
@@ -838,9 +874,10 @@ ensg.median.tot.purified.cnts <- median(ensg.tot.purified.cnts)
 ensg.norm.purified.cnts.expr <- sweep(ensg.purified.cnts.expr, 2, colSums(ensg.purified.cnts.expr),`/`) * ensg.median.tot.purified.cnts
 rownames(ensg.norm.purified.cnts.expr) <- rownames(ensg.cnts.expr)
 
+cat(paste0("Generating symbol cnts expression matrices\n"))
 cnts.admixtures <-
     dlply(all.gs,
-          .parallel = TRUE,
+          .parallel = FALSE,
           .variables = c("dataset.name"),
           .fun = function(df) {
               mat <- as.matrix(norm.purified.cnts.expr)
@@ -851,9 +888,25 @@ cnts.admixtures <-
               mxs
           })
 
+nms <- names(cnts.admixtures)
+names(nms) <- nms
+for(nm in nms) {
+    cat(paste0("Writing ", nm, " : ", nrow(cnts.admixtures[[nm]]), " x ", ncol(cnts.admixtures[[nm]]), "\n"))
+    file <- paste0(nm, "_symbol_val_cnts.csv")
+    write.table(file = file, cnts.admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+    cat(paste0("Storing ", nm, " to synapse\n"))
+    f <- File(file, parentId = parent.id, synapseStore = TRUE)
+    synStore(f)
+    file.remove(file)    
+}
+
+rm(cnts.admixtures)
+gc()
+
+cat(paste0("Generating ensg counts expression matrices\n"))
 ensg.cnts.admixtures <-
     dlply(all.gs,
-          .parallel = TRUE,
+          .parallel = FALSE,
           .variables = c("dataset.name"),
           .fun = function(df) {
               mat <- as.matrix(ensg.norm.purified.cnts.expr)
@@ -864,6 +917,21 @@ ensg.cnts.admixtures <-
               mxs
           })
 
+
+nms <- names(ensg.cnts.admixtures)
+names(nms) <- nms
+for(nm in nms) {
+    cat(paste0("Writing ", nm, " : ", nrow(ensg.cnts.admixtures[[nm]]), " x ", ncol(ensg.cnts.admixtures[[nm]]), "\n"))
+    file <- paste0(nm, "_ensg_val_cnts.csv")
+    write.table(file = file, ensg.cnts.admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+    cat(paste0("Storing ", nm, " to synapse\n"))
+    f <- File(file, parentId = parent.id, synapseStore = TRUE)
+    synStore(f)
+    file.remove(file)    
+}
+
+rm(ensg.cnts.admxitures)
+gc()
 
 print(warnings())
 
@@ -902,8 +970,6 @@ input.tbl <-
               as.data.frame(params)
           })
 
-parent.id <- "syn22361008"
-
 file <- "input.csv"
 write.table(file = file, input.tbl, col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
 cat(paste0("Storing ", file, " to synapse\n"))
@@ -922,53 +988,6 @@ cat(paste0("Storing ", file, " to synapse\n"))
 f <- File(file, parentId = parent.id, synapseStore = TRUE)
 synStore(f)
 
-nms <- names(admixtures)
-names(nms) <- nms
-for(nm in nms) {
-    cat(paste0("Writing ", nm, " : ", nrow(admixtures[[nm]]), " x ", ncol(admixtures[[nm]]), "\n"))
-    file <- paste0(nm, "_symbol_val_tpm.csv")
-    write.table(file = file, admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
-    cat(paste0("Storing ", nm, " to synapse\n"))
-    f <- File(file, parentId = parent.id, synapseStore = TRUE)
-    synStore(f)
-    file.remove(file)
-}
-
-nms <- names(ensg.admixtures)
-names(nms) <- nms
-for(nm in nms) {
-    cat(paste0("Writing ", nm, " : ", nrow(ensg.admixtures[[nm]]), " x ", ncol(ensg.admixtures[[nm]]), "\n"))
-    file <- paste0(nm, "_ensg_val_tpm.csv")
-    write.table(file = file, ensg.admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
-    cat(paste0("Storing ", nm, " to synapse\n"))
-    f <- File(file, parentId = parent.id, synapseStore = TRUE)
-    synStore(f)
-    file.remove(file)    
-}
-
-nms <- names(cnts.admixtures)
-names(nms) <- nms
-for(nm in nms) {
-    cat(paste0("Writing ", nm, " : ", nrow(cnts.admixtures[[nm]]), " x ", ncol(cnts.admixtures[[nm]]), "\n"))
-    file <- paste0(nm, "_symbol_val_cnts.csv")
-    write.table(file = file, cnts.admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
-    cat(paste0("Storing ", nm, " to synapse\n"))
-    f <- File(file, parentId = parent.id, synapseStore = TRUE)
-    synStore(f)
-    file.remove(file)    
-}
-
-nms <- names(ensg.cnts.admixtures)
-names(nms) <- nms
-for(nm in nms) {
-    cat(paste0("Writing ", nm, " : ", nrow(ensg.cnts.admixtures[[nm]]), " x ", ncol(ensg.cnts.admixtures[[nm]]), "\n"))
-    file <- paste0(nm, "_ensg_val_cnts.csv")
-    write.table(file = file, ensg.cnts.admixtures[[nm]], sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
-    cat(paste0("Storing ", nm, " to synapse\n"))
-    f <- File(file, parentId = parent.id, synapseStore = TRUE)
-    synStore(f)
-    file.remove(file)    
-}
 
 cat("Done\n")
 save.image(".Rdata")
