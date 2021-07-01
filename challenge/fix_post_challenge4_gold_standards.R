@@ -21,26 +21,35 @@ fine_cell_types <- c(
     "memory.B.cells"
 )
 
-fine <- "syn21752551" %>% 
+coarse_cell_types <- c(
+    "B.cells",
+    "CD4.T.cells",
+    "CD8.T.cells",
+    "NK.cells",
+    "neutrophils",
+    "monocytic.lineage",
+    "fibroblasts",
+    "endothelial.cells"
+)
+
+fine <- "syn23019512" %>% 
     synapse_file_to_tbl(delim = ",") %>% 
-    dplyr::rename(cell.type = sample) %>% 
     dplyr::mutate("cell.type" = factor(.data$cell.type, levels = fine_cell_types)) %>% 
     dplyr::group_split(dataset.name) %>% 
     purrr::map(tidyr::complete, dataset.name, sample.id, cell.type) %>% 
     dplyr::bind_rows() %>% 
-    readr::write_csv("in-silico-val-fine.csv")
+    readr::write_csv("ball-fine-gold-standard.csv")
 
-synapser::File("in-silico-val-fine.csv", parent = "syn22361008") %>% 
+synapser::File("ball-fine-gold-standard.csv", parent = "syn23019061") %>% 
     synapser::synStore()
 
-
-"syn21752552" %>% 
+coarse <- "syn23019511" %>% 
     synapse_file_to_tbl(delim = ",") %>% 
-    dplyr::rename("cell.type" = "sample") %>% 
+    dplyr::mutate("cell.type" = factor(.data$cell.type, levels = coarse_cell_types)) %>% 
     dplyr::group_split(dataset.name) %>% 
     purrr::map(tidyr::complete, dataset.name, sample.id, cell.type) %>% 
     dplyr::bind_rows() %>% 
-    readr::write_csv("in-silico-val-coarse.csv")
+    readr::write_csv("ball-coarse-gold-standard.csv")
 
-synapser::File("in-silico-val-coarse.csv", parent = "syn22361008") %>% 
+synapser::File("ball-coarse-gold-standard.csv", parent = "syn23019061") %>% 
     synapser::synStore()

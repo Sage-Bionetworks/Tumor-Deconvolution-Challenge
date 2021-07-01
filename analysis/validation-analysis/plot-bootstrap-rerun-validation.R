@@ -54,65 +54,9 @@ firstup <- function(x) {
 suppressPackageStartupMessages(p_load(grid))
 suppressPackageStartupMessages(p_load(gridExtra))
 
-## See https://stackoverflow.com/questions/27803710/ggplot2-divide-legend-into-two-columns-each-with-its-own-title
-plot.anno.heatmap.with.multiple.legends <-
-    function(df, id.col, anno.columns, anno.pals) {
+## summary.fun <- mean
+summary.fun <- median
 
-        suppressPackageStartupMessages(p_load("RColorBrewer"))
-        df <- df[, c(id.col, anno.columns)]
-
-        ## Assume annotations are characters
-        ## NB: id.col is a factor
-        for(col in c(anno.columns)) {
-            df[, col] <- as.character(df[, col])
-        }
-
-        columns <- 1:length(anno.columns)
-        names(columns) <- anno.columns
-
-        color.vecs <-
-            llply(columns,
-                  .fun = function(idx) {
-                      anno.col <- anno.columns[idx]
-                      vec <- unique(df[, anno.col])
-                      len <- length(vec)
-                      colors <- brewer.pal(len, anno.pals[idx])
-                      names(colors) <- vec
-                      colors
-                  })
-
-        all.colors <- Reduce("c", color.vecs)
-        names(all.colors) <- Reduce("c", unlist(lapply(color.vecs, names)))
-
-        names(anno.columns) <- anno.columns
-        anno.df <- ldply(anno.columns,
-                     .fun = function(anno.col) {
-                         data.frame(val = df[, anno.col], id = df[, id.col])
-                     })
-        colnames(anno.df)[1] <- "type"
-        print(anno.df)
-        full.plot <-
-            ggplot(anno.df, aes(y = id, x = type, fill = val)) + geom_tile() +
-            scale_fill_manual(values = all.colors) +
-            theme(legend.position="none")
-
-        full.plot <- full.plot + theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
-                                       axis.ticks.y = element_blank(), text = element_text(size = 18),
-                                       axis.text.x = element_text(angle = 45, hjust = 1),
-                                       axis.title.x = element_blank())
-        
-        
-        legends <-
-            llply(anno.columns,
-                  .fun = function(anno.col) {
-                      flag <- anno.df$type == anno.col
-                      g <- ggplot(anno.df[flag, ], aes_string(x = "id", y = "type", fill = "val"))
-                      g <- g + geom_tile()
-                      g <- g + scale_fill_manual(values = all.colors, name = anno.col)
-                  })
-
-        return(list("full.plot" = full.plot, "legends" = legends))
-    }
 
 calculate.empirical.bayes <-
     function(df, col.id, numerator.id, denominator.id, sample.id.cols, score.col) {
@@ -189,6 +133,7 @@ plot.bootstrap.analysis <-
         for(sub.challenge in sub.challenges) {
             print(sub.challenge)
             print(head(method.anno.round))
+	    print(method.anno.round)
             print(subchallenge.col)
             flag <- is.na(method.anno.round[, subchallenge.col]) | ( method.anno.round[, subchallenge.col] == sub.challenge )
             print(flag)
@@ -372,11 +317,11 @@ plot.bootstrap.analysis <-
         coarse.means <- means.by.cell.type.method[["coarse"]][["pearson"]]
         fine.means <- means.by.cell.type.method[["fine"]][["pearson"]]        
         all.means <- rbind(coarse.means, fine.means)
-        
+
         all.means <-
             ddply(all.means, .variables = c(method.name.col, cell.type.col),
                   .fun = function(df) {
-                      data.frame(cor = mean(df$cor))
+                      data.frame(cor = summary.fun(df$cor))
                   })
 
         method.levels[["merged"]] <-
@@ -399,7 +344,7 @@ plot.bootstrap.analysis <-
         all.means <-
             ddply(all.means, .variables = c(method.name.col, cell.type.col, "boot.i"),
                   .fun = function(df) {
-                      data.frame(cor = mean(df$cor))
+                      data.frame(cor = summary.fun(df$cor))
                   })
 
         cat(paste0("Plotting strip plots\n"))
@@ -452,47 +397,11 @@ plot.bootstrap.analysis <-
 
 ## for(round in c("1", "2", "3", "latest")) {
 plots <- list()
-rounds <- c("2", "1", "3", "latest")
+rounds <- c("latest", "1", "2", "3")
 ## rounds <- c("1")
 
 ## Get method metadata
-synId <- "syn23395242"
-obj <- synGet(synId, downloadFile = TRUE)
-method.anno <- read.xlsx(obj$path, sheetIndex = 1)
-
-method.anno$method.type <- as.character(method.anno$method.type)
-method.anno$output.type <- as.character(method.anno$output.type)
-method.anno[, round.col] <- as.character(method.anno[, round.col])
-flag <- method.anno[, round.col] == "NA"
-method.anno[flag, round.col] <- NA
-method.anno[, subchallenge.col] <- as.character(method.anno[, subchallenge.col])
-flag <- method.anno[, subchallenge.col] == "NA"
-method.anno[flag, subchallenge.col] <- NA
-
-method.rename.list <-
-    list("NNLS" = "NNLS",
-         "summary" = "SUM",
-         "other" = "OTH",
-         "other regression" = "REG",
-         "unknown" = "UNK",
-         "SVR" = "SVR",
-         "DNN" = "DNN",
-         "ensemble" = "ENS",
-         "NMF" = "NMF",
-         "probabilistic inference" = "PI")
-method.rename.df <- data.frame(method.type = names(method.rename.list), Method = as.character(method.rename.list))
-
-output.rename.list <-
-    list("fraction" = "Frac",
-         "proportion" = "Prop",
-         "normalized.score" = "Norm",
-         "score" = "Score")
-output.rename.df <- data.frame(output.type = names(output.rename.list), Output = as.character(output.rename.list))
-
-method.anno <- merge(method.anno, method.rename.df)
-method.anno <- merge(method.anno, output.rename.df)
-method.anno$Output <- as.character(method.anno$Output)
-method.anno$Method <- as.character(method.anno$Method)
+method.anno <- get.method.annotations()
 
 for(round in rounds) {
     postfix <- paste0("-round-", round)
@@ -504,6 +413,23 @@ for(round in rounds) {
     bootstrapped.cors <- results[[round]][["bootstrapped.cors"]]
     bootstrapped.scores <- results[[round]][["bootstrapped.scores"]]
     mean.bootstrapped.scores <- results[[round]][["mean.bootstrapped.scores"]]
+
+    ## Recalculate bootstrapped score summary using median
+    mean.bootstrapped.scores <-
+        llply(bootstrapped.scores, .parallel = TRUE,
+              .fun = function(df) {
+                  ## Average over bootstraps
+                  df <- ddply(df,
+                              .variables = c(method.name.col),
+                              .fun = function(tmp) {
+                                  data.frame(pearson = summary.fun(tmp$pearson), spearman = summary.fun(tmp$spearman), rmse = summary.fun(tmp$rmse))
+                              })
+                  o <- order(df$pearson, decreasing = TRUE)
+                  df <- df[o,]
+                  df
+              })
+    
+
     means.by.cell.type.method <- results[[round]][["means.by.cell.type.method"]]
     means.over.dataset <- results[[round]][["means.over.dataset"]]
     top.performers <- results[[round]][["top.performers"]]
@@ -523,9 +449,9 @@ for(round in rounds) {
                   })
     }
 
-    flag <- is.na(method.anno[, round.col]) | (method.anno[, round.col] == round)
-    method.anno.round <- method.anno[flag, ]
-
+    ## Need to take annotation for latest round if there isn't one for current round
+    method.anno.round <- get.round.specific.annotations(method.anno, round)
+	   
     print(head(method.anno.round))
     
     plots[[round]] <- plot.bootstrap.analysis(res.round, bootstrapped.scores, mean.bootstrapped.scores,

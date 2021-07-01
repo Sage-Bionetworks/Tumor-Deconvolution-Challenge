@@ -8,7 +8,7 @@ suppressPackageStartupMessages(p_load(tidyr))
 suppressPackageStartupMessages(p_load(grid))
 suppressPackageStartupMessages(p_load(gridExtra))
 suppressPackageStartupMessages(p_load(synapser))
-suppressPackageStartupMessages(p_load(openxlsx))
+suppressPackageStartupMessages(p_load(xlsx))
 suppressPackageStartupMessages(p_load(reshape2))
 suppressPackageStartupMessages(p_load(cowplot))
 suppressPackageStartupMessages(p_load(ggbeeswarm))
@@ -254,7 +254,10 @@ deconv.summary <-
 ##                     stringsAsFactors = FALSE)
           )
 
+method.anno <- get.method.annotations()
+
 perform.spillover.analysis <- function(res.input,
+                                       method.anno.round,
                                        method.name.col, 
                                        subchallenge.col, 
                                        round.col, round = "latest",
@@ -271,14 +274,18 @@ perform.spillover.analysis <- function(res.input,
 
     res <- merge(res.input, submitter.tbl, by = c(method.name.col, subchallenge.col, round.col))
 
-    round.text <- ""
-    if(round == "latest") {
-        round.text <- "Latest Round"
-    } else if (round == "1") {
-        round.text <- "Round 1"
-    } else {
-        round.text <- paste0("Latest Round up to Round ", round)
+    round.text <- "NA"
+    if(round == "1") {
+        round.text <- "First Submission"
+    } else if(round == "2") {
+        round.text <- "Up To Second Submission"
+    } else if(round == "3") {
+        round.text <- "Up To Third Submission"        
+    } else if(round == "latest") {
+        round.text <- "Up To Final Submission"                
     }
+    
+
 
     title.postfix <- round.text
     
@@ -502,10 +509,10 @@ perform.spillover.analysis <- function(res.input,
     grid.draw(g)
     d <- dev.off()
 
-    png(paste0(figs.dir, "spillover-all-scores-coarse-grained", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-all-scores-coarse-grained", postfix, ".png"), width = 4 * 480, height = 2 * 480)
     sub <- coarse.res
     g.all.coarse <- plot.cell.type.score.heatmap(sub, score.col = "norm.score", normalized.score = TRUE, nrow = 2)
-    g.all.coarse <- g.all.coarse + theme(axis.text.x = element_text(size = 15))    
+    g.all.coarse <- g.all.coarse + theme(axis.text.x = element_text(size = 15)) + theme(plot.title = element_text(hjust = 0.5))
     g.all.coarse <- g.all.coarse + ggtitle(paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")"))
     print(g.all.coarse)
     d <- dev.off()
@@ -567,10 +574,10 @@ perform.spillover.analysis <- function(res.input,
     grid.draw(g)
     d <- dev.off()
 
-    png(paste0(figs.dir, "spillover-all-scores-fine-grained", postfix, ".png"), width = 2 * 480)
+    png(paste0(figs.dir, "spillover-all-scores-fine-grained", postfix, ".png"), width = 4 * 480, height = 2 * 480)
     sub <- fine.res
     g.all.fine <- plot.cell.type.score.heatmap(sub, score.col = "norm.score", normalized.score = TRUE, nrow = 2)
-    g.all.fine <- g.all.fine + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")"))
+    g.all.fine <- g.all.fine + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
     g.all.fine <- g.all.fine + theme(axis.text.x = element_text(size = 15))
     print(g.all.fine)
     d <- dev.off()
@@ -632,58 +639,136 @@ perform.spillover.analysis <- function(res.input,
         d <- dev.off()
     }
 
-    mean.spillover <-
-        ddply(all.res,
+    summary.fun <- mean
+    
+    spillover.summary.sc <-
+        ddply(subset(all.res, measured == 0),
               .variables = c(method.name.col, cell.type.col, subchallenge.col),
               .fun = function(df) {
-                  data.frame(spillover = mean(df$norm.score))
+                  data.frame(spillover = summary.fun(df$norm.score))
               })
-    mean.spillover <-
-        ddply(mean.spillover,
+	      
+    spillover.summary <-
+        ddply(spillover.summary.sc,
               .variables = c(method.name.col, cell.type.col),
               .fun = function(df) {
-                  data.frame(spillover = mean(df$spillover))
+                  data.frame(spillover = summary.fun(df$spillover))
               })
 
-    mean.mean.spillover <-
-        ddply(mean.spillover,
+    median.spillover.summary <-
+        ddply(spillover.summary,
               .variables = c(cell.type.col),
               .fun = function(df) {
-                  data.frame(spillover = mean(df$spillover))
+                  data.frame(spillover = median(df$spillover))
               })
-    o <- order(mean.mean.spillover$spillover)
-    levels <- mean.mean.spillover[o, cell.type.col]
-    mean.spillover[, cell.type.col] <-
-        factor(mean.spillover[, cell.type.col], levels = levels)
 
-    g <- ggplot(data = mean.spillover,
+    subchallenges <- unique(spillover.summary.sc[, subchallenge.col])
+    names(subchallenges) <- subchallenges
+    median.spillover.summary.over.method <-
+        llply(subchallenges,
+	      .fun = function(sc) {
+	               flag <- spillover.summary.sc[, subchallenge.col] == sc
+		       tbl <- spillover.summary.sc[flag, ]
+                       ret <- ddply(tbl,
+                                    .variables = c(method.name.col, subchallenge.col),
+                                    .fun = function(df) {
+                                             data.frame(spillover = median(df$spillover), n = nrow(df))
+                                           })
+	      	       ## Only keep those methods that reported on every cell type
+		       n.expected <- max(ret$n, na.rm=TRUE)
+		       subset(ret, n == n.expected)
+                     })
+
+    o <- order(median.spillover.summary$spillover)
+    levels <- rev(median.spillover.summary[o, cell.type.col])
+    spillover.summary[, cell.type.col] <-
+        factor(spillover.summary[, cell.type.col], levels = levels)
+
+    g <- ggplot(data = spillover.summary,
                 aes_string(x = cell.type.col, y = "spillover"))
-    g <- g + geom_boxplot(outlier.shape = NA)
-    g <- g + geom_beeswarm()
-    g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    g <- g + geom_boxplot()		
+    ## g <- g + geom_boxplot(outlier.shape = NA)
+    ## g <- g + geom_beeswarm()
+    ## g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1), text = element_text(size = 16))
+    g <- g + theme(text = element_text(size = 16))
     g <- g + xlab("") + ylab("Spillover")
-    
+    g <- g + coord_flip()
+    g <- g + ggtitle(paste0("Merged Sub-Challenges (", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
+
+    g.methods <-
+      llply(subchallenges,
+            .fun = function(sc) {
+	             flag <- spillover.summary.sc[, subchallenge.col] == sc
+		     tbl <- spillover.summary.sc[flag, ]
+                     o <- order(median.spillover.summary.over.method[[sc]]$spillover)
+                     levels <- rev(median.spillover.summary.over.method[[sc]][o, method.name.col])
+		     flag <- tbl[, method.name.col] %in% levels
+		     tbl <- tbl[flag, ]
+
+                     flag <- is.na(method.anno.round[, subchallenge.col]) | (as.character(method.anno.round[, subchallenge.col]) == sc)
+                     method.anno.round.sc <- method.anno.round[flag, ]
+                     for(col in colnames(method.anno.round.sc)) { method.anno.round.sc[, col] <- as.character(method.anno.round.sc[, col]) }
+
+                     tbl <- merge(tbl, method.anno.round.sc, by = method.name.col, all.x = TRUE)
+                     tbl[, method.name.col] <- factor(tbl[, method.name.col], levels = levels)
+
+                     g2 <- ggplot(data = tbl,
+                                  aes_string(x = method.name.col, y = "spillover"))
+                     g2 <- g2 + geom_boxplot()
+                     ## g2 <- g2 + geom_boxplot(outlier.shape = NA)
+                     ## g2 <- g2 + geom_beeswarm()
+                     ## g2 <- g2 + theme(axis.text.x = element_text(angle = 45, hjust = 1), text = element_text(size = 16))
+		     g2 <- g2 + theme(text = element_text(size = 16))
+                     g2 <- g2 + xlab("") + ylab("Spillover")
+                     g2 <- g2 + coord_flip()
+
+                     ## Add annotations
+                     tmp <- tbl[, c(method.name.col, "Output", "Method")]
+                     ret <- plot.anno.heatmap.with.multiple.legends(tmp, "method.name", c("Method", "Output"), c("Set3", "Set1"))
+
+                     full.plot <- ret[["full.plot"]]
+                     for.first.legend <- ret[["legends"]][["Method"]]
+                     for.second.legend <- ret[["legends"]][["Output"]]
+
+                     leg1.just <- 1
+                     ## if(sc == "coarse") { leg1.just <- 0.95 }
+                     leg1 <- get_legend(for.first.legend + theme(legend.justification=c(0,0.5), text = element_text(size = 16)))
+                     leg2 <- get_legend(for.second.legend + theme(legend.justification=c(0,0.5), text = element_text(size = 16)))
+                     ## legs <- plot_grid(get_legend(for.first.legend), get_legend(for.second.legend), nrow = 2, align = "v", rel_heights = c(2,1))
+                     title <- paste0(firstup(sc), "-Grained Sub-Challenge (", round.text, ")")                             
+
+                     plot_row_tmp <- plot_grid(g2, full.plot, nrow = 1, align="h", axis = "b", rel_widths = c(5, 0.75))
+                     plot_row <- plot_grid(plot_row_tmp, leg1, leg2, nrow = 1, rel_widths = c(11.75, 1, 1))
+                     g.with.legs <- plot_grid(textGrob(title, gp = gpar(fontsize = 20)), plot_row, ncol=1, rel_heights = c(0.1, 1))
+
+		     g.with.legs
+		   })
+
     ret.list <- list("all.res" = all.res, "method.plots" = method.plots,
-                     "spillover.summary.plot" = g)
+                     "spillover.summary.plot" = g, "spillover.method.summary.plots" = g.methods)
     return(ret.list)
 }
 
 results <- list()
 rounds <- c("1", "2", "3", "latest")
-## rounds <- c("1")
+rounds <- c("1")
 for(round in rounds) {
     postfix <- paste0("-round-", round)
     cat(paste0("Doing round ", round, "\n"))
 
-    results[[round]] <- perform.spillover.analysis(res, method.name.col, subchallenge.col,
+    method.anno.round <- get.round.specific.annotations(method.anno, round)
+
+    results[[round]] <- perform.spillover.analysis(res, method.anno.round, method.name.col, subchallenge.col,
                                                    round.col = "submission", round = round, postfix = postfix)
     
 }
 
 g1 <- results[["1"]][["method.plots"]][["Biogem-coarse"]]
 g2 <- results[["1"]][["spillover.summary.plot"]]
-g <- plot_grid(g1, g2, labels = c("A", "B"))
+g3 <- results[["1"]][["spillover.method.summary.plots"]][["coarse"]]
+g4 <- results[["1"]][["spillover.method.summary.plots"]][["fine"]]
+g <- plot_grid(g1, g2, g3, g4, labels = c("A", "B", "C", "D"))
 
-png(paste0(figs.dir, "spillover-summary.png"), width = 2 * 480)
+png(paste0(figs.dir, "spillover-summary.png"), width = 4 * 480, height = 2 * 480)
 print(g)
 d <- dev.off()

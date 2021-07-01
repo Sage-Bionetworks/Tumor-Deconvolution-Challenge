@@ -14,15 +14,20 @@ coarse_images <- query_synapse_table("SELECT id, status FROM syn22365821")
 dplyr::count(coarse_images, status)
 
 
-# fine_images %>% 
-#     dplyr::filter(status == "INVALID") %>% 
-#     dplyr::pull(id) %>% 
+# fine_images %>%
+#     dplyr::filter(status == "INVALID") %>%
+#     dplyr::pull(id) %>%
 #     purrr::walk(reset_submission)
 # 
-# coarse_images %>% 
-#     dplyr::filter(status == "INVALID") %>% 
-#     dplyr::pull(id) %>% 
+# coarse_images %>%
+#     dplyr::filter(status == "INVALID") %>%
+#     dplyr::pull(id) %>%
 #     purrr::walk(reset_submission)
+
+# fine_images %>%
+#     dplyr::filter(status == "EVALUATION_IN_PROGRESS") %>%
+#     dplyr::pull(id) %>%
+#     purrr::walk(reset_submission, status_string = "INVALID")
 
 # fine_images %>%
 #     dplyr::pull(id) %>%

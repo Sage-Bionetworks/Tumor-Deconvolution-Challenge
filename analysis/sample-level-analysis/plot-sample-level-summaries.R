@@ -5,15 +5,21 @@ suppressPackageStartupMessages(p_load(plyr))
 suppressPackageStartupMessages(p_load(dplyr))
 suppressPackageStartupMessages(p_load(gridExtra))
 suppressPackageStartupMessages(p_load(ggbeeswarm))
+suppressPackageStartupMessages(p_load(cowplot)) # for plot_grid
 
 suppressPackageStartupMessages(p_load("foreach"))
 suppressPackageStartupMessages(p_load("parallel"))
+
+suppressPackageStartupMessages(p_load("xlsx"))
 
 source("../utils.R")
 
 set.seed(1234)
 
 synLogin()
+
+figs.dir <- "figs/"
+dir.create(figs.dir, showWarnings = FALSE)
 
 num.cores <- detectCores()
 if(!is.na(num.cores) && (num.cores > 1)) {
@@ -57,44 +63,50 @@ res.all <- res.all[flag, ]
 ## after the first, which precludes its use here. "NA" indicates the method may be used to
 ## compare across cell types in any round; otherwise the particular round of applicability
 ## is provided
-## RGEGEN_LAB is so bad it is skewing the results; leave it off.
-deconv.fraction.methods <-
-    list(
-        ## "REGGEN_LAB" = NA,
-         "NPU" = NA,
-         "CCB" = NA,
-         "DA_505" = NA,
-         "Aginome-XMU" = "1",
-         "D3Team" = NA,
-         "IZI" = NA,
-         "LeiliLab" = NA,         
-         "CIBERSORT" = NA,
-         "CIBERSORTx" = NA,
-         "quanTIseq" = NA,
-         "EPIC" = NA,
-         "TIMER" = NA)
-deconv.score.methods <-
-    list("NYIT_glomerular" = NA, "Biogem" = NA, "Patrick" = NA, "TJU" = NA)
+## REGGEN_LAB is so bad it is skewing the results; leave it off.
 
-deconv.summary <-
-    rbind(data.frame(method = names(deconv.fraction.methods), submission = unlist(deconv.fraction.methods), output = "fraction",
-                     stringsAsFactors = FALSE),
-          data.frame(method = names(deconv.score.methods), submission = unlist(deconv.score.methods), output = "score",
-                     stringsAsFactors = FALSE))
+exclude.methods <- c("REGGEN_LAB")
+exclude.methods <- c("")
+## Nah. Instead use annotations to exclude score-based approaches
+if(FALSE) {
+  deconv.fraction.methods <-
+      list(
+          ## "REGGEN_LAB" = NA,
+           "NPU" = NA,
+           "CCB" = NA,
+           "DA_505" = NA,
+           "Aginome-XMU" = "1",
+           "D3Team" = NA,
+           "IZI" = NA,
+           "LeiliLab" = NA,         
+           "CIBERSORT" = NA,
+           "CIBERSORTx" = NA,
+           "quanTIseq" = NA,
+           "EPIC" = NA,
+           "TIMER" = NA)
+  deconv.score.methods <-
+      list("NYIT_glomerular" = NA, "Biogem" = NA, "Patrick" = NA, "TJU" = NA)
+
+  deconv.summary <-
+      rbind(data.frame(method = names(deconv.fraction.methods), submission = unlist(deconv.fraction.methods), output = "fraction",
+                       stringsAsFactors = FALSE),
+            data.frame(method = names(deconv.score.methods), submission = unlist(deconv.score.methods), output = "score",
+                       stringsAsFactors = FALSE))
           
 
-flags <-
-    llply(1:nrow(deconv.summary),
-          .fun = function(i) {
-              flag <- res.all[, method.name.col] == deconv.summary[i, "method"]
-              if(!is.na(deconv.summary[i, "submission"])) {
-                  flag <- flag & ( res.all[, round.col] == deconv.summary[i, "submission"])
-              }
-              flag
-          })
-flag <- Reduce("|", flags)
-
-res.all <- res.all[flag,]
+  flags <-
+      llply(1:nrow(deconv.summary),
+            .fun = function(i) {
+                flag <- res.all[, method.name.col] == deconv.summary[i, "method"]
+                if(!is.na(deconv.summary[i, "submission"])) {
+                    flag <- flag & ( res.all[, round.col] == deconv.summary[i, "submission"])
+                }
+                flag
+            })
+  flag <- Reduce("|", flags)
+  
+  res.all <- res.all[flag,]
+}
 
 sub.challenges <- list("coarse" = "coarse", "fine" = "fine")
 comparison.metrics <- list("Pearson" = "pearson", "Spearman" = "spearman", "RMSE" = "RMSE")
@@ -125,8 +137,15 @@ suppressPackageStartupMessages(p_load(grid))
 suppressPackageStartupMessages(p_load(gridExtra))
 suppressPackageStartupMessages(p_load(reshape2))
 
+method.anno <- get.method.annotations()
+
+my.zero.format <- function(x) {
+    ifelse(x == 0, 0, x)
+}
+
+
 do.sample.level.analysis <-
-    function(res.input, dataset.annotation,
+    function(res.input, method.anno.round, dataset.annotation,
              method.name.col, 
              model.id.col, subchallenge.col, measured.col, cell.type.col,
              dataset.name.col, sample.id.col, prediction.col,
@@ -141,7 +160,19 @@ do.sample.level.analysis <-
         submitter.tbl <- submitter.tbl[flag, ]
         flag <- !duplicated(submitter.tbl[, c(method.name.col, subchallenge.col)], fromLast = FALSE)
         submitter.tbl <- submitter.tbl[flag, ]
+
+        sub.title <- "NA"
+        if(round == "1") {
+            sub.title <- "First Submission"
+        } else if(round == "2") {
+            sub.title <- "Up To Second Submission"
+        } else if(round == "3") {
+            sub.title <- "Up To Third Submission"        
+        } else if(round == "latest") {
+            sub.title <- "Up To Final Submission"                
+        }
         
+
         res.round <- merge(res.input, submitter.tbl, by = c(method.name.col, subchallenge.col, round.col))
         
         method.id.col <- method.name.col
@@ -171,9 +202,10 @@ do.sample.level.analysis <-
                                                      obs <- as.numeric(df[, measured.col])
                                                      if(metric == "RMSE") {
                                                          ## Only calculate RMSE for the fraction-based approaches
-                                                         if(df[1, method.name.col] %in% names(deconv.fraction.methods)) {
+							 ## Nah -- filter this below.
+                                                         ## if(df[1, method.name.col] %in% names(deconv.fraction.methods)) {
                                                              val <- sqrt(mean((pred - obs)^2))
-                                                         } 
+                                                         ## } 
                                                      } else {
                                                          val <- cor(pred, obs, method = metric)
                                                      }
@@ -259,6 +291,114 @@ do.sample.level.analysis <-
                             })
                   })
 
+        ## Plot beeswarm of individuals
+        g.swarm.no.color <-
+            llply(sub.challenges,
+                  .fun = function(sub.challenge) {
+                                tbl <- metric.all.res[[sub.challenge]]
+                                m.tbl <- melt(tbl)
+                                colnames(m.tbl) <- c(method.name.col, dataset.name.col, sample.id.col, "metric", "val")
+                                ## m.tbl <- na.omit(m.tbl)
+                                m.tbl <- merge(m.tbl, dataset.annotation)
+				cat(paste0(sub.challenge, ": # unique samples = ", length(unique(m.tbl[, sample.id.col])), "\n"))
+                                decreasing <- FALSE
+				metric.order <- "Pearson"
+                                order.by.fun <- mean
+                                order.by.fun <- median	
+                                sm <- ddply(subset(m.tbl, metric == metric.order), .variables = c(method.name.col),
+				            .fun = function(df) {
+						     data.frame("val" = order.by.fun(df[, "val"]))
+						   })
+
+                                flag <- is.na(method.anno.round[, subchallenge.col]) | (as.character(method.anno.round[, subchallenge.col]) == sub.challenge)
+				method.anno.round.sc <- method.anno.round[flag, ]
+				## Exclude score-based annotations
+				method.anno.round.sc <- subset(method.anno.round.sc, Output != "Score")
+				## Exclude some methods
+				flag <- method.anno.round.sc[, method.name.col] %in% exclude.methods
+				method.anno.round.sc <- method.anno.round.sc[!flag, ]
+				sm[, method.name.col] <- as.character(sm[, method.name.col])
+				for(col in colnames(method.anno.round.sc)) { method.anno.round.sc[, col] <- as.character(method.anno.round.sc[, col]) }
+
+                                m.tbl <- merge(m.tbl, method.anno.round.sc, by = method.name.col, all = FALSE)
+                                tbl <- merge(tbl, method.anno.round.sc, by = method.name.col, all = FALSE)
+                                sm <- merge(sm, method.anno.round.sc, by = method.name.col, all = FALSE)				
+                                o <- order(sm[, "val"], decreasing = decreasing)
+                                lvls <- sm[o, method.name.col]
+                                m.tbl[, method.name.col] <- factor(m.tbl[, method.name.col], levels = lvls)
+                                tbl[, method.name.col] <- factor(tbl[, method.name.col], levels = lvls)
+				sm[, method.name.col] <- factor(sm[, method.name.col], levels = lvls)				
+				if(FALSE) {
+                                  g <- ggplot()
+				
+                                  g <- g + geom_boxplot(data = m.tbl, aes_string(x = method.name.col, y = "val"))
+                                  ## g <- g + facet_wrap("metric", scales = "free_y")
+  				  g <- g + facet_wrap(~metric, scales = "free_x")
+				  g <- g + coord_flip()
+                                  ## g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+                                  g <- g + ylab("") + xlab("")
+				}
+
+                                sz <- 16
+				title.sz <- 18
+                                g1 <- ggplot(data = tbl)
+                                g1 <- g1 + geom_boxplot(aes_string(x = method.name.col, y = "Pearson"))
+                                g1 <- g1 + coord_flip()
+                                g1 <- g1 + xlab("Method")
+                                g1 <- g1 + ylab("Pearson Correlation")
+                                g1 <- g1 + theme(text = element_text(size=sz), title = element_text(size = title.sz))
+                                g1 <- g1 + theme(axis.title.y = element_blank())
+                                g1 <- g1 + scale_y_continuous(labels = my.zero.format, limits = c(-1, 1))
+				
+                                g2 <- ggplot(data = tbl)
+                                g2 <- g2 + geom_boxplot(aes_string(x = method.name.col, y = "Spearman"))
+                                g2 <- g2 + coord_flip()
+                                g2 <- g2 + xlab("Method")
+                                g2 <- g2 + ylab("Spearman Correlation")
+                                g2 <- g2 + theme(text = element_text(size=sz))    
+                                g2 <- g2 + theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
+                                                 axis.ticks.y = element_blank())
+                                g2 <- g2 + scale_y_continuous(labels = my.zero.format, limits = c(-1, 1))
+
+                                g3 <- ggplot(data = tbl)
+                                g3 <- g3 + geom_boxplot(aes_string(x = method.name.col, y = "RMSE"))
+                                g3 <- g3 + coord_flip()
+                                g3 <- g3 + xlab("Method")
+                                g3 <- g3 + ylab("RMSE")
+                                g3 <- g3 + theme(text = element_text(size=sz))    
+                                g3 <- g3 + theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
+                                                 axis.ticks.y = element_blank())
+				if(sub.challenge == "fine") {
+				  g3 <- g3 + scale_y_continuous(labels = my.zero.format, limits = c(0, 0.3))
+				} else {
+				  g3 <- g3 + scale_y_continuous(labels = my.zero.format, limits = c(0, 0.3))
+				}
+
+
+                                tmp <- sm[, c(method.name.col, "Output", "Method")]
+                                ret <- plot.anno.heatmap.with.multiple.legends(tmp, "method.name", c("Method", "Output"), c("Set3", "Set1"))
+
+                                full.plot <- ret[["full.plot"]]
+                                for.first.legend <- ret[["legends"]][["Method"]]
+                                for.second.legend <- ret[["legends"]][["Output"]]
+
+                                leg1.just <- 1
+				## if(sub.challenge == "coarse") { leg1.just <- 0.95 }
+                                leg1 <- get_legend(for.first.legend + theme(legend.justification=c(0,leg1.just)))
+				leg2 <- get_legend(for.second.legend + theme(legend.justification=c(0,0.7)))
+                                ## legs <- plot_grid(get_legend(for.first.legend), get_legend(for.second.legend), nrow = 2, align = "v", rel_heights = c(2,1))
+                                title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge (", sub.title, ")")    				
+
+                                ## plot_row <- plot_grid(g, full.plot, legs, nrow=1, align="h", axis = "b", rel_widths = c(3, 0.5, 0.5))
+				## plot_row <- plot_grid(g1, g2, g3, full.plot, legs, nrow=1, align="h", axis = "b", rel_widths = c(5, 3, 3, 0.75, 0.75))
+				## plot_row <- plot_grid(g1, g2, g3, full.plot, leg1, leg2, nrow=1, align="h", axis = "b", rel_widths = c(5, 3, 3, 0.75, 0.75, 0.75))
+				plot_row_tmp <- plot_grid(g1, g2, g3, full.plot, nrow = 1, align="h", axis = "b", rel_widths = c(5, 3, 3, 0.75))
+				plot_row <- plot_grid(plot_row_tmp, leg1, leg2, nrow = 1, rel_widths = c(11.75, 0.75, 0.75))
+                                g.with.legs <- plot_grid(textGrob(title, gp = gpar(fontsize = 20)), plot_row, ncol=1, rel_heights = c(0.1, 1))
+
+                                g.with.legs
+                  })
+
         ## Plot the correlations
         plot.correlations <- FALSE
         if(plot.correlations) {
@@ -284,16 +424,20 @@ do.sample.level.analysis <-
         }
         
         ret.list <- list("metric.all.res" = metric.all.res, "metric.sum.res" = metric.sum.res,
-                         "g.summaries" = g.summaries, "g.swarm" = g.swarm)
+                         "g.summaries" = g.summaries, "g.swarm" = g.swarm, "g.swarm.no.color" = g.swarm.no.color)
         return(ret.list)
 
 }
 
+rounds <- c("1", "2", "3")
+names(rounds) <- rounds
+
 results <- list()
-## for(round in c("1", "2", "3", "latest")) {
-for(round in c("2", "1", "3", "latest")) {
+for(round in rounds) {
     postfix <- paste0("-round-", round)
     cat(paste0("Doing round ", round, "\n"))
+
+    method.anno.round <- get.round.specific.annotations(method.anno, round)
 
     if(FALSE) {
         res.input <- res.all
@@ -302,23 +446,164 @@ for(round in c("2", "1", "3", "latest")) {
         postfix <- paste0("-round-", round)
     }
     
-    results[[round]] <- do.sample.level.analysis(res.all, dataset.annotation,
+    results[[round]] <- do.sample.level.analysis(res.all, method.anno.round, dataset.annotation,
                                                  method.name.col,
                                                  model.id.col, subchallenge.col, measured.col, cell.type.col,
                                                  dataset.name.col, sample.id.col, prediction.col,
                                                  round.col = "submission", round = round,
                                                  postfix)
 
+    sub.title <- "NA"
+    if(round == "1") {
+        sub.title <- "First Submission"
+    } else if(round == "2") {
+        sub.title <- "Up To Second Submission"
+    } else if(round == "3") {
+        sub.title <- "Up To Third Submission"        
+    } else if(round == "latest") {
+        sub.title <- "Up To Final Submission"                
+    }
+        
     g.sum.coarse <- results[[round]][["g.summaries"]][["coarse"]]
-    g.sum.coarse <- g.sum.coarse + ggtitle("Coarse-Grained Sub-Challenge")
+    title <- paste0("Coarse-Grained (", sub.title, ")")    
+    g.sum.coarse <- g.sum.coarse + ggtitle(title) + theme(plot.title = element_text(hjust = 0.5))
     g.sum.fine <- results[[round]][["g.summaries"]][["fine"]]
-    g.sum.fine <- g.sum.fine + ggtitle("Fine-Grained Sub-Challenge")
-    png(paste0("sample-level-metric-summary", postfix, ".png"))
-    grid.arrange(g.sum.coarse, g.sum.fine)
+    title <- paste0("Fine-Grained (", sub.title, ")")        
+    g.sum.fine <- g.sum.fine + ggtitle(title) + theme(plot.title = element_text(hjust = 0.5))
+    png(paste0(figs.dir, "/sample-level-metric-summary", postfix, ".png"))
+    g <- plot_grid(g.sum.coarse, g.sum.fine, nrow = 2, labels = "AUTO") 
+    print(g)
+    ## grid.arrange(g.sum.coarse, g.sum.fine)
     d <- dev.off()
+
+    g.swarm.coarse <- results[[round]][["g.swarm.no.color"]][["coarse"]]
+    title <- paste0("Coarse-Grained (", sub.title, ")")    
+##    g.swarm.coarse <- g.swarm.coarse + ggtitle(title) + theme(plot.title = element_text(hjust = 0.5))
+    g.swarm.fine <- results[[round]][["g.swarm.no.color"]][["fine"]]
+    title <- paste0("Fine-Grained (", sub.title, ")")        
+##    g.swarm.fine <- g.swarm.fine + ggtitle(title) + theme(plot.title = element_text(hjust = 0.5))
+    png(paste0(figs.dir, "/sample-level-metric-swarm", postfix, ".png"), width = 2 * 480)
+    g <- plot_grid(g.swarm.coarse, g.swarm.fine, nrow = 2, labels = "AUTO") 
+    print(g)
+    ## grid.arrange(g.swarm.coarse, g.swarm.fine)
+    d <- dev.off()
+
 }
 
+## Calculate difference relative to top-performer across each submission and each metric
 
+## Exclude these two outliers, which are throwing off the stats
+exclude.from.rmse <- c("Patrick", "NYIT_glomerular")
 
+res.tbl <-
+  ldply(rounds,
+        .fun = function(round) {
+	         tbl.sc <-
+		   ldply(sub.challenges,
+		         .fun = function(sc) {
+                                  tbl <- results[[round]][["metric.all.res"]][[sc]]
+                                  m.tbl <- melt(tbl)
+                                  colnames(m.tbl) <- c(method.name.col, dataset.name.col, sample.id.col, "metric", "val")
+
+                                  method.anno.round <- get.round.specific.annotations(method.anno, round)
+
+                                  flag <- is.na(method.anno.round[, subchallenge.col]) | (as.character(method.anno.round[, subchallenge.col]) == sc)
+    				  method.anno.round.sc <- method.anno.round[flag, ]
+  				  ## Exclude score-based annotations
+				  method.anno.round.sc <- subset(method.anno.round.sc, Output != "Score")
+				  ## Exclude some methods
+				  flag <- method.anno.round.sc[, method.name.col] %in% exclude.methods
+				  method.anno.round.sc <- method.anno.round.sc[!flag, ]
+                                  method.anno.round.sc[, method.name.col] <- as.character(method.anno.round.sc[, method.name.col])
+                                  m.tbl <- merge(m.tbl, method.anno.round.sc[, c(method.name.col, "Output", "Method")], by = c(method.name.col))
+
+	                          metrics <- as.character(unique(m.tbl$metric))
+	                          names(metrics) <- metrics
+                                  tbl.met <-
+				    ldply(metrics,
+	                                  .fun = function(metric.order) {
+                                                   ##postfix <- paste0("-", sc, "-round-", round, "-", metric.order)
+						   if(metric.order == "RMSE") {
+						     flag <- m.tbl[, method.name.col] %in% exclude.from.rmse
+						     m.tbl <- m.tbl[!flag, ]
+						   }
+	                                           m.met <- subset(m.tbl, metric == metric.order)
+	                                           m.met <- na.omit(m.met)
+                                                   decreasing <- TRUE
+                                                   alt <- "greater"
+                                                   if(metric.order == "RMSE") { decreasing <- FALSE; alt <- "less" }
+                                                   order.by.fun <- median	
+                                                   sm <- ddply(m.met, .variables = c(method.name.col),
+                                                               .fun = function(df) {
+				                                                     data.frame("val" = order.by.fun(df[, "val"]))
+                                                                                   })
+                                                   o <- order(sm[, "val"], decreasing = decreasing)
+                                                   lvls <- as.character(sm[o, method.name.col])
+						   do.anova <- TRUE
+						   if(do.anova) {
+						     m.met[, method.name.col] <- factor(m.met[, method.name.col], levels = lvls)
+						     lm.fit <- lm(val ~ method.name, data = m.met)
+                                                     sm <- summary(lm.fit)
+                                                     cf <- coef(sm)
+                                                     flag <- grepl(rownames(cf), pattern="method")
+                                                     ret.df <- cf[flag,]
+						     val.med <- ddply(m.met, .variables = c(method.name.col), .fun = function(df) data.frame(val = median(df$val)))
+						     colnames(val.med)[1] <- method.name.col
+						     rownames(val.med) <- val.med[, method.name.col]
+						     val.med <- val.med[lvls, ]
+                                                     ret.df <- cbind(variable = rownames(ret.df), val.med = val.med[2:nrow(val.med),"val"], ret.df)
+                                                     pval <- pf(sm$fstatistic[1],sm$fstatistic[2],sm$fstatistic[3],lower.tail=FALSE)
+                                                     ret.df <- rbind(ret.df, c("F-statistic", NA, as.numeric(sm$fstatistic[1]), NA, NA, pval))
+						     ret.df <- cbind(best = lvls[1], best.med = val.med[1,"val"], ret.df)
+						     row.names(ret.df) <- NULL
+						   } else {
+                                                     names(lvls) <- lvls
+                                                     flag <- m.met[, method.name.col] == lvls[1]
+                                                     res1 <- m.met[flag, ]
+                                                     ret.df <-
+                                                       ldply(lvls[2:length(lvls)],
+                                                             .fun = function(meth) {
+                                                                      flag <- m.met[, method.name.col] == meth
+                                                                      res2 <- m.met[flag, ]
+                                                                      mer <- merge(res1, res2, by = c(sample.id.col, dataset.name.col), suffixes = c(".x", ".y"))
+                                                                      print(head(mer))
+                                                                      wt <- wilcox.test(mer$val.x, mer$val.y, alternative = alt, paired = TRUE)
+                                                                      data.frame(best = lvls[1], p = wt$p.value)
+                                                                    })
+                                                     colnames(ret.df)[1] <- "comp"			     
+                                                   }
+						   ret.df
+						 })
+                                  colnames(tbl.met)[1] <- "metric"
+				  tbl.met
+                                })
+		 colnames(tbl.sc)[1] <- "sub.challenge"
+		 tbl.sc
+               })	
+colnames(res.tbl)[1] <- "round"
+
+flag <- colnames(res.tbl) == "Pr(>|t|)"
+colnames(res.tbl)[flag] <- "p.val"
+
+file <- paste0(figs.dir, "/sample-level-comparison.tsv")
+write.table(file = file, res.tbl, row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)
 cat("Exiting successfully\n")
 
+## Summarize based on ties
+p.val.cutoff <- 0.05
+
+res.tbl.sum <-
+  ddply(res.tbl,
+        .variables = c("round", "sub.challenge", "metric"),
+	.fun = function(df) {
+	         df$p.val <- as.numeric(df$p.val)
+                 ties <- as.character(subset(df, p.val > p.val.cutoff)[, "variable"])
+		 ties <- gsub(x=ties, pattern="method.name", replacement="")
+		 ties <- sort(ties)
+		 ties <- paste0(ties, collapse = ", ")
+		 data.frame(best = df[1, "best"], ties = ties)
+               })
+
+file <- paste0(figs.dir, "/sample-level-comparison-ties.tsv")
+write.table(file = file, res.tbl.sum, row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)
+cat("Exiting successfully\n")
