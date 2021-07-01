@@ -694,6 +694,10 @@ png(paste0(figs.dir, "fig-validation-round-1-merged-mixture-distribution-effect.
 print(g)
 d <- dev.off()
 
+pdf(paste0(figs.dir, "fig-validation-round-1-merged-mixture-distribution-effect.pdf"))
+print(g)
+d <- dev.off()
+
 file <- paste0(figs.dir, "rerun-validation-mixture-and-distribution-effects.tsv")
 write.table(file = file, lm.fits, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
@@ -733,9 +737,15 @@ if(FALSE) {
     l_ply(sub.challenges,
           .fun = function(subchallenge) {
               g <- g.score.vs.round[[subchallenge]]
+              
               png(paste0(figs.dir, "rerun-validation-bootstrap-pearson-vs-round-", subchallenge, ".png"))
               print(g)
               d <- dev.off()
+
+              pdf(paste0(figs.dir, "rerun-validation-bootstrap-pearson-vs-round-", subchallenge, ".pdf"))
+              print(g)
+              d <- dev.off()
+              
           })
 }
 

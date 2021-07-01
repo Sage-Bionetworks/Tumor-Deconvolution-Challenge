@@ -89,7 +89,12 @@ g.strip.merged.round1.priority <- g.strip.merged.round1.priority +
 ## d <- dev.off()
 
 g <- plot_grid(g.strip.merged.round1.priority, g.heatmap.merged.round1, nrow = 2, labels = "AUTO")
+
 png(paste0(figs.dir, "fig-validation-round-1-strip-and-heatmap-merged-cell-type", ".png"), width = 2 * 480, height = 2 * 480)                    
+print(g)
+d <- dev.off()
+
+pdf(paste0(figs.dir, "fig-validation-round-1-strip-and-heatmap-merged-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)                    
 print(g)
 d <- dev.off()
 
@@ -113,7 +118,12 @@ g.heatmap.merged.round3 <- g.heatmap.merged.round3 + ggtitle(paste0("Merged Coar
 g.heatmap.merged.round3 <- g.heatmap.merged.round3 + theme(plot.title = element_text(hjust = 0.5))
 
 g <- plot_grid(g.heatmap.merged.round2, g.heatmap.merged.round3, nrow = 2, labels = "AUTO")
+
 png(paste0(figs.dir, "fig-validation-heatmap-rounds-2-and-3-merged-cell-type", ".png"), width = 2 * 480, height = 2 * 480)                    
+print(g)
+d <- dev.off()
+
+pdf(paste0(figs.dir, "fig-validation-heatmap-rounds-2-and-3-merged-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)                    
 print(g)
 d <- dev.off()
 
@@ -135,6 +145,11 @@ l_ply(plot.rounds,
           png(paste0(figs.dir, "fig-validation-heatmap-round-", rd, "-coarse-and-fine-cell-type", ".png"), width = 2 * 480, height = 2 * 480)
           print(g)
           d <- dev.off()
+
+          pdf(paste0(figs.dir, "fig-validation-heatmap-round-", rd, "-coarse-and-fine-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)
+          print(g)
+          d <- dev.off()
+          
       })
 
 ##  - strip plots merged all methods rounds 1
@@ -153,6 +168,11 @@ l_ply(plot.rounds,
           png(paste0(figs.dir, "fig-validation-round-", rd, "-merged-strip-cell-type", ".png"), width = 2 * 480, height = 2 * 480)
           print(g)
           d <- dev.off()
+          
+          pdf(paste0(figs.dir, "fig-validation-round-", rd, "-merged-strip-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)
+          print(g)
+          d <- dev.off()
+
       })
 
 ##  - coarse and fine grained strip plots all methods round 1
@@ -174,10 +194,17 @@ l_ply(plot.rounds,
                            strip.text = element_text(size = 15),
                            plot.title = element_text(hjust = 0.5))
           g2 <- g2 + ggtitle(paste0("Fine-Grained (", cardinal.to.ordinal(rd), " Submission)"))         
+
           png(paste0(figs.dir, "fig-validation-round-", rd, "-coarse-and-fine-strip-cell-type", ".png"), width = 2 * 480, height = 2 * 480)
           g <- plot_grid(g1, g2, nrow = 2, labels = "AUTO")          
           print(g)
           d <- dev.off()
+
+          pdf(paste0(figs.dir, "fig-validation-round-", rd, "-coarse-and-fine-strip-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)
+          g <- plot_grid(g1, g2, nrow = 2, labels = "AUTO")          
+          print(g)
+          d <- dev.off()
+          
       })
 
 correlations <- list("spearman" = "spearman", "pearson" = "pearson")
@@ -297,7 +324,11 @@ g.round.fine <- g.round.fine +
 
 g <- plot_grid(g.bootstrap.coarse.round1, g.bootstrap.fine.round1, g.round.coarse, g.round.fine, labels = c("A", "B", "C", "D"))
 
-png(paste0(figs.dir, "fig-validation-round-1-performance", ".png"), width = 2 * 480, height = 2 * 480)                    
+png(paste0(figs.dir, "fig-validation-round-1-performance", ".png"), width = 2 * 480, height = 2 * 480)
+print(g)
+d <- dev.off()
+
+pdf(paste0(figs.dir, "fig-validation-round-1-performance", ".pdf"), width = 2 * 7, height = 2 * 7)
 print(g)
 d <- dev.off()
 
@@ -389,6 +420,10 @@ g <- plot_grid(
     g2.barplots$coarse, g2.barplots$fine,
     g3.barplots$coarse, g3.barplots$fine, labels = "AUTO", nrow = 3)
 
-png(paste0(figs.dir, "fig-validation-all-performance", ".png"), width = 2 * 480, height = 3 * 480)                    
+png(paste0(figs.dir, "fig-validation-all-performance", ".png"), width = 2 * 480, height = 3 * 480)
+print(g)
+d <- dev.off()
+
+pdf(paste0(figs.dir, "fig-validation-all-performance", ".pdf"), width = 2 * 7, height = 3 * 7)
 print(g)
 d <- dev.off()
