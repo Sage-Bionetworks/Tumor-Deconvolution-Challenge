@@ -167,6 +167,17 @@ combined_result_df <- combined_result_df %>%
     dplyr::group_by(dataset.name, sample.id, cell.type) %>% 
     dplyr::summarise_all(mean)
 
+# The last line above has a bug -- 'mean' should be 'sum'.
+# However, to avoid having to re-run this through all of the challenge
+# infastruture, I will instead manually correct the results downstream.
+# Note that the difference between a mean of n cell types output by
+# CIBERSORT and aggregated into a single challenge cell type is simply
+# 1/n * the sum. Hence, knowing the number of CIBERSORT cell types
+# that are aggregated, we can simply scale the results accordingly.
+# Rather that determining this logically, I will do it empirically
+# by comparing output derived from CIBERSORTx using similarly
+# buggy code and that from corrected code.
+
 ## Create the directory the output will go into
 dir.create("output")
 

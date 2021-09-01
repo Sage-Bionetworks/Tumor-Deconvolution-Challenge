@@ -39,9 +39,10 @@ res <- assign.result.team.names.and.rounds(res, error.fun = warning)
 
 cat("Done assigning team names and rounds\n")
 
-include.csx.results <- FALSE
+include.csx.results <- TRUE
 if(include.csx.results) {
-    synIds <- list("coarse" = "syn22725972", "fine" = "syn22726111")
+    ## synIds <- list("coarse" = "syn22725972", "fine" = "syn22726111")
+    synIds <- list("coarse" = "syn22340351", "fine" = "syn22340322")
     nms <- names(synIds)
     names(nms) <- nms
     csx.res <-

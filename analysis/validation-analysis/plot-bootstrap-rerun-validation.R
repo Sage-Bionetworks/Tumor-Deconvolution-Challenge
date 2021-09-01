@@ -334,6 +334,7 @@ plot.bootstrap.analysis <-
                                                 id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
                                                 method.levels = method.levels[["merged"]],
                                                 cell.type.levels = cell.type.levels[["merged"]])
+        merged.all.means <- all.means
         heatmaps[["merged"]] <- g
 
         cat("Creating merged means.over.dataset\n")
@@ -389,7 +390,8 @@ plot.bootstrap.analysis <-
         ret.list <- list("mean.bootstrapped.scores" = mean.bootstrapped.scores,
                          "barplots" = barplots,
                          "strip.plots" = strip.plots,
-                         "heatmaps" = heatmaps)
+                         "heatmaps" = heatmaps,
+			 "merged.all.means" = merged.all.means)			 
 
         ret.list
         
@@ -472,6 +474,58 @@ for(round in rounds) {
         write.table(file = file, tbl, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
     }
+}
+
+for(round in c("1")) {
+  tbl <- plots[[round]][["merged.all.means"]]
+  tbl <-
+    ddply(tbl, .variables = c("cell.type"),
+          .fun = function(df) {
+	           df <- df[order(df$cor, decreasing=TRUE),]
+		   df$diff <- 0
+		   df[1:(nrow(df)-1), "diff"] <- df[1:(nrow(df)-1),"cor"] - df[2:(nrow(df)),"cor"]
+		   df$comparator.corr <- 0
+		   df[1:(nrow(df)-1), "comparator.corr"] <- df[2:(nrow(df)),"cor"]
+		   df$comparator <- ""
+		   df[1:(nrow(df)-1), "comparator"] <- df[2:(nrow(df)),method.name.col]		   		   
+		   df[!is.na(df$cor) & df$cor == max(df$cor, na.rm=TRUE),,drop=F]
+		 })
+  tbl <- tbl[order(tbl$diff, decreasing=TRUE),]
+
+  cat(paste0("Round ", round, ": ", length(unique(tbl[, method.name.col])), " were top performer in at least one of the ", length(unique(tbl[, cell.type.col])), "\n"))
+
+  file <- paste0(figs.dir, "rerun-validation-round-", round, "-top-method-per-cell-type.tsv")
+  write.table(file = file, tbl, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+  
+}
+
+comparators <- get.comparators.cap()
+
+for(round in c("1")) {
+  tbl <- plots[[round]][["merged.all.means"]]
+  tbl <-
+    ddply(tbl, .variables = c("cell.type"),
+          .fun = function(df) {
+	           df <- df[order(df$cor, decreasing=TRUE),]
+		   flag <- ( !is.na(df$cor) & df$cor == max(df$cor, na.rm=TRUE) ) | ( df[, method.name.col] %in% comparators )
+		   df <- df[flag,,drop=F]
+		   df$diff <- 0
+		   df[1:(nrow(df)-1), "diff"] <- df[1:(nrow(df)-1),"cor"] - df[2:(nrow(df)),"cor"]
+		   df$comparator.corr <- 0
+		   df[1:(nrow(df)-1), "comparator.corr"] <- df[2:(nrow(df)),"cor"]
+		   df$comparator <- ""
+		   df[1:(nrow(df)-1), "comparator"] <- df[2:(nrow(df)),method.name.col]		   		   
+		   print(df[1,"cell.type"])
+		   print(df)
+		   df[!is.na(df$cor) & df$cor == max(df$cor, na.rm=TRUE),,drop=F]
+		 })
+  tbl <- tbl[order(tbl$diff, decreasing=TRUE),]
+
+  cat(paste0("Round ", round, ": ", length(unique(tbl[, method.name.col])), " were top performer in at least one of the ", length(unique(tbl[, cell.type.col])), "\n"))
+
+  file <- paste0(figs.dir, "rerun-validation-round-", round, "-top-method-per-cell-type-rel-comparator.tsv")
+  write.table(file = file, tbl, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+  
 }
 
 for(round in c("1")) {

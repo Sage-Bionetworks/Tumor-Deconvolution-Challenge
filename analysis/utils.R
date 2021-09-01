@@ -256,6 +256,10 @@ get.comparators <- function() {
     c("cibersort", "mcp", "quantiseq", "xcell", "epic", "timer", "cibersortx")
 }
 
+get.comparators.cap <- function() {
+    c("CIBERSORT", "MCP-counter", "quanTIseq", "xCell", "EPIC", "TIMER", "CIBERSORTx")
+}
+
 get.baseline.translation <- function() {
     baseline.method.trans <-
         list("baseline_method1" = "CIBERSORT",
