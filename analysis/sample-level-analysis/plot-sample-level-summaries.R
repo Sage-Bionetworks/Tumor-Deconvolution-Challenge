@@ -34,6 +34,41 @@ synId <- "syn22320329"
 obj <- synGet(synId, downloadFile=TRUE)
 res.all <- read.table(obj$path, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
 
+## Read in results from updated CIBERSORTx code that collapses sub-popuations (e.g., mem CD8 T and naive CD8 T)
+## into their parental population (e.g., CD8 T) by correctly using sum rather than mean (as was used
+## during the challenge). We will apply these changes to the CIBERSORT results (without re-running them).
+## These files have columns cell.type, subchallenge, method.name, and revised.orig.ratio.
+## method.name = CIBERSORTx (not CIBERSORT!) since CIBERSORTx combines the same sub-populations into parental units
+## and was actually re-run. 
+## We should revise the old cs result by multiplying it be revised.orig.ratio (i.e., convert mean to sum)
+cs.revised.synIds <- list("coarse" = "syn26141656", "fine" = "syn26141634")
+## syn26141656: specificity-coarse-csx-all-gene-predictions-revised-orig-ratios.tsv
+## syn26141634: specificity-fine-csx-all-gene-predictions-revised-orig-ratios.tsv
+## Hmmm ... for some reason, both of these files contain both coarse and fine-grained mappings.
+## Ahh ... the different files result from the coarse- vs fine-grained subchallenges / datasets.
+## But, CIBERSORTx was run so as to make coarse- or fine-grained predictions for both challenges.
+## Proably the files are identical, but to be sure, only take the fine-grained mappings from the
+## fine-grained challenge, etc.
+revised.dfs <- 
+  ldply(cs.revised.synIds, 
+        .fun = function(synId) { 
+                 obj <- synGet(synId, downloadFile=TRUE)
+                 df <- read.table(obj$path, sep="\t", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
+               })
+colnames(revised.dfs)[1] <- "subchallenge.run"
+revised.dfs$method.name <- "CIBERSORT"
+revised.dfs <- subset(revised.dfs, subchallenge == subchallenge.run)
+revised.dfs <- revised.dfs[, !(colnames(revised.dfs) == "subchallenge.run")]
+
+orig.nrows <- nrow(res.all)
+res.all <- merge(as.data.frame(res.all), as.data.frame(revised.dfs), all.x = TRUE)
+new.nrows <- nrow(res.all)
+if(orig.nrows != new.nrows) { stop(paste0("Dimension changed from ", orig.nrows, " rows to ", new.nrows, " rows\n")) }
+flag <- !is.na(res.all$revised.orig.ratio)
+if(any(flag)) {
+  res.all[flag, "prediction"] <- res.all[flag, "prediction"] * res.all[flag, "revised.orig.ratio"]
+}
+
 subchallenge.col <- "subchallenge"
 measured.col <- "measured"
 cell.type.col <- "cell.type"
@@ -149,7 +184,7 @@ do.sample.level.analysis <-
              method.name.col, 
              model.id.col, subchallenge.col, measured.col, cell.type.col,
              dataset.name.col, sample.id.col, prediction.col,
-             round.col, round = "latest",
+             round.col, round = "latest", y.sz = 16,
              postfix) {
 
         submitter.tbl <- unique(res.input[, c(method.name.col, round.col, subchallenge.col), drop = FALSE])
@@ -346,7 +381,7 @@ do.sample.level.analysis <-
                                 g1 <- g1 + coord_flip()
                                 g1 <- g1 + xlab("Method")
                                 g1 <- g1 + ylab("Pearson Correlation")
-                                g1 <- g1 + theme(text = element_text(size=sz), title = element_text(size = title.sz))
+                                g1 <- g1 + theme(text = element_text(size=sz), axis.text.y = element_text(size=y.sz), title = element_text(size = title.sz))
                                 g1 <- g1 + theme(axis.title.y = element_blank())
                                 g1 <- g1 + scale_y_continuous(labels = my.zero.format, limits = c(-1, 1))
 				
@@ -450,7 +485,7 @@ for(round in rounds) {
                                                  method.name.col,
                                                  model.id.col, subchallenge.col, measured.col, cell.type.col,
                                                  dataset.name.col, sample.id.col, prediction.col,
-                                                 round.col = "submission", round = round,
+                                                 round.col = "submission", round = round, y.sz = 10,
                                                  postfix)
 
     sub.title <- "NA"
