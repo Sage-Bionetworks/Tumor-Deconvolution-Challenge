@@ -39,8 +39,48 @@ res <- assign.result.team.names.and.rounds(res, error.fun = warning)
 
 cat("Done assigning team names and rounds\n")
 
+## Read in results from updated CIBERSORTx code that collapses sub-popuations (e.g., mem CD8 T and naive CD8 T)
+## into their parental population (e.g., CD8 T) by correctly using sum rather than mean (as was used
+## during the challenge). We will apply these changes to the CIBERSORT results (without re-running them).
+## These files have columns cell.type, subchallenge, method.name, and revised.orig.ratio.
+## method.name = CIBERSORTx (not CIBERSORT!) since CIBERSORTx combines the same sub-populations into parental units
+## and was actually re-run. 
+## We should revise the old cs result by multiplying it be revised.orig.ratio (i.e., convert mean to sum)
+cs.revised.synIds <- list("coarse" = "syn26143304", "fine" = "syn26142832")
+## syn26143304: coarse-in-silico-spikeins-csx-all-gene-predictions-revised-orig-ratios.tsv
+## syn26142832: fine-in-silico-spikeins-csx-all-gene-predictions-revised-orig-ratios.tsv
+## Hmmm ... for some reason, both of these files contain both coarse and fine-grained mappings.
+## Ahh ... the different files result from the coarse- vs fine-grained subchallenges / datasets.
+## But, CIBERSORTx was run so as to make coarse- or fine-grained predictions for both challenges.
+## Proably the files are identical, but to be sure, only take the fine-grained mappings from the
+## fine-grained challenge, etc.
+revised.dfs <- 
+  ldply(cs.revised.synIds, 
+        .fun = function(synId) { 
+                 obj <- synGet(synId, downloadFile=TRUE)
+                 df <- read.table(obj$path, sep="\t", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
+               })
+colnames(revised.dfs)[1] <- "subchallenge.run"
+revised.dfs$method.name <- "CIBERSORT"
+revised.dfs <- subset(revised.dfs, subchallenge == subchallenge.run)
+revised.dfs <- revised.dfs[, !(colnames(revised.dfs) == "subchallenge.run")]
+
+print(head(res))
+print(head(revised.dfs))
+
+orig.nrows <- nrow(res)
+res <- merge(as.data.frame(res), as.data.frame(revised.dfs), all.x = TRUE)
+new.nrows <- nrow(res)
+if(orig.nrows != new.nrows) { stop(paste0("Dimension changed from ", orig.nrows, " rows to ", new.nrows, " rows\n")) }
+flag <- !is.na(res$revised.orig.ratio)
+if(any(flag)) {
+  res[flag, "prediction"] <- res[flag, "prediction"] * res[flag, "revised.orig.ratio"]
+}
+
+
 include.csx.results <- TRUE
 if(include.csx.results) {
+    cat("Including CIBERSORTx\n")
     ## synIds <- list("coarse" = "syn22725972", "fine" = "syn22726111")
     synIds <- list("coarse" = "syn22340351", "fine" = "syn22340322")
     nms <- names(synIds)

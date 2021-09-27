@@ -164,6 +164,7 @@ plot.spikein.predictions <- function(df.ds) {
 expts.to.plot <-
     list(
         c("EPIC", "B", "coarse", "Random"),
+        c("CIBERSORTx", "CD4 T", "coarse", "Random"),
         c("Aginome-XMU", "CD4 T", "coarse", "Random"),
         c("DA_505", "memory CD4 T", "fine", "Random")
     )

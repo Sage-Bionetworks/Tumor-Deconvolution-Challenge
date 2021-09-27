@@ -1,0 +1,19 @@
+round	sub.challenge	metric	best	ties
+1	coarse	Pearson	CIBERSORTx	
+1	coarse	RMSE	DA_505	CIBERSORTx
+1	coarse	Spearman	CIBERSORTx	Biogem, CCB, DA_505, Patrick
+1	fine	Pearson	xCell	Aginome-XMU
+1	fine	RMSE	Aginome-XMU	
+1	fine	Spearman	xCell	
+2	coarse	Pearson	CIBERSORTx	Biogem, DA_505, IZI
+2	coarse	RMSE	CIBERSORTx	
+2	coarse	Spearman	Biogem	
+2	fine	Pearson	xCell	
+2	fine	RMSE	xCell	Biogem
+2	fine	Spearman	xCell	
+3	coarse	Pearson	DA_505	
+3	coarse	RMSE	CIBERSORTx	DA_505
+3	coarse	Spearman	DA_505	
+3	fine	Pearson	xCell	
+3	fine	RMSE	xCell	Biogem
+3	fine	Spearman	xCell	

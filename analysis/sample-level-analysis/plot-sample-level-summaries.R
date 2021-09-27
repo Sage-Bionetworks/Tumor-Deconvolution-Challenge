@@ -41,14 +41,9 @@ res.all <- read.table(obj$path, sep=",", header=TRUE, as.is=TRUE, stringsAsFacto
 ## method.name = CIBERSORTx (not CIBERSORT!) since CIBERSORTx combines the same sub-populations into parental units
 ## and was actually re-run. 
 ## We should revise the old cs result by multiplying it be revised.orig.ratio (i.e., convert mean to sum)
-cs.revised.synIds <- list("coarse" = "syn26141656", "fine" = "syn26141634")
-## syn26141656: specificity-coarse-csx-all-gene-predictions-revised-orig-ratios.tsv
-## syn26141634: specificity-fine-csx-all-gene-predictions-revised-orig-ratios.tsv
-## Hmmm ... for some reason, both of these files contain both coarse and fine-grained mappings.
-## Ahh ... the different files result from the coarse- vs fine-grained subchallenges / datasets.
-## But, CIBERSORTx was run so as to make coarse- or fine-grained predictions for both challenges.
-## Proably the files are identical, but to be sure, only take the fine-grained mappings from the
-## fine-grained challenge, etc.
+## Note that, in this case, there is only one file for both coarse- and fine-grained.
+cs.revised.synIds <- list("coarse" = "syn26140590", "fine" = "syn26140590")
+## syn26140590: validation-csx-all-gene-predictions-revised-orig-ratios.tsv
 revised.dfs <- 
   ldply(cs.revised.synIds, 
         .fun = function(synId) { 
@@ -622,7 +617,6 @@ colnames(res.tbl)[flag] <- "p.val"
 
 file <- paste0(figs.dir, "/sample-level-comparison.tsv")
 write.table(file = file, res.tbl, row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)
-cat("Exiting successfully\n")
 
 ## Summarize based on ties
 p.val.cutoff <- 0.05
@@ -631,7 +625,7 @@ res.tbl.sum <-
   ddply(res.tbl,
         .variables = c("round", "sub.challenge", "metric"),
 	.fun = function(df) {
-	         df$p.val <- as.numeric(df$p.val)
+	         df$p.val <- as.numeric(as.character(df$p.val))
                  ties <- as.character(subset(df, p.val > p.val.cutoff)[, "variable"])
 		 ties <- gsub(x=ties, pattern="method.name", replacement="")
 		 ties <- sort(ties)
