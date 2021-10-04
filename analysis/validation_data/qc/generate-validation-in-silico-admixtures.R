@@ -319,6 +319,10 @@ n.admixs <- 15
 cancers <- c("Breast", "CRC")
 names(cancers) <- cancers
 
+# Our original validation data had _different_ coarse- and fine-grained data.
+# Subsequently, we decided that this was confusing. So, we replaced the
+# coarse-grained data with the fine-grained data in the _coarse_-grained
+# challenge. This lead to subtle differences that we explained to participants.
 coarse.grained.rand.admixtures <- 
     llply(cancers,
           .fun = function(cancer) {
