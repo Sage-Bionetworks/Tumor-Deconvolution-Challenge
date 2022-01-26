@@ -7,6 +7,7 @@ suppressPackageStartupMessages(p_load(gridExtra))
 
 suppressPackageStartupMessages(p_load("foreach"))
 suppressPackageStartupMessages(p_load("parallel"))
+suppressPackageStartupMessages(p_load("reshape2"))
 
 source("../utils.R")
 
@@ -114,9 +115,54 @@ do.bootstrap.analysis <-
         res.round <- merge(res.input, submitter.tbl, by = c(method.name.col, subchallenge.col, round.col))
         
         method.id.col <- method.name.col
-        
+
+if(FALSE) {
+        # Add ensemble here -- no need. We report bootstrapped scores
+        # > colnames(results[["3"]][["res.round"]])
+        # [1] "method.name"       "subchallenge"      "submission"       
+        # [4] "dataset.name"      "sample.id"         "cell.type"        
+        # [7] "objectId"          "comparator"        "submitterId"      
+        # [10] "repo_name"         "tumor.type"        "distribution.type"
+        # [13] "mixture.type"      "measured"          "prediction"       
+        res.ensemble <-
+          ddply(res.round[, !(colnames(res.round) %in% c("objectId", "comparator", "submittedId", "repo_name"))],
+                .variables = c(round.col, subchallenge.col, dataset.name.col),
+                .fun = function(df.in) {
+                         tres <- 
+                           ddply(df.in, .variables = method.name.col,
+                                 .fun = function(df) {
+                                          df.ret <- data.frame(prediction = df[, prediction.col],
+                                                               pred.rank = rank(df[, prediction.col], ties.method="first"),
+                                                               sample.id = df[, sample.id.col])
+                                          colnames(df.ret) <- c(prediction.col, "pred.rank", sample.id.col)
+                                          df.ret
+                                        })
+                         # take the consensus (here, just mean) rank across methods
+                         cons <- 
+                           ddply(tres, .variables = sample.id.col,
+                                 .fun = function(df) {
+                                          df.ret <- data.frame(cons.rank = mean(df$pred.rank))
+                                          colnames(df.ret)[1] <- prediction.col
+                                          df.ret
+                                        })
+                         tmp <- unique(df.in[, c(sample.id.col, measured.col, subchallenge.col, round.col, dataset.name.col, cell.type.col, "tumor.type", "distribution.type", "mixture.type")])
+                         cons <- merge(cons, tmp)
+                         cons$method.name <- "ensemble"
+                         cons$objectId <- "dummy"
+                         cons$comparator <- FALSE
+                         cons$submitterId <- "bwhite"
+                         cons$repo_name <- "dummy"
+                         ret <- cons[, c(method.name.col, subchallenge.col, round.col, dataset.name.col, sample.id.col, cell.type.col, 
+                                         "objectId", "comparator", "submitterId", "repo_name", "tumor.type", "distribution.type", "mixture.type",
+                                         measured.col, prediction.col)]
+                         ret
+                       })
+        print(head(res.round))
+        print(head(res.ensmble))
+        res.round <- rbind(res.round, res.ensemble)
+} #end if(FALSE)
         res <- res.round
-        
+
         tbls <-
             llply(sub.challenges,
                   .fun = function(sub.challenge) {
@@ -143,6 +189,60 @@ do.bootstrap.analysis <-
                   })
 
         ## Calculate both pearson and spearman correlation over bootstraps, within dataset and cell type
+        cat(paste0("Calculating bootstrap correlations (ensemble)\n"))
+        bootstrapped.cors.ensemble <-
+            llply(sub.challenges, 
+                  .fun = function(sub.challenge) {
+                      n.bootstraps <- length(bootstraps[[sub.challenge]])
+                      indices <- 1:n.bootstraps
+# indices <- 1:10
+                      names(indices) <- indices
+
+                      ret.i <-
+                        ldply(indices,
+                              .fun = function(i) {
+                                       ret.cons <-
+                                         ddply(tbls[[sub.challenge]], .variables = c(cell.type.col, dataset.name.col),
+                                               .fun = function(df.in) {
+                                                        # method.name is row
+                                                        x <- acast(df.in[, c(prediction.col, method.name.col, sample.id.col)], 
+                                                                   formula = paste0(method.name.col, " ~ ", sample.id.col), value.var = prediction.col)
+
+                                                        colnames(x) <- paste0(df.in[1, dataset.name.col], "-", colnames(x))
+                                                        sample.ids <- bootstraps[[sub.challenge]][[i]]$id
+                                                        sample.ids <- sample.ids[sample.ids %in% colnames(x)]
+                                                        x <- x[, sample.ids]
+                                                        m <- melt(x)
+                                                        colnames(m) <- c(method.name.col, sample.id.col, prediction.col)
+                                                        tres <- 
+                                                          ddply(m, .variables = method.name.col,
+                                                                .fun = function(df) {
+                                                                         df.ret <- data.frame(prediction = df[, prediction.col],
+                                                                                              pred.rank = rank(df[, prediction.col], ties.method="first"),
+                                                                                              sample.id = df[, sample.id.col])
+                                                                         colnames(df.ret) <- c(prediction.col, "pred.rank", sample.id.col)
+                                                                         df.ret
+                                                                       })
+                                                        # take the consensus (here, just mean) rank across methods
+                                                        cons <- 
+                                                          ddply(tres, .variables = sample.id.col,
+                                                                .fun = function(df) {
+                                                                         df.ret <- data.frame(cons.rank = mean(df$pred.rank))
+                                                                         df.ret
+                                                                       })
+                                                        tmp <- unique(df.in[, c(sample.id.col, measured.col)])
+                                                        tmp[, sample.id.col] <- paste0(df.in[1, dataset.name.col], "-", tmp[, sample.id.col])
+                                                        cons <- merge(cons, tmp)
+                                                        ret <- data.frame(method.name = "ensemble", pearson = NA, rmse = NA, spearman = cor(cons$cons.rank, cons[, measured.col]))
+                                                        colnames(ret) <- c(method.name.col, "pearson", "rmse", "spearman")
+                                                        ret
+                                                      })
+                                     })
+        # "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"   "spearman"     "rmse" 
+                                   colnames(ret.i)[1] <- "boot.i"
+                                   ret.i <- ret.i[, c(method.name.col, "boot.i", dataset.name.col, cell.type.col, "pearson", "spearman", "rmse")]
+                                   ret.i 
+                            })
         cat(paste0("Calculating bootstrap correlations\n"))
         bootstrapped.cors <-
             llply(sub.challenges, 
@@ -227,7 +327,13 @@ do.bootstrap.analysis <-
                       colnames(ret.all)[1] <- method.id.col
                       ret.all
                   })
+
+        for(nm in names(bootstrapped.cors)) {
+          bootstrapped.cors[[nm]] <- rbind(bootstrapped.cors[[nm]], bootstrapped.cors.ensemble[[nm]])
+        }
+
         print(colnames(bootstrapped.cors[[1]]))
+        # "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"   "spearman"     "rmse" 
         print(head(bootstrapped.cors[[1]]))
 
         cat(paste0("Calculating bootstrapped scores\n"))
@@ -399,7 +505,8 @@ do.bootstrap.analysis <-
 
 results <- list()
 ## for(round in c("1", "2", "3", "latest")) {
-for(round in c("2", "1", "3", "latest")) {
+for(round in c("1", "2", "3", "latest")) {
+# for(round in c("1")) {
     postfix <- paste0("-round-", round)
     cat(paste0("Doing round ", round, "\n"))
 

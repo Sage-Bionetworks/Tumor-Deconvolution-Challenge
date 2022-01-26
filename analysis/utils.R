@@ -920,6 +920,13 @@ plot.admixtures <- function(mat) {
     g
 }
 
+# whether or not to order methods in the heatmap using both a summary statistic (e.g., mean)
+# that excludes nulls and one that does not or only to use that excludes or includes ...
+use.include.and.exclude.null.in.summary <- FALSE
+# ... and if only one, which to use
+na.rm.summary <- TRUE
+
+
 calculate.method.levels <- function(df, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
                                     row.summary.fun = "mean", col.summary.fun = "max",
                                     order.decreasing = FALSE) {
@@ -929,18 +936,42 @@ calculate.method.levels <- function(df, id.var = "modelId", cell.type.var = "cel
     df[, id.var] <- as.character(df[, id.var])
     df[, cell.type.var] <- as.character(df[, cell.type.var])
 
-    na.rm <- FALSE
-    
+    # Calculate the method summary over cell types (e.g., mean) with and without excluding NAs (if use.include.and.exclude.null.in.summary == TRUE)
+    # e.g., "mean" = mean without excluding NAs
+    #       "nnmean" = non-null mean (mean excluding NAs)
+    # i.e., always prepend "nn" to summary
+    # Order NAs from highest to lowest based on nnmean and then non-NAs from highest to lowest based on mean.
+    # Admittedly, this is a strange rule, but I like the end result in the heatmaps -- it makes a block of
+    # the comparators at the top that have NAs, with the next score the top performing method (comparator or
+    # or otherwise). This makes that top performer stand out more than it would if the blanks/NAs were 
+    # scattered throughout.
+    nnrow.summary.fun <- paste0("nn", row.summary.fun)
     method.summaries <- ddply(df, .variables = c(id.var),
                           .fun = function(tmp) {
-                              ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=na.rm)))
+                              if(use.include.and.exclude.null.in.summary) {
+                                nret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=FALSE)))
+                                nnret <- data.frame(cell.type = nnrow.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=TRUE)))
+			        ret <- rbind(nret, nnret)
+                              } else {
+                                ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=na.rm.summary)))
+                              }
                               colnames(ret) <- c(cell.type.var, cor.var)
                               ret
                           })
-    
-    method.summaries <- method.summaries[order(method.summaries[, cor.var], decreasing = order.decreasing),]
 
-
+    if(use.include.and.exclude.null.in.summary) {
+      na.methods <- method.summaries[is.na(method.summaries[, cor.var]),id.var]
+      na.summaries <- method.summaries[(method.summaries[, cell.type.var] == nnrow.summary.fun) & (method.summaries[, id.var] %in% na.methods),]
+      na.summaries <- na.summaries[order(na.summaries[, cor.var], decreasing = order.decreasing),]
+      flag1 <- !is.na(method.summaries[, cor.var])
+      flag2 <- !(method.summaries[, id.var] %in% na.summaries[, id.var])
+      flag3 <- (method.summaries[, cell.type.var] == row.summary.fun)
+      non.na.summaries <- method.summaries[flag1 & flag2 & flag3, ]
+      non.na.summaries <- non.na.summaries[order(non.na.summaries[, cor.var], decreasing = order.decreasing),]
+      method.summaries <- rbind(non.na.summaries, na.summaries)
+    } else {
+      method.summaries <- method.summaries[order(method.summaries[, cor.var], decreasing = order.decreasing),]
+    }
     method.levels <- method.summaries[method.summaries[, id.var] != col.summary.fun, id.var]
 
     method.levels
@@ -991,7 +1022,7 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     df[, id.var] <- as.character(df[, id.var])
     df[, cell.type.var] <- as.character(df[, cell.type.var])
     
-    na.rm <- FALSE
+    # na.rm <- FALSE
     cell.type.summaries <- ddply(df, .variables = cell.type.var,
                              .fun = function(tmp) {
                                  ret <- data.frame(id = col.summary.fun, cor = do.call(col.summary.fun, list(tmp[, cor.var], na.rm=TRUE)))
@@ -1001,9 +1032,20 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
                              })
     cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, cor.var], decreasing = order.decreasing),]
     
+    # Calculate the method summary over cell types (e.g., mean) with and without excluding NAs (if use.include.and.exclude.null.in.summary == TRUE)
+    # e.g., "mean" = mean without excluding NAs
+    #       "nnmean" = non-null mean (mean excluding NAs)
+    # i.e., always prepend "nn" to summary
+    nnrow.summary.fun <- paste0("nn", row.summary.fun)
     method.summaries <- ddply(df, .variables = c(id.var),
                           .fun = function(tmp) {
-                              ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=na.rm)))
+                              if(use.include.and.exclude.null.in.summary) {
+                                ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=FALSE)))
+                                nnret <- data.frame(cell.type = nnrow.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=TRUE)))
+                                ret <- rbind(ret, nnret)
+                              } else {
+                                ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=na.rm.summary)))
+                              }
                               colnames(ret) <- c(cell.type.var, cor.var)
                               ret
                           })
@@ -1012,9 +1054,9 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
 
 
     if(is.null(cell.type.levels)) {
-        cell.type.levels <- c(cell.type.summaries[cell.type.summaries[, cell.type.var] != row.summary.fun, cell.type.var], row.summary.fun)
+        cell.type.levels <- c(grep(x = cell.type.summaries[, cell.type.var], pattern = row.summary.fun, values = TRUE), nnrow.summary.fun, row.summary.fun)
     } else {
-        cell.type.levels <- c(cell.type.levels, row.summary.fun)
+        cell.type.levels <- c(cell.type.levels, nnrow.summary.fun, row.summary.fun)
     }
     
     ## method.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])

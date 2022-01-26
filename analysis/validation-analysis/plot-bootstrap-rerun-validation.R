@@ -29,7 +29,7 @@ if(!is.na(num.cores) && (num.cores > 1)) {
 }
 num.processes <- num.cores - 1
 
-## Read in the bootstraps-validation-results.rds file
+## Read in the bootstrap-validation-results.rds file
 synId <- "syn22951683"
 obj <- synGet(synId, downloadFile=TRUE)
 results <- readRDS(obj$path)
@@ -202,10 +202,14 @@ plot.bootstrap.analysis <-
 
             o <- order(mean.scores$pearson)
             mean.scores <- mean.scores[o, ]
+            flag <- ( !is.na(scores$pearson) & !is.na(scores$spearman) ) | ( scores[,method.name.col] == "ensemble")
+            scores <- scores[flag, ] 
             scores[, method.name.col] <- factor(scores[, method.name.col], levels = mean.scores[, method.name.col])
-            scores <- na.omit(scores)
+#            scores <- na.omit(scores)
+            flag <- ( !is.na(mean.scores$pearson) & !is.na(mean.scores$spearman) ) | ( mean.scores[,method.name.col] == "ensemble")
             mean.scores[, method.name.col] <- factor(mean.scores[, method.name.col], levels = mean.scores[, method.name.col])
-            mean.scores <- na.omit(mean.scores)
+#            mean.scores <- na.omit(mean.scores)
+            mean.scores <- mean.scores[flag, ] 
             
             g1 <- ggplot(data = scores, aes_string(x = method.name.col, y = "pearson"))
             g1 <- g1 + geom_boxplotMod(fill = "#56B4E9")
@@ -291,11 +295,24 @@ plot.bootstrap.analysis <-
 
             method.levels[[sub.challenge]] <-
                 calculate.method.levels(means, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
-
             cell.type.levels[[sub.challenge]] <-
                 calculate.cell.type.levels(means, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
             
-            
+            exclude.method <-
+              ddply(means, .variables = c(method.name.col),
+                    .fun = function(df) {
+                             exclude <- all(is.na(df$cor))
+                             data.frame(exclude = exclude)
+                           })
+            if(any(exclude.method$exclude)) {
+              means <- means[!(means[, method.name.col] %in% subset(exclude.method, exclude == TRUE)[, method.name.col]),]
+              method.levels[[sub.challenge]] <- 
+                method.levels[[sub.challenge]][!(method.levels[[sub.challenge]] %in% subset(exclude.method, exclude == TRUE)[, method.name.col])]
+            }
+            cat("means\n")
+print(unique(means[, method.name.col]))
+cat("levels\n")
+print(method.levels[[sub.challenge]])
             g <- plot.cell.type.correlation.heatmap(means, show.corr.text = TRUE,
                                                     id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
                                                     method.levels = method.levels[[sub.challenge]],
@@ -326,10 +343,22 @@ plot.bootstrap.analysis <-
 
         method.levels[["merged"]] <-
             calculate.method.levels(all.means, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
-        
+
         cell.type.levels[["merged"]] <-
             calculate.cell.type.levels(all.means, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
         
+        exclude.method <-
+          ddply(all.means, .variables = c(method.name.col),
+                .fun = function(df) {
+                         exclude <- all(is.na(df$cor))
+                         data.frame(exclude = exclude)
+                       })
+        if(any(exclude.method$exclude)) {
+          all.means <- all.means[!(all.means[, method.name.col] %in% subset(exclude.method, exclude == TRUE)[, method.name.col]),]
+          method.levels[["merged"]] <- 
+            method.levels[["merged"]][!(method.levels[["merged"]] %in% subset(exclude.method, exclude == TRUE)[, method.name.col])]
+        }
+
         g <- plot.cell.type.correlation.heatmap(all.means, show.corr.text = TRUE,
                                                 id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
                                                 method.levels = method.levels[["merged"]],
@@ -379,7 +408,9 @@ plot.bootstrap.analysis <-
                                                 cell.type.levels = cell.type.levels[[entry]],
                                                 label = "Pearson Correlation")
                       } else {
-                          g <- plot.strip.plots(df, id.var = method.name.col, cell.type.var = cell.type.col, var = "cor",
+                          # Exclude ensemble, which has NAs for pearson
+                          flag <- !(df[, method.name.col] == "ensemble")
+                          g <- plot.strip.plots(df[flag,], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor",
                                                 method.levels = method.levels[[entry]],
                                                 cell.type.levels = cell.type.levels[[entry]],
                                                 label = "Pearson Correlation")
@@ -400,7 +431,7 @@ plot.bootstrap.analysis <-
 ## for(round in c("1", "2", "3", "latest")) {
 plots <- list()
 rounds <- c("latest", "1", "2", "3")
-## rounds <- c("1")
+# rounds <- c("1")
 
 ## Get method metadata
 method.anno <- get.method.annotations()
@@ -574,7 +605,8 @@ for(round in rounds) {
     }
 }
 
-rounds <- list("1" = "1", "2" = "2", "3" = "3")
+# rounds <- list("1" = "1", "2" = "2", "3" = "3")
+names(rounds) <- rounds
 metrics <- list("pearson" = "pearson", "spearman" = "spearman", "rmse" = "rmse")
 lm.fits <- ldply(rounds,
              .fun = function(round) {

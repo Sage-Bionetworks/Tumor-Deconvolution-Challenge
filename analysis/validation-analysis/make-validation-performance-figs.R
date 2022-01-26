@@ -110,27 +110,30 @@ cardinal.to.ordinal <- function(num) {
 }
 
 ##  - averaged heatmaps over rounds 2 and 3 (supp; one fig)
-g.heatmap.merged.round2 <- plots[["2"]][["heatmaps"]][["merged"]]
-g.heatmap.merged.round2 <- g.heatmap.merged.round2 + ggtitle(paste0("Merged Coarse- and Fine-Grained (", cardinal.to.ordinal(2), " Submission)"))
-g.heatmap.merged.round2 <- g.heatmap.merged.round2 + theme(plot.title = element_text(hjust = 0.5))
-g.heatmap.merged.round3 <- plots[["3"]][["heatmaps"]][["merged"]]
-g.heatmap.merged.round3 <- g.heatmap.merged.round3 + ggtitle(paste0("Merged Coarse- and Fine-Grained (", cardinal.to.ordinal(3), " Submission)"))
-g.heatmap.merged.round3 <- g.heatmap.merged.round3 + theme(plot.title = element_text(hjust = 0.5))
+if(all(c("2", "3") %in% rounds)) {
+  g.heatmap.merged.round2 <- plots[["2"]][["heatmaps"]][["merged"]]
+  g.heatmap.merged.round2 <- g.heatmap.merged.round2 + ggtitle(paste0("Merged Coarse- and Fine-Grained (", cardinal.to.ordinal(2), " Submission)"))
+  g.heatmap.merged.round2 <- g.heatmap.merged.round2 + theme(plot.title = element_text(hjust = 0.5))
+  g.heatmap.merged.round3 <- plots[["3"]][["heatmaps"]][["merged"]]
+  g.heatmap.merged.round3 <- g.heatmap.merged.round3 + ggtitle(paste0("Merged Coarse- and Fine-Grained (", cardinal.to.ordinal(3), " Submission)"))
+  g.heatmap.merged.round3 <- g.heatmap.merged.round3 + theme(plot.title = element_text(hjust = 0.5))
 
-g <- plot_grid(g.heatmap.merged.round2, g.heatmap.merged.round3, nrow = 2, labels = "AUTO")
+  g <- plot_grid(g.heatmap.merged.round2, g.heatmap.merged.round3, nrow = 2, labels = "AUTO")
 
-png(paste0(figs.dir, "fig-validation-heatmap-rounds-2-and-3-merged-cell-type", ".png"), width = 2 * 480, height = 2 * 480)                    
-print(g)
-d <- dev.off()
+  png(paste0(figs.dir, "fig-validation-heatmap-rounds-2-and-3-merged-cell-type", ".png"), width = 2 * 480, height = 2 * 480)                    
+  print(g)
+  d <- dev.off()
 
-pdf(paste0(figs.dir, "fig-validation-heatmap-rounds-2-and-3-merged-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)                    
-print(g)
-d <- dev.off()
+  pdf(paste0(figs.dir, "fig-validation-heatmap-rounds-2-and-3-merged-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)                    
+  print(g)
+  d <- dev.off()
+}
 
 ## - coarse and fine grained heatmap round 1
 ## - coarse and fine grained heatmap round 2
 ## - coarse and fine grained heatmap round 3
 plot.rounds <- list("1" = "1", "2" = "2", "3" = "3")
+plot.rounds <- plot.rounds[plot.rounds %in% rounds]
 l_ply(plot.rounds,
       .fun = function(rd) {
           g.coarse <- plots[[rd]][["heatmaps"]][["coarse"]]
@@ -156,6 +159,7 @@ l_ply(plot.rounds,
 ##  - strip plots merged all methods rounds 2
 ##  - strip plots merged all methods rounds 3
 plot.rounds <- list("1" = "1", "2" = "2", "3" = "3")
+plot.rounds <- plot.rounds[plot.rounds %in% rounds]
 l_ply(plot.rounds,
       .fun = function(rd) {
           g <- plots[[rd]][["strip.plots"]][["merged"]]
@@ -179,6 +183,7 @@ l_ply(plot.rounds,
 ##  - coarse and fine grained strip plots all methods round 2
 ##  - coarse and fine grained strip plots all methods round 3  
 plot.rounds <- list("1" = "1", "2" = "2", "3" = "3")
+plot.rounds <- plot.rounds[plot.rounds %in% rounds]
 l_ply(plot.rounds,
       .fun = function(rd) {
           g1 <- plots[[rd]][["strip.plots"]][["coarse"]]
@@ -308,7 +313,6 @@ plot_row <- plot_grid(g.bootstrap.fine.pearson.round1,
                       g.bootstrap.fine.anno.legend.round1, nrow=1, align="h", rel_widths = c(3,1.1,0.5,0.5))
 g.bootstrap.fine.round1 <- plot_grid(textGrob(title, gp = gpar(fontsize = 20)), plot_row, ncol=1, rel_heights = c(0.1, 1))
 
-
 g.round.coarse <- g.score.vs.round[["coarse"]]
 g.round.coarse <- g.round.coarse + ggtitle("Coarse-Grained")
 g.round.coarse <- g.round.coarse + theme(text = element_text(size=18), title = element_text(size = 20),
@@ -331,6 +335,8 @@ d <- dev.off()
 pdf(paste0(figs.dir, "fig-validation-round-1-performance", ".pdf"), width = 2 * 7, height = 2 * 7)
 print(g)
 d <- dev.off()
+
+
 
 x.all.min.pearson.coarse <- min(unlist(lapply(x.mins, function(lst) lst[["coarse"]][["pearson"]])))
 x.all.max.pearson.coarse <- min(unlist(lapply(x.maxs, function(lst) lst[["coarse"]][["pearson"]])))
@@ -406,14 +412,17 @@ g1.barplots <- make.barplots(plots, "1",
                              x.min.pearson.coarse, x.max.pearson.coarse, x.min.pearson.fine, x.max.pearson.fine,                          
                              x.min.spearman.coarse, x.max.spearman.coarse, x.min.spearman.fine, x.max.spearman.fine)
 
-g2.barplots <- make.barplots(plots, "2",
-                             x.min.pearson.coarse, x.max.pearson.coarse, x.min.pearson.fine, x.max.pearson.fine,                          
-                             x.min.spearman.coarse, x.max.spearman.coarse, x.min.spearman.fine, x.max.spearman.fine)
+if("2" %in% plot.rounds) {
+  g2.barplots <- make.barplots(plots, "2",
+                               x.min.pearson.coarse, x.max.pearson.coarse, x.min.pearson.fine, x.max.pearson.fine,                          
+                               x.min.spearman.coarse, x.max.spearman.coarse, x.min.spearman.fine, x.max.spearman.fine)
+}
 
-g3.barplots <- make.barplots(plots, "3",
-                             x.min.pearson.coarse, x.max.pearson.coarse, x.min.pearson.fine, x.max.pearson.fine,                          
-                             x.min.spearman.coarse, x.max.spearman.coarse, x.min.spearman.fine, x.max.spearman.fine)
-
+if("3" %in% plot.rounds) {
+  g3.barplots <- make.barplots(plots, "3",
+                               x.min.pearson.coarse, x.max.pearson.coarse, x.min.pearson.fine, x.max.pearson.fine,                          
+                               x.min.spearman.coarse, x.max.spearman.coarse, x.min.spearman.fine, x.max.spearman.fine)
+}
 
 g <- plot_grid(
     g1.barplots$coarse, g1.barplots$fine,
