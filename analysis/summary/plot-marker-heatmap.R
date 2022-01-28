@@ -13,19 +13,23 @@ suppressPackageStartupMessages(p_load(openxlsx))
 
 synLogin()
 
-## Get the _transcript_ expression matrix
-synId <- "syn21574261"
-trans.expr.mat.file <- synGet(synId, downloadFile = TRUE)$path
-trans.expr.mat <- read.table(trans.expr.mat.file, sep="\t", header=TRUE)
-cd45ro.enst.id <- "ENST00000348564.11"
-rownames(trans.expr.mat) <- as.character(trans.expr.mat$transcript)
-trans.expr.mat <- trans.expr.mat[, !(colnames(trans.expr.mat) == "transcript")]
+# Evidently CD45RO is a post-transcriptional modification? Don't show this transcript.
+include.cd45ro <- FALSE
+if(include.cd45ro) {
+  ## Get the _transcript_ expression matrix
+  synId <- "syn21574261"
+  trans.expr.mat.file <- synGet(synId, downloadFile = TRUE)$path
+  trans.expr.mat <- read.table(trans.expr.mat.file, sep="\t", header=TRUE)
+
+  ## CD45RO = ENST00000348564.11 = PTPRC-201
+  cd45ro.enst.id <- "ENST00000348564.11"
+  rownames(trans.expr.mat) <- as.character(trans.expr.mat$transcript)
+  trans.expr.mat <- trans.expr.mat[, !(colnames(trans.expr.mat) == "transcript")]
+}
 
 ## Get the expression matrix
 synId <- "syn21576632"
 expr.mat.file <- synGet(synId, downloadFile = TRUE)$path
-
-## CD45RO = ENST00000348564.11 = PTPRC-201
 
 expr.mat <- read.table(expr.mat.file, sep=",", header=TRUE)
 rownames(expr.mat) <- as.character(expr.mat$Gene)
@@ -33,7 +37,9 @@ expr.mat <- expr.mat[, !(colnames(expr.mat) == "Gene")]
 
 ## Only keep the purified samples
 colnames(expr.mat)[colnames(expr.mat) == "Breast"] <- "BRCA"
-colnames(trans.expr.mat)[colnames(trans.expr.mat) == "Breast"] <- "BRCA"
+if(include.cd45ro) {
+  colnames(trans.expr.mat)[colnames(trans.expr.mat) == "Breast"] <- "BRCA"
+}
 cols <- colnames(expr.mat)
 ##cols <- cols[!(grepl(cols, pattern="BM"))]
 ##cols <- cols[!(grepl(cols, pattern="RM"))]
@@ -65,9 +71,13 @@ sample.levels <- c(
 cols <- sample.levels
 
 expr.mat <- expr.mat[, cols]
-trans.expr.mat <- trans.expr.mat[, cols]
+if(include.cd45ro) {
+  trans.expr.mat <- trans.expr.mat[, cols]
+}
 
-expr.mat <- rbind(expr.mat, CD45RO = as.numeric(trans.expr.mat[cd45ro.enst.id,]))
+if(include.cd45ro) {
+  expr.mat <- rbind(expr.mat, CD45RO = as.numeric(trans.expr.mat[cd45ro.enst.id,]))
+}
 
 ## Read in the marker table
 marker.file <- "immune-cell-markers.xlsx"
@@ -99,12 +109,18 @@ h1@column_title <- "All genes"
 
 source("../utils.R")
 pc.expr.mat <- limit.matrix.to.protein.coding(expr.mat)
-pc.expr.mat <- rbind(pc.expr.mat, CD45RO = as.numeric(trans.expr.mat[cd45ro.enst.id,]))
+if(include.cd45ro) {
+  pc.expr.mat <- rbind(pc.expr.mat, CD45RO = as.numeric(trans.expr.mat[cd45ro.enst.id,]))
+}
 
 h2 <- plot.marker.heatmap(as.matrix(pc.expr.mat), marker.tbl)
 ##draw(h1, column_title = "All genes")
 
 png("purified-samples-marker-heatmap-protein-coding-genes-no-title.png")
+draw(h2)
+d <- dev.off()
+
+pdf("purified-samples-marker-heatmap-protein-coding-genes-no-title.pdf")
 draw(h2)
 d <- dev.off()
 
@@ -119,6 +135,18 @@ draw(h1)
 d <- dev.off()
 
 png("purified-samples-marker-heatmap-protein-coding-genes.png")
+draw(h2)
+d <- dev.off()
+
+pdf("purified-samples-marker-heatmap.pdf", width = 2 * 7)
+draw(h1 + h2)
+d <- dev.off()
+
+pdf("purified-samples-marker-heatmap-all-genes.pdf")
+draw(h1)
+d <- dev.off()
+
+pdf("purified-samples-marker-heatmap-protein-coding-genes.pdf")
 draw(h2)
 d <- dev.off()
 
