@@ -1237,6 +1237,17 @@ limit.matrix.to.protein.coding <- function(mat, use.symbols = TRUE) {
 
     use.biomaRt <- TRUE
     exclude.mt <- FALSE
+    # Need to do follow this
+    # https://support.bioconductor.org/p/p132709/#p133562
+    # to resolve an error in _filter
+    #Install previous version of dplyr (0.8) 
+    # devtools::install_github("hadley/dplyr@v0.8.0")
+
+    #Install previous version of dbplyr (1.3)
+    #devtools::install_url(https://cran.r-project.org/src/contrib/Archive/dbplyr/dbplyr_1.3.0.tar.gz)
+
+    #Install AnnotationHub for Bioconductor 3.10 
+    #BiocManager::install("AnnotationHub", version = "3.10", dependencies = TRUE)
     if(use.biomaRt) {
         suppressPackageStartupMessages(p_load(biomaRt))
         ensembl <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
