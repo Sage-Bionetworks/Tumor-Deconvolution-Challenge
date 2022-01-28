@@ -14,7 +14,6 @@ suppressPackageStartupMessages(library(magrittr))
 suppressPackageStartupMessages(library(tibble))
 suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(reshape2))
-suppressPackageStartupMessages(library(data.table))
 
 cat(paste0("Run on a machine with Docker installed\n"))
 cat(paste0("I ran on tdaws2: 10.23.19.191 in //home/bwhite/\n"))
@@ -26,15 +25,15 @@ cat(paste0("I ran on tdaws2: 10.23.19.191 in //home/bwhite/\n"))
 ## Suddenly, I need to run docker as sudo, so:
 ## To re-run validation data
 ## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
-##   --input-file-synId=syn22267272 --input-folder-synId=syn21821096 --output-folder-synId=syn22320184 --prefix=validation --output-directory=csx-output-validation
+##   --input-file-synId=syn22267272 --input-folder-synId=syn21821096 --output-folder-synId=syn22320184 --prefix=validation
 
 ## To run fine-grained in silico admixtures
 ## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
-##   --input-file-synId=syn22332679 --input-folder-synId=syn22361008 --output-folder-synId=syn22331159 --prefix=fine-in-silico-spikeins --output-directory=csx-output-fine-in-insilico-spikeins
+##   --input-file-synId=syn22332679 --input-folder-synId=syn22361008 --output-folder-synId=syn22331159 --prefix=fine-in-silico-spikeins
 
 ## To run coarse-grained in silico admixtures
 ## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
-##   --input-file-synId=syn22332680 --input-folder-synId=syn22361008 --output-folder-synId=syn22331159 --prefix=coarse-in-silico-spikeins --output-directory=csx-output-coarse-in-insilico-spikeins
+##   --input-file-synId=syn22332680 --input-folder-synId=syn22361008 --output-folder-synId=syn22331159 --prefix=coarse-in-silico-spikeins
 
 ## To run purified admixtures
 ## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
@@ -42,22 +41,19 @@ cat(paste0("I ran on tdaws2: 10.23.19.191 in //home/bwhite/\n"))
 
 ## To run specificity analysis (which should be same data as "purified admixtures" above):
 ## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
-##   --input-file-synId=syn22392156 --input-folder-synId=syn22392130 --output-folder-synId=syn22725783 --prefix=specificity-coarse --output-directory=csx-output-coarse-specificity
+##   --input-file-synId=syn22392156 --input-folder-synId=syn22392130 --output-folder-synId=syn22725783 --prefix=specificity-coarse
 
 ## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
-##   --input-file-synId=syn22392155 --input-folder-synId=syn22392130 --output-folder-synId=syn22725783 --prefix=specificity-fine --output-directory=csx-output-fine-specificity
+##   --input-file-synId=syn22392155 --input-folder-synId=syn22392130 --output-folder-synId=syn22725783 --prefix=specificity-fine
 
 ## To run B-all analysis
 ## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
-##   --input-file-synId=syn22780464 --input-folder-synId=syn22492020 --output-folder-synId=syn22780563 --prefix=b-all 
+##   --input-file-synId=syn22780464 --input-folder-synId=syn22492020 --output-folder-synId=syn22780563 --prefix=b-all
 
 option_list <- list(
     make_option(c("--prefix"), action="store",
                 default=NULL,
                 help="Prefix of CIBERSORTx output files"),
-    make_option(c("--output-directory"), action="store",
-                default="csx-output",
-                help="Local output directory in which results should be stored"),
     make_option(c("--output-folder-synId"), action="store",
                 default=NULL,
                 help="Synapse ID of folder in which results should be stored"),
@@ -107,10 +103,6 @@ set.seed(1234)
 
 synLogin()
 
-url.base <- "https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis/"
-this.script <- "run-cibersortx.R"
-script_url <- paste0(url.base, "/", "validation-analysis", "/", this.script)
-
 num.cores <- detectCores()
 if(!is.na(num.cores) && (num.cores > 1)) {
   suppressPackageStartupMessages(p_load("doMC"))
@@ -130,28 +122,15 @@ obj <- synGet(input.file.synId, downloadFile=TRUE)
 input.tbl <- read.table(obj$path, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
 
 csx.input.dir <- paste0(getwd(), "/csx-input")
-csx.output.dir <- paste0(getwd(), "/", opt$`output-directory`)
+csx.output.dir <- paste0(getwd(), "/csx-output")
 
-# See below -- this input directory must already exist.
-# And the output dir must be writable by the Docker image. If this script is run by root
-# and the directory is created here (by root), that won't be possible. So
-# require that exist as well.
-
-# if(!dir.exists(csx.input.dir)) { dir.create(csx.input.dir) }
-# if(!dir.exists(csx.output.dir)) { dir.create(csx.output.dir) }
-
-if(!dir.exists(csx.input.dir)) { stop(paste0("input dir for CIBERSORTx ", csx.input.dir, " does not exist\n")) }
-if(!dir.exists(csx.output.dir)) { stop(paste0("output dir for CIBERSORTx ", csx.output.dir, " does not exist\n")) }
-
-
-# Note that CIBERSORTx is going to expect theses matrices to exist in csx.input.dir, so it
-# needs to already exist
 lm22.matrix.file <- "LM22.txt"
 csx.fig.2l.matrix.file <- "cibersort-sig-matrix-2l.txt"
-lm22.matrix.path <- paste0(csx.input.dir, "/", lm22.matrix.file)
-csx.fig.2l.matrix.path <- paste0(csx.input.dir, "/", csx.fig.2l.matrix.file)
-if(!file.exists(lm22.matrix.path)) { stop(paste0(lm22.matrix.path, " does not exist\n")) }
-if(!file.exists(csx.fig.2l.matrix.path)) { stop(paste0(csx.fig.2l.matrix.path, " does not exist\n")) }
+if(!file.exists(lm22.matrix.file)) { stop(paste0(lm22.matrix.file, " does not exist\n")) }
+if(!file.exists(csx.fig.2l.matrix.file)) { stop(paste0(csx.fig.2l.matrix.file, " does not exist\n")) }
+
+if(!dir.exists(csx.input.dir)) { dir.create(csx.input.dir) }
+if(!dir.exists(csx.output.dir)) { dir.create(csx.output.dir) }
 
 input.files <- input.tbl[, c("dataset.name", "hugo.expr.file")]
 
@@ -175,10 +154,9 @@ l_ply(indices,
           out.name <- paste0(csx.input.dir, "/", gsub(name, pattern="csv", replacement="tsv"))
 	  if(!file.exists(out.name)) {
              obj <- synGet(synId, downloadFile=TRUE, downloadLocation=csx.input.dir)
-             # tbl <- read.table(obj$path, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
-	     tbl <- fread(obj$path)
-	     system(paste0("rm -f ", obj$path))
+             tbl <- read.table(obj$path, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
              write.table(file=out.name, tbl, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+	     system(paste0("rm -f ", obj$path))
 	  }
 	  
       })
@@ -310,15 +288,15 @@ combine.files <- function(lm22.res, s2l.res) {
     df
 }
 
-translate.populations <- function(res, translation.df) {
+translate.populations <- function(res, translation.df, summary.fun = sum) {
     res %>%
         dplyr::inner_join(translation.df) %>%
         dplyr::select(dataset.name, sample.id, cell.type, prediction) %>% 
         dplyr::group_by(dataset.name, sample.id, cell.type) %>% 
-        dplyr::summarise_all(sum)
+        dplyr::summarise_all(summary.fun)
 }
 
-aggregate.cibersortx.results <- function(datasets, lm22.res.files, s2l.res.files) {
+aggregate.cibersortx.results <- function(datasets, lm22.res.files, s2l.res.files, summary.fun = sum) {
 
     lm22.res.dfs <-
         llply(datasets,
@@ -340,8 +318,8 @@ aggregate.cibersortx.results <- function(datasets, lm22.res.files, s2l.res.files
               })
     colnames(res)[1] <- "dataset.name"
     
-    res.fine <- as.data.frame(translate.populations(res, fine.grained.translation.df))
-    res.coarse <- as.data.frame(translate.populations(res, coarse.grained.translation.df))
+    res.fine <- as.data.frame(translate.populations(res, fine.grained.translation.df, summary.fun = summary.fun))
+    res.coarse <- as.data.frame(translate.populations(res, coarse.grained.translation.df, summary.fun = summary.fun))
     res.fine$subchallenge <- "fine"
     res.coarse$subchallenge <- "coarse"
     res.fine$.id <- "CIBERSORTx"
@@ -381,7 +359,9 @@ names(s2l.all.gene.res.files) <- datasets
 print(lm22.all.gene.res.files)
 print(s2l.all.gene.res.files)
 
-csx.all.gene.res <- aggregate.cibersortx.results(datasets, lm22.all.gene.res.files, s2l.all.gene.res.files)
+save.image(".Rdata.sv")
+
+csx.all.gene.res <- aggregate.cibersortx.results(datasets, lm22.all.gene.res.files, s2l.all.gene.res.files, summary.fun = mean)
 
 csx.all.gene.res <- csx.all.gene.res[, !(colnames(csx.all.gene.res) == ".id")]
 
@@ -390,49 +370,17 @@ print(head(csx.all.gene.res))
 file <- paste0(prefix, "-csx-all-gene-predictions.tsv")
 write.table(file = file, csx.all.gene.res, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
-# If we are about to overwrite the file, check for differences.
-# In a prior version of this script, we aggregated populations using _mean_ instead of _sum_.
-# This leads to an overall scale factor difference (i.e., n, the number of populations averaged).
-# This bug was also present in the CIBERSORT aggregation during the challenge, though it is
-# now correctly.
-# Store the ratio/scale factor, since they will be the same for CIBERSOSRTx and CIBERSORT. We
-# compute them here for CIBERSOSRTx and apply them to the predictions for CIBERSORT
-# (which savees us the hassle of re-running CIBERSORT through the challenge machinery).
-children <- synGetChildren(output.folder.synId)
-l <- as.list(children)
-df <- do.call(rbind.data.frame, l)
+csx.all.gene.res <- aggregate.cibersortx.results(datasets, lm22.all.gene.res.files, s2l.all.gene.res.files, summary.fun = sum)
 
-if(file %in% df$name) {
-  synId <- as.character(subset(df, name == file)[1,"id"])
-  obj <- synGet(synId, downloadFile=TRUE)
-  orig.tbl <- read.table(obj$path, sep="\t", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
-  m <- merge(csx.all.gene.res, orig.tbl, by=c("dataset.name", "sample.id", "cell.type", "subchallenge", "method.name"), suffixes=c(".revised", ".orig"), all=TRUE)
-  # Need to account for some rounding differences
-  m$revised.orig.ratio = round(m$prediction.revised / m$prediction.orig, digits=2)
-  # m$revised.orig.ratio <- m$prediction.revised / m$prediction.orig
-  # Ensure that the ratio is independent of dataset and sample id
-  m <- m[, c("dataset.name", "sample.id", "cell.type", "subchallenge", "method.name", "revised.orig.ratio")]
-  m <- na.omit(m)
-  d_ply(m, .variables = c("cell.type", "subchallenge", "method.name"),
-           .fun = function(tbl) {
-	            if(!all(tbl$revised.orig.ratio == tbl$revised.orig.ratio[1])) {
-                       stop(paste0("Some differences in revised/orig ratio across dataset and/or sample for ", tbl[1,"cell.type"], ": ", paste0(tbl$revised.orig.ratio, collapse=","), "\n"))
-                    }
-	          })
-  m <- m[, c("cell.type", "subchallenge", "method.name", "revised.orig.ratio")]
-  m <- unique(m)
+csx.all.gene.res <- csx.all.gene.res[, !(colnames(csx.all.gene.res) == ".id")]
 
-  revision.file <- paste0(prefix, "-csx-all-gene-predictions-revised-orig-ratios.tsv")
-  cat(paste0("Caching revised ratios in: ", revision.file, "\n"))
-  print(m)
-  write.table(file = revision.file, m, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
-  f <- File(revision.file, parentId = output.folder.synId, synapseStore = TRUE, executed = script_url)
-  synStore(f)
+print(head(csx.all.gene.res))
 
-}
+file <- paste0(prefix, "-csx-all-gene-predictions-sum.tsv")
+write.table(file = file, csx.all.gene.res, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
-f <- File(file, parentId = output.folder.synId, synapseStore = TRUE, executed = script_url)
-synStore(f)
+#f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
+#synStore(f)
 
 cat("Exiting successfully\n")
 q(status=0)
