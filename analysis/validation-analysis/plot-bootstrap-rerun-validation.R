@@ -122,7 +122,7 @@ make.round.text <- function(round, round.str = "Round") {
 
 
 plot.bootstrap.analysis <-
-    function(res, bootstrapped.scores, mean.bootstrapped.scores,
+    function(res, bootstrapped.scores, mean.boostrapped.scores, median.bootstrapped.scores,
              means.by.cell.type.method,
              means.over.dataset, method.anno.round,
              postfix) {
@@ -140,76 +140,27 @@ plot.bootstrap.analysis <-
             method.anno.round.sc <- method.anno.round[flag, c(method.name.col, "Output", "Method")]
             bootstrapped.scores[[sub.challenge]] <-
                 merge(bootstrapped.scores[[sub.challenge]], method.anno.round.sc, all.x = TRUE)
+            median.bootstrapped.scores[[sub.challenge]] <-
+                merge(median.bootstrapped.scores[[sub.challenge]], method.anno.round.sc, all.x = TRUE)
             mean.bootstrapped.scores[[sub.challenge]] <-
                 merge(mean.bootstrapped.scores[[sub.challenge]], method.anno.round.sc, all.x = TRUE)
         }
         
-        if(FALSE) {
-            cat(paste0("Calculating boxplots\n"))
-            boxplots <- list()
-            for(sub.challenge in sub.challenges) {
-                scores <- bootstrapped.scores[[sub.challenge]]
-                mean.scores <- mean.bootstrapped.scores[[sub.challenge]]
-                
-                o <- order(mean.scores$pearson)
-                mean.scores <- mean.scores[o, ]
-                scores[, method.name.col] <- factor(scores[, method.name.col], levels = mean.scores[, method.name.col])
-                scores <- na.omit(scores)
-            
-                g1 <- ggplot(data = scores)
-                g1 <- g1 + geom_boxplot(aes_string(x = method.name.col, y = "pearson"))
-                g1 <- g1 + coord_flip()
-                g1 <- g1 + xlab("Method")
-                g1 <- g1 + ylab("Pearson Correlation")
-                g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20))
-                
-                g2 <- ggplot(data = scores)
-                g2 <- g2 + geom_boxplot(aes_string(x = method.name.col, y = "spearman"))
-                g2 <- g2 + coord_flip()
-                g2 <- g2 + xlab("Method")
-                g2 <- g2 + ylab("Spearman Correlation")
-                g2 <- g2 + theme(text = element_text(size=18))    
-                
-                tmp <- scores[, c(method.name.col, "Output", "Method")]
-                ret <- plot.anno.heatmap.with.multiple.legends(tmp, "method.name", c("Method", "Output"), c("Set3", "Set1"))
-                
-                full.plot <- ret[["full.plot"]]
-                for.first.legend <- ret[["legends"]][["Method"]]
-                for.second.legend <- ret[["legends"]][["Output"]]
-                
-                legs <- plot_grid(get_legend(for.first.legend), get_legend(for.second.legend), nrow = 2, align = "v", rel_heights = c(2,1))
-                
-                ## pg <- plot_grid(g1, g2, full.plot, legs, nrow=1, align="h", rel_widths = c(3,1,0.5,0.5))
-                
-                boxplots[[paste0(sub.challenge,  "-pearson")]] <- g1
-                boxplots[[paste0(sub.challenge,  "-spearman")]] <- g2
-                boxplots[[paste0(sub.challenge,  "-anno")]] <- full.plot
-                boxplots[[paste0(sub.challenge,  "-legend")]] <- legs
-                
-                title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
-                round.text <- make.round.text(round)
-                title <- paste0(title, " (", round.text, ")")
-                ## png(paste0(figs.dir, "rerun-validation-score-boxplots-", sub.challenge, postfix, ".png"), width = 2 * 480)
-                ## g <- grid.arrange(g1, g2, nrow=1, top = textGrob(title, gp = gpar(fontsize = 25)))
-                ## d <- dev.off()
-            }
-        }
-
         barplots <- list()
         for(sub.challenge in sub.challenges) {
             scores <- bootstrapped.scores[[sub.challenge]]
-            mean.scores <- mean.bootstrapped.scores[[sub.challenge]]
+            median.scores <- median.bootstrapped.scores[[sub.challenge]]
 
-            o <- order(mean.scores$pearson)
-            mean.scores <- mean.scores[o, ]
+            o <- order(median.scores$pearson)
+            median.scores <- median.scores[o, ]
             flag <- ( !is.na(scores$pearson) & !is.na(scores$spearman) ) | ( scores[,method.name.col] == "ensemble")
             scores <- scores[flag, ] 
-            scores[, method.name.col] <- factor(scores[, method.name.col], levels = mean.scores[, method.name.col])
+            scores[, method.name.col] <- factor(scores[, method.name.col], levels = median.scores[, method.name.col])
 #            scores <- na.omit(scores)
-            flag <- ( !is.na(mean.scores$pearson) & !is.na(mean.scores$spearman) ) | ( mean.scores[,method.name.col] == "ensemble")
-            mean.scores[, method.name.col] <- factor(mean.scores[, method.name.col], levels = mean.scores[, method.name.col])
-#            mean.scores <- na.omit(mean.scores)
-            mean.scores <- mean.scores[flag, ] 
+            flag <- ( !is.na(median.scores$pearson) & !is.na(median.scores$spearman) ) | ( median.scores[,method.name.col] == "ensemble")
+            median.scores[, method.name.col] <- factor(median.scores[, method.name.col], levels = median.scores[, method.name.col])
+#            median.scores <- na.omit(median.scores)
+            median.scores <- median.scores[flag, ] 
             
             g1 <- ggplot(data = scores, aes_string(x = method.name.col, y = "pearson"))
             g1 <- g1 + geom_boxplotMod(fill = "#56B4E9")
@@ -220,7 +171,7 @@ plot.bootstrap.analysis <-
             g1 <- g1 + ylim(c(-0.25, 1))
             g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20))
 
-            g2 <- ggplot(data = mean.scores)
+            g2 <- ggplot(data = median.scores)
             g2 <- g2 + geom_col(aes_string(x = method.name.col, y = "spearman"), fill = "#E69F00")
             g2 <- g2 + coord_flip()
             g2 <- g2 + xlab("Method")
@@ -418,7 +369,8 @@ print(method.levels[[sub.challenge]])
                   })
 
         ## "boxplots" = boxplots,
-        ret.list <- list("mean.bootstrapped.scores" = mean.bootstrapped.scores,
+        ret.list <- list("median.bootstrapped.scores" = median.bootstrapped.scores,
+                         "mean.bootstrapped.scores" = mean.bootstrapped.scores,
                          "barplots" = barplots,
                          "strip.plots" = strip.plots,
                          "heatmaps" = heatmaps,
@@ -436,6 +388,8 @@ rounds <- c("latest", "1", "2", "3")
 ## Get method metadata
 method.anno <- get.method.annotations()
 
+all.median.bootstrapped.scores <- list()
+
 for(round in rounds) {
     postfix <- paste0("-round-", round)
     cat(paste0("Doing round ", round, "\n"))
@@ -448,7 +402,10 @@ for(round in rounds) {
     mean.bootstrapped.scores <- results[[round]][["mean.bootstrapped.scores"]]
 
     ## Recalculate bootstrapped score summary using median
-    mean.bootstrapped.scores <-
+    # We only use median in the boxplot of pearson (implicitly)
+    # and in the barplot of spearman (explicitly and for consistency with the pearson boxplot)
+
+    median.bootstrapped.scores <-
         llply(bootstrapped.scores, .parallel = TRUE,
               .fun = function(df) {
                   ## Average over bootstraps
@@ -462,6 +419,8 @@ for(round in rounds) {
                   df
               })
     
+
+    all.median.bootstrapped.scores[[round]] <- median.bootstrapped.scores
 
     means.by.cell.type.method <- results[[round]][["means.by.cell.type.method"]]
     means.over.dataset <- results[[round]][["means.over.dataset"]]
@@ -487,7 +446,7 @@ for(round in rounds) {
 	   
     print(head(method.anno.round))
     
-    plots[[round]] <- plot.bootstrap.analysis(res.round, bootstrapped.scores, mean.bootstrapped.scores,
+    plots[[round]] <- plot.bootstrap.analysis(res.round, bootstrapped.scores, mean.bootstrapped.scores, median.bootstrapped.scores,
                                               means.by.cell.type.method,
                                               means.over.dataset, method.anno.round,
                                               postfix)
@@ -506,6 +465,8 @@ for(round in rounds) {
 
     }
 }
+
+saveRDS(all.median.bootstrapped.scores, "median-bootstrapped-scores.rds")
 
 for(round in c("1")) {
   tbl <- plots[[round]][["merged.all.means"]]
@@ -561,6 +522,15 @@ for(round in c("1")) {
 
 for(round in c("1")) {
     for(sub.challenge in sub.challenges) {
+        # Note that this is using the _mean_ of bootstrapped scores in results[[round]],
+        # not the _median_ of bootstrapped scores in plots[[round]].
+	# This is for consistency with other plots (e.g., the heatmaps, where we
+	# report the means). We only use median in the boxplot of pearson (implicitly)
+	# and in the barplot of spearman (explicitly and for consistency with the pearson boxplot)
+        # Actually, here we use the mean in plots[[round]] as this has an Output column
+        # appended to the mean in results[[round]]
+        # tbl <- plots[[round]][["median.bootstrapped.scores"]][[sub.challenge]]
+        # tbl <- results[[round]][["mean.bootstrapped.scores"]][[sub.challenge]]
         tbl <- plots[[round]][["mean.bootstrapped.scores"]][[sub.challenge]]
 	tbl <- as.data.frame(table(na.omit(tbl$Method)))
 	colnames(tbl) <- c("Method", "Freq")

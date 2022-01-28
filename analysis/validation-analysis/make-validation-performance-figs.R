@@ -36,19 +36,19 @@ for(sub.challenge in sub.challenges) {
 
 print(sort(unique(subset(submission.tbl, comparator == TRUE)[, c(method.name.col)])))
 
-compute.chained.empirical.bayes <- function(mean.bootstrapped.scores, bootstrapped.scores, sub.challenge, metric = "pearson") {
-    mean.scores <- mean.bootstrapped.scores[[sub.challenge]]
-    mean.scores <- na.omit(mean.scores[, c(method.name.col, metric)])
-    o <- order(mean.scores[, metric], decreasing = TRUE)
-    mean.scores <- mean.scores[o, ]
+compute.chained.empirical.bayes <- function(summarized.bootstrapped.scores, bootstrapped.scores, sub.challenge, metric = "pearson") {
+    summarized.scores <- summarized.bootstrapped.scores[[sub.challenge]]
+    summarized.scores <- na.omit(summarized.scores[, c(method.name.col, metric)])
+    o <- order(summarized.scores[, metric], decreasing = TRUE)
+    summarized.scores <- summarized.scores[o, ]
     scores <- bootstrapped.scores[[sub.challenge]]
-    indices <- 1:(nrow(mean.scores)-1)
-    names(indices) <- mean.scores[indices, method.name.col]
+    indices <- 1:(nrow(summarized.scores)-1)
+    names(indices) <- summarized.scores[indices, method.name.col]
     ret <-
         ldply(indices,
               .fun = function(i) {
-                  numerator.id <- mean.scores[i, method.name.col]                  
-                  denominator.id <- mean.scores[i+1, method.name.col]
+                  numerator.id <- summarized.scores[i, method.name.col]                  
+                  denominator.id <- summarized.scores[i+1, method.name.col]
                   bf <- calculate.empirical.bayes(scores, col.id = method.name.col,
                                                   numerator.id = numerator.id,
                                                   denominator.id = denominator.id,
@@ -64,9 +64,15 @@ chained.empirical.bayes <-
     llply(rounds,
           .fun = function(round) {
               bootstrapped.scores <- results[[round]][["bootstrapped.scores"]]
+              # Note that this is using the _mean_ of bootstrapped scores in results[[round]],
+              # not the _median_ of bootstrapped scores in plots[[round]].
+	      # This is for consistency with other plots (e.g., the heatmaps, where we
+	      # report the means). We only use median in the boxplot of pearson (implicitly)
+	      # and in the barplot of spearman (explicitly and for consistency with the pearson boxplot)
               mean.bootstrapped.scores <- results[[round]][["mean.bootstrapped.scores"]]
-
-              res <- llply(sub.challenges,
+	      ## ... instead use median.bootstrapped.scores in plots[[round]]
+	      ## median.bootstrapped.scores <- plots[[round]][["median.bootstrapped.scores"]]
+              res <- llply(sub.challenges,   
                            .fun = function(sub.challenge) {
                                compute.chained.empirical.bayes(mean.bootstrapped.scores, bootstrapped.scores, sub.challenge, metric = "pearson")
                            })
