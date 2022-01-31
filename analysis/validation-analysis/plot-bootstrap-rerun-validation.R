@@ -138,6 +138,7 @@ plot.bootstrap.analysis <-
             flag <- is.na(method.anno.round[, subchallenge.col]) | ( method.anno.round[, subchallenge.col] == sub.challenge )
             print(flag)
             method.anno.round.sc <- method.anno.round[flag, c(method.name.col, "Output", "Method")]
+print(method.anno.round.sc)
             bootstrapped.scores[[sub.challenge]] <-
                 merge(bootstrapped.scores[[sub.challenge]], method.anno.round.sc, all.x = TRUE)
             median.bootstrapped.scores[[sub.challenge]] <-
@@ -184,7 +185,7 @@ plot.bootstrap.analysis <-
 
             tmp <- scores[, c(method.name.col, "Output", "Method")]            
             ret <- plot.anno.heatmap.with.multiple.legends(tmp, "method.name", c("Method", "Output"), c("Set3", "Set1"))
-            
+
             full.plot <- ret[["full.plot"]]
             for.first.legend <- ret[["legends"]][["Method"]]
             for.second.legend <- ret[["legends"]][["Output"]]
@@ -532,6 +533,9 @@ for(round in c("1")) {
         # tbl <- plots[[round]][["median.bootstrapped.scores"]][[sub.challenge]]
         # tbl <- results[[round]][["mean.bootstrapped.scores"]][[sub.challenge]]
         tbl <- plots[[round]][["mean.bootstrapped.scores"]][[sub.challenge]]
+        # Exclude the ensemble method
+        flag <- tbl[, method.name.col] == "ensemble"
+        tbl <- tbl[!flag, ]
 	tbl <- as.data.frame(table(na.omit(tbl$Method)))
 	colnames(tbl) <- c("Method", "Freq")
 	o <- order(tbl$Freq)
@@ -540,6 +544,10 @@ for(round in c("1")) {
 	print(tbl)
 
         tbl <- plots[[round]][["mean.bootstrapped.scores"]][[sub.challenge]]
+        # Exclude the ensemble method
+        flag <- tbl[, method.name.col] == "ensemble"
+        cat(paste0("Excluded ensemble method: ", any(flag), "\n"))
+        tbl <- tbl[!flag, ]
 	mean.tbl <- ddply(tbl, .variables = c("Output"),
 	             .fun = function(df) {
 		              data.frame(pearson = mean(df$pearson, na.rm=TRUE),

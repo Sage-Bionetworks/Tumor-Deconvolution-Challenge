@@ -51,14 +51,14 @@ plot.anno.heatmap.with.multiple.legends <-
         
         
         legends <-
-            llply(anno.columns,
+            llply(anno.columns, .parallel = FALSE,
                   .fun = function(anno.col) {
                       flag <- anno.df$type == anno.col
+                      leg.colors <- all.colors[names(all.colors) %in% anno.df[flag,"val"]]
                       g <- ggplot(anno.df[flag, ], aes_string(x = "id", y = "type", fill = "val"))
                       g <- g + geom_tile()
-                      g <- g + scale_fill_manual(values = all.colors, name = anno.col)
+                      g <- g + scale_fill_manual(values = leg.colors, name = anno.col)
                   })
-
         return(list("full.plot" = full.plot, "legends" = legends))
     }
 

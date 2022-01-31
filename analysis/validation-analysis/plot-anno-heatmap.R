@@ -33,7 +33,7 @@ plot.anno.heatmap.with.multiple.legends <-
                          data.frame(val = df[, anno.col], id = df[, id.col])
                      })
         colnames(anno.df)[1] <- "type"
-        print(anno.df)
+
         full.plot <-
             ggplot(anno.df, aes(y = id, x = type, fill = val)) + geom_tile() +
             scale_fill_manual(values = all.colors) +
@@ -44,7 +44,7 @@ plot.anno.heatmap.with.multiple.legends <-
                                        axis.text.x = element_text(angle = 45, hjust = 1),
                                        axis.title.x = element_blank())
         
-        
+
         legends <-
             llply(anno.columns,
                   .fun = function(anno.col) {

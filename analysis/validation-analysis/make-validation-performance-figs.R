@@ -255,22 +255,25 @@ x.min.spearman.fine <- shift.limit(x.min.spearman.fine)
 x.max.spearman.fine <- x.maxs[["1"]][["fine"]][["spearman"]] 
 x.max.spearman.fine <- shift.limit(x.max.spearman.fine)
 
+text.size <- 16
+title.size <- 18
+
 g.bootstrap.coarse.pearson.round1 <- plots[["1"]][["barplots"]][["coarse-pearson"]] +
     scale_y_continuous(limits = c(x.min.pearson.coarse, x.max.pearson.coarse), expand = c(0, 0))
 g.bootstrap.coarse.spearman.round1 <- plots[["1"]][["barplots"]][["coarse-spearman"]] +
     scale_y_continuous(limits = c(x.min.spearman.coarse, x.max.spearman.coarse), expand = c(0, 0))    
 
 g.bootstrap.coarse.spearman.round1 <- g.bootstrap.coarse.spearman.round1 +
-    theme(text = element_text(size=18), title = element_text(size = 20))
+    theme(text = element_text(size=text.size), title = element_text(size=title.size), axis.text.x = element_text(angle = 45, hjust = 1))
 g.bootstrap.coarse.pearson.round1 <- g.bootstrap.coarse.pearson.round1 +
-    theme(text = element_text(size=18), title = element_text(size = 20))
+    theme(text = element_text(size=text.size), title = element_text(size=title.size), axis.text.x = element_text(angle = 45, hjust = 1))
 
 g.bootstrap.coarse.anno.round1 <- plots[["1"]][["barplots"]][["coarse-anno"]]
 g.bootstrap.coarse.anno.legend.round1 <- plots[["1"]][["barplots"]][["coarse-legend"]]
 g.bootstrap.coarse.anno.round1 <- g.bootstrap.coarse.anno.round1 +
-    theme(text = element_text(size=18), title = element_text(size = 20))
+    theme(text = element_text(size=text.size), title = element_text(size=title.size))
 g.bootstrap.coarse.anno.legend.round1 <- g.bootstrap.coarse.anno.legend.round1 +
-    theme(text = element_text(size=18), title = element_text(size = 20))
+    theme(text = element_text(size=text.size), title = element_text(size=title.size))
 
 g.bootstrap.coarse.pearson.round1 <- g.bootstrap.coarse.pearson.round1 + ylab("Pearson\nCorrelation") +
     theme(axis.title.y = element_blank())
@@ -293,9 +296,9 @@ g.bootstrap.fine.spearman.round1 <- plots[["1"]][["barplots"]][["fine-spearman"]
     scale_y_continuous(limits = c(-0.05, x.max.spearman.fine), expand = c(0, 0))    
 
 g.bootstrap.fine.spearman.round1 <- g.bootstrap.fine.spearman.round1 +
-    theme(text = element_text(size=18), title = element_text(size = 20))
+    theme(text = element_text(size=text.size), title = element_text(size=title.size), axis.text.x = element_text(angle = 45, hjust = 1))
 g.bootstrap.fine.pearson.round1 <- g.bootstrap.fine.pearson.round1 +
-    theme(text = element_text(size=18), title = element_text(size = 20))
+    theme(text = element_text(size=text.size), title = element_text(size=title.size), axis.text.x = element_text(angle = 45, hjust = 1))
 
 g.bootstrap.fine.pearson.round1 <- g.bootstrap.fine.pearson.round1 + ylab("Pearson\nCorrelation") +
     theme(axis.title.y = element_blank())
@@ -304,9 +307,9 @@ g.bootstrap.fine.spearman.round1 <- g.bootstrap.fine.spearman.round1 + ylab("Spe
 g.bootstrap.fine.anno.round1 <- plots[["1"]][["barplots"]][["fine-anno"]]
 g.bootstrap.fine.anno.legend.round1 <- plots[["1"]][["barplots"]][["fine-legend"]]
 g.bootstrap.fine.anno.round1 <- g.bootstrap.fine.anno.round1 +
-    theme(text = element_text(size=18), title = element_text(size = 20))
+    theme(text = element_text(size=text.size), title = element_text(size=title.size))
 g.bootstrap.fine.anno.legend.round1 <- g.bootstrap.fine.anno.legend.round1 +
-    theme(text = element_text(size=18), title = element_text(size = 20))
+    theme(text = element_text(size=text.size), title = element_text(size=title.size))
 
 title <- "Fine-Grained (First Submission)"
 ## g.bootstrap.fine.round1 <- grid.arrange(g.bootstrap.fine.pearson.round1,
@@ -366,9 +369,9 @@ make.barplots <- function(plots, round,
         scale_y_continuous(limits = c(x.min.spearman.coarse, x.max.spearman.coarse), expand = c(0, 0))    
     
     g.bootstrap.coarse.spearman <- g.bootstrap.coarse.spearman +
-        theme(text = element_text(size=18), title = element_text(size = 20))
+        theme(text = element_text(size=text.size), title = element_text(size=title.size), axis.text.x = element_text(angle = 45, hjust = 1))
     g.bootstrap.coarse.pearson <- g.bootstrap.coarse.pearson +
-        theme(text = element_text(size=18), title = element_text(size = 20))
+        theme(text = element_text(size=text.size), title = element_text(size=title.size), axis.text.x = element_text(angle = 45, hjust = 1))
     
     g.bootstrap.coarse.pearson <- g.bootstrap.coarse.pearson + ylab("Pearson\nCorrelation") +
         theme(axis.title.y = element_blank())
@@ -396,9 +399,9 @@ make.barplots <- function(plots, round,
         scale_y_continuous(limits = c(x.min.spearman.fine, x.max.spearman.fine), expand = c(0, 0))    
     
     g.bootstrap.fine.spearman <- g.bootstrap.fine.spearman +
-        theme(text = element_text(size=18), title = element_text(size = 20))
+        theme(text = element_text(size=text.size), title = element_text(size=title.size), axis.text.x = element_text(angle = 45, hjust = 1))
     g.bootstrap.fine.pearson <- g.bootstrap.fine.pearson +
-        theme(text = element_text(size=18), title = element_text(size = 20))
+        theme(text = element_text(size=text.size), title = element_text(size=title.size), axis.text.x = element_text(angle = 45, hjust = 1))
     
     g.bootstrap.fine.pearson <- g.bootstrap.fine.pearson + ylab("Pearson\nCorrelation") +
         theme(axis.title.y = element_blank())
