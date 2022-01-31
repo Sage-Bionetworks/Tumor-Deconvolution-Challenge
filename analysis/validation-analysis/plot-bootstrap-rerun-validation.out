@@ -1,2 +1,1713 @@
-nohup: ignoring input
-nohup: failed to run command ‘Rscript’: No such file or directory
+Welcome, Brian White!NULL
+Registering 71 cores.
+Doing round latest
+       output.type      method.type  method.name subchallenge submission
+1            score          summary  Aboensis IV         <NA>       <NA>
+2            score         ensemble  Aginome-XMU       coarse     latest
+3            score         ensemble  Aginome-XMU         fine     latest
+4 normalized.score other regression       Biogem         <NA>       <NA>
+5            score              NMF Cancer_Decon         <NA>       <NA>
+6            score          summary CancerSysBio         <NA>       <NA>
+  non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+[1] "coarse"
+       output.type      method.type  method.name subchallenge submission
+1            score          summary  Aboensis IV         <NA>       <NA>
+2            score         ensemble  Aginome-XMU       coarse     latest
+3            score         ensemble  Aginome-XMU         fine     latest
+4 normalized.score other regression       Biogem         <NA>       <NA>
+5            score              NMF Cancer_Decon         <NA>       <NA>
+6            score          summary CancerSysBio         <NA>       <NA>
+  non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+        output.type             method.type     method.name subchallenge
+1             score                 summary     Aboensis IV         <NA>
+2             score                ensemble     Aginome-XMU       coarse
+3             score                ensemble     Aginome-XMU         fine
+4  normalized.score        other regression          Biogem         <NA>
+5             score                     NMF    Cancer_Decon         <NA>
+6             score                 summary    CancerSysBio         <NA>
+7          fraction                    NNLS             CCB       coarse
+8          fraction                    NNLS             CCB         fine
+9          fraction                     SVR       CIBERSORT         <NA>
+10         fraction                     SVR      CIBERSORTx         <NA>
+11         fraction                ensemble          D3Team         <NA>
+12         fraction                     SVR          DA_505         <NA>
+13         fraction                    NNLS            EPIC         <NA>
+14       proportion                 unknown           HM159         <NA>
+15            score                     NMF            ICTD         <NA>
+16       proportion probabilistic inference             IZI         <NA>
+17       proportion                 unknown         jbkcose         <NA>
+18         fraction        other regression           jdroz         <NA>
+19         fraction                 unknown        LeiliLab       coarse
+20         fraction                 unknown        LeiliLab         fine
+21            score                 summary     MCP-counter         <NA>
+22            score                 summary    mitten_TDC19         <NA>
+23       proportion                    NNLS             NPU         <NA>
+24 normalized.score                   other NYIT_glomerular         <NA>
+25 normalized.score        other regression         Patrick         <NA>
+26         fraction                    NNLS       quanTIseq         <NA>
+27         fraction                    NNLS      REGGEN_LAB         <NA>
+28       proportion                 unknown     Rubbernecks         <NA>
+29         fraction                    NNLS           TIMER         <NA>
+30            score                 unknown             TJU         <NA>
+31       proportion                 unknown      Tonys Boys         <NA>
+32         fraction                 summary           xCell         <NA>
+   submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2      latest        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3      latest        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4        <NA>         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5        <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        <NA>        FALSE       FALSE       TRUE           FALSE    SUM  Score
+7      latest         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+8      latest         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
+12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+13       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+14       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+15       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+16       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+17       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+18       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
+19     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+20     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+21       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+22       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+23       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+24       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+25       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+26       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+27       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+28       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+31       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+32       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+[1] "subchallenge"
+ [1]  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[1] "fine"
+       output.type      method.type  method.name subchallenge submission
+1            score          summary  Aboensis IV         <NA>       <NA>
+2            score         ensemble  Aginome-XMU       coarse     latest
+3            score         ensemble  Aginome-XMU         fine     latest
+4 normalized.score other regression       Biogem         <NA>       <NA>
+5            score              NMF Cancer_Decon         <NA>       <NA>
+6            score          summary CancerSysBio         <NA>       <NA>
+  non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+        output.type             method.type     method.name subchallenge
+1             score                 summary     Aboensis IV         <NA>
+2             score                ensemble     Aginome-XMU       coarse
+3             score                ensemble     Aginome-XMU         fine
+4  normalized.score        other regression          Biogem         <NA>
+5             score                     NMF    Cancer_Decon         <NA>
+6             score                 summary    CancerSysBio         <NA>
+7          fraction                    NNLS             CCB       coarse
+8          fraction                    NNLS             CCB         fine
+9          fraction                     SVR       CIBERSORT         <NA>
+10         fraction                     SVR      CIBERSORTx         <NA>
+11         fraction                ensemble          D3Team         <NA>
+12         fraction                     SVR          DA_505         <NA>
+13         fraction                    NNLS            EPIC         <NA>
+14       proportion                 unknown           HM159         <NA>
+15            score                     NMF            ICTD         <NA>
+16       proportion probabilistic inference             IZI         <NA>
+17       proportion                 unknown         jbkcose         <NA>
+18         fraction        other regression           jdroz         <NA>
+19         fraction                 unknown        LeiliLab       coarse
+20         fraction                 unknown        LeiliLab         fine
+21            score                 summary     MCP-counter         <NA>
+22            score                 summary    mitten_TDC19         <NA>
+23       proportion                    NNLS             NPU         <NA>
+24 normalized.score                   other NYIT_glomerular         <NA>
+25 normalized.score        other regression         Patrick         <NA>
+26         fraction                    NNLS       quanTIseq         <NA>
+27         fraction                    NNLS      REGGEN_LAB         <NA>
+28       proportion                 unknown     Rubbernecks         <NA>
+29         fraction                    NNLS           TIMER         <NA>
+30            score                 unknown             TJU         <NA>
+31       proportion                 unknown      Tonys Boys         <NA>
+32         fraction                 summary           xCell         <NA>
+   submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2      latest        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3      latest        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4        <NA>         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5        <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        <NA>        FALSE       FALSE       TRUE           FALSE    SUM  Score
+7      latest         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+8      latest         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
+12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+13       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+14       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+15       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+16       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+17       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+18       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
+19     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+20     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+21       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+22       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+23       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+24       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+25       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+26       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+27       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+28       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+31       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+32       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+[1] "subchallenge"
+ [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
+[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+Aboensis IV -round-latest max diff between coarse and fine-grained is: 0
+Aginome-XMU -round-latest max diff between coarse and fine-grained is: 0.101033450220807
+  cell.type method.name.x     cor.x method.name.y     cor.y       diff
+4        NK   Aginome-XMU 0.8041401   Aginome-XMU 0.9051736 -0.1010335
+Max diff exceeded for Aginome-XMU -round-latest: 0.101033450220807
+Biogem -round-latest max diff between coarse and fine-grained is: 0.0472360475126776
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+1 endothelial        Biogem 0.9774222        Biogem 0.9706088  0.006813462
+2 fibroblasts        Biogem 0.8438791        Biogem 0.8911152 -0.047236048
+3 neutrophils        Biogem 0.9989610        Biogem 0.9931192  0.005841794
+4          NK        Biogem 0.8058760        Biogem 0.7602962  0.045579870
+Max diff exceeded for Biogem -round-latest: 0.0472360475126776
+Cancer_Decon -round-latest max diff between coarse and fine-grained is: 0.215763391457769
+    cell.type method.name.x     cor.x method.name.y     cor.y          diff
+1 endothelial  Cancer_Decon 0.9141876  Cancer_Decon 0.9284946 -0.0143069433
+2 fibroblasts  Cancer_Decon 0.9102402  Cancer_Decon 0.9106969 -0.0004567017
+3 neutrophils  Cancer_Decon 0.9318278  Cancer_Decon 0.9108957  0.0209321179
+4          NK  Cancer_Decon 0.8735891  Cancer_Decon 0.6578257  0.2157633915
+Max diff exceeded for Cancer_Decon -round-latest: 0.215763391457769
+CCB -round-latest max diff between coarse and fine-grained is: 0.245724117260851
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+2 fibroblasts           CCB 0.9562206           CCB 0.9790042 -0.02278363
+3 neutrophils           CCB 0.8769458           CCB 0.9128012 -0.03585538
+4          NK           CCB 0.6334855           CCB 0.8792096 -0.24572412
+Max diff exceeded for CCB -round-latest: 0.245724117260851
+CIBERSORT -round-latest max diff between coarse and fine-grained is: 0
+CIBERSORTx -round-latest max diff between coarse and fine-grained is: 0
+D3Team -round-latest max diff between coarse and fine-grained is: 0.105323031276923
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+1 endothelial        D3Team 0.7033426        D3Team 0.6906893  0.012653290
+2 fibroblasts        D3Team 0.7710753        D3Team 0.6657523  0.105323031
+3 neutrophils        D3Team 0.9770350        D3Team 0.9810646 -0.004029624
+4          NK        D3Team 0.8740078        D3Team 0.8690088  0.004999075
+Max diff exceeded for D3Team -round-latest: 0.105323031276923
+DA_505 -round-latest max diff between coarse and fine-grained is: 0.0659978138963725
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+1 endothelial        DA_505 0.9739139        DA_505 0.9664431  0.007470815
+2 fibroblasts        DA_505 0.7680232        DA_505 0.8340210 -0.065997814
+3 neutrophils        DA_505 0.9485117        DA_505 0.9532308 -0.004719074
+4          NK        DA_505 0.8247452        DA_505 0.8621595 -0.037414305
+Max diff exceeded for DA_505 -round-latest: 0.0659978138963725
+ensemble -round-latest max diff between coarse and fine-grained is: -Inf
+EPIC -round-latest max diff between coarse and fine-grained is: 0
+ICTD -round-latest max diff between coarse and fine-grained is: 0.215763391457769
+    cell.type method.name.x     cor.x method.name.y     cor.y          diff
+1 endothelial          ICTD 0.9141876          ICTD 0.9284946 -0.0143069433
+2 fibroblasts          ICTD 0.9102402          ICTD 0.9106969 -0.0004567017
+3 neutrophils          ICTD 0.9318278          ICTD 0.9108957  0.0209321179
+4          NK          ICTD 0.8735891          ICTD 0.6578257  0.2157633915
+Max diff exceeded for ICTD -round-latest: 0.215763391457769
+IZI -round-latest max diff between coarse and fine-grained is: 0.138544461037685
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+1 endothelial           IZI 0.6537974           IZI 0.6613557 -0.00755828
+2 fibroblasts           IZI 0.9160889           IZI 0.7775444  0.13854446
+3 neutrophils           IZI 0.8341735           IZI 0.8937005 -0.05952698
+4          NK           IZI 0.7944336           IZI 0.8504940 -0.05606040
+Max diff exceeded for IZI -round-latest: 0.138544461037685
+LeiliLab -round-latest max diff between coarse and fine-grained is: 0
+MCP-counter -round-latest max diff between coarse and fine-grained is: 0
+mitten_TDC19 -round-latest max diff between coarse and fine-grained is: 0.0835586860232859
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+1 endothelial  mitten_TDC19 0.8785488  mitten_TDC19 0.9621075 -0.08355869
+2 fibroblasts  mitten_TDC19 0.8973883  mitten_TDC19 0.9695194 -0.07213117
+3 neutrophils  mitten_TDC19 0.9868408  mitten_TDC19 0.9998769 -0.01303606
+4          NK  mitten_TDC19 0.8234258  mitten_TDC19 0.8739772 -0.05055138
+Max diff exceeded for mitten_TDC19 -round-latest: 0.0835586860232859
+NPU -round-latest max diff between coarse and fine-grained is: 0.111820690469535
+    cell.type method.name.x       cor.x method.name.y      cor.y        diff
+1 endothelial           NPU  0.63865207           NPU 0.52683138  0.11182069
+2 fibroblasts           NPU  0.42609815           NPU 0.34554812  0.08055003
+3 neutrophils           NPU  0.87592480           NPU 0.86487041  0.01105440
+4          NK           NPU -0.02092332           NPU 0.06834727 -0.08927059
+Max diff exceeded for NPU -round-latest: 0.111820690469535
+Patrick -round-latest max diff between coarse and fine-grained is: 0
+quanTIseq -round-latest max diff between coarse and fine-grained is: 0
+REGGEN_LAB -round-latest max diff between coarse and fine-grained is: 0.415576699929837
+    cell.type method.name.x      cor.x method.name.y     cor.y        diff
+1 endothelial    REGGEN_LAB  0.4991729    REGGEN_LAB 0.7112663 -0.21209341
+2 fibroblasts    REGGEN_LAB  0.6741346    REGGEN_LAB 0.7851811 -0.11104650
+3 neutrophils    REGGEN_LAB -0.0999074    REGGEN_LAB 0.3156693 -0.41557670
+4          NK    REGGEN_LAB  0.8449766    REGGEN_LAB 0.8767641 -0.03178751
+Max diff exceeded for REGGEN_LAB -round-latest: 0.415576699929837
+Rubbernecks -round-latest max diff between coarse and fine-grained is: 0.296037106632922
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+1 endothelial   Rubbernecks 0.5612418   Rubbernecks 0.2934466  0.26779519
+2 fibroblasts   Rubbernecks 0.7790207   Rubbernecks 0.4829836  0.29603711
+3 neutrophils   Rubbernecks 0.8248651   Rubbernecks 0.7836001  0.04126494
+4          NK   Rubbernecks 0.6302955   Rubbernecks 0.6968312 -0.06653577
+Max diff exceeded for Rubbernecks -round-latest: 0.296037106632922
+TIMER -round-latest max diff between coarse and fine-grained is: 0
+xCell -round-latest max diff between coarse and fine-grained is: 0.00713491648524578
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+2 fibroblasts         xCell 0.6117140         xCell 0.6130747 -0.001360648
+4          NK         xCell 0.9072557         xCell 0.9143906 -0.007134916
+Max diff exceeded for xCell -round-latest: 0.00713491648524578
+Plotting heatmaps
+means
+ [1] "Aboensis IV"     "Aginome-XMU"     "Biogem"          "Cancer_Decon"   
+ [5] "CancerSysBio"    "CCB"             "CIBERSORT"       "CIBERSORTx"     
+ [9] "D3Team"          "DA_505"          "EPIC"            "HM159"          
+[13] "ICTD"            "IZI"             "jbkcose"         "jdroz"          
+[17] "LeiliLab"        "MCP-counter"     "mitten_TDC19"    "NPU"            
+[21] "NYIT_glomerular" "Patrick"         "quanTIseq"       "REGGEN_LAB"     
+[25] "Rubbernecks"     "TIMER"           "TJU"             "xCell"          
+levels
+ [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
+ [5] "NYIT_glomerular" "NPU"             "HM159"           "Rubbernecks"    
+ [9] "jdroz"           "TIMER"           "Patrick"         "CancerSysBio"   
+[13] "EPIC"            "D3Team"          "IZI"             "CCB"            
+[17] "ICTD"            "Cancer_Decon"    "xCell"           "Aboensis IV"    
+[21] "mitten_TDC19"    "CIBERSORT"       "quanTIseq"       "Biogem"         
+[25] "MCP-counter"     "DA_505"          "CIBERSORTx"      "Aginome-XMU"    
+means
+ [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
+ [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "EPIC"        
+[11] "ICTD"         "IZI"          "LeiliLab"     "MCP-counter"  "mitten_TDC19"
+[16] "NPU"          "Patrick"      "quanTIseq"    "REGGEN_LAB"   "Rubbernecks" 
+[21] "TIMER"        "Tonys Boys"   "xCell"       
+levels
+ [1] "LeiliLab"     "TIMER"        "NPU"          "Tonys Boys"   "Rubbernecks" 
+ [6] "IZI"          "REGGEN_LAB"   "quanTIseq"    "ICTD"         "Cancer_Decon"
+[11] "Patrick"      "CIBERSORT"    "CCB"          "D3Team"       "Aboensis IV" 
+[16] "xCell"        "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"      
+[21] "EPIC"         "Aginome-XMU"  "MCP-counter" 
+Creating merged means.over.dataset
+Plotting strip plots
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
+Top performer for Round latest in coarse sub-challenge: Aginome-XMU
+              team pearson    spearman
+1       CIBERSORTx 1.43309   0.3262599
+2           DA_505     Inf         Inf
+3           Biogem     Inf  51.6315789
+4     mitten_TDC19     Inf         Inf
+5      Aboensis IV     Inf         Inf
+6            xCell     Inf         Inf
+7              IZI     Inf         Inf
+8              CCB     Inf         Inf
+9     Cancer_Decon     Inf 999.0000000
+10            ICTD     Inf         Inf
+11          D3Team     Inf         Inf
+12    CancerSysBio     Inf         Inf
+13         Patrick     Inf         Inf
+14           jdroz     Inf         Inf
+15     Rubbernecks     Inf         Inf
+16           HM159     Inf         Inf
+17             NPU     Inf         Inf
+18      REGGEN_LAB     Inf         Inf
+19 NYIT_glomerular     Inf         Inf
+20             TJU     Inf         Inf
+21        LeiliLab     Inf         Inf
+22         jbkcose     Inf         Inf
+Top performer for Round latest in fine sub-challenge: Aginome-XMU
+           team pearson  spearman
+1        DA_505      99  5.451613
+2  mitten_TDC19     Inf 82.333333
+3         xCell     Inf       Inf
+4        Biogem     Inf       Inf
+5           CCB     Inf       Inf
+6   Aboensis IV     Inf       Inf
+7        D3Team     Inf       Inf
+8  Cancer_Decon     Inf       Inf
+9          ICTD     Inf       Inf
+10      Patrick     Inf       Inf
+11   REGGEN_LAB     Inf       Inf
+12          IZI     Inf       Inf
+13  Rubbernecks     Inf       Inf
+14   Tonys Boys     Inf       Inf
+15          NPU     Inf       Inf
+16     LeiliLab     Inf       Inf
+Doing round 1
+       output.type      method.type  method.name subchallenge submission
+1            score          summary  Aboensis IV         <NA>       <NA>
+2         fraction              DNN  Aginome-XMU       coarse          1
+3         fraction              DNN  Aginome-XMU         fine          1
+4 normalized.score other regression       Biogem         <NA>       <NA>
+5            score              NMF Cancer_Decon         <NA>       <NA>
+6            score          summary CancerSysBio         <NA>       <NA>
+  non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2        FALSE       FALSE       TRUE           FALSE    DNN   Frac
+3        FALSE       FALSE       TRUE           FALSE    DNN   Frac
+4         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+[1] "coarse"
+       output.type      method.type  method.name subchallenge submission
+1            score          summary  Aboensis IV         <NA>       <NA>
+2         fraction              DNN  Aginome-XMU       coarse          1
+3         fraction              DNN  Aginome-XMU         fine          1
+4 normalized.score other regression       Biogem         <NA>       <NA>
+5            score              NMF Cancer_Decon         <NA>       <NA>
+6            score          summary CancerSysBio         <NA>       <NA>
+  non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2        FALSE       FALSE       TRUE           FALSE    DNN   Frac
+3        FALSE       FALSE       TRUE           FALSE    DNN   Frac
+4         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+        output.type             method.type     method.name subchallenge
+1             score                 summary     Aboensis IV         <NA>
+2          fraction                     DNN     Aginome-XMU       coarse
+3          fraction                     DNN     Aginome-XMU         fine
+4  normalized.score        other regression          Biogem         <NA>
+5             score                     NMF    Cancer_Decon         <NA>
+6             score                 summary    CancerSysBio         <NA>
+7          fraction                    NNLS             CCB       coarse
+8          fraction                    NNLS             CCB         fine
+9          fraction                     SVR       CIBERSORT         <NA>
+10         fraction                     SVR      CIBERSORTx         <NA>
+11         fraction                ensemble          D3Team         <NA>
+12         fraction                     SVR          DA_505         <NA>
+13         fraction                    NNLS            EPIC         <NA>
+14       proportion                 unknown           HM159         <NA>
+15            score                     NMF            ICTD         <NA>
+16       proportion probabilistic inference             IZI         <NA>
+17       proportion                 unknown         jbkcose         <NA>
+18         fraction        other regression           jdroz         <NA>
+19       proportion                 unknown        LeiliLab       coarse
+20         fraction                 unknown        LeiliLab         fine
+21            score                 summary     MCP-counter         <NA>
+22            score                 summary    mitten_TDC19         <NA>
+23       proportion                    NNLS             NPU         <NA>
+24 normalized.score                   other NYIT_glomerular         <NA>
+25 normalized.score        other regression         Patrick         <NA>
+26         fraction                    NNLS       quanTIseq         <NA>
+27         fraction                    NNLS      REGGEN_LAB         <NA>
+28       proportion                 unknown     Rubbernecks         <NA>
+29         fraction                    NNLS           TIMER         <NA>
+30            score                 unknown             TJU         <NA>
+31       proportion                 unknown      Tonys Boys         <NA>
+32         fraction                 summary           xCell         <NA>
+   submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2           1        FALSE       FALSE       TRUE           FALSE    DNN   Frac
+3           1        FALSE       FALSE       TRUE           FALSE    DNN   Frac
+4        <NA>         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5        <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        <NA>        FALSE       FALSE       TRUE           FALSE    SUM  Score
+7           1         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+8           1         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
+12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+13       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+14       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+15       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+16       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+17       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+18       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
+19          1         TRUE        TRUE       TRUE           FALSE    UNK   Prop
+20          1         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+21       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+22       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+23       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+24       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+25       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+26       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+27       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+28       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+31       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+32       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+[1] "subchallenge"
+ [1]  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[1] "fine"
+       output.type      method.type  method.name subchallenge submission
+1            score          summary  Aboensis IV         <NA>       <NA>
+2         fraction              DNN  Aginome-XMU       coarse          1
+3         fraction              DNN  Aginome-XMU         fine          1
+4 normalized.score other regression       Biogem         <NA>       <NA>
+5            score              NMF Cancer_Decon         <NA>       <NA>
+6            score          summary CancerSysBio         <NA>       <NA>
+  non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2        FALSE       FALSE       TRUE           FALSE    DNN   Frac
+3        FALSE       FALSE       TRUE           FALSE    DNN   Frac
+4         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+        output.type             method.type     method.name subchallenge
+1             score                 summary     Aboensis IV         <NA>
+2          fraction                     DNN     Aginome-XMU       coarse
+3          fraction                     DNN     Aginome-XMU         fine
+4  normalized.score        other regression          Biogem         <NA>
+5             score                     NMF    Cancer_Decon         <NA>
+6             score                 summary    CancerSysBio         <NA>
+7          fraction                    NNLS             CCB       coarse
+8          fraction                    NNLS             CCB         fine
+9          fraction                     SVR       CIBERSORT         <NA>
+10         fraction                     SVR      CIBERSORTx         <NA>
+11         fraction                ensemble          D3Team         <NA>
+12         fraction                     SVR          DA_505         <NA>
+13         fraction                    NNLS            EPIC         <NA>
+14       proportion                 unknown           HM159         <NA>
+15            score                     NMF            ICTD         <NA>
+16       proportion probabilistic inference             IZI         <NA>
+17       proportion                 unknown         jbkcose         <NA>
+18         fraction        other regression           jdroz         <NA>
+19       proportion                 unknown        LeiliLab       coarse
+20         fraction                 unknown        LeiliLab         fine
+21            score                 summary     MCP-counter         <NA>
+22            score                 summary    mitten_TDC19         <NA>
+23       proportion                    NNLS             NPU         <NA>
+24 normalized.score                   other NYIT_glomerular         <NA>
+25 normalized.score        other regression         Patrick         <NA>
+26         fraction                    NNLS       quanTIseq         <NA>
+27         fraction                    NNLS      REGGEN_LAB         <NA>
+28       proportion                 unknown     Rubbernecks         <NA>
+29         fraction                    NNLS           TIMER         <NA>
+30            score                 unknown             TJU         <NA>
+31       proportion                 unknown      Tonys Boys         <NA>
+32         fraction                 summary           xCell         <NA>
+   submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2           1        FALSE       FALSE       TRUE           FALSE    DNN   Frac
+3           1        FALSE       FALSE       TRUE           FALSE    DNN   Frac
+4        <NA>         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5        <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        <NA>        FALSE       FALSE       TRUE           FALSE    SUM  Score
+7           1         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+8           1         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
+12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+13       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+14       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+15       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+16       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+17       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+18       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
+19          1         TRUE        TRUE       TRUE           FALSE    UNK   Prop
+20          1         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+21       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+22       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+23       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+24       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+25       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+26       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+27       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+28       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+31       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+32       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+[1] "subchallenge"
+ [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
+[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+Aboensis IV -round-1 max diff between coarse and fine-grained is: 0.00279378374513639
+    cell.type method.name.x     cor.x method.name.y     cor.y          diff
+2 fibroblasts   Aboensis IV 0.7944960   Aboensis IV 0.7917023  0.0027937837
+3 neutrophils   Aboensis IV 0.9809986   Aboensis IV 0.9811172 -0.0001186141
+4          NK   Aboensis IV 0.5820583   Aboensis IV 0.5806711  0.0013872614
+Max diff exceeded for Aboensis IV -round-1: 0.00279378374513639
+Aginome-XMU -round-1 max diff between coarse and fine-grained is: 0.131163469947339
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+1 endothelial   Aginome-XMU 0.8146172   Aginome-XMU 0.9457807 -0.13116347
+2 fibroblasts   Aginome-XMU 0.7881515   Aginome-XMU 0.9167134 -0.12856190
+3 neutrophils   Aginome-XMU 0.9420599   Aginome-XMU 0.9122068  0.02985313
+4          NK   Aginome-XMU 0.8041401   Aginome-XMU 0.9051736 -0.10103345
+Max diff exceeded for Aginome-XMU -round-1: 0.131163469947339
+Biogem -round-1 max diff between coarse and fine-grained is: 0.0114334293335256
+    cell.type method.name.x     cor.x method.name.y     cor.y          diff
+1 endothelial        Biogem 0.9663478        Biogem 0.9574240  0.0089237813
+2 fibroblasts        Biogem 0.8732014        Biogem 0.8839656 -0.0107641721
+3 neutrophils        Biogem 0.9978528        Biogem 0.9974596  0.0003931961
+4          NK        Biogem 0.7445612        Biogem 0.7559947 -0.0114334293
+Max diff exceeded for Biogem -round-1: 0.0114334293335256
+Cancer_Decon -round-1 max diff between coarse and fine-grained is: 0.215763391457769
+    cell.type method.name.x     cor.x method.name.y     cor.y          diff
+1 endothelial  Cancer_Decon 0.9141876  Cancer_Decon 0.9284946 -0.0143069433
+2 fibroblasts  Cancer_Decon 0.9102402  Cancer_Decon 0.9106969 -0.0004567017
+3 neutrophils  Cancer_Decon 0.9318278  Cancer_Decon 0.9108957  0.0209321179
+4          NK  Cancer_Decon 0.8735891  Cancer_Decon 0.6578257  0.2157633915
+Max diff exceeded for Cancer_Decon -round-1: 0.215763391457769
+CCB -round-1 max diff between coarse and fine-grained is: 0
+CIBERSORT -round-1 max diff between coarse and fine-grained is: 0
+CIBERSORTx -round-1 max diff between coarse and fine-grained is: 0
+D3Team -round-1 max diff between coarse and fine-grained is: 0.0386024683793972
+    cell.type method.name.x     cor.x method.name.y     cor.y          diff
+1 endothelial        D3Team 0.6559759        D3Team 0.6945784 -0.0386024684
+2 fibroblasts        D3Team 0.8077693        D3Team 0.8309208 -0.0231514779
+3 neutrophils        D3Team 0.9818741        D3Team 0.9816344  0.0002396869
+4          NK        D3Team 0.8604208        D3Team 0.8680522 -0.0076314496
+Max diff exceeded for D3Team -round-1: 0.0386024683793972
+DA_505 -round-1 max diff between coarse and fine-grained is: 0.0669078199118635
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+1 endothelial        DA_505 0.9325547        DA_505 0.9407745 -0.008219793
+2 fibroblasts        DA_505 0.7968187        DA_505 0.7622500  0.034568665
+3 neutrophils        DA_505 0.9010415        DA_505 0.9252497 -0.024208203
+4          NK        DA_505 0.8496683        DA_505 0.7827605  0.066907820
+Max diff exceeded for DA_505 -round-1: 0.0669078199118635
+ensemble -round-1 max diff between coarse and fine-grained is: -Inf
+EPIC -round-1 max diff between coarse and fine-grained is: 0
+ICTD -round-1 max diff between coarse and fine-grained is: 0.215763391457769
+    cell.type method.name.x     cor.x method.name.y     cor.y          diff
+1 endothelial          ICTD 0.9141876          ICTD 0.9284946 -0.0143069433
+2 fibroblasts          ICTD 0.9102402          ICTD 0.9106969 -0.0004567017
+3 neutrophils          ICTD 0.9318278          ICTD 0.9108957  0.0209321179
+4          NK          ICTD 0.8735891          ICTD 0.6578257  0.2157633915
+Max diff exceeded for ICTD -round-1: 0.215763391457769
+IZI -round-1 max diff between coarse and fine-grained is: 0.0649190940282683
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+1 endothelial           IZI 0.8927781           IZI 0.8939679 -0.00118980
+2 fibroblasts           IZI 0.8566887           IZI 0.8734853 -0.01679659
+3 neutrophils           IZI 0.8339761           IZI 0.8988952 -0.06491909
+4          NK           IZI 0.8438631           IZI 0.8811497 -0.03728662
+Max diff exceeded for IZI -round-1: 0.0649190940282683
+LeiliLab -round-1 max diff between coarse and fine-grained is: 0.461169583509922
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+1 endothelial      LeiliLab 0.6249269      LeiliLab 0.1637573  0.46116958
+2 fibroblasts      LeiliLab 0.3651418      LeiliLab 0.0000000  0.36514180
+3 neutrophils      LeiliLab 0.6124877      LeiliLab 0.6373641 -0.02487641
+4          NK      LeiliLab 0.4245478      LeiliLab 0.2709423  0.15360550
+Max diff exceeded for LeiliLab -round-1: 0.461169583509922
+MCP-counter -round-1 max diff between coarse and fine-grained is: 0
+mitten_TDC19 -round-1 max diff between coarse and fine-grained is: 0.0205370174770417
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+1 endothelial  mitten_TDC19 0.8785488  mitten_TDC19 0.8870690 -0.008520218
+2 fibroblasts  mitten_TDC19 0.8973883  mitten_TDC19 0.9096026 -0.012214339
+3 neutrophils  mitten_TDC19 0.9868408  mitten_TDC19 0.9924860 -0.005645199
+4          NK  mitten_TDC19 0.8234258  mitten_TDC19 0.8439628 -0.020537017
+Max diff exceeded for mitten_TDC19 -round-1: 0.0205370174770417
+NPU -round-1 max diff between coarse and fine-grained is: 0.111820690469535
+    cell.type method.name.x       cor.x method.name.y      cor.y        diff
+1 endothelial           NPU  0.63865207           NPU 0.52683138  0.11182069
+2 fibroblasts           NPU  0.42609815           NPU 0.34554812  0.08055003
+3 neutrophils           NPU  0.87592480           NPU 0.86487041  0.01105440
+4          NK           NPU -0.02092332           NPU 0.06834727 -0.08927059
+Max diff exceeded for NPU -round-1: 0.111820690469535
+Patrick -round-1 max diff between coarse and fine-grained is: 0
+quanTIseq -round-1 max diff between coarse and fine-grained is: 0
+REGGEN_LAB -round-1 max diff between coarse and fine-grained is: 0.415576699929837
+    cell.type method.name.x      cor.x method.name.y     cor.y        diff
+1 endothelial    REGGEN_LAB  0.4991729    REGGEN_LAB 0.7112663 -0.21209341
+2 fibroblasts    REGGEN_LAB  0.6741346    REGGEN_LAB 0.7851811 -0.11104650
+3 neutrophils    REGGEN_LAB -0.0999074    REGGEN_LAB 0.3156693 -0.41557670
+4          NK    REGGEN_LAB  0.8449766    REGGEN_LAB 0.8767641 -0.03178751
+Max diff exceeded for REGGEN_LAB -round-1: 0.415576699929837
+Rubbernecks -round-1 max diff between coarse and fine-grained is: 0.481912391171281
+    cell.type method.name.x     cor.x method.name.y      cor.y      diff
+1 endothelial   Rubbernecks 0.4848992   Rubbernecks 0.22848674 0.2564125
+2 fibroblasts   Rubbernecks 0.5056904   Rubbernecks 0.02377802 0.4819124
+3 neutrophils   Rubbernecks 0.6118683   Rubbernecks 0.55949934 0.0523690
+4          NK   Rubbernecks 0.4073477   Rubbernecks 0.28630244 0.1210453
+Max diff exceeded for Rubbernecks -round-1: 0.481912391171281
+TIMER -round-1 max diff between coarse and fine-grained is: 0
+xCell -round-1 max diff between coarse and fine-grained is: 0.00713491648524578
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+2 fibroblasts         xCell 0.6117140         xCell 0.6130747 -0.001360648
+4          NK         xCell 0.9072557         xCell 0.9143906 -0.007134916
+Max diff exceeded for xCell -round-1: 0.00713491648524578
+Plotting heatmaps
+means
+ [1] "Aboensis IV"     "Aginome-XMU"     "Biogem"          "Cancer_Decon"   
+ [5] "CancerSysBio"    "CCB"             "CIBERSORT"       "CIBERSORTx"     
+ [9] "D3Team"          "DA_505"          "EPIC"            "HM159"          
+[13] "ICTD"            "IZI"             "jbkcose"         "jdroz"          
+[17] "LeiliLab"        "MCP-counter"     "mitten_TDC19"    "NPU"            
+[21] "NYIT_glomerular" "Patrick"         "quanTIseq"       "REGGEN_LAB"     
+[25] "Rubbernecks"     "TIMER"           "TJU"             "xCell"          
+levels
+ [1] "jbkcose"         "NYIT_glomerular" "TJU"             "REGGEN_LAB"     
+ [5] "Rubbernecks"     "LeiliLab"        "NPU"             "HM159"          
+ [9] "jdroz"           "TIMER"           "Patrick"         "CancerSysBio"   
+[13] "EPIC"            "D3Team"          "CCB"             "ICTD"           
+[17] "Cancer_Decon"    "Aboensis IV"     "IZI"             "xCell"          
+[21] "mitten_TDC19"    "Biogem"          "CIBERSORT"       "DA_505"         
+[25] "quanTIseq"       "Aginome-XMU"     "MCP-counter"     "CIBERSORTx"     
+means
+ [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
+ [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "EPIC"        
+[11] "ICTD"         "IZI"          "LeiliLab"     "MCP-counter"  "mitten_TDC19"
+[16] "NPU"          "Patrick"      "quanTIseq"    "REGGEN_LAB"   "Rubbernecks" 
+[21] "TIMER"        "Tonys Boys"   "xCell"       
+levels
+ [1] "Rubbernecks"  "LeiliLab"     "TIMER"        "NPU"          "Tonys Boys"  
+ [6] "REGGEN_LAB"   "quanTIseq"    "CCB"          "ICTD"         "Cancer_Decon"
+[11] "Patrick"      "Aboensis IV"  "Biogem"       "IZI"          "CIBERSORT"   
+[16] "D3Team"       "xCell"        "DA_505"       "mitten_TDC19" "CIBERSORTx"  
+[21] "Aginome-XMU"  "EPIC"         "MCP-counter" 
+Creating merged means.over.dataset
+Plotting strip plots
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
+Top performer for Round 1 in coarse sub-challenge: CIBERSORTx
+              team pearson spearman
+1      Aginome-XMU     Inf      Inf
+2           DA_505     Inf      Inf
+3           Biogem     Inf      Inf
+4              IZI     Inf      Inf
+5            xCell     Inf      Inf
+6     mitten_TDC19     Inf      Inf
+7     Cancer_Decon     Inf      Inf
+8             ICTD     Inf      Inf
+9      Aboensis IV     Inf      Inf
+10             CCB     Inf      Inf
+11          D3Team     Inf      Inf
+12    CancerSysBio     Inf      Inf
+13         Patrick     Inf      Inf
+14           jdroz     Inf      Inf
+15           HM159     Inf      Inf
+16             NPU     Inf      Inf
+17        LeiliLab     Inf      Inf
+18      REGGEN_LAB     Inf      Inf
+19     Rubbernecks     Inf      Inf
+20             TJU     Inf      Inf
+21 NYIT_glomerular     Inf      Inf
+22         jbkcose     Inf      Inf
+Top performer for Round 1 in fine sub-challenge: Aginome-XMU
+           team pearson spearman
+1  mitten_TDC19     999  24.0000
+2        DA_505     Inf      Inf
+3         xCell     Inf 141.8571
+4        D3Team     Inf      Inf
+5           IZI     Inf      Inf
+6        Biogem     Inf      Inf
+7  Cancer_Decon     Inf      Inf
+8          ICTD     Inf      Inf
+9           CCB     Inf      Inf
+10  Aboensis IV     Inf      Inf
+11      Patrick     Inf      Inf
+12   REGGEN_LAB     Inf      Inf
+13   Tonys Boys     Inf      Inf
+14          NPU     Inf      Inf
+15  Rubbernecks     Inf      Inf
+16     LeiliLab     Inf      Inf
+Doing round 2
+       output.type      method.type  method.name subchallenge submission
+1            score          summary  Aboensis IV         <NA>       <NA>
+2            score         ensemble  Aginome-XMU       coarse          2
+3            score         ensemble  Aginome-XMU         fine          2
+4 normalized.score other regression       Biogem         <NA>       <NA>
+5            score              NMF Cancer_Decon         <NA>       <NA>
+6            score          summary CancerSysBio         <NA>       <NA>
+  non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+[1] "coarse"
+       output.type      method.type  method.name subchallenge submission
+1            score          summary  Aboensis IV         <NA>       <NA>
+2            score         ensemble  Aginome-XMU       coarse          2
+3            score         ensemble  Aginome-XMU         fine          2
+4 normalized.score other regression       Biogem         <NA>       <NA>
+5            score              NMF Cancer_Decon         <NA>       <NA>
+6            score          summary CancerSysBio         <NA>       <NA>
+  non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+        output.type             method.type     method.name subchallenge
+1             score                 summary     Aboensis IV         <NA>
+2             score                ensemble     Aginome-XMU       coarse
+3             score                ensemble     Aginome-XMU         fine
+4  normalized.score        other regression          Biogem         <NA>
+5             score                     NMF    Cancer_Decon         <NA>
+6             score                 summary    CancerSysBio         <NA>
+7          fraction                    NNLS             CCB       coarse
+8          fraction                    NNLS             CCB         fine
+9          fraction                     SVR       CIBERSORT         <NA>
+10         fraction                     SVR      CIBERSORTx         <NA>
+11         fraction                ensemble          D3Team         <NA>
+12         fraction                     SVR          DA_505         <NA>
+13         fraction                    NNLS            EPIC         <NA>
+14       proportion                 unknown           HM159         <NA>
+15            score                     NMF            ICTD         <NA>
+16       proportion probabilistic inference             IZI         <NA>
+17       proportion                 unknown         jbkcose         <NA>
+18         fraction        other regression           jdroz         <NA>
+19         fraction                 unknown        LeiliLab       coarse
+20         fraction                 unknown        LeiliLab         fine
+21            score                 summary     MCP-counter         <NA>
+22            score                 summary    mitten_TDC19         <NA>
+23       proportion                    NNLS             NPU         <NA>
+24 normalized.score                   other NYIT_glomerular         <NA>
+25 normalized.score        other regression         Patrick         <NA>
+26         fraction                    NNLS       quanTIseq         <NA>
+27         fraction                    NNLS      REGGEN_LAB         <NA>
+28       proportion                 unknown     Rubbernecks         <NA>
+29         fraction                    NNLS           TIMER         <NA>
+30            score                 unknown             TJU         <NA>
+31       proportion                 unknown      Tonys Boys         <NA>
+32         fraction                 summary           xCell         <NA>
+   submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2           2        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3           2        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4        <NA>         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5        <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        <NA>        FALSE       FALSE       TRUE           FALSE    SUM  Score
+7           2         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+8           2         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
+12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+13       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+14       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+15       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+16       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+17       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+18       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
+19          2         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+20          2         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+21       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+22       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+23       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+24       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+25       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+26       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+27       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+28       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+31       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+32       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+[1] "subchallenge"
+ [1]  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[1] "fine"
+       output.type      method.type  method.name subchallenge submission
+1            score          summary  Aboensis IV         <NA>       <NA>
+2            score         ensemble  Aginome-XMU       coarse          2
+3            score         ensemble  Aginome-XMU         fine          2
+4 normalized.score other regression       Biogem         <NA>       <NA>
+5            score              NMF Cancer_Decon         <NA>       <NA>
+6            score          summary CancerSysBio         <NA>       <NA>
+  non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+        output.type             method.type     method.name subchallenge
+1             score                 summary     Aboensis IV         <NA>
+2             score                ensemble     Aginome-XMU       coarse
+3             score                ensemble     Aginome-XMU         fine
+4  normalized.score        other regression          Biogem         <NA>
+5             score                     NMF    Cancer_Decon         <NA>
+6             score                 summary    CancerSysBio         <NA>
+7          fraction                    NNLS             CCB       coarse
+8          fraction                    NNLS             CCB         fine
+9          fraction                     SVR       CIBERSORT         <NA>
+10         fraction                     SVR      CIBERSORTx         <NA>
+11         fraction                ensemble          D3Team         <NA>
+12         fraction                     SVR          DA_505         <NA>
+13         fraction                    NNLS            EPIC         <NA>
+14       proportion                 unknown           HM159         <NA>
+15            score                     NMF            ICTD         <NA>
+16       proportion probabilistic inference             IZI         <NA>
+17       proportion                 unknown         jbkcose         <NA>
+18         fraction        other regression           jdroz         <NA>
+19         fraction                 unknown        LeiliLab       coarse
+20         fraction                 unknown        LeiliLab         fine
+21            score                 summary     MCP-counter         <NA>
+22            score                 summary    mitten_TDC19         <NA>
+23       proportion                    NNLS             NPU         <NA>
+24 normalized.score                   other NYIT_glomerular         <NA>
+25 normalized.score        other regression         Patrick         <NA>
+26         fraction                    NNLS       quanTIseq         <NA>
+27         fraction                    NNLS      REGGEN_LAB         <NA>
+28       proportion                 unknown     Rubbernecks         <NA>
+29         fraction                    NNLS           TIMER         <NA>
+30            score                 unknown             TJU         <NA>
+31       proportion                 unknown      Tonys Boys         <NA>
+32         fraction                 summary           xCell         <NA>
+   submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2           2        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3           2        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4        <NA>         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5        <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        <NA>        FALSE       FALSE       TRUE           FALSE    SUM  Score
+7           2         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+8           2         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
+12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+13       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+14       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+15       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+16       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+17       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+18       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
+19          2         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+20          2         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+21       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+22       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+23       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+24       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+25       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+26       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+27       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+28       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+31       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+32       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+[1] "subchallenge"
+ [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
+[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+Aboensis IV -round-2 max diff between coarse and fine-grained is: 0.0038792863614141
+    cell.type method.name.x     cor.x method.name.y     cor.y          diff
+1 endothelial   Aboensis IV 0.9826318   Aboensis IV 0.9820028  0.0006289488
+2 fibroblasts   Aboensis IV 0.9464114   Aboensis IV 0.9491145 -0.0027030912
+3 neutrophils   Aboensis IV 0.9807100   Aboensis IV 0.9768307  0.0038792864
+4          NK   Aboensis IV 0.5818936   Aboensis IV 0.5811145  0.0007791369
+Max diff exceeded for Aboensis IV -round-2: 0.0038792863614141
+Aginome-XMU -round-2 max diff between coarse and fine-grained is: 0.101033450220807
+  cell.type method.name.x     cor.x method.name.y     cor.y       diff
+4        NK   Aginome-XMU 0.8041401   Aginome-XMU 0.9051736 -0.1010335
+Max diff exceeded for Aginome-XMU -round-2: 0.101033450220807
+Biogem -round-2 max diff between coarse and fine-grained is: 0.0316325981299552
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+1 endothelial        Biogem 0.9765145        Biogem 0.9675515  0.008963069
+2 fibroblasts        Biogem 0.8211502        Biogem 0.8527828 -0.031632598
+3 neutrophils        Biogem 0.9976981        Biogem 0.9991082 -0.001410045
+4          NK        Biogem 0.8144758        Biogem 0.7884324  0.026043464
+Max diff exceeded for Biogem -round-2: 0.0316325981299552
+Cancer_Decon -round-2 max diff between coarse and fine-grained is: 0.215763391457769
+    cell.type method.name.x     cor.x method.name.y     cor.y          diff
+1 endothelial  Cancer_Decon 0.9141876  Cancer_Decon 0.9284946 -0.0143069433
+2 fibroblasts  Cancer_Decon 0.9102402  Cancer_Decon 0.9106969 -0.0004567017
+3 neutrophils  Cancer_Decon 0.9318278  Cancer_Decon 0.9108957  0.0209321179
+4          NK  Cancer_Decon 0.8735891  Cancer_Decon 0.6578257  0.2157633915
+Max diff exceeded for Cancer_Decon -round-2: 0.215763391457769
+CCB -round-2 max diff between coarse and fine-grained is: 0.245724117260851
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+2 fibroblasts           CCB 0.9562206           CCB 0.9790042 -0.02278363
+3 neutrophils           CCB 0.8769458           CCB 0.9128012 -0.03585538
+4          NK           CCB 0.6334855           CCB 0.8792096 -0.24572412
+Max diff exceeded for CCB -round-2: 0.245724117260851
+CIBERSORT -round-2 max diff between coarse and fine-grained is: 0
+CIBERSORTx -round-2 max diff between coarse and fine-grained is: 0
+D3Team -round-2 max diff between coarse and fine-grained is: 0.0379244644186106
+    cell.type method.name.x     cor.x method.name.y     cor.y          diff
+1 endothelial        D3Team 0.6952129        D3Team 0.6941593  0.0010535633
+2 fibroblasts        D3Team 0.8304539        D3Team 0.7925294  0.0379244644
+4          NK        D3Team 0.8639538        D3Team 0.8649365 -0.0009826802
+Max diff exceeded for D3Team -round-2: 0.0379244644186106
+DA_505 -round-2 max diff between coarse and fine-grained is: 0.0367747436744267
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+1 endothelial        DA_505 0.9501442        DA_505 0.9754328 -0.025288566
+2 fibroblasts        DA_505 0.8620137        DA_505 0.8987884 -0.036774744
+3 neutrophils        DA_505 0.9364524        DA_505 0.9402456 -0.003793212
+4          NK        DA_505 0.8077975        DA_505 0.8069560  0.000841448
+Max diff exceeded for DA_505 -round-2: 0.0367747436744267
+ensemble -round-2 max diff between coarse and fine-grained is: -Inf
+EPIC -round-2 max diff between coarse and fine-grained is: 0
+ICTD -round-2 max diff between coarse and fine-grained is: 0.215763391457769
+    cell.type method.name.x     cor.x method.name.y     cor.y          diff
+1 endothelial          ICTD 0.9141876          ICTD 0.9284946 -0.0143069433
+2 fibroblasts          ICTD 0.9102402          ICTD 0.9106969 -0.0004567017
+3 neutrophils          ICTD 0.9318278          ICTD 0.9108957  0.0209321179
+4          NK          ICTD 0.8735891          ICTD 0.6578257  0.2157633915
+Max diff exceeded for ICTD -round-2: 0.215763391457769
+IZI -round-2 max diff between coarse and fine-grained is: 0.0293365666820508
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+1 endothelial           IZI 0.8934267           IZI 0.9210951 -0.02766833
+2 fibroblasts           IZI 0.8626514           IZI 0.8380701  0.02458132
+3 neutrophils           IZI 0.8803998           IZI 0.9097363 -0.02933657
+4          NK           IZI 0.8639224           IZI 0.8826250 -0.01870259
+Max diff exceeded for IZI -round-2: 0.0293365666820508
+LeiliLab -round-2 max diff between coarse and fine-grained is: 0
+MCP-counter -round-2 max diff between coarse and fine-grained is: 0
+mitten_TDC19 -round-2 max diff between coarse and fine-grained is: 0.020537017477042
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+1 endothelial  mitten_TDC19 0.8785488  mitten_TDC19 0.8870690 -0.008520218
+2 fibroblasts  mitten_TDC19 0.8973883  mitten_TDC19 0.9096026 -0.012214339
+3 neutrophils  mitten_TDC19 0.9868408  mitten_TDC19 0.9924860 -0.005645199
+4          NK  mitten_TDC19 0.8234258  mitten_TDC19 0.8439628 -0.020537017
+Max diff exceeded for mitten_TDC19 -round-2: 0.020537017477042
+NPU -round-2 max diff between coarse and fine-grained is: 0.111820690469535
+    cell.type method.name.x       cor.x method.name.y      cor.y        diff
+1 endothelial           NPU  0.63865207           NPU 0.52683138  0.11182069
+2 fibroblasts           NPU  0.42609815           NPU 0.34554812  0.08055003
+3 neutrophils           NPU  0.87592480           NPU 0.86487041  0.01105440
+4          NK           NPU -0.02092332           NPU 0.06834727 -0.08927059
+Max diff exceeded for NPU -round-2: 0.111820690469535
+Patrick -round-2 max diff between coarse and fine-grained is: 0
+quanTIseq -round-2 max diff between coarse and fine-grained is: 0
+REGGEN_LAB -round-2 max diff between coarse and fine-grained is: 0.415576699929837
+    cell.type method.name.x      cor.x method.name.y     cor.y        diff
+1 endothelial    REGGEN_LAB  0.4991729    REGGEN_LAB 0.7112663 -0.21209341
+2 fibroblasts    REGGEN_LAB  0.6741346    REGGEN_LAB 0.7851811 -0.11104650
+3 neutrophils    REGGEN_LAB -0.0999074    REGGEN_LAB 0.3156693 -0.41557670
+4          NK    REGGEN_LAB  0.8449766    REGGEN_LAB 0.8767641 -0.03178751
+Max diff exceeded for REGGEN_LAB -round-2: 0.415576699929837
+Rubbernecks -round-2 max diff between coarse and fine-grained is: 0.296037106632922
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+1 endothelial   Rubbernecks 0.5612418   Rubbernecks 0.2934466  0.26779519
+2 fibroblasts   Rubbernecks 0.7790207   Rubbernecks 0.4829836  0.29603711
+3 neutrophils   Rubbernecks 0.8248651   Rubbernecks 0.7836001  0.04126494
+4          NK   Rubbernecks 0.6302955   Rubbernecks 0.6968312 -0.06653577
+Max diff exceeded for Rubbernecks -round-2: 0.296037106632922
+TIMER -round-2 max diff between coarse and fine-grained is: 0
+xCell -round-2 max diff between coarse and fine-grained is: 0.00713491648524578
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+2 fibroblasts         xCell 0.6117140         xCell 0.6130747 -0.001360648
+4          NK         xCell 0.9072557         xCell 0.9143906 -0.007134916
+Max diff exceeded for xCell -round-2: 0.00713491648524578
+Plotting heatmaps
+means
+ [1] "Aboensis IV"     "Aginome-XMU"     "Biogem"          "Cancer_Decon"   
+ [5] "CancerSysBio"    "CCB"             "CIBERSORT"       "CIBERSORTx"     
+ [9] "D3Team"          "DA_505"          "EPIC"            "HM159"          
+[13] "ICTD"            "IZI"             "jbkcose"         "jdroz"          
+[17] "LeiliLab"        "MCP-counter"     "mitten_TDC19"    "NPU"            
+[21] "NYIT_glomerular" "Patrick"         "quanTIseq"       "REGGEN_LAB"     
+[25] "Rubbernecks"     "TIMER"           "TJU"             "xCell"          
+levels
+ [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
+ [5] "NYIT_glomerular" "NPU"             "HM159"           "Rubbernecks"    
+ [9] "jdroz"           "TIMER"           "Patrick"         "CancerSysBio"   
+[13] "EPIC"            "D3Team"          "CCB"             "ICTD"           
+[17] "Cancer_Decon"    "mitten_TDC19"    "DA_505"          "IZI"            
+[21] "xCell"           "Aboensis IV"     "CIBERSORT"       "Biogem"         
+[25] "quanTIseq"       "MCP-counter"     "CIBERSORTx"      "Aginome-XMU"    
+means
+ [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
+ [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "EPIC"        
+[11] "ICTD"         "IZI"          "LeiliLab"     "MCP-counter"  "mitten_TDC19"
+[16] "NPU"          "Patrick"      "quanTIseq"    "REGGEN_LAB"   "Rubbernecks" 
+[21] "TIMER"        "Tonys Boys"   "xCell"       
+levels
+ [1] "LeiliLab"     "TIMER"        "NPU"          "Tonys Boys"   "Rubbernecks" 
+ [6] "REGGEN_LAB"   "quanTIseq"    "ICTD"         "Cancer_Decon" "Patrick"     
+[11] "Aboensis IV"  "CIBERSORT"    "CCB"          "IZI"          "D3Team"      
+[16] "Biogem"       "xCell"        "mitten_TDC19" "DA_505"       "CIBERSORTx"  
+[21] "Aginome-XMU"  "EPIC"         "MCP-counter" 
+Creating merged means.over.dataset
+Plotting strip plots
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
+Top performer for Round 2 in coarse sub-challenge: Aginome-XMU
+              team pearson    spearman
+1       CIBERSORTx 1.43309   0.3262599
+2           Biogem     Inf         Inf
+3              IZI     Inf         Inf
+4      Aboensis IV     Inf         Inf
+5            xCell     Inf         Inf
+6           DA_505     Inf         Inf
+7              CCB     Inf         Inf
+8     Cancer_Decon     Inf 999.0000000
+9     mitten_TDC19     Inf         Inf
+10            ICTD     Inf         Inf
+11          D3Team     Inf         Inf
+12    CancerSysBio     Inf         Inf
+13         Patrick     Inf         Inf
+14           jdroz     Inf         Inf
+15     Rubbernecks     Inf         Inf
+16           HM159     Inf         Inf
+17             NPU     Inf         Inf
+18      REGGEN_LAB     Inf         Inf
+19 NYIT_glomerular     Inf         Inf
+20             TJU     Inf         Inf
+21        LeiliLab     Inf         Inf
+22         jbkcose     Inf         Inf
+Top performer for Round 2 in fine sub-challenge: Aginome-XMU
+           team pearson spearman
+1        DA_505     499 15.12903
+2  mitten_TDC19     Inf      Inf
+3         xCell     Inf      Inf
+4        Biogem     Inf      Inf
+5           CCB     Inf      Inf
+6        D3Team     Inf      Inf
+7           IZI     Inf      Inf
+8  Cancer_Decon     Inf      Inf
+9          ICTD     Inf      Inf
+10  Aboensis IV     Inf      Inf
+11      Patrick     Inf      Inf
+12   REGGEN_LAB     Inf      Inf
+13  Rubbernecks     Inf      Inf
+14   Tonys Boys     Inf      Inf
+15          NPU     Inf      Inf
+16     LeiliLab     Inf      Inf
+Doing round 3
+       output.type      method.type  method.name subchallenge submission
+1            score          summary  Aboensis IV         <NA>       <NA>
+2            score         ensemble  Aginome-XMU       coarse     latest
+3            score         ensemble  Aginome-XMU         fine          3
+4 normalized.score other regression       Biogem         <NA>       <NA>
+5            score              NMF Cancer_Decon         <NA>       <NA>
+6            score          summary CancerSysBio         <NA>       <NA>
+  non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+[1] "coarse"
+       output.type      method.type  method.name subchallenge submission
+1            score          summary  Aboensis IV         <NA>       <NA>
+2            score         ensemble  Aginome-XMU       coarse     latest
+3            score         ensemble  Aginome-XMU         fine          3
+4 normalized.score other regression       Biogem         <NA>       <NA>
+5            score              NMF Cancer_Decon         <NA>       <NA>
+6            score          summary CancerSysBio         <NA>       <NA>
+  non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+        output.type             method.type     method.name subchallenge
+1             score                 summary     Aboensis IV         <NA>
+2             score                ensemble     Aginome-XMU       coarse
+3             score                ensemble     Aginome-XMU         fine
+4  normalized.score        other regression          Biogem         <NA>
+5             score                     NMF    Cancer_Decon         <NA>
+6             score                 summary    CancerSysBio         <NA>
+7          fraction                    NNLS             CCB       coarse
+8          fraction                    NNLS             CCB         fine
+9          fraction                     SVR       CIBERSORT         <NA>
+10         fraction                     SVR      CIBERSORTx         <NA>
+11         fraction                ensemble          D3Team         <NA>
+12         fraction                     SVR          DA_505         <NA>
+13         fraction                    NNLS            EPIC         <NA>
+14       proportion                 unknown           HM159         <NA>
+15            score                     NMF            ICTD         <NA>
+16       proportion probabilistic inference             IZI         <NA>
+17       proportion                 unknown         jbkcose         <NA>
+18         fraction        other regression           jdroz         <NA>
+19         fraction                 unknown        LeiliLab       coarse
+20         fraction                 unknown        LeiliLab         fine
+21            score                 summary     MCP-counter         <NA>
+22            score                 summary    mitten_TDC19         <NA>
+23       proportion                    NNLS             NPU         <NA>
+24 normalized.score                   other NYIT_glomerular         <NA>
+25 normalized.score        other regression         Patrick         <NA>
+26         fraction                    NNLS       quanTIseq         <NA>
+27         fraction                    NNLS      REGGEN_LAB         <NA>
+28       proportion                 unknown     Rubbernecks         <NA>
+29         fraction                    NNLS           TIMER         <NA>
+30            score                 unknown             TJU         <NA>
+31       proportion                 unknown      Tonys Boys         <NA>
+32         fraction                 summary           xCell         <NA>
+   submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2      latest        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3           3        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4        <NA>         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5        <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        <NA>        FALSE       FALSE       TRUE           FALSE    SUM  Score
+7      latest         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+8      latest         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
+12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+13       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+14       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+15       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+16       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+17       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+18       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
+19     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+20     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+21       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+22       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+23       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+24       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+25       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+26       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+27       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+28       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+31       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+32       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+[1] "subchallenge"
+ [1]  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[1] "fine"
+       output.type      method.type  method.name subchallenge submission
+1            score          summary  Aboensis IV         <NA>       <NA>
+2            score         ensemble  Aginome-XMU       coarse     latest
+3            score         ensemble  Aginome-XMU         fine          3
+4 normalized.score other regression       Biogem         <NA>       <NA>
+5            score              NMF Cancer_Decon         <NA>       <NA>
+6            score          summary CancerSysBio         <NA>       <NA>
+  non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+        output.type             method.type     method.name subchallenge
+1             score                 summary     Aboensis IV         <NA>
+2             score                ensemble     Aginome-XMU       coarse
+3             score                ensemble     Aginome-XMU         fine
+4  normalized.score        other regression          Biogem         <NA>
+5             score                     NMF    Cancer_Decon         <NA>
+6             score                 summary    CancerSysBio         <NA>
+7          fraction                    NNLS             CCB       coarse
+8          fraction                    NNLS             CCB         fine
+9          fraction                     SVR       CIBERSORT         <NA>
+10         fraction                     SVR      CIBERSORTx         <NA>
+11         fraction                ensemble          D3Team         <NA>
+12         fraction                     SVR          DA_505         <NA>
+13         fraction                    NNLS            EPIC         <NA>
+14       proportion                 unknown           HM159         <NA>
+15            score                     NMF            ICTD         <NA>
+16       proportion probabilistic inference             IZI         <NA>
+17       proportion                 unknown         jbkcose         <NA>
+18         fraction        other regression           jdroz         <NA>
+19         fraction                 unknown        LeiliLab       coarse
+20         fraction                 unknown        LeiliLab         fine
+21            score                 summary     MCP-counter         <NA>
+22            score                 summary    mitten_TDC19         <NA>
+23       proportion                    NNLS             NPU         <NA>
+24 normalized.score                   other NYIT_glomerular         <NA>
+25 normalized.score        other regression         Patrick         <NA>
+26         fraction                    NNLS       quanTIseq         <NA>
+27         fraction                    NNLS      REGGEN_LAB         <NA>
+28       proportion                 unknown     Rubbernecks         <NA>
+29         fraction                    NNLS           TIMER         <NA>
+30            score                 unknown             TJU         <NA>
+31       proportion                 unknown      Tonys Boys         <NA>
+32         fraction                 summary           xCell         <NA>
+   submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
+1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+2      latest        FALSE       FALSE      FALSE            TRUE    ENS  Score
+3           3        FALSE       FALSE      FALSE            TRUE    ENS  Score
+4        <NA>         TRUE       FALSE       TRUE           FALSE    REG   Norm
+5        <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+6        <NA>        FALSE       FALSE       TRUE           FALSE    SUM  Score
+7      latest         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+8      latest         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
+11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
+12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+13       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+14       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+15       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+16       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+17       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+18       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
+19     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+20     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+21       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+22       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+23       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+24       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+25       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+26       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+27       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+28       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+31       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+32       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+[1] "subchallenge"
+ [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
+[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+Aboensis IV -round-3 max diff between coarse and fine-grained is: 0
+Aginome-XMU -round-3 max diff between coarse and fine-grained is: 0.101033450220807
+  cell.type method.name.x     cor.x method.name.y     cor.y       diff
+4        NK   Aginome-XMU 0.8041401   Aginome-XMU 0.9051736 -0.1010335
+Max diff exceeded for Aginome-XMU -round-3: 0.101033450220807
+Biogem -round-3 max diff between coarse and fine-grained is: 0.0472360475126776
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+1 endothelial        Biogem 0.9774222        Biogem 0.9706088  0.006813462
+2 fibroblasts        Biogem 0.8438791        Biogem 0.8911152 -0.047236048
+3 neutrophils        Biogem 0.9989610        Biogem 0.9931192  0.005841794
+4          NK        Biogem 0.8058760        Biogem 0.7602962  0.045579870
+Max diff exceeded for Biogem -round-3: 0.0472360475126776
+Cancer_Decon -round-3 max diff between coarse and fine-grained is: 0.215763391457769
+    cell.type method.name.x     cor.x method.name.y     cor.y          diff
+1 endothelial  Cancer_Decon 0.9141876  Cancer_Decon 0.9284946 -0.0143069433
+2 fibroblasts  Cancer_Decon 0.9102402  Cancer_Decon 0.9106969 -0.0004567017
+3 neutrophils  Cancer_Decon 0.9318278  Cancer_Decon 0.9108957  0.0209321179
+4          NK  Cancer_Decon 0.8735891  Cancer_Decon 0.6578257  0.2157633915
+Max diff exceeded for Cancer_Decon -round-3: 0.215763391457769
+CCB -round-3 max diff between coarse and fine-grained is: 0.245724117260851
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+2 fibroblasts           CCB 0.9562206           CCB 0.9790042 -0.02278363
+3 neutrophils           CCB 0.8769458           CCB 0.9128012 -0.03585538
+4          NK           CCB 0.6334855           CCB 0.8792096 -0.24572412
+Max diff exceeded for CCB -round-3: 0.245724117260851
+CIBERSORT -round-3 max diff between coarse and fine-grained is: 0
+CIBERSORTx -round-3 max diff between coarse and fine-grained is: 0
+D3Team -round-3 max diff between coarse and fine-grained is: 0.105323031276923
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+1 endothelial        D3Team 0.7033426        D3Team 0.6906893  0.012653290
+2 fibroblasts        D3Team 0.7710753        D3Team 0.6657523  0.105323031
+3 neutrophils        D3Team 0.9770350        D3Team 0.9810646 -0.004029624
+4          NK        D3Team 0.8740078        D3Team 0.8690088  0.004999075
+Max diff exceeded for D3Team -round-3: 0.105323031276923
+DA_505 -round-3 max diff between coarse and fine-grained is: 0.0659978138963725
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+1 endothelial        DA_505 0.9739139        DA_505 0.9664431  0.007470815
+2 fibroblasts        DA_505 0.7680232        DA_505 0.8340210 -0.065997814
+3 neutrophils        DA_505 0.9485117        DA_505 0.9532308 -0.004719074
+4          NK        DA_505 0.8247452        DA_505 0.8621595 -0.037414305
+Max diff exceeded for DA_505 -round-3: 0.0659978138963725
+ensemble -round-3 max diff between coarse and fine-grained is: -Inf
+EPIC -round-3 max diff between coarse and fine-grained is: 0
+ICTD -round-3 max diff between coarse and fine-grained is: 0.215763391457769
+    cell.type method.name.x     cor.x method.name.y     cor.y          diff
+1 endothelial          ICTD 0.9141876          ICTD 0.9284946 -0.0143069433
+2 fibroblasts          ICTD 0.9102402          ICTD 0.9106969 -0.0004567017
+3 neutrophils          ICTD 0.9318278          ICTD 0.9108957  0.0209321179
+4          NK          ICTD 0.8735891          ICTD 0.6578257  0.2157633915
+Max diff exceeded for ICTD -round-3: 0.215763391457769
+IZI -round-3 max diff between coarse and fine-grained is: 0.138544461037685
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+1 endothelial           IZI 0.6537974           IZI 0.6613557 -0.00755828
+2 fibroblasts           IZI 0.9160889           IZI 0.7775444  0.13854446
+3 neutrophils           IZI 0.8341735           IZI 0.8937005 -0.05952698
+4          NK           IZI 0.7944336           IZI 0.8504940 -0.05606040
+Max diff exceeded for IZI -round-3: 0.138544461037685
+LeiliLab -round-3 max diff between coarse and fine-grained is: 0
+MCP-counter -round-3 max diff between coarse and fine-grained is: 0
+mitten_TDC19 -round-3 max diff between coarse and fine-grained is: 0.0835586860232859
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+1 endothelial  mitten_TDC19 0.8785488  mitten_TDC19 0.9621075 -0.08355869
+2 fibroblasts  mitten_TDC19 0.8973883  mitten_TDC19 0.9695194 -0.07213117
+3 neutrophils  mitten_TDC19 0.9868408  mitten_TDC19 0.9998769 -0.01303606
+4          NK  mitten_TDC19 0.8234258  mitten_TDC19 0.8739772 -0.05055138
+Max diff exceeded for mitten_TDC19 -round-3: 0.0835586860232859
+NPU -round-3 max diff between coarse and fine-grained is: 0.111820690469535
+    cell.type method.name.x       cor.x method.name.y      cor.y        diff
+1 endothelial           NPU  0.63865207           NPU 0.52683138  0.11182069
+2 fibroblasts           NPU  0.42609815           NPU 0.34554812  0.08055003
+3 neutrophils           NPU  0.87592480           NPU 0.86487041  0.01105440
+4          NK           NPU -0.02092332           NPU 0.06834727 -0.08927059
+Max diff exceeded for NPU -round-3: 0.111820690469535
+Patrick -round-3 max diff between coarse and fine-grained is: 0
+quanTIseq -round-3 max diff between coarse and fine-grained is: 0
+REGGEN_LAB -round-3 max diff between coarse and fine-grained is: 0.415576699929837
+    cell.type method.name.x      cor.x method.name.y     cor.y        diff
+1 endothelial    REGGEN_LAB  0.4991729    REGGEN_LAB 0.7112663 -0.21209341
+2 fibroblasts    REGGEN_LAB  0.6741346    REGGEN_LAB 0.7851811 -0.11104650
+3 neutrophils    REGGEN_LAB -0.0999074    REGGEN_LAB 0.3156693 -0.41557670
+4          NK    REGGEN_LAB  0.8449766    REGGEN_LAB 0.8767641 -0.03178751
+Max diff exceeded for REGGEN_LAB -round-3: 0.415576699929837
+Rubbernecks -round-3 max diff between coarse and fine-grained is: 0.296037106632922
+    cell.type method.name.x     cor.x method.name.y     cor.y        diff
+1 endothelial   Rubbernecks 0.5612418   Rubbernecks 0.2934466  0.26779519
+2 fibroblasts   Rubbernecks 0.7790207   Rubbernecks 0.4829836  0.29603711
+3 neutrophils   Rubbernecks 0.8248651   Rubbernecks 0.7836001  0.04126494
+4          NK   Rubbernecks 0.6302955   Rubbernecks 0.6968312 -0.06653577
+Max diff exceeded for Rubbernecks -round-3: 0.296037106632922
+TIMER -round-3 max diff between coarse and fine-grained is: 0
+xCell -round-3 max diff between coarse and fine-grained is: 0.00713491648524578
+    cell.type method.name.x     cor.x method.name.y     cor.y         diff
+2 fibroblasts         xCell 0.6117140         xCell 0.6130747 -0.001360648
+4          NK         xCell 0.9072557         xCell 0.9143906 -0.007134916
+Max diff exceeded for xCell -round-3: 0.00713491648524578
+Plotting heatmaps
+means
+ [1] "Aboensis IV"     "Aginome-XMU"     "Biogem"          "Cancer_Decon"   
+ [5] "CancerSysBio"    "CCB"             "CIBERSORT"       "CIBERSORTx"     
+ [9] "D3Team"          "DA_505"          "EPIC"            "HM159"          
+[13] "ICTD"            "IZI"             "jbkcose"         "jdroz"          
+[17] "LeiliLab"        "MCP-counter"     "mitten_TDC19"    "NPU"            
+[21] "NYIT_glomerular" "Patrick"         "quanTIseq"       "REGGEN_LAB"     
+[25] "Rubbernecks"     "TIMER"           "TJU"             "xCell"          
+levels
+ [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
+ [5] "NYIT_glomerular" "NPU"             "HM159"           "Rubbernecks"    
+ [9] "jdroz"           "TIMER"           "Patrick"         "CancerSysBio"   
+[13] "EPIC"            "D3Team"          "IZI"             "CCB"            
+[17] "ICTD"            "Cancer_Decon"    "xCell"           "Aboensis IV"    
+[21] "mitten_TDC19"    "CIBERSORT"       "quanTIseq"       "Biogem"         
+[25] "MCP-counter"     "DA_505"          "CIBERSORTx"      "Aginome-XMU"    
+means
+ [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
+ [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "EPIC"        
+[11] "ICTD"         "IZI"          "LeiliLab"     "MCP-counter"  "mitten_TDC19"
+[16] "NPU"          "Patrick"      "quanTIseq"    "REGGEN_LAB"   "Rubbernecks" 
+[21] "TIMER"        "Tonys Boys"   "xCell"       
+levels
+ [1] "LeiliLab"     "TIMER"        "NPU"          "Tonys Boys"   "Rubbernecks" 
+ [6] "IZI"          "REGGEN_LAB"   "quanTIseq"    "ICTD"         "Cancer_Decon"
+[11] "Patrick"      "CIBERSORT"    "CCB"          "D3Team"       "Aboensis IV" 
+[16] "xCell"        "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"      
+[21] "EPIC"         "Aginome-XMU"  "MCP-counter" 
+Creating merged means.over.dataset
+Plotting strip plots
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
+Top performer for Round 3 in coarse sub-challenge: Aginome-XMU
+              team pearson    spearman
+1       CIBERSORTx 1.43309   0.3262599
+2           DA_505     Inf         Inf
+3           Biogem     Inf  51.6315789
+4     mitten_TDC19     Inf         Inf
+5      Aboensis IV     Inf         Inf
+6            xCell     Inf         Inf
+7              IZI     Inf         Inf
+8              CCB     Inf         Inf
+9     Cancer_Decon     Inf 999.0000000
+10            ICTD     Inf         Inf
+11          D3Team     Inf         Inf
+12    CancerSysBio     Inf         Inf
+13         Patrick     Inf         Inf
+14           jdroz     Inf         Inf
+15     Rubbernecks     Inf         Inf
+16           HM159     Inf         Inf
+17             NPU     Inf         Inf
+18      REGGEN_LAB     Inf         Inf
+19 NYIT_glomerular     Inf         Inf
+20             TJU     Inf         Inf
+21        LeiliLab     Inf         Inf
+22         jbkcose     Inf         Inf
+Top performer for Round 3 in fine sub-challenge: Aginome-XMU
+           team pearson  spearman
+1        DA_505      99  5.451613
+2  mitten_TDC19     Inf 82.333333
+3         xCell     Inf       Inf
+4        Biogem     Inf       Inf
+5           CCB     Inf       Inf
+6   Aboensis IV     Inf       Inf
+7        D3Team     Inf       Inf
+8  Cancer_Decon     Inf       Inf
+9          ICTD     Inf       Inf
+10      Patrick     Inf       Inf
+11   REGGEN_LAB     Inf       Inf
+12          IZI     Inf       Inf
+13  Rubbernecks     Inf       Inf
+14   Tonys Boys     Inf       Inf
+15          NPU     Inf       Inf
+16     LeiliLab     Inf       Inf
+Round 1: 10 were top performer in at least one of the 17
+[1] "B"
+   method.name cell.type       cor       diff comparator.corr  comparator
+11        EPIC         B 0.9817921 0.01618365       0.9656084       xCell
+28       xCell         B 0.9656084 0.03888894       0.9267195  CIBERSORTx
+8   CIBERSORTx         B 0.9267195 0.04803116       0.8786883   CIBERSORT
+7    CIBERSORT         B 0.8786883 0.02951438       0.8491739   quanTIseq
+23   quanTIseq         B 0.8491739 0.06945858       0.7797153       TIMER
+26       TIMER         B 0.7797153 0.19279582       0.5869195 MCP-counter
+18 MCP-counter         B 0.5869195 0.00000000       0.0000000            
+[1] "CD4 T"
+   method.name cell.type       cor        diff comparator.corr  comparator
+28       xCell     CD4 T 0.8606141 0.001215399       0.8593987  CIBERSORTx
+8   CIBERSORTx     CD4 T 0.8593987 0.123999983       0.7353987   CIBERSORT
+7    CIBERSORT     CD4 T 0.7353987 0.038193482       0.6972053   quanTIseq
+23   quanTIseq     CD4 T 0.6972053 0.123301222       0.5739040        EPIC
+11        EPIC     CD4 T 0.5739040 0.023170879       0.5507332       TIMER
+26       TIMER     CD4 T 0.5507332          NA              NA MCP-counter
+18 MCP-counter     CD4 T        NA 0.000000000       0.0000000            
+[1] "CD8 T"
+   method.name cell.type       cor        diff comparator.corr  comparator
+23   quanTIseq     CD8 T 0.9361163 0.005607259       0.9305091 MCP-counter
+18 MCP-counter     CD8 T 0.9305091 0.052960891       0.8775482  CIBERSORTx
+8   CIBERSORTx     CD8 T 0.8775482 0.081700181       0.7958480       xCell
+28       xCell     CD8 T 0.7958480 0.015465241       0.7803828   CIBERSORT
+7    CIBERSORT     CD8 T 0.7803828 0.083262810       0.6971199        EPIC
+11        EPIC     CD8 T 0.6971199 0.433448990       0.2636710       TIMER
+26       TIMER     CD8 T 0.2636710 0.000000000       0.0000000            
+[1] "endothelial"
+   method.name   cell.type       cor        diff comparator.corr  comparator
+1  Aboensis IV endothelial 0.9819954 0.004652719       0.9773426       xCell
+29       xCell endothelial 0.9773426 0.001354224       0.9759884 MCP-counter
+18 MCP-counter endothelial 0.9759884 0.076848863       0.8991396  CIBERSORTx
+8   CIBERSORTx endothelial 0.8991396          NA              NA   CIBERSORT
+7    CIBERSORT endothelial        NA          NA              NA        EPIC
+11        EPIC endothelial        NA          NA              NA   quanTIseq
+23   quanTIseq endothelial        NA          NA              NA       TIMER
+26       TIMER endothelial        NA 0.000000000       0.0000000            
+[1] "fibroblasts"
+   method.name   cell.type       cor        diff comparator.corr comparator
+18 MCP-counter fibroblasts 0.9825149 0.009897293       0.9726176 CIBERSORTx
+8   CIBERSORTx fibroblasts 0.9726176 0.360223313       0.6123943      xCell
+29       xCell fibroblasts 0.6123943          NA              NA  CIBERSORT
+7    CIBERSORT fibroblasts        NA          NA              NA       EPIC
+11        EPIC fibroblasts        NA          NA              NA  quanTIseq
+23   quanTIseq fibroblasts        NA          NA              NA      TIMER
+26       TIMER fibroblasts        NA 0.000000000       0.0000000           
+[1] "macrophages"
+   method.name   cell.type        cor       diff comparator.corr  comparator
+2  Aginome-XMU macrophages  0.6557472 0.07560992       0.5801373       xCell
+23       xCell macrophages  0.5801373 0.11337864       0.4667586  CIBERSORTx
+7   CIBERSORTx macrophages  0.4667586 0.01432603       0.4524326   quanTIseq
+18   quanTIseq macrophages  0.4524326 0.05820011       0.3942325   CIBERSORT
+6    CIBERSORT macrophages  0.3942325 1.13072486      -0.7364924       TIMER
+21       TIMER macrophages -0.7364924         NA              NA        EPIC
+10        EPIC macrophages         NA         NA              NA MCP-counter
+14 MCP-counter macrophages         NA 0.00000000       0.0000000            
+[1] "memory CD4 T"
+   method.name    cell.type       cor       diff comparator.corr  comparator
+9       DA_505 memory CD4 T 0.6208184 0.07688892       0.5439295  CIBERSORTx
+7   CIBERSORTx memory CD4 T 0.5439295 0.02146059       0.5224689   CIBERSORT
+6    CIBERSORT memory CD4 T 0.5224689 0.10530504       0.4171638       xCell
+23       xCell memory CD4 T 0.4171638         NA              NA        EPIC
+10        EPIC memory CD4 T        NA         NA              NA MCP-counter
+14 MCP-counter memory CD4 T        NA         NA              NA   quanTIseq
+18   quanTIseq memory CD4 T        NA         NA              NA       TIMER
+21       TIMER memory CD4 T        NA 0.00000000       0.0000000            
+[1] "memory CD8 T"
+    method.name    cell.type       cor     diff comparator.corr  comparator
+15 mitten_TDC19 memory CD8 T 0.8233991 0.426718       0.3966811       xCell
+23        xCell memory CD8 T 0.3966811       NA              NA   CIBERSORT
+6     CIBERSORT memory CD8 T        NA       NA              NA  CIBERSORTx
+7    CIBERSORTx memory CD8 T        NA       NA              NA        EPIC
+10         EPIC memory CD8 T        NA       NA              NA MCP-counter
+14  MCP-counter memory CD8 T        NA       NA              NA   quanTIseq
+18    quanTIseq memory CD8 T        NA       NA              NA       TIMER
+21        TIMER memory CD8 T        NA 0.000000       0.0000000            
+[1] "monocytes"
+   method.name cell.type       cor        diff comparator.corr  comparator
+8       D3Team monocytes 0.7357983 0.004222461       0.7315758       xCell
+23       xCell monocytes 0.7315758 0.030601144       0.7009747  CIBERSORTx
+7   CIBERSORTx monocytes 0.7009747 0.043264005       0.6577107   CIBERSORT
+6    CIBERSORT monocytes 0.6577107 0.120718913       0.5369918        EPIC
+10        EPIC monocytes 0.5369918 0.087449522       0.4495422   quanTIseq
+18   quanTIseq monocytes 0.4495422          NA              NA MCP-counter
+14 MCP-counter monocytes        NA          NA              NA       TIMER
+21       TIMER monocytes        NA 0.000000000       0.0000000            
+[1] "monocytic lineage"
+   method.name         cell.type       cor        diff comparator.corr
+16       jdroz monocytic lineage 0.9522026 0.050740838       0.9014618
+8   CIBERSORTx monocytic lineage 0.9014618 0.059744359       0.8417174
+26       TIMER monocytic lineage 0.8417174 0.008728438       0.8329890
+7    CIBERSORT monocytic lineage 0.8329890 0.011884838       0.8211042
+18 MCP-counter monocytic lineage 0.8211042 0.001027106       0.8200771
+23   quanTIseq monocytic lineage 0.8200771 0.345867028       0.4742100
+11        EPIC monocytic lineage 0.4742100 0.008522352       0.4656877
+28       xCell monocytic lineage 0.4656877 0.000000000       0.0000000
+    comparator
+16  CIBERSORTx
+8        TIMER
+26   CIBERSORT
+7  MCP-counter
+18   quanTIseq
+23        EPIC
+11       xCell
+28            
+[1] "myeloid DCs"
+   method.name   cell.type        cor       diff comparator.corr  comparator
+23       xCell myeloid DCs  0.8016710 0.18343434       0.6182367  CIBERSORTx
+7   CIBERSORTx myeloid DCs  0.6182367 0.08006791       0.5381688   CIBERSORT
+6    CIBERSORT myeloid DCs  0.5381688 0.05083889       0.4873299 MCP-counter
+14 MCP-counter myeloid DCs  0.4873299 0.09243662       0.3948933       TIMER
+21       TIMER myeloid DCs  0.3948933 0.57851296      -0.1836197   quanTIseq
+18   quanTIseq myeloid DCs -0.1836197         NA              NA        EPIC
+10        EPIC myeloid DCs         NA 0.00000000       0.0000000            
+[1] "naive B"
+   method.name cell.type       cor       diff comparator.corr  comparator
+23       xCell   naive B 0.9590377 0.03342909       0.9256086  CIBERSORTx
+7   CIBERSORTx   naive B 0.9256086 0.04693410       0.8786745   CIBERSORT
+6    CIBERSORT   naive B 0.8786745         NA              NA        EPIC
+10        EPIC   naive B        NA         NA              NA MCP-counter
+14 MCP-counter   naive B        NA         NA              NA   quanTIseq
+18   quanTIseq   naive B        NA         NA              NA       TIMER
+21       TIMER   naive B        NA 0.00000000       0.0000000            
+[1] "naive CD4 T"
+   method.name   cell.type       cor       diff comparator.corr  comparator
+9       DA_505 naive CD4 T 0.7735640 0.01400356       0.7595604  CIBERSORTx
+7   CIBERSORTx naive CD4 T 0.7595604 0.08523670       0.6743237   CIBERSORT
+6    CIBERSORT naive CD4 T 0.6743237 0.09851621       0.5758075       xCell
+23       xCell naive CD4 T 0.5758075         NA              NA        EPIC
+10        EPIC naive CD4 T        NA         NA              NA MCP-counter
+14 MCP-counter naive CD4 T        NA         NA              NA   quanTIseq
+18   quanTIseq naive CD4 T        NA         NA              NA       TIMER
+21       TIMER naive CD4 T        NA 0.00000000       0.0000000            
+[1] "naive CD8 T"
+   method.name   cell.type       cor      diff comparator.corr  comparator
+1  Aboensis IV naive CD8 T 0.9102821 0.7579443       0.1523378       xCell
+23       xCell naive CD8 T 0.1523378        NA              NA   CIBERSORT
+6    CIBERSORT naive CD8 T        NA        NA              NA  CIBERSORTx
+7   CIBERSORTx naive CD8 T        NA        NA              NA        EPIC
+10        EPIC naive CD8 T        NA        NA              NA MCP-counter
+14 MCP-counter naive CD8 T        NA        NA              NA   quanTIseq
+18   quanTIseq naive CD8 T        NA        NA              NA       TIMER
+21       TIMER naive CD8 T        NA 0.0000000       0.0000000            
+[1] "neutrophils"
+   method.name   cell.type       cor        diff comparator.corr comparator
+18 MCP-counter neutrophils 0.9984854 0.010515342       0.9879701  quanTIseq
+23   quanTIseq neutrophils 0.9879701 0.013437965       0.9745321       EPIC
+11        EPIC neutrophils 0.9745321 0.014354419       0.9601777      xCell
+29       xCell neutrophils 0.9601777 0.005740825       0.9544369 CIBERSORTx
+8   CIBERSORTx neutrophils 0.9544369 0.014555989       0.9398809      TIMER
+26       TIMER neutrophils 0.9398809 0.025519575       0.9143613  CIBERSORT
+7    CIBERSORT neutrophils 0.9143613 0.000000000       0.0000000           
+[1] "NK"
+   method.name cell.type       cor        diff comparator.corr  comparator
+29       xCell        NK 0.9108232 0.018759439       0.8920637        EPIC
+11        EPIC        NK 0.8920637 0.026741932       0.8653218  CIBERSORTx
+8   CIBERSORTx        NK 0.8653218 0.043728905       0.8215929   CIBERSORT
+7    CIBERSORT        NK 0.8215929 0.001102095       0.8204908   quanTIseq
+23   quanTIseq        NK 0.8204908 0.007640890       0.8128499 MCP-counter
+18 MCP-counter        NK 0.8128499          NA              NA       TIMER
+26       TIMER        NK        NA 0.000000000       0.0000000            
+[1] "Tregs"
+   method.name cell.type       cor      diff comparator.corr  comparator
+23       xCell     Tregs 0.8518946 0.1102927       0.7416019   quanTIseq
+18   quanTIseq     Tregs 0.7416019 0.1946526       0.5469493  CIBERSORTx
+7   CIBERSORTx     Tregs 0.5469493 0.1988118       0.3481375   CIBERSORT
+6    CIBERSORT     Tregs 0.3481375        NA              NA        EPIC
+10        EPIC     Tregs        NA        NA              NA MCP-counter
+14 MCP-counter     Tregs        NA        NA              NA       TIMER
+21       TIMER     Tregs        NA 0.0000000       0.0000000            
+Round 1: 10 were top performer in at least one of the 17
+Round 1 coarse method count:
+   Method Freq
+1     DNN    1
+2     ENS    1
+5     OTH    1
+6      PI    1
+3     NMF    2
+7     REG    3
+9     SVR    3
+8     SUM    5
+10    UNK    5
+4    NNLS    6
+Round 1 coarse method count:
+  Output   pearson  spearman
+3   Prop 0.4267827 0.3728251
+2   Norm 0.6037689 0.5701622
+4  Score 0.7013442 0.6586203
+1   Frac 0.7489459 0.6688645
+5   <NA>       NaN 0.8425101
+
+	Pairwise comparisons using Wilcoxon rank sum test 
+
+data:  tbl$pearson and tbl$Output 
+
+      Frac Norm Prop
+Norm  0.66 -    -   
+Prop  0.26 0.66 -   
+Score 0.66 0.71 0.66
+
+P value adjustment method: BH 
+Round 1 fine method count:
+  Method Freq
+1    DNN    1
+2    ENS    1
+5     PI    1
+3    NMF    2
+6    REG    2
+8    SVR    3
+9    UNK    3
+7    SUM    4
+4   NNLS    6
+Round 1 fine method count:
+  Output   pearson  spearman
+3   Prop 0.3273564 0.2961657
+1   Frac 0.5830647 0.4919158
+2   Norm 0.6037143 0.5445870
+4  Score 0.6364589 0.5696514
+5   <NA>       NaN 0.6700206
+
+	Pairwise comparisons using Wilcoxon rank sum test 
+
+data:  tbl$pearson and tbl$Output 
+
+      Frac Norm Prop
+Norm  0.96 -    -   
+Prop  0.60 0.96 -   
+Score 1.00 0.96 0.60
+
+P value adjustment method: BH 
+Downloading  [###-----------------]16.44%   8.0MB/48.7MB (3.9MB/s) rerun-validation-sanitized-predictions.csv.synapse_download_81068651     Downloading  [#######-------------]32.87%   16.0MB/48.7MB (7.8MB/s) rerun-validation-sanitized-predictions.csv.synapse_download_81068651     Downloading  [#######-------------]34.25%   16.7MB/48.7MB (8.1MB/s) rerun-validation-sanitized-predictions.csv.synapse_download_81068651     Downloading  [##########----------]50.69%   24.7MB/48.7MB (12.0MB/s) rerun-validation-sanitized-predictions.csv.synapse_download_81068651     Downloading  [#############-------]67.13%   32.7MB/48.7MB (15.8MB/s) rerun-validation-sanitized-predictions.csv.synapse_download_81068651     Downloading  [#################---]83.56%   40.7MB/48.7MB (19.7MB/s) rerun-validation-sanitized-predictions.csv.synapse_download_81068651     Downloading  [####################]100.00%   48.7MB/48.7MB (23.5MB/s) rerun-validation-sanitized-predictions.csv.synapse_download_81068651 Done...    coarse 21 teams had 39
+fine 16 teams had 33
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "TIMER"       "xCell"      
+Exiting successfully
+-------------------------------------------------------------
+SUMNER/WINTER EPILOGUE
+-------------------------------------------------------------
+Job ID: 12768499
+Cluster: slurm_cluster
+User/Group: root/jaxuser
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 16
+CPU Utilized: 00:12:22
+CPU Efficiency: 7.11% of 02:53:52 core-walltime
+Job Wall-clock time: 00:10:52
+Memory Utilized: 3.25 GB
+Memory Efficiency: 0.65% of 500.00 GB
+-------------------------------------------------------------
+       JobID  User   State    CPUTime Exit     MaxRSS        NodeList  Partition                   ReqTRES              Submit               Start                 End    Elapsed 
+------------ ----- ------- ---------- ---- ---------- --------------- ---------- ------------------------- ------------------- ------------------- ------------------- ---------- 
+12768499     whit+ COMPLE+   02:53:52  0:0                  sumner084    compute billing=16,cpu=16,mem=51+ 2022-01-28T15:24:08 2022-01-28T15:24:28 2022-01-28T15:35:20   00:10:52 
+12768499.ba+       COMPLE+   02:53:52  0:0   3327.14M       sumner084                                      2022-01-28T15:24:28 2022-01-28T15:24:28 2022-01-28T15:35:20   00:10:52 
+12768499.ex+       COMPLE+   02:53:52  0:0      1.58M       sumner084                                      2022-01-28T15:24:28 2022-01-28T15:24:28 2022-01-28T15:35:20   00:10:52 
+-------------------------------------------------------------
