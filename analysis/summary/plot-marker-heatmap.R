@@ -116,24 +116,6 @@ if(include.cd45ro) {
 }
 cat("Limite to protein coding genes\n")
 
-fc <- as.matrix(cor(expr.mat, method = "spearman"))
-mar <- c(1, 1, 0, 1) + 0.1
-png("challenge-correlation.png")
-corrplot(fc, method = "ellipse", type = "upper", order = "original", tl.cex = 0.8, diag = FALSE, mar = mar)
-d <- dev.off()
-
-if(FALSE) {
-png("abbas-correlation.png")
-## plot.admixture.correlations(cell.type.means)
-fc <- as.matrix(cor(cell.type.means, method = "spearman"))
-mar <- c(1, 1, 0, 1) + 0.1
-corrplot(fc, method = "ellipse", type = "upper", order = "original", tl.cex = 0.8, diag = FALSE, mar = mar)
-d <- dev.off()
-}
-
-
-stop("stop")
-
 h1 <- plot.marker.heatmap(as.matrix(expr.mat), marker.tbl)
 h1@column_title <- "All genes"
 ##draw(h1, column_title = "All genes")
