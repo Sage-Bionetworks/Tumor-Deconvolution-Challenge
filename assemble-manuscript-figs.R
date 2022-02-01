@@ -10,6 +10,7 @@ figs <-
        "figs1a" = "presentations/challenge-website/Hierarchical\ Relationship\ of\ Immune\ Cells/V1.3-coarse-grained-aggregated-scaled.svg",
        "figs1b" = "presentations/challenge-website/Hierarchical Relationship of Immune Cells/V1.2-fine-grained-scaled.svg",
        "figs2" = "analysis/summary/purified-samples-marker-heatmap-protein-coding-genes-no-title.png",
+       "fig1" = "presentations/deconvolution-schematic.png",
        "fig2" = "analysis/validation-analysis/figs/fig-validation-round-1-performance.png",
        "figs3" = "analysis/validation-analysis/figs/fig-validation-all-performance.png",
        "figs4" = "analysis/validation-analysis/figs/fig-validation-round-1-merged-mixture-distribution-effect.png",
