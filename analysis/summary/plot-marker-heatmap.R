@@ -10,6 +10,8 @@ suppressPackageStartupMessages(p_load(gridExtra))
 suppressPackageStartupMessages(p_load(synapser))
 suppressPackageStartupMessages(p_load(ComplexHeatmap))
 suppressPackageStartupMessages(p_load(openxlsx))
+suppressPackageStartupMessages(p_load(data.table))
+suppressPackageStartupMessages(p_load(corrplot))
 
 synLogin()
 
@@ -31,9 +33,12 @@ if(include.cd45ro) {
 synId <- "syn21576632"
 expr.mat.file <- synGet(synId, downloadFile = TRUE)$path
 
-expr.mat <- read.table(expr.mat.file, sep=",", header=TRUE)
+# expr.mat <- read.table(expr.mat.file, sep=",", header=TRUE)
+cat("Reading expression matrix\n")
+expr.mat <- as.data.frame(fread(expr.mat.file))
 rownames(expr.mat) <- as.character(expr.mat$Gene)
 expr.mat <- expr.mat[, !(colnames(expr.mat) == "Gene")]
+cat("Done reading expression matrix\n")
 
 ## Only keep the purified samples
 colnames(expr.mat)[colnames(expr.mat) == "Breast"] <- "BRCA"
@@ -103,15 +108,35 @@ plot.marker.heatmap <- function(mat, marker.tbl, marker.gene.id.col = "marker.sy
     h
 }
 
-h1 <- plot.marker.heatmap(as.matrix(expr.mat), marker.tbl)
-h1@column_title <- "All genes"
-##draw(h1, column_title = "All genes")
-
 source("../utils.R")
+cat("Limiting to protein coding genes\n")
 pc.expr.mat <- limit.matrix.to.protein.coding(expr.mat)
 if(include.cd45ro) {
   pc.expr.mat <- rbind(pc.expr.mat, CD45RO = as.numeric(trans.expr.mat[cd45ro.enst.id,]))
 }
+cat("Limite to protein coding genes\n")
+
+fc <- as.matrix(cor(expr.mat, method = "spearman"))
+mar <- c(1, 1, 0, 1) + 0.1
+png("challenge-correlation.png")
+corrplot(fc, method = "ellipse", type = "upper", order = "original", tl.cex = 0.8, diag = FALSE, mar = mar)
+d <- dev.off()
+
+if(FALSE) {
+png("abbas-correlation.png")
+## plot.admixture.correlations(cell.type.means)
+fc <- as.matrix(cor(cell.type.means, method = "spearman"))
+mar <- c(1, 1, 0, 1) + 0.1
+corrplot(fc, method = "ellipse", type = "upper", order = "original", tl.cex = 0.8, diag = FALSE, mar = mar)
+d <- dev.off()
+}
+
+
+stop("stop")
+
+h1 <- plot.marker.heatmap(as.matrix(expr.mat), marker.tbl)
+h1@column_title <- "All genes"
+##draw(h1, column_title = "All genes")
 
 h2 <- plot.marker.heatmap(as.matrix(pc.expr.mat), marker.tbl)
 ##draw(h1, column_title = "All genes")
