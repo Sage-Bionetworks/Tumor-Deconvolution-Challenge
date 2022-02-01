@@ -359,11 +359,51 @@ plot.cell.type <- function(df, cell.type, x.val = "value.gt",
     g
 }
 
+plot.cell.type.large  <- function(df, cell.type, x.val = "value.gt",
+                           y.val = "value.cs",
+                           xlab = "CyTOF (Normalized)",
+                           ylab = "CIBERSORT (Normalized)",
+                           show.rmse = FALSE) {
+			   
+
+  g <- plot.cell.type(df, cell.type = cell.type,
+                      y.val = y.val,
+                      ylab = ylab,
+                      show.title = FALSE,
+                      show.correlation.text = FALSE,
+                      show.correlation = FALSE,
+                      show.identity = FALSE,
+                      show.legend = FALSE)
+  g <- g + theme(text = element_text(size = 35),
+                 axis.title.x = element_text(size = 35),
+                 axis.title.y = element_text(size = 35))
+  g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  g
+}
+
 g <- plot.cell.type(cs.gt.df, cell.type = "CD8_T_cells")
 
 g <- plot.cell.type(cs.gt.df, cell.type = "Eosinophils")
 png("sdy364-cibersort-eosinophils.png")
 print(g)
+d <- dev.off()
+
+
+
+g.b.cs <- plot.cell.type.large(cs.gt.df, cell.type = "B_cells",
+                                y.val = "value.cs",
+                                ylab = "CIBESORT Score")
+g.b.cs <- g.b.cs + xlab("Ground Truth") + ylab("Prediction")
+png("sdy364-bcell-cs-large.png")
+print(g.b.cs)
+d <- dev.off()
+
+g.mono.cs <- plot.cell.type.large(cs.gt.df, cell.type = "Monocytes",
+                                y.val = "value.cs",
+                                ylab = "CIBESORT Score")
+g.mono.cs <- g.mono.cs + xlab("Ground Truth") + ylab("Prediction")
+png("sdy364-mono-cs-large.png")
+print(g.mono.cs)
 d <- dev.off()
 
 
@@ -397,6 +437,7 @@ png("sdy364-bcell-mcp.png", width = 2 * 480)
 print(g.b.mcp)
 d <- dev.off()
 
+if(FALSE) {
 g.b.mcp <- plot.cell.type(mcp.gt.df, cell.type = ct,
                             y.val = "value.mcp",
                             ylab = "MCP-Counter Score",
@@ -409,12 +450,23 @@ g.b.mcp <- g.b.mcp + theme(text = element_text(size = 35),
                axis.title.x = element_text(size = 35),
                axis.title.y = element_text(size = 35))
 g.b.mcp <- g.b.mcp + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-
+}
+g.b.mcp <- plot.cell.type.large(mcp.gt.df, cell.type = ct,
+                                y.val = "value.mcp",
+                                ylab = "MCP-Counter Score")
 g.b.mcp <- g.b.mcp + xlab("Ground Truth") + ylab("Prediction")
 png("sdy364-bcell-mcp-large.png")
 print(g.b.mcp)
 d <- dev.off()
+
+g.mono.mcp <- plot.cell.type.large(mcp.gt.df, cell.type = "Monocytes",
+                                y.val = "value.mcp",
+                                ylab = "MCP-Counter Score")
+g.mono.mcp <- g.mono.mcp + xlab("Ground Truth") + ylab("Prediction")
+png("sdy364-mono-mcp-large.png")
+print(g.mono.mcp)
+d <- dev.off()
+
 
 
 g.b.mcp <- plot.cell.type(mcp.gt.df, cell.type = ct,

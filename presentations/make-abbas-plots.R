@@ -349,34 +349,45 @@ g
 prefix <- "b-cell-score"
 ggsave(paste0(prefix, ".png"), width=10,height=5)
 
-prefix <- "admixture-matrix"
-n.col <- 22
-set.seed(1234)
-tmp <- llply(1:n.col,
-             .fun = function(i) {
-                 sample.indices <- sample.int(ncol(all.expr.log.scale),
-                                              size = ncol(all.expr.log.scale), replace = TRUE)
-                 admixture.vec <- rowMeans(all.expr.log.scale[, sample.indices])
-             })
-tmp <- do.call("cbind", tmp)
-##tmp <- cbind(admixture1.vec, admixture2.vec, admixture3.vec)
-##colnames(tmp) <- c("A", "B", "C")
-tmp.long <- reshape2::melt(as.matrix(tmp))
-##tmp.long$Var2 <- factor(tmp.long$Var2, levels = c("A", "B", "C"))
-##png(paste0(prefix, ".png"),nsamples*10/4,50)
+create.admixture <- function(all.expr.log.scale, seed = 1234) {
+  set.seed(seed)
+  n.col <- 22
+  tmp <- llply(1:n.col,
+               .fun = function(i) {
+                   sample.indices <- sample.int(ncol(all.expr.log.scale),
+                                                size = ncol(all.expr.log.scale), replace = TRUE)
+                   admixture.vec <- rowMeans(all.expr.log.scale[, sample.indices])
+               })
+  tmp <- do.call("cbind", tmp)
+  tmp.long <- reshape2::melt(as.matrix(tmp))
+  tmp.long
+}
+
+prefix <- "admixture-matrix-1"
 png(paste0(prefix, ".png"))
+tmp.long <- create.admixture(all.expr.log.scale, seed = 1234)
 g <- ggplot(data=tmp.long, aes(x=Var2, y=Var1, fill=value)) 
 g <- g + geom_tile()
 g <- g + scale_fill_gradient2(low = low.col, mid = mid.col, high = high.col)
 g <- remove.axes(g, remove.title=FALSE, remove.axis.labels=FALSE)
-if(FALSE) {
-g <- g + theme(axis.text.y=element_blank(),
-               axis.ticks.y=element_blank(),
-               axis.line.y=element_blank(),
-               axis.ticks.x=element_blank(),
-               axis.line.x=element_blank(),
-               legend.position = "none")
-}
+g <- g + ylab("Genes") + xlab("Admixtures")
+## g <- g + scale_x_discrete(position="top")
+g <- g + theme(text = element_text(size = 35),
+               axis.title.x = element_text(size = 35),
+               axis.title.y = element_text(size = 35))
+## g <- g + ggtitle("Admixtures") + theme(plot.title = element_text(hjust = 0.5))
+g
+print(g)
+##grid.draw(gtable::gtable_filter(gt, "panel"))
+d <- dev.off()
+
+prefix <- "admixture-matrix-2"
+png(paste0(prefix, ".png"))
+tmp.long <- create.admixture(all.expr.log.scale, seed = 4321)
+g <- ggplot(data=tmp.long, aes(x=Var2, y=Var1, fill=value)) 
+g <- g + geom_tile()
+g <- g + scale_fill_gradient2(low = low.col, mid = mid.col, high = high.col)
+g <- remove.axes(g, remove.title=FALSE, remove.axis.labels=FALSE)
 g <- g + ylab("Genes") + xlab("Admixtures")
 ## g <- g + scale_x_discrete(position="top")
 g <- g + theme(text = element_text(size = 35),
