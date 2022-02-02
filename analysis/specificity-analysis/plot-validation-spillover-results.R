@@ -780,7 +780,7 @@ perform.spillover.analysis <- function(res.input,
 		     g.with.legs
 		   })
 
-    ret.list <- list("all.res" = all.res, "method.plots" = method.plots,
+    ret.list <- list("all.res" = all.res, "spillover.summary" = spillover.summary, "method.plots" = method.plots,
                      "spillover.summary.plot" = g, "spillover.method.summary.plots" = g.methods)
     return(ret.list)
 }
@@ -796,7 +796,8 @@ for(round in rounds) {
 
     results[[round]] <- perform.spillover.analysis(res, method.anno.round, method.name.col, subchallenge.col,
                                                    round.col = "submission", round = round, postfix = postfix)
-    
+    spillover.summary <- results[[round]][["spillover.summary"]]
+    write.table(spillover.summary, file=paste0(figs.dir, "/spillover-summary-round-", round, ".tsv"), sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE)
 }
 
 g1 <- results[["1"]][["method.plots"]][["Biogem-coarse"]]

@@ -1054,7 +1054,8 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
 
 
     if(is.null(cell.type.levels)) {
-        cell.type.levels <- c(grep(x = cell.type.summaries[, cell.type.var], pattern = row.summary.fun, values = TRUE), nnrow.summary.fun, row.summary.fun)
+        # cell.type.levels <- c(grep(x = cell.type.summaries[, cell.type.var], pattern = row.summary.fun, values = TRUE), nnrow.summary.fun, row.summary.fun)
+        cell.type.levels <- c(cell.type.summaries[grepl(x = cell.type.summaries[, cell.type.var], pattern = row.summary.fun), cell.type.var], nnrow.summary.fun, row.summary.fun)
     } else {
         cell.type.levels <- c(cell.type.levels, nnrow.summary.fun, row.summary.fun)
     }
