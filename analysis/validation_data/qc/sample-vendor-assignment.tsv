@@ -1,0 +1,28 @@
+sample	vendor
+Breast	ATCC
+CRC	ATCC
+Fibroblasts	ATCC
+Endo	ATCC
+Neutro_1	Isolated by HIMC
+DC_1	All Cells
+Mono_1	Stem Express
+Macro_1	Stem Express
+NK_1	Stem Express
+Tregs	Stem Express
+CD4T_naive_1	Stem Express
+CD4T_mem_1	Stem Express
+CD8T_naive_1	Stem Express
+CD8T_mem_1	Isolated by HIMC
+B_naive_1	Stem Express
+Memory_B_cells_1	Stem Express
+Neutro_2	Isolated by HIMC
+DC_2	All Cells
+Mono_2	All Cells
+Macro_2	Stem Express
+NK_2	All Cells
+CD4T_naive_2	All Cells
+CD4T_mem_2	All Cells
+CD8T_naive_2	All Cells
+CD8T_mem_2	Isolated by HIMC
+B_naive_2	Stem Express
+Memory_B_cells_2	Stem Express
