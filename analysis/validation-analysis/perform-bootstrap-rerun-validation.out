@@ -1,0 +1,512 @@
+Welcome, Brian White!NULL
+Registering 71 cores.
+Excluding methods: TIMER
+Doing round 1
+Calculating bootstrap correlations (ensemble)
+Calculating bootstrap correlations
+[1] "Aboensis IV"
+[1] "Aginome-XMU"
+[1] "Biogem"
+[1] "Cancer_Decon"
+[1] "CancerSysBio"
+[1] "CCB"
+[1] "CIBERSORT"
+[1] "CIBERSORTx"
+[1] "D3Team"
+[1] "DA_505"
+[1] "EPIC"
+[1] "HM159"
+[1] "ICTD"
+[1] "IZI"
+[1] "jbkcose"
+[1] "jdroz"
+[1] "LeiliLab"
+[1] "MCP-counter"
+[1] "mitten_TDC19"
+[1] "NPU"
+[1] "NYIT_glomerular"
+[1] "Patrick"
+[1] "quanTIseq"
+[1] "REGGEN_LAB"
+[1] "Rubbernecks"
+[1] "TJU"
+[1] "xCell"
+[1] "Aboensis IV"
+[1] "Aginome-XMU"
+[1] "Biogem"
+[1] "Cancer_Decon"
+[1] "CCB"
+[1] "CIBERSORT"
+[1] "CIBERSORTx"
+[1] "D3Team"
+[1] "DA_505"
+[1] "EPIC"
+[1] "ICTD"
+[1] "IZI"
+[1] "LeiliLab"
+[1] "MCP-counter"
+[1] "mitten_TDC19"
+[1] "NPU"
+[1] "Patrick"
+[1] "quanTIseq"
+[1] "REGGEN_LAB"
+[1] "Rubbernecks"
+[1] "Tonys Boys"
+[1] "xCell"
+[1] "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"     
+[6] "spearman"     "rmse"        
+  method.name boot.i dataset.name         cell.type   pearson  spearman
+1 Aboensis IV      1           AA                 B 0.9929538 0.9751144
+2 Aboensis IV      1           AA             CD4 T 0.2387196 0.2967425
+3 Aboensis IV      1           AA             CD8 T 0.1657896 0.1838465
+4 Aboensis IV      1           AA       endothelial 0.9936583 0.9860418
+5 Aboensis IV      1           AA       fibroblasts 0.9870985 0.9629630
+6 Aboensis IV      1           AA monocytic lineage 0.8218499 0.8184355
+      rmse
+1 1.308757
+2 1.000256
+3 1.243513
+4 1.445868
+5 1.399180
+6 1.255212
+Calculating bootstrapped scores
+Calculating mean bootstrapped scores
+Calculating mean by cell type
+Calculating bayes factors
+Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
+Top performer for Round 1 in coarse sub-challenge: CIBERSORTx
+              team pearson spearman
+1      Aginome-XMU     Inf      Inf
+2           DA_505     Inf      Inf
+3           Biogem     Inf      Inf
+4              IZI     Inf      Inf
+5            xCell     Inf      Inf
+6     mitten_TDC19     Inf      Inf
+7     Cancer_Decon     Inf      Inf
+8             ICTD     Inf      Inf
+9      Aboensis IV     Inf      Inf
+10             CCB     Inf      Inf
+11          D3Team     Inf      Inf
+12    CancerSysBio     Inf      Inf
+13         Patrick     Inf      Inf
+14           jdroz     Inf      Inf
+15           HM159     Inf      Inf
+16             NPU     Inf      Inf
+17        LeiliLab     Inf      Inf
+18      REGGEN_LAB     Inf      Inf
+19     Rubbernecks     Inf      Inf
+20             TJU     Inf      Inf
+21 NYIT_glomerular     Inf      Inf
+22         jbkcose     Inf      Inf
+Top performer for Round 1 in fine sub-challenge: Aginome-XMU
+           team pearson spearman
+1  mitten_TDC19     999  24.0000
+2        DA_505     Inf      Inf
+3         xCell     Inf 141.8571
+4        D3Team     Inf      Inf
+5           IZI     Inf      Inf
+6        Biogem     Inf      Inf
+7  Cancer_Decon     Inf      Inf
+8          ICTD     Inf      Inf
+9           CCB     Inf      Inf
+10  Aboensis IV     Inf      Inf
+11      Patrick     Inf      Inf
+12   REGGEN_LAB     Inf      Inf
+13   Tonys Boys     Inf      Inf
+14          NPU     Inf      Inf
+15  Rubbernecks     Inf      Inf
+16     LeiliLab     Inf      Inf
+Doing round 2
+Calculating bootstrap correlations (ensemble)
+Calculating bootstrap correlations
+[1] "Aboensis IV"
+[1] "Aginome-XMU"
+[1] "Biogem"
+[1] "Cancer_Decon"
+[1] "CancerSysBio"
+[1] "CCB"
+[1] "CIBERSORT"
+[1] "CIBERSORTx"
+[1] "D3Team"
+[1] "DA_505"
+[1] "EPIC"
+[1] "HM159"
+[1] "ICTD"
+[1] "IZI"
+[1] "jbkcose"
+[1] "jdroz"
+[1] "LeiliLab"
+[1] "MCP-counter"
+[1] "mitten_TDC19"
+[1] "NPU"
+[1] "NYIT_glomerular"
+[1] "Patrick"
+[1] "quanTIseq"
+[1] "REGGEN_LAB"
+[1] "Rubbernecks"
+[1] "TJU"
+[1] "xCell"
+[1] "Aboensis IV"
+[1] "Aginome-XMU"
+[1] "Biogem"
+[1] "Cancer_Decon"
+[1] "CCB"
+[1] "CIBERSORT"
+[1] "CIBERSORTx"
+[1] "D3Team"
+[1] "DA_505"
+[1] "EPIC"
+[1] "ICTD"
+[1] "IZI"
+[1] "LeiliLab"
+[1] "MCP-counter"
+[1] "mitten_TDC19"
+[1] "NPU"
+[1] "Patrick"
+[1] "quanTIseq"
+[1] "REGGEN_LAB"
+[1] "Rubbernecks"
+[1] "Tonys Boys"
+[1] "xCell"
+[1] "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"     
+[6] "spearman"     "rmse"        
+  method.name boot.i dataset.name         cell.type   pearson  spearman
+1 Aboensis IV      1           AA                 B 0.9927278 0.9724362
+2 Aboensis IV      1           AA             CD4 T 0.2547069 0.3601071
+3 Aboensis IV      1           AA             CD8 T 0.9213788 0.9352967
+4 Aboensis IV      1           AA       endothelial 0.9953057 0.9864885
+5 Aboensis IV      1           AA       fibroblasts 0.9873701 0.9647479
+6 Aboensis IV      1           AA monocytic lineage 0.8109230 0.8059369
+       rmse
+1 1.3121712
+2 0.9924913
+3 1.1831160
+4 1.4802742
+5 1.3930012
+6 1.2369181
+Calculating bootstrapped scores
+Calculating mean bootstrapped scores
+Calculating mean by cell type
+Calculating bayes factors
+Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
+Top performer for Round 2 in coarse sub-challenge: Aginome-XMU
+              team pearson    spearman
+1       CIBERSORTx 1.43309   0.3262599
+2           Biogem     Inf         Inf
+3              IZI     Inf         Inf
+4      Aboensis IV     Inf         Inf
+5            xCell     Inf         Inf
+6           DA_505     Inf         Inf
+7              CCB     Inf         Inf
+8     Cancer_Decon     Inf 999.0000000
+9     mitten_TDC19     Inf         Inf
+10            ICTD     Inf         Inf
+11          D3Team     Inf         Inf
+12    CancerSysBio     Inf         Inf
+13         Patrick     Inf         Inf
+14           jdroz     Inf         Inf
+15     Rubbernecks     Inf         Inf
+16           HM159     Inf         Inf
+17             NPU     Inf         Inf
+18      REGGEN_LAB     Inf         Inf
+19 NYIT_glomerular     Inf         Inf
+20             TJU     Inf         Inf
+21        LeiliLab     Inf         Inf
+22         jbkcose     Inf         Inf
+Top performer for Round 2 in fine sub-challenge: Aginome-XMU
+           team pearson spearman
+1        DA_505     499 15.12903
+2  mitten_TDC19     Inf      Inf
+3         xCell     Inf      Inf
+4        Biogem     Inf      Inf
+5           CCB     Inf      Inf
+6        D3Team     Inf      Inf
+7           IZI     Inf      Inf
+8  Cancer_Decon     Inf      Inf
+9          ICTD     Inf      Inf
+10  Aboensis IV     Inf      Inf
+11      Patrick     Inf      Inf
+12   REGGEN_LAB     Inf      Inf
+13  Rubbernecks     Inf      Inf
+14   Tonys Boys     Inf      Inf
+15          NPU     Inf      Inf
+16     LeiliLab     Inf      Inf
+Doing round 3
+Calculating bootstrap correlations (ensemble)
+Calculating bootstrap correlations
+[1] "Aboensis IV"
+[1] "Aginome-XMU"
+[1] "Biogem"
+[1] "Cancer_Decon"
+[1] "CancerSysBio"
+[1] "CCB"
+[1] "CIBERSORT"
+[1] "CIBERSORTx"
+[1] "D3Team"
+[1] "DA_505"
+[1] "EPIC"
+[1] "HM159"
+[1] "ICTD"
+[1] "IZI"
+[1] "jbkcose"
+[1] "jdroz"
+[1] "LeiliLab"
+[1] "MCP-counter"
+[1] "mitten_TDC19"
+[1] "NPU"
+[1] "NYIT_glomerular"
+[1] "Patrick"
+[1] "quanTIseq"
+[1] "REGGEN_LAB"
+[1] "Rubbernecks"
+[1] "TJU"
+[1] "xCell"
+[1] "Aboensis IV"
+[1] "Aginome-XMU"
+[1] "Biogem"
+[1] "Cancer_Decon"
+[1] "CCB"
+[1] "CIBERSORT"
+[1] "CIBERSORTx"
+[1] "D3Team"
+[1] "DA_505"
+[1] "EPIC"
+[1] "ICTD"
+[1] "IZI"
+[1] "LeiliLab"
+[1] "MCP-counter"
+[1] "mitten_TDC19"
+[1] "NPU"
+[1] "Patrick"
+[1] "quanTIseq"
+[1] "REGGEN_LAB"
+[1] "Rubbernecks"
+[1] "Tonys Boys"
+[1] "xCell"
+[1] "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"     
+[6] "spearman"     "rmse"        
+  method.name boot.i dataset.name         cell.type   pearson  spearman
+1 Aboensis IV      1           AA                 B 0.9929538 0.9751144
+2 Aboensis IV      1           AA             CD4 T 0.2547069 0.3601071
+3 Aboensis IV      1           AA             CD8 T 0.1657896 0.1838465
+4 Aboensis IV      1           AA       endothelial 0.9953057 0.9864885
+5 Aboensis IV      1           AA       fibroblasts 0.9871655 0.9629630
+6 Aboensis IV      1           AA monocytic lineage 0.8218499 0.8184355
+       rmse
+1 1.3087570
+2 0.9924913
+3 1.2435128
+4 1.4802742
+5 1.3966730
+6 1.2552116
+Calculating bootstrapped scores
+Calculating mean bootstrapped scores
+Calculating mean by cell type
+Calculating bayes factors
+Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
+Top performer for Round 3 in coarse sub-challenge: Aginome-XMU
+              team pearson    spearman
+1       CIBERSORTx 1.43309   0.3262599
+2           DA_505     Inf         Inf
+3           Biogem     Inf  51.6315789
+4     mitten_TDC19     Inf         Inf
+5      Aboensis IV     Inf         Inf
+6            xCell     Inf         Inf
+7              IZI     Inf         Inf
+8              CCB     Inf         Inf
+9     Cancer_Decon     Inf 999.0000000
+10            ICTD     Inf         Inf
+11          D3Team     Inf         Inf
+12    CancerSysBio     Inf         Inf
+13         Patrick     Inf         Inf
+14           jdroz     Inf         Inf
+15     Rubbernecks     Inf         Inf
+16           HM159     Inf         Inf
+17             NPU     Inf         Inf
+18      REGGEN_LAB     Inf         Inf
+19 NYIT_glomerular     Inf         Inf
+20             TJU     Inf         Inf
+21        LeiliLab     Inf         Inf
+22         jbkcose     Inf         Inf
+Top performer for Round 3 in fine sub-challenge: Aginome-XMU
+           team pearson  spearman
+1        DA_505      99  5.451613
+2  mitten_TDC19     Inf 82.333333
+3         xCell     Inf       Inf
+4        Biogem     Inf       Inf
+5           CCB     Inf       Inf
+6   Aboensis IV     Inf       Inf
+7        D3Team     Inf       Inf
+8  Cancer_Decon     Inf       Inf
+9          ICTD     Inf       Inf
+10      Patrick     Inf       Inf
+11   REGGEN_LAB     Inf       Inf
+12          IZI     Inf       Inf
+13  Rubbernecks     Inf       Inf
+14   Tonys Boys     Inf       Inf
+15          NPU     Inf       Inf
+16     LeiliLab     Inf       Inf
+Doing round latest
+Calculating bootstrap correlations (ensemble)
+Calculating bootstrap correlations
+[1] "Aboensis IV"
+[1] "Aginome-XMU"
+[1] "Biogem"
+[1] "Cancer_Decon"
+[1] "CancerSysBio"
+[1] "CCB"
+[1] "CIBERSORT"
+[1] "CIBERSORTx"
+[1] "D3Team"
+[1] "DA_505"
+[1] "EPIC"
+[1] "HM159"
+[1] "ICTD"
+[1] "IZI"
+[1] "jbkcose"
+[1] "jdroz"
+[1] "LeiliLab"
+[1] "MCP-counter"
+[1] "mitten_TDC19"
+[1] "NPU"
+[1] "NYIT_glomerular"
+[1] "Patrick"
+[1] "quanTIseq"
+[1] "REGGEN_LAB"
+[1] "Rubbernecks"
+[1] "TJU"
+[1] "xCell"
+[1] "Aboensis IV"
+[1] "Aginome-XMU"
+[1] "Biogem"
+[1] "Cancer_Decon"
+[1] "CCB"
+[1] "CIBERSORT"
+[1] "CIBERSORTx"
+[1] "D3Team"
+[1] "DA_505"
+[1] "EPIC"
+[1] "ICTD"
+[1] "IZI"
+[1] "LeiliLab"
+[1] "MCP-counter"
+[1] "mitten_TDC19"
+[1] "NPU"
+[1] "Patrick"
+[1] "quanTIseq"
+[1] "REGGEN_LAB"
+[1] "Rubbernecks"
+[1] "Tonys Boys"
+[1] "xCell"
+[1] "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"     
+[6] "spearman"     "rmse"        
+  method.name boot.i dataset.name         cell.type   pearson  spearman
+1 Aboensis IV      1           AA                 B 0.9929538 0.9751144
+2 Aboensis IV      1           AA             CD4 T 0.2547069 0.3601071
+3 Aboensis IV      1           AA             CD8 T 0.1657896 0.1838465
+4 Aboensis IV      1           AA       endothelial 0.9953057 0.9864885
+5 Aboensis IV      1           AA       fibroblasts 0.9871655 0.9629630
+6 Aboensis IV      1           AA monocytic lineage 0.8218499 0.8184355
+       rmse
+1 1.3087570
+2 0.9924913
+3 1.2435128
+4 1.4802742
+5 1.3966730
+6 1.2552116
+Calculating bootstrapped scores
+Calculating mean bootstrapped scores
+Calculating mean by cell type
+Calculating bayes factors
+Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
+Top performer for Round latest in coarse sub-challenge: Aginome-XMU
+              team pearson    spearman
+1       CIBERSORTx 1.43309   0.3262599
+2           DA_505     Inf         Inf
+3           Biogem     Inf  51.6315789
+4     mitten_TDC19     Inf         Inf
+5      Aboensis IV     Inf         Inf
+6            xCell     Inf         Inf
+7              IZI     Inf         Inf
+8              CCB     Inf         Inf
+9     Cancer_Decon     Inf 999.0000000
+10            ICTD     Inf         Inf
+11          D3Team     Inf         Inf
+12    CancerSysBio     Inf         Inf
+13         Patrick     Inf         Inf
+14           jdroz     Inf         Inf
+15     Rubbernecks     Inf         Inf
+16           HM159     Inf         Inf
+17             NPU     Inf         Inf
+18      REGGEN_LAB     Inf         Inf
+19 NYIT_glomerular     Inf         Inf
+20             TJU     Inf         Inf
+21        LeiliLab     Inf         Inf
+22         jbkcose     Inf         Inf
+Top performer for Round latest in fine sub-challenge: Aginome-XMU
+           team pearson  spearman
+1        DA_505      99  5.451613
+2  mitten_TDC19     Inf 82.333333
+3         xCell     Inf       Inf
+4        Biogem     Inf       Inf
+5           CCB     Inf       Inf
+6   Aboensis IV     Inf       Inf
+7        D3Team     Inf       Inf
+8  Cancer_Decon     Inf       Inf
+9          ICTD     Inf       Inf
+10      Patrick     Inf       Inf
+11   REGGEN_LAB     Inf       Inf
+12          IZI     Inf       Inf
+13  Rubbernecks     Inf       Inf
+14   Tonys Boys     Inf       Inf
+15          NPU     Inf       Inf
+16     LeiliLab     Inf       Inf
+Storing bootstrap-validation-results.rds to synapse
+################################################## Uploading file to Synapse storage ##################################################Uploading [--------------------]0.00%   0.0bytes/351.8MB  bootstrap-validation-results.rds     Uploading [--------------------]2.27%   8.0MB/351.8MB (290.2kB/s) bootstrap-validation-results.rds     Uploading [#-------------------]4.55%   16.0MB/351.8MB (580.4kB/s) bootstrap-validation-results.rds     Uploading [#-------------------]6.82%   24.0MB/351.8MB (870.6kB/s) bootstrap-validation-results.rds     Uploading [##------------------]9.10%   32.0MB/351.8MB (1.1MB/s) bootstrap-validation-results.rds     Uploading [##------------------]11.37%   40.0MB/351.8MB (1.4MB/s) bootstrap-validation-results.rds     Uploading [###-----------------]13.65%   48.0MB/351.8MB (1.7MB/s) bootstrap-validation-results.rds     Uploading [###-----------------]15.92%   56.0MB/351.8MB (2.0MB/s) bootstrap-validation-results.rds     Uploading [####----------------]18.19%   64.0MB/351.8MB (2.3MB/s) bootstrap-validation-results.rds     Uploading [####----------------]20.47%   72.0MB/351.8MB (2.6MB/s) bootstrap-validation-results.rds     Uploading [#####---------------]22.74%   80.0MB/351.8MB (2.8MB/s) bootstrap-validation-results.rds     Uploading [#####---------------]25.02%   88.0MB/351.8MB (3.1MB/s) bootstrap-validation-results.rds     Uploading [#####---------------]27.29%   96.0MB/351.8MB (3.4MB/s) bootstrap-validation-results.rds     Uploading [######--------------]29.56%   104.0MB/351.8MB (3.7MB/s) bootstrap-validation-results.rds     Uploading [######--------------]31.84%   112.0MB/351.8MB (4.0MB/s) bootstrap-validation-results.rds     Uploading [#######-------------]34.11%   120.0MB/351.8MB (4.3MB/s) bootstrap-validation-results.rds     Uploading [#######-------------]36.39%   128.0MB/351.8MB (4.5MB/s) bootstrap-validation-results.rds     Uploading [########------------]38.66%   136.0MB/351.8MB (4.8MB/s) bootstrap-validation-results.rds     Uploading [########------------]40.94%   144.0MB/351.8MB (5.1MB/s) bootstrap-validation-results.rds     Uploading [#########-----------]43.21%   152.0MB/351.8MB (5.4MB/s) bootstrap-validation-results.rds     Uploading [#########-----------]45.48%   160.0MB/351.8MB (5.7MB/s) bootstrap-validation-results.rds     Uploading [##########----------]47.76%   168.0MB/351.8MB (6.0MB/s) bootstrap-validation-results.rds     Uploading [##########----------]50.03%   176.0MB/351.8MB (6.2MB/s) bootstrap-validation-results.rds     Uploading [##########----------]52.31%   184.0MB/351.8MB (6.5MB/s) bootstrap-validation-results.rds     Uploading [###########---------]54.58%   192.0MB/351.8MB (6.8MB/s) bootstrap-validation-results.rds     Uploading [###########---------]56.85%   200.0MB/351.8MB (7.1MB/s) bootstrap-validation-results.rds     Uploading [############--------]59.06%   207.8MB/351.8MB (7.4MB/s) bootstrap-validation-results.rds     Uploading [############--------]61.34%   215.8MB/351.8MB (7.6MB/s) bootstrap-validation-results.rds     Uploading [#############-------]63.61%   223.8MB/351.8MB (7.9MB/s) bootstrap-validation-results.rds     Uploading [#############-------]65.89%   231.8MB/351.8MB (8.2MB/s) bootstrap-validation-results.rds     Uploading [##############------]68.16%   239.8MB/351.8MB (8.5MB/s) bootstrap-validation-results.rds     Uploading [##############------]70.44%   247.8MB/351.8MB (8.8MB/s) bootstrap-validation-results.rds     Uploading [###############-----]72.71%   255.8MB/351.8MB (9.1MB/s) bootstrap-validation-results.rds     Uploading [###############-----]74.98%   263.8MB/351.8MB (9.3MB/s) bootstrap-validation-results.rds     Uploading [###############-----]77.26%   271.8MB/351.8MB (9.6MB/s) bootstrap-validation-results.rds     Uploading [################----]79.53%   279.8MB/351.8MB (9.9MB/s) bootstrap-validation-results.rds     Uploading [################----]81.81%   287.8MB/351.8MB (10.2MB/s) bootstrap-validation-results.rds     Uploading [#################---]84.08%   295.8MB/351.8MB (10.5MB/s) bootstrap-validation-results.rds     Uploading [#################---]86.35%   303.8MB/351.8MB (10.8MB/s) bootstrap-validation-results.rds     Uploading [##################--]88.63%   311.8MB/351.8MB (11.0MB/s) bootstrap-validation-results.rds     Uploading [##################--]90.90%   319.8MB/351.8MB (11.3MB/s) bootstrap-validation-results.rds     Uploading [###################-]93.18%   327.8MB/351.8MB (11.6MB/s) bootstrap-validation-results.rds     Uploading [###################-]95.45%   335.8MB/351.8MB (11.9MB/s) bootstrap-validation-results.rds     Uploading [####################]97.73%   343.8MB/351.8MB (12.2MB/s) bootstrap-validation-results.rds     Uploading [####################]100.00%   351.8MB/351.8MB (12.5MB/s) bootstrap-validation-results.rds Done...    File: bootstrap-validation-results.rds (syn22951683)
+  md5=da9184adae6aa46e398a6a77d5222da7
+  fileSize=368863912
+  contentType=application/octet-stream
+  externalURL=None
+  cacheDir=
+  files=['bootstrap-validation-results.rds']
+  path=bootstrap-validation-results.rds
+  synapseStore=True
+properties:
+  concreteType=org.sagebionetworks.repo.model.FileEntity
+  createdBy=3346401
+  createdOn=2020-10-04T19:38:39.922Z
+  dataFileHandleId=90946884
+  etag=5061c138-7218-4868-bb8b-0b40494726cc
+  id=syn22951683
+  isLatestVersion=True
+  modifiedBy=3346401
+  modifiedOn=2022-03-23T08:27:04.379Z
+  name=bootstrap-validation-results.rds
+  parentId=syn22320184
+  versionLabel=6
+  versionNumber=6
+annotations:
+  executed=['https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis//validation-analysis/perform-bootstrap-rerun-validation-analysis.R']
+
+Exiting successfully
+-------------------------------------------------------------
+SUMNER/WINTER EPILOGUE
+-------------------------------------------------------------
+Job ID: 13851243
+Cluster: slurm_cluster
+User/Group: root/jaxuser
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 16
+CPU Utilized: 13:09:04
+CPU Efficiency: 18.60% of 2-22:41:52 core-walltime
+Job Wall-clock time: 04:25:07
+Memory Utilized: 59.19 GB
+Memory Efficiency: 11.84% of 500.00 GB
+-------------------------------------------------------------
+       JobID  User   State    CPUTime Exit     MaxRSS        NodeList  Partition                   ReqTRES              Submit               Start                 End    Elapsed 
+------------ ----- ------- ---------- ---- ---------- --------------- ---------- ------------------------- ------------------- ------------------- ------------------- ---------- 
+13851243     whit+ COMPLE+ 2-22:41:52  0:0                  sumner017    compute billing=16,cpu=16,mem=51+ 2022-03-23T00:01:40 2022-03-23T00:01:58 2022-03-23T04:27:05   04:25:07 
+13851243.ba+       COMPLE+ 2-22:41:52  0:0  60605.52M       sumner017                                      2022-03-23T00:01:58 2022-03-23T00:01:58 2022-03-23T04:27:05   04:25:07 
+13851243.ex+       COMPLE+ 2-22:41:52  0:0      1.76M       sumner017                                      2022-03-23T00:01:58 2022-03-23T00:01:58 2022-03-23T04:27:05   04:25:07 
+-------------------------------------------------------------

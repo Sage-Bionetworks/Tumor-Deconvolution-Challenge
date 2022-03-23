@@ -1,0 +1,1 @@
+methods.to.exclude <- c("TIMER", "timer")

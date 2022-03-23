@@ -340,7 +340,6 @@ Rubbernecks -round-latest max diff between coarse and fine-grained is: 0.2960371
 3 neutrophils   Rubbernecks 0.8248651   Rubbernecks 0.7836001  0.04126494
 4          NK   Rubbernecks 0.6302955   Rubbernecks 0.6968312 -0.06653577
 Max diff exceeded for Rubbernecks -round-latest: 0.296037106632922
-TIMER -round-latest max diff between coarse and fine-grained is: 0
 xCell -round-latest max diff between coarse and fine-grained is: 0.00713491648524578
     cell.type method.name.x     cor.x method.name.y     cor.y         diff
 2 fibroblasts         xCell 0.6117140         xCell 0.6130747 -0.001360648
@@ -354,27 +353,27 @@ means
 [13] "ICTD"            "IZI"             "jbkcose"         "jdroz"          
 [17] "LeiliLab"        "MCP-counter"     "mitten_TDC19"    "NPU"            
 [21] "NYIT_glomerular" "Patrick"         "quanTIseq"       "REGGEN_LAB"     
-[25] "Rubbernecks"     "TIMER"           "TJU"             "xCell"          
+[25] "Rubbernecks"     "TJU"             "xCell"          
 levels
  [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
  [5] "NYIT_glomerular" "NPU"             "HM159"           "Rubbernecks"    
- [9] "jdroz"           "TIMER"           "Patrick"         "CancerSysBio"   
-[13] "EPIC"            "D3Team"          "IZI"             "CCB"            
-[17] "ICTD"            "Cancer_Decon"    "xCell"           "Aboensis IV"    
-[21] "mitten_TDC19"    "CIBERSORT"       "quanTIseq"       "Biogem"         
-[25] "MCP-counter"     "DA_505"          "CIBERSORTx"      "Aginome-XMU"    
+ [9] "jdroz"           "Patrick"         "CancerSysBio"    "EPIC"           
+[13] "D3Team"          "IZI"             "CCB"             "ICTD"           
+[17] "Cancer_Decon"    "xCell"           "Aboensis IV"     "mitten_TDC19"   
+[21] "CIBERSORT"       "quanTIseq"       "Biogem"          "MCP-counter"    
+[25] "DA_505"          "CIBERSORTx"      "Aginome-XMU"    
 means
  [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
  [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "EPIC"        
 [11] "ICTD"         "IZI"          "LeiliLab"     "MCP-counter"  "mitten_TDC19"
 [16] "NPU"          "Patrick"      "quanTIseq"    "REGGEN_LAB"   "Rubbernecks" 
-[21] "TIMER"        "Tonys Boys"   "xCell"       
+[21] "Tonys Boys"   "xCell"       
 levels
- [1] "LeiliLab"     "TIMER"        "NPU"          "Tonys Boys"   "Rubbernecks" 
- [6] "IZI"          "REGGEN_LAB"   "quanTIseq"    "ICTD"         "Cancer_Decon"
-[11] "Patrick"      "CIBERSORT"    "CCB"          "D3Team"       "Aboensis IV" 
-[16] "xCell"        "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"      
-[21] "EPIC"         "Aginome-XMU"  "MCP-counter" 
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "IZI"         
+ [6] "REGGEN_LAB"   "quanTIseq"    "ICTD"         "Cancer_Decon" "Patrick"     
+[11] "CIBERSORT"    "CCB"          "D3Team"       "Aboensis IV"  "xCell"       
+[16] "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"       "EPIC"        
+[21] "Aginome-XMU"  "MCP-counter" 
 Creating merged means.over.dataset
 Plotting strip plots
 ggplot'ing
@@ -775,7 +774,6 @@ Rubbernecks -round-1 max diff between coarse and fine-grained is: 0.481912391171
 3 neutrophils   Rubbernecks 0.6118683   Rubbernecks 0.55949934 0.0523690
 4          NK   Rubbernecks 0.4073477   Rubbernecks 0.28630244 0.1210453
 Max diff exceeded for Rubbernecks -round-1: 0.481912391171281
-TIMER -round-1 max diff between coarse and fine-grained is: 0
 xCell -round-1 max diff between coarse and fine-grained is: 0.00713491648524578
     cell.type method.name.x     cor.x method.name.y     cor.y         diff
 2 fibroblasts         xCell 0.6117140         xCell 0.6130747 -0.001360648
@@ -789,27 +787,27 @@ means
 [13] "ICTD"            "IZI"             "jbkcose"         "jdroz"          
 [17] "LeiliLab"        "MCP-counter"     "mitten_TDC19"    "NPU"            
 [21] "NYIT_glomerular" "Patrick"         "quanTIseq"       "REGGEN_LAB"     
-[25] "Rubbernecks"     "TIMER"           "TJU"             "xCell"          
+[25] "Rubbernecks"     "TJU"             "xCell"          
 levels
  [1] "jbkcose"         "NYIT_glomerular" "TJU"             "REGGEN_LAB"     
  [5] "Rubbernecks"     "LeiliLab"        "NPU"             "HM159"          
- [9] "jdroz"           "TIMER"           "Patrick"         "CancerSysBio"   
-[13] "EPIC"            "D3Team"          "CCB"             "ICTD"           
-[17] "Cancer_Decon"    "Aboensis IV"     "IZI"             "xCell"          
-[21] "mitten_TDC19"    "Biogem"          "CIBERSORT"       "DA_505"         
-[25] "quanTIseq"       "Aginome-XMU"     "MCP-counter"     "CIBERSORTx"     
+ [9] "jdroz"           "Patrick"         "CancerSysBio"    "EPIC"           
+[13] "D3Team"          "CCB"             "ICTD"            "Cancer_Decon"   
+[17] "Aboensis IV"     "IZI"             "xCell"           "mitten_TDC19"   
+[21] "Biogem"          "CIBERSORT"       "DA_505"          "quanTIseq"      
+[25] "Aginome-XMU"     "MCP-counter"     "CIBERSORTx"     
 means
  [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
  [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "EPIC"        
 [11] "ICTD"         "IZI"          "LeiliLab"     "MCP-counter"  "mitten_TDC19"
 [16] "NPU"          "Patrick"      "quanTIseq"    "REGGEN_LAB"   "Rubbernecks" 
-[21] "TIMER"        "Tonys Boys"   "xCell"       
+[21] "Tonys Boys"   "xCell"       
 levels
- [1] "Rubbernecks"  "LeiliLab"     "TIMER"        "NPU"          "Tonys Boys"  
- [6] "REGGEN_LAB"   "quanTIseq"    "CCB"          "ICTD"         "Cancer_Decon"
-[11] "Patrick"      "Aboensis IV"  "Biogem"       "IZI"          "CIBERSORT"   
-[16] "D3Team"       "xCell"        "DA_505"       "mitten_TDC19" "CIBERSORTx"  
-[21] "Aginome-XMU"  "EPIC"         "MCP-counter" 
+ [1] "Rubbernecks"  "LeiliLab"     "NPU"          "Tonys Boys"   "REGGEN_LAB"  
+ [6] "quanTIseq"    "CCB"          "ICTD"         "Cancer_Decon" "Patrick"     
+[11] "Aboensis IV"  "Biogem"       "IZI"          "CIBERSORT"    "D3Team"      
+[16] "xCell"        "DA_505"       "mitten_TDC19" "CIBERSORTx"   "Aginome-XMU" 
+[21] "EPIC"         "MCP-counter" 
 Creating merged means.over.dataset
 Plotting strip plots
 ggplot'ing
@@ -1206,7 +1204,6 @@ Rubbernecks -round-2 max diff between coarse and fine-grained is: 0.296037106632
 3 neutrophils   Rubbernecks 0.8248651   Rubbernecks 0.7836001  0.04126494
 4          NK   Rubbernecks 0.6302955   Rubbernecks 0.6968312 -0.06653577
 Max diff exceeded for Rubbernecks -round-2: 0.296037106632922
-TIMER -round-2 max diff between coarse and fine-grained is: 0
 xCell -round-2 max diff between coarse and fine-grained is: 0.00713491648524578
     cell.type method.name.x     cor.x method.name.y     cor.y         diff
 2 fibroblasts         xCell 0.6117140         xCell 0.6130747 -0.001360648
@@ -1220,27 +1217,27 @@ means
 [13] "ICTD"            "IZI"             "jbkcose"         "jdroz"          
 [17] "LeiliLab"        "MCP-counter"     "mitten_TDC19"    "NPU"            
 [21] "NYIT_glomerular" "Patrick"         "quanTIseq"       "REGGEN_LAB"     
-[25] "Rubbernecks"     "TIMER"           "TJU"             "xCell"          
+[25] "Rubbernecks"     "TJU"             "xCell"          
 levels
  [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
  [5] "NYIT_glomerular" "NPU"             "HM159"           "Rubbernecks"    
- [9] "jdroz"           "TIMER"           "Patrick"         "CancerSysBio"   
-[13] "EPIC"            "D3Team"          "CCB"             "ICTD"           
-[17] "Cancer_Decon"    "mitten_TDC19"    "DA_505"          "IZI"            
-[21] "xCell"           "Aboensis IV"     "CIBERSORT"       "Biogem"         
-[25] "quanTIseq"       "MCP-counter"     "CIBERSORTx"      "Aginome-XMU"    
+ [9] "jdroz"           "Patrick"         "CancerSysBio"    "EPIC"           
+[13] "D3Team"          "CCB"             "ICTD"            "Cancer_Decon"   
+[17] "mitten_TDC19"    "DA_505"          "IZI"             "xCell"          
+[21] "Aboensis IV"     "CIBERSORT"       "Biogem"          "quanTIseq"      
+[25] "MCP-counter"     "CIBERSORTx"      "Aginome-XMU"    
 means
  [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
  [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "EPIC"        
 [11] "ICTD"         "IZI"          "LeiliLab"     "MCP-counter"  "mitten_TDC19"
 [16] "NPU"          "Patrick"      "quanTIseq"    "REGGEN_LAB"   "Rubbernecks" 
-[21] "TIMER"        "Tonys Boys"   "xCell"       
+[21] "Tonys Boys"   "xCell"       
 levels
- [1] "LeiliLab"     "TIMER"        "NPU"          "Tonys Boys"   "Rubbernecks" 
- [6] "REGGEN_LAB"   "quanTIseq"    "ICTD"         "Cancer_Decon" "Patrick"     
-[11] "Aboensis IV"  "CIBERSORT"    "CCB"          "IZI"          "D3Team"      
-[16] "Biogem"       "xCell"        "mitten_TDC19" "DA_505"       "CIBERSORTx"  
-[21] "Aginome-XMU"  "EPIC"         "MCP-counter" 
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "REGGEN_LAB"  
+ [6] "quanTIseq"    "ICTD"         "Cancer_Decon" "Patrick"      "Aboensis IV" 
+[11] "CIBERSORT"    "CCB"          "IZI"          "D3Team"       "Biogem"      
+[16] "xCell"        "mitten_TDC19" "DA_505"       "CIBERSORTx"   "Aginome-XMU" 
+[21] "EPIC"         "MCP-counter" 
 Creating merged means.over.dataset
 Plotting strip plots
 ggplot'ing
@@ -1632,7 +1629,6 @@ Rubbernecks -round-3 max diff between coarse and fine-grained is: 0.296037106632
 3 neutrophils   Rubbernecks 0.8248651   Rubbernecks 0.7836001  0.04126494
 4          NK   Rubbernecks 0.6302955   Rubbernecks 0.6968312 -0.06653577
 Max diff exceeded for Rubbernecks -round-3: 0.296037106632922
-TIMER -round-3 max diff between coarse and fine-grained is: 0
 xCell -round-3 max diff between coarse and fine-grained is: 0.00713491648524578
     cell.type method.name.x     cor.x method.name.y     cor.y         diff
 2 fibroblasts         xCell 0.6117140         xCell 0.6130747 -0.001360648
@@ -1646,27 +1642,27 @@ means
 [13] "ICTD"            "IZI"             "jbkcose"         "jdroz"          
 [17] "LeiliLab"        "MCP-counter"     "mitten_TDC19"    "NPU"            
 [21] "NYIT_glomerular" "Patrick"         "quanTIseq"       "REGGEN_LAB"     
-[25] "Rubbernecks"     "TIMER"           "TJU"             "xCell"          
+[25] "Rubbernecks"     "TJU"             "xCell"          
 levels
  [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
  [5] "NYIT_glomerular" "NPU"             "HM159"           "Rubbernecks"    
- [9] "jdroz"           "TIMER"           "Patrick"         "CancerSysBio"   
-[13] "EPIC"            "D3Team"          "IZI"             "CCB"            
-[17] "ICTD"            "Cancer_Decon"    "xCell"           "Aboensis IV"    
-[21] "mitten_TDC19"    "CIBERSORT"       "quanTIseq"       "Biogem"         
-[25] "MCP-counter"     "DA_505"          "CIBERSORTx"      "Aginome-XMU"    
+ [9] "jdroz"           "Patrick"         "CancerSysBio"    "EPIC"           
+[13] "D3Team"          "IZI"             "CCB"             "ICTD"           
+[17] "Cancer_Decon"    "xCell"           "Aboensis IV"     "mitten_TDC19"   
+[21] "CIBERSORT"       "quanTIseq"       "Biogem"          "MCP-counter"    
+[25] "DA_505"          "CIBERSORTx"      "Aginome-XMU"    
 means
  [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
  [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "EPIC"        
 [11] "ICTD"         "IZI"          "LeiliLab"     "MCP-counter"  "mitten_TDC19"
 [16] "NPU"          "Patrick"      "quanTIseq"    "REGGEN_LAB"   "Rubbernecks" 
-[21] "TIMER"        "Tonys Boys"   "xCell"       
+[21] "Tonys Boys"   "xCell"       
 levels
- [1] "LeiliLab"     "TIMER"        "NPU"          "Tonys Boys"   "Rubbernecks" 
- [6] "IZI"          "REGGEN_LAB"   "quanTIseq"    "ICTD"         "Cancer_Decon"
-[11] "Patrick"      "CIBERSORT"    "CCB"          "D3Team"       "Aboensis IV" 
-[16] "xCell"        "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"      
-[21] "EPIC"         "Aginome-XMU"  "MCP-counter" 
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "IZI"         
+ [6] "REGGEN_LAB"   "quanTIseq"    "ICTD"         "Cancer_Decon" "Patrick"     
+[11] "CIBERSORT"    "CCB"          "D3Team"       "Aboensis IV"  "xCell"       
+[16] "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"       "EPIC"        
+[21] "Aginome-XMU"  "MCP-counter" 
 Creating merged means.over.dataset
 Plotting strip plots
 ggplot'ing
@@ -1722,173 +1718,155 @@ Round 1: 10 were top performer in at least one of the 17
 [1] "B"
    method.name cell.type       cor       diff comparator.corr  comparator
 11        EPIC         B 0.9817921 0.01618365       0.9656084       xCell
-28       xCell         B 0.9656084 0.03888894       0.9267195  CIBERSORTx
+27       xCell         B 0.9656084 0.03888894       0.9267195  CIBERSORTx
 8   CIBERSORTx         B 0.9267195 0.04803116       0.8786883   CIBERSORT
 7    CIBERSORT         B 0.8786883 0.02951438       0.8491739   quanTIseq
-23   quanTIseq         B 0.8491739 0.06945858       0.7797153       TIMER
-26       TIMER         B 0.7797153 0.19279582       0.5869195 MCP-counter
+23   quanTIseq         B 0.8491739 0.26225441       0.5869195 MCP-counter
 18 MCP-counter         B 0.5869195 0.00000000       0.0000000            
 [1] "CD4 T"
    method.name cell.type       cor        diff comparator.corr  comparator
-28       xCell     CD4 T 0.8606141 0.001215399       0.8593987  CIBERSORTx
+27       xCell     CD4 T 0.8606141 0.001215399       0.8593987  CIBERSORTx
 8   CIBERSORTx     CD4 T 0.8593987 0.123999983       0.7353987   CIBERSORT
 7    CIBERSORT     CD4 T 0.7353987 0.038193482       0.6972053   quanTIseq
 23   quanTIseq     CD4 T 0.6972053 0.123301222       0.5739040        EPIC
-11        EPIC     CD4 T 0.5739040 0.023170879       0.5507332       TIMER
-26       TIMER     CD4 T 0.5507332          NA              NA MCP-counter
+11        EPIC     CD4 T 0.5739040          NA              NA MCP-counter
 18 MCP-counter     CD4 T        NA 0.000000000       0.0000000            
 [1] "CD8 T"
    method.name cell.type       cor        diff comparator.corr  comparator
 23   quanTIseq     CD8 T 0.9361163 0.005607259       0.9305091 MCP-counter
 18 MCP-counter     CD8 T 0.9305091 0.052960891       0.8775482  CIBERSORTx
 8   CIBERSORTx     CD8 T 0.8775482 0.081700181       0.7958480       xCell
-28       xCell     CD8 T 0.7958480 0.015465241       0.7803828   CIBERSORT
+27       xCell     CD8 T 0.7958480 0.015465241       0.7803828   CIBERSORT
 7    CIBERSORT     CD8 T 0.7803828 0.083262810       0.6971199        EPIC
-11        EPIC     CD8 T 0.6971199 0.433448990       0.2636710       TIMER
-26       TIMER     CD8 T 0.2636710 0.000000000       0.0000000            
+11        EPIC     CD8 T 0.6971199 0.000000000       0.0000000            
 [1] "endothelial"
    method.name   cell.type       cor        diff comparator.corr  comparator
 1  Aboensis IV endothelial 0.9819954 0.004652719       0.9773426       xCell
-29       xCell endothelial 0.9773426 0.001354224       0.9759884 MCP-counter
+28       xCell endothelial 0.9773426 0.001354224       0.9759884 MCP-counter
 18 MCP-counter endothelial 0.9759884 0.076848863       0.8991396  CIBERSORTx
 8   CIBERSORTx endothelial 0.8991396          NA              NA   CIBERSORT
 7    CIBERSORT endothelial        NA          NA              NA        EPIC
 11        EPIC endothelial        NA          NA              NA   quanTIseq
-23   quanTIseq endothelial        NA          NA              NA       TIMER
-26       TIMER endothelial        NA 0.000000000       0.0000000            
+23   quanTIseq endothelial        NA 0.000000000       0.0000000            
 [1] "fibroblasts"
    method.name   cell.type       cor        diff comparator.corr comparator
 18 MCP-counter fibroblasts 0.9825149 0.009897293       0.9726176 CIBERSORTx
 8   CIBERSORTx fibroblasts 0.9726176 0.360223313       0.6123943      xCell
-29       xCell fibroblasts 0.6123943          NA              NA  CIBERSORT
+28       xCell fibroblasts 0.6123943          NA              NA  CIBERSORT
 7    CIBERSORT fibroblasts        NA          NA              NA       EPIC
 11        EPIC fibroblasts        NA          NA              NA  quanTIseq
-23   quanTIseq fibroblasts        NA          NA              NA      TIMER
-26       TIMER fibroblasts        NA 0.000000000       0.0000000           
+23   quanTIseq fibroblasts        NA 0.000000000       0.0000000           
 [1] "macrophages"
-   method.name   cell.type        cor       diff comparator.corr  comparator
-2  Aginome-XMU macrophages  0.6557472 0.07560992       0.5801373       xCell
-23       xCell macrophages  0.5801373 0.11337864       0.4667586  CIBERSORTx
-7   CIBERSORTx macrophages  0.4667586 0.01432603       0.4524326   quanTIseq
-18   quanTIseq macrophages  0.4524326 0.05820011       0.3942325   CIBERSORT
-6    CIBERSORT macrophages  0.3942325 1.13072486      -0.7364924       TIMER
-21       TIMER macrophages -0.7364924         NA              NA        EPIC
-10        EPIC macrophages         NA         NA              NA MCP-counter
-14 MCP-counter macrophages         NA 0.00000000       0.0000000            
+   method.name   cell.type       cor       diff comparator.corr  comparator
+2  Aginome-XMU macrophages 0.6557472 0.07560992       0.5801373       xCell
+22       xCell macrophages 0.5801373 0.11337864       0.4667586  CIBERSORTx
+7   CIBERSORTx macrophages 0.4667586 0.01432603       0.4524326   quanTIseq
+18   quanTIseq macrophages 0.4524326 0.05820011       0.3942325   CIBERSORT
+6    CIBERSORT macrophages 0.3942325         NA              NA        EPIC
+10        EPIC macrophages        NA         NA              NA MCP-counter
+14 MCP-counter macrophages        NA 0.00000000       0.0000000            
 [1] "memory CD4 T"
    method.name    cell.type       cor       diff comparator.corr  comparator
 9       DA_505 memory CD4 T 0.6208184 0.07688892       0.5439295  CIBERSORTx
 7   CIBERSORTx memory CD4 T 0.5439295 0.02146059       0.5224689   CIBERSORT
 6    CIBERSORT memory CD4 T 0.5224689 0.10530504       0.4171638       xCell
-23       xCell memory CD4 T 0.4171638         NA              NA        EPIC
+22       xCell memory CD4 T 0.4171638         NA              NA        EPIC
 10        EPIC memory CD4 T        NA         NA              NA MCP-counter
 14 MCP-counter memory CD4 T        NA         NA              NA   quanTIseq
-18   quanTIseq memory CD4 T        NA         NA              NA       TIMER
-21       TIMER memory CD4 T        NA 0.00000000       0.0000000            
+18   quanTIseq memory CD4 T        NA 0.00000000       0.0000000            
 [1] "memory CD8 T"
     method.name    cell.type       cor     diff comparator.corr  comparator
 15 mitten_TDC19 memory CD8 T 0.8233991 0.426718       0.3966811       xCell
-23        xCell memory CD8 T 0.3966811       NA              NA   CIBERSORT
+22        xCell memory CD8 T 0.3966811       NA              NA   CIBERSORT
 6     CIBERSORT memory CD8 T        NA       NA              NA  CIBERSORTx
 7    CIBERSORTx memory CD8 T        NA       NA              NA        EPIC
 10         EPIC memory CD8 T        NA       NA              NA MCP-counter
 14  MCP-counter memory CD8 T        NA       NA              NA   quanTIseq
-18    quanTIseq memory CD8 T        NA       NA              NA       TIMER
-21        TIMER memory CD8 T        NA 0.000000       0.0000000            
+18    quanTIseq memory CD8 T        NA 0.000000       0.0000000            
 [1] "monocytes"
    method.name cell.type       cor        diff comparator.corr  comparator
 8       D3Team monocytes 0.7357983 0.004222461       0.7315758       xCell
-23       xCell monocytes 0.7315758 0.030601144       0.7009747  CIBERSORTx
+22       xCell monocytes 0.7315758 0.030601144       0.7009747  CIBERSORTx
 7   CIBERSORTx monocytes 0.7009747 0.043264005       0.6577107   CIBERSORT
 6    CIBERSORT monocytes 0.6577107 0.120718913       0.5369918        EPIC
 10        EPIC monocytes 0.5369918 0.087449522       0.4495422   quanTIseq
 18   quanTIseq monocytes 0.4495422          NA              NA MCP-counter
-14 MCP-counter monocytes        NA          NA              NA       TIMER
-21       TIMER monocytes        NA 0.000000000       0.0000000            
+14 MCP-counter monocytes        NA 0.000000000       0.0000000            
 [1] "monocytic lineage"
    method.name         cell.type       cor        diff comparator.corr
 16       jdroz monocytic lineage 0.9522026 0.050740838       0.9014618
-8   CIBERSORTx monocytic lineage 0.9014618 0.059744359       0.8417174
-26       TIMER monocytic lineage 0.8417174 0.008728438       0.8329890
+8   CIBERSORTx monocytic lineage 0.9014618 0.068472797       0.8329890
 7    CIBERSORT monocytic lineage 0.8329890 0.011884838       0.8211042
 18 MCP-counter monocytic lineage 0.8211042 0.001027106       0.8200771
 23   quanTIseq monocytic lineage 0.8200771 0.345867028       0.4742100
 11        EPIC monocytic lineage 0.4742100 0.008522352       0.4656877
-28       xCell monocytic lineage 0.4656877 0.000000000       0.0000000
+27       xCell monocytic lineage 0.4656877 0.000000000       0.0000000
     comparator
 16  CIBERSORTx
-8        TIMER
-26   CIBERSORT
+8    CIBERSORT
 7  MCP-counter
 18   quanTIseq
 23        EPIC
 11       xCell
-28            
+27            
 [1] "myeloid DCs"
    method.name   cell.type        cor       diff comparator.corr  comparator
-23       xCell myeloid DCs  0.8016710 0.18343434       0.6182367  CIBERSORTx
+22       xCell myeloid DCs  0.8016710 0.18343434       0.6182367  CIBERSORTx
 7   CIBERSORTx myeloid DCs  0.6182367 0.08006791       0.5381688   CIBERSORT
 6    CIBERSORT myeloid DCs  0.5381688 0.05083889       0.4873299 MCP-counter
-14 MCP-counter myeloid DCs  0.4873299 0.09243662       0.3948933       TIMER
-21       TIMER myeloid DCs  0.3948933 0.57851296      -0.1836197   quanTIseq
+14 MCP-counter myeloid DCs  0.4873299 0.67094957      -0.1836197   quanTIseq
 18   quanTIseq myeloid DCs -0.1836197         NA              NA        EPIC
 10        EPIC myeloid DCs         NA 0.00000000       0.0000000            
 [1] "naive B"
    method.name cell.type       cor       diff comparator.corr  comparator
-23       xCell   naive B 0.9590377 0.03342909       0.9256086  CIBERSORTx
+22       xCell   naive B 0.9590377 0.03342909       0.9256086  CIBERSORTx
 7   CIBERSORTx   naive B 0.9256086 0.04693410       0.8786745   CIBERSORT
 6    CIBERSORT   naive B 0.8786745         NA              NA        EPIC
 10        EPIC   naive B        NA         NA              NA MCP-counter
 14 MCP-counter   naive B        NA         NA              NA   quanTIseq
-18   quanTIseq   naive B        NA         NA              NA       TIMER
-21       TIMER   naive B        NA 0.00000000       0.0000000            
+18   quanTIseq   naive B        NA 0.00000000       0.0000000            
 [1] "naive CD4 T"
    method.name   cell.type       cor       diff comparator.corr  comparator
 9       DA_505 naive CD4 T 0.7735640 0.01400356       0.7595604  CIBERSORTx
 7   CIBERSORTx naive CD4 T 0.7595604 0.08523670       0.6743237   CIBERSORT
 6    CIBERSORT naive CD4 T 0.6743237 0.09851621       0.5758075       xCell
-23       xCell naive CD4 T 0.5758075         NA              NA        EPIC
+22       xCell naive CD4 T 0.5758075         NA              NA        EPIC
 10        EPIC naive CD4 T        NA         NA              NA MCP-counter
 14 MCP-counter naive CD4 T        NA         NA              NA   quanTIseq
-18   quanTIseq naive CD4 T        NA         NA              NA       TIMER
-21       TIMER naive CD4 T        NA 0.00000000       0.0000000            
+18   quanTIseq naive CD4 T        NA 0.00000000       0.0000000            
 [1] "naive CD8 T"
    method.name   cell.type       cor      diff comparator.corr  comparator
 1  Aboensis IV naive CD8 T 0.9102821 0.7579443       0.1523378       xCell
-23       xCell naive CD8 T 0.1523378        NA              NA   CIBERSORT
+22       xCell naive CD8 T 0.1523378        NA              NA   CIBERSORT
 6    CIBERSORT naive CD8 T        NA        NA              NA  CIBERSORTx
 7   CIBERSORTx naive CD8 T        NA        NA              NA        EPIC
 10        EPIC naive CD8 T        NA        NA              NA MCP-counter
 14 MCP-counter naive CD8 T        NA        NA              NA   quanTIseq
-18   quanTIseq naive CD8 T        NA        NA              NA       TIMER
-21       TIMER naive CD8 T        NA 0.0000000       0.0000000            
+18   quanTIseq naive CD8 T        NA 0.0000000       0.0000000            
 [1] "neutrophils"
    method.name   cell.type       cor        diff comparator.corr comparator
 18 MCP-counter neutrophils 0.9984854 0.010515342       0.9879701  quanTIseq
 23   quanTIseq neutrophils 0.9879701 0.013437965       0.9745321       EPIC
 11        EPIC neutrophils 0.9745321 0.014354419       0.9601777      xCell
-29       xCell neutrophils 0.9601777 0.005740825       0.9544369 CIBERSORTx
-8   CIBERSORTx neutrophils 0.9544369 0.014555989       0.9398809      TIMER
-26       TIMER neutrophils 0.9398809 0.025519575       0.9143613  CIBERSORT
+28       xCell neutrophils 0.9601777 0.005740825       0.9544369 CIBERSORTx
+8   CIBERSORTx neutrophils 0.9544369 0.040075564       0.9143613  CIBERSORT
 7    CIBERSORT neutrophils 0.9143613 0.000000000       0.0000000           
 [1] "NK"
    method.name cell.type       cor        diff comparator.corr  comparator
-29       xCell        NK 0.9108232 0.018759439       0.8920637        EPIC
+28       xCell        NK 0.9108232 0.018759439       0.8920637        EPIC
 11        EPIC        NK 0.8920637 0.026741932       0.8653218  CIBERSORTx
 8   CIBERSORTx        NK 0.8653218 0.043728905       0.8215929   CIBERSORT
 7    CIBERSORT        NK 0.8215929 0.001102095       0.8204908   quanTIseq
 23   quanTIseq        NK 0.8204908 0.007640890       0.8128499 MCP-counter
-18 MCP-counter        NK 0.8128499          NA              NA       TIMER
-26       TIMER        NK        NA 0.000000000       0.0000000            
+18 MCP-counter        NK 0.8128499 0.000000000       0.0000000            
 [1] "Tregs"
    method.name cell.type       cor      diff comparator.corr  comparator
-23       xCell     Tregs 0.8518946 0.1102927       0.7416019   quanTIseq
+22       xCell     Tregs 0.8518946 0.1102927       0.7416019   quanTIseq
 18   quanTIseq     Tregs 0.7416019 0.1946526       0.5469493  CIBERSORTx
 7   CIBERSORTx     Tregs 0.5469493 0.1988118       0.3481375   CIBERSORT
 6    CIBERSORT     Tregs 0.3481375        NA              NA        EPIC
 10        EPIC     Tregs        NA        NA              NA MCP-counter
-14 MCP-counter     Tregs        NA        NA              NA       TIMER
-21       TIMER     Tregs        NA 0.0000000       0.0000000            
+14 MCP-counter     Tregs        NA 0.0000000       0.0000000            
 Round 1: 10 were top performer in at least one of the 17
 Round 1 coarse method count:
    Method Freq
@@ -1899,9 +1877,9 @@ Round 1 coarse method count:
 3     NMF    2
 7     REG    3
 9     SVR    3
+4    NNLS    5
 8     SUM    5
 10    UNK    5
-4    NNLS    6
 Excluded ensemble method: TRUE
 Round 1 coarse method count:
   Output   pearson  spearman
@@ -1930,7 +1908,7 @@ Round 1 fine method count:
 8    SVR    3
 9    UNK    3
 7    SUM    4
-4   NNLS    6
+4   NNLS    5
 Excluded ensemble method: TRUE
 Round 1 fine method count:
   Output   pearson  spearman
@@ -1958,21 +1936,21 @@ Exiting successfully
 -------------------------------------------------------------
 SUMNER/WINTER EPILOGUE
 -------------------------------------------------------------
-Job ID: 12792045
+Job ID: 13864626
 Cluster: slurm_cluster
 User/Group: root/jaxuser
 State: COMPLETED (exit code 0)
 Nodes: 1
 Cores per node: 16
-CPU Utilized: 00:13:47
-CPU Efficiency: 7.06% of 03:15:12 core-walltime
-Job Wall-clock time: 00:12:12
-Memory Utilized: 3.14 GB
-Memory Efficiency: 0.63% of 500.00 GB
+CPU Utilized: 00:12:57
+CPU Efficiency: 7.14% of 03:01:20 core-walltime
+Job Wall-clock time: 00:11:20
+Memory Utilized: 2.99 GB
+Memory Efficiency: 0.60% of 500.00 GB
 -------------------------------------------------------------
        JobID  User   State    CPUTime Exit     MaxRSS        NodeList  Partition                   ReqTRES              Submit               Start                 End    Elapsed 
 ------------ ----- ------- ---------- ---- ---------- --------------- ---------- ------------------------- ------------------- ------------------- ------------------- ---------- 
-12792045     whit+ COMPLE+   03:15:12  0:0                  sumner041    compute billing=16,cpu=16,mem=51+ 2022-01-31T17:53:02 2022-01-31T17:53:24 2022-01-31T18:05:36   00:12:12 
-12792045.ba+       COMPLE+   03:15:12  0:0   3212.94M       sumner041                                      2022-01-31T17:53:24 2022-01-31T17:53:24 2022-01-31T18:05:36   00:12:12 
-12792045.ex+       COMPLE+   03:15:12  0:0      1.76M       sumner041                                      2022-01-31T17:53:24 2022-01-31T17:53:24 2022-01-31T18:05:36   00:12:12 
+13864626     whit+ COMPLE+   03:01:20  0:0                  sumner073    compute billing=16,cpu=16,mem=51+ 2022-03-23T16:34:13 2022-03-23T16:34:29 2022-03-23T16:45:49   00:11:20 
+13864626.ba+       COMPLE+   03:01:20  0:0   3060.38M       sumner073                                      2022-03-23T16:34:29 2022-03-23T16:34:29 2022-03-23T16:45:49   00:11:20 
+13864626.ex+       COMPLE+   03:01:36  0:0      1.76M       sumner073                                      2022-03-23T16:34:29 2022-03-23T16:34:29 2022-03-23T16:45:50   00:11:21 
 -------------------------------------------------------------

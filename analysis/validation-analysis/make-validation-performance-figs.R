@@ -94,7 +94,8 @@ g.strip.merged.round1.priority <- g.strip.merged.round1.priority +
 ## print(g.strip.merged.round1.priority)
 ## d <- dev.off()
 
-g <- plot_grid(g.strip.merged.round1.priority, g.heatmap.merged.round1, nrow = 2, labels = "AUTO")
+# g <- plot_grid(g.strip.merged.round1.priority, g.heatmap.merged.round1, nrow = 2, labels = "AUTO")
+g <- plot_grid(g.heatmap.merged.round1, g.strip.merged.round1.priority, nrow = 2, labels = "AUTO")
 
 png(paste0(figs.dir, "fig-validation-round-1-strip-and-heatmap-merged-cell-type", ".png"), width = 2 * 480, height = 2 * 480)                    
 print(g)
@@ -337,11 +338,31 @@ g.round.fine <- g.round.fine +
 
 g <- plot_grid(g.bootstrap.coarse.round1, g.bootstrap.fine.round1, g.round.coarse, g.round.fine, labels = c("A", "B", "C", "D"))
 
-png(paste0(figs.dir, "fig-validation-round-1-performance", ".png"), width = 2 * 480, height = 2 * 480)
+png(paste0(figs.dir, "fig-validation-round-1-performance-with-submssion", ".png"), width = 2 * 480, height = 2 * 480)
 print(g)
 d <- dev.off()
 
-pdf(paste0(figs.dir, "fig-validation-round-1-performance", ".pdf"), width = 2 * 7, height = 2 * 7)
+pdf(paste0(figs.dir, "fig-validation-round-1-performance-with-submission", ".pdf"), width = 2 * 7, height = 2 * 7)
+print(g)
+d <- dev.off()
+
+g <- plot_grid(g.bootstrap.coarse.round1, g.bootstrap.fine.round1, labels = c("A", "B"))
+
+png(paste0(figs.dir, "fig-validation-round-1-performance", ".png"), width = 2 * 480)
+print(g)
+d <- dev.off()
+
+pdf(paste0(figs.dir, "fig-validation-round-1-performance", ".pdf"), width = 2 * 7)
+print(g)
+d <- dev.off()
+
+g <- plot_grid(g.round.coarse, g.round.fine, labels = c("A", "B"))
+
+png(paste0(figs.dir, "fig-validation-performance-across-rounds", ".png"), width = 2 * 480)
+print(g)
+d <- dev.off()
+
+pdf(paste0(figs.dir, "fig-validation-performance-across-rounds", ".pdf"), width = 2 * 7)
 print(g)
 d <- dev.off()
 

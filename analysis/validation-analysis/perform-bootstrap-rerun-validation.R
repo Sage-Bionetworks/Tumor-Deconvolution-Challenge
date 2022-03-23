@@ -45,6 +45,13 @@ prediction.col <- "prediction"
 method.name.col <- "method.name"
 round.col <- "submission"
 
+# this defines methods.to.exclude
+source("methods-to-exclude.R")
+
+flag <- res.all[,method.name.col] %in% methods.to.exclude
+cat(paste0("Excluding methods: ", paste(unique(res.all[flag, method.name.col]), collapse = ", "), "\n"))
+res.all <- res.all[!flag,]
+
 ## Ensure we have a prediction (even if it is NA) for all cell types in all datasets by all methods
 tmp <- unique(res.all[, !(colnames(res.all) %in% c(cell.type.col, prediction.col, measured.col))])
 cell.types.by.sub.challenge <- unique(res.all[, c(cell.type.col, subchallenge.col, sample.id.col, dataset.name.col)])
