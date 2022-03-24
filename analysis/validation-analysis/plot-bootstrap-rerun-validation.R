@@ -267,6 +267,7 @@ cat("levels\n")
 print(method.levels[[sub.challenge]])
             g <- plot.cell.type.correlation.heatmap(means, show.corr.text = TRUE,
                                                     id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
+                                                    second.col.summary.fun = "mean",
                                                     method.levels = method.levels[[sub.challenge]],
                                                     cell.type.levels = cell.type.levels[[sub.challenge]])
 ##            g <- plot.cell.type.correlation.strip.plots(means, show.corr.text = TRUE, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
@@ -313,6 +314,7 @@ print(method.levels[[sub.challenge]])
 
         g <- plot.cell.type.correlation.heatmap(all.means, show.corr.text = TRUE,
                                                 id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
+                                                second.col.summary.fun = "mean",
                                                 method.levels = method.levels[["merged"]],
                                                 cell.type.levels = cell.type.levels[["merged"]])
         merged.all.means <- all.means

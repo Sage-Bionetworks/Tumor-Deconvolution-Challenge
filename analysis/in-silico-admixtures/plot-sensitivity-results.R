@@ -31,6 +31,7 @@ round.col <- "submission"
 mixture.col <- "mixture.type"
 
 source("../utils.R")
+source("../validation-analysis/methods-to-exclude.R")
 
 figs.dir <- "figs"
 dir.create(figs.dir, showWarnings = FALSE)
@@ -76,6 +77,9 @@ for(round in rounds) {
         llply(nms,
               .fun = function(nm) {
                   res <- res.matrices[[nm]]
+                  flag <- res[,method.name.col] %in% methods.to.exclude
+                  cat(paste0("Excluding methods: ", paste(unique(res[flag, method.name.col]), collapse = ", "), "\n"))
+                  res <- res[!flag,]
                   subplots <-
                       dlply(res, .variables = c("mixture.type"),
                             .fun = function(res.ds) {
@@ -96,6 +100,7 @@ for(round in rounds) {
                                                                         cor.var = "label", formatter = my.format,
                                                                         col.summary.fun = "min", cor.type.label = "LoD (Percent)",
                                                                         limits = c(0, 100),
+                                                                        highlight.fun = "min",
                                                                         order.decreasing = TRUE)
                                 return(g)
 

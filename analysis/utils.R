@@ -1006,9 +1006,11 @@ calculate.cell.type.levels <- function(df, id.var = "modelId", cell.type.var = "
 plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
                                                cor.type.label = "Pearson\nCorrelation", limits = c(-1, 1),
                                                pval.var = NULL, row.summary.fun = "mean", col.summary.fun = "max",
+                                               second.col.summary.fun = NULL,
                                                order.decreasing = FALSE,
                                                method.levels = NULL,
                                                cell.type.levels = NULL,
+                                               highlight.fun = "max",
                                                formatter = function(x) formatC(x, format="f", digits=2)) {
     orig.df <- df
     df <- df[, c(id.var, cell.type.var, cor.var)]
@@ -1028,13 +1030,11 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     # highlight the max performer
     df <- ddply(df, .variables=c(cell.type.var), 
                 .fun = function(sub.df) { 
-                         sub.df$highlight <- !is.na(sub.df[,cor.var]) & ( (sub.df[,cor.var] == max(sub.df[,cor.var], na.rm=TRUE)) )
+                         sub.df$highlight <- !is.na(sub.df[,cor.var]) & ( (sub.df[,cor.var] == do.call(highlight.fun, list(sub.df[,cor.var], na.rm=TRUE))))
                          sub.df
                        })
 
     # na.rm <- FALSE
-    second.col.summary.fun <- NULL
-    if(col.summary.fun != "mean") { second.col.summary.fun <- "mean" }
     cell.type.summaries <- ddply(df, .variables = cell.type.var,
                              .fun = function(tmp) {
                                  ret <- data.frame(id = col.summary.fun, cor = do.call(col.summary.fun, list(tmp[, cor.var], na.rm=TRUE)), highlight = FALSE)
@@ -1048,7 +1048,7 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
                              })
 
     cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, cor.var], decreasing = order.decreasing),]
-    
+
     # Calculate the method summary over cell types (e.g., mean) with and without excluding NAs (if use.include.and.exclude.null.in.summary == TRUE)
     # e.g., "mean" = mean without excluding NAs
     #       "nnmean" = non-null mean (mean excluding NAs)
@@ -1072,11 +1072,11 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
 
     if(is.null(cell.type.levels)) {
         # cell.type.levels <- c(grep(x = cell.type.summaries[, cell.type.var], pattern = row.summary.fun, values = TRUE), nnrow.summary.fun, row.summary.fun)
-        cell.type.levels <- c(cell.type.summaries[grepl(x = cell.type.summaries[, cell.type.var], pattern = row.summary.fun), cell.type.var], nnrow.summary.fun, row.summary.fun)
+        cell.type.levels <- c(cell.type.summaries[!grepl(x = cell.type.summaries[, cell.type.var], pattern = row.summary.fun), cell.type.var], nnrow.summary.fun, row.summary.fun)
     } else {
         cell.type.levels <- c(cell.type.levels, nnrow.summary.fun, row.summary.fun)
     }
-    
+
     col.summary.funs <- col.summary.fun
     if(!is.null(second.col.summary.fun)) { col.summary.funs <- c(col.summary.fun, second.col.summary.fun) }
     ## method.levels <- c(col.summary.funs, method.summaries[!(method.summaries[, id.var] %in% col.summary.funs), id.var])
@@ -1085,7 +1085,6 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     } else {
         method.levels <- c(col.summary.funs, method.levels)
     }
-    
     
     df <- rbind(df, cell.type.summaries[, c(id.var, cell.type.var, cor.var, "highlight")])
     df <- rbind(df, method.summaries[, c(id.var, cell.type.var, cor.var, "highlight")])    
@@ -1104,6 +1103,7 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     df[, id.var] <- factor(df[, id.var], levels = method.levels)
     g <- ggplot(data = df, aes_string(y = id.var, x = cell.type.var, fill = cor.var))
     g <- g + geom_tile()
+
     if(show.corr.text) {
 #        g <- g + geom_text(aes(label = cor.label))
         g <- g + geom_text(data = subset(df, highlight == TRUE), aes(label = cor.label), fontface = "bold.italic")
