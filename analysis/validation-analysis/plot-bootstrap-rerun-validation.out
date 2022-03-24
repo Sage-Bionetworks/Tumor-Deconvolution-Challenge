@@ -1,6 +1,6 @@
 Welcome, Brian White!NULL
 Registering 71 cores.
-Downloading  [####################]100.00%   10.9kB/10.9kB (2.8MB/s) deconvolution-method-annotation.xlsx Done...    Doing round latest
+Doing round latest
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
 2            score         ensemble  Aginome-XMU       coarse     latest
@@ -1952,21 +1952,21 @@ Exiting successfully
 -------------------------------------------------------------
 SUMNER/WINTER EPILOGUE
 -------------------------------------------------------------
-Job ID: 13876014
+Job ID: 13878271
 Cluster: slurm_cluster
 User/Group: root/jaxuser
 State: COMPLETED (exit code 0)
 Nodes: 1
 Cores per node: 16
-CPU Utilized: 00:14:43
-CPU Efficiency: 7.10% of 03:27:12 core-walltime
-Job Wall-clock time: 00:12:57
-Memory Utilized: 5.41 GB
-Memory Efficiency: 1.08% of 500.00 GB
+CPU Utilized: 00:12:04
+CPU Efficiency: 7.25% of 02:46:24 core-walltime
+Job Wall-clock time: 00:10:24
+Memory Utilized: 2.98 GB
+Memory Efficiency: 0.60% of 500.00 GB
 -------------------------------------------------------------
        JobID  User   State    CPUTime Exit     MaxRSS        NodeList  Partition                   ReqTRES              Submit               Start                 End    Elapsed 
 ------------ ----- ------- ---------- ---- ---------- --------------- ---------- ------------------------- ------------------- ------------------- ------------------- ---------- 
-13876014     whit+ COMPLE+   03:27:12  0:0                  sumner091    compute billing=16,cpu=16,mem=51+ 2022-03-24T01:25:26 2022-03-24T01:25:41 2022-03-24T01:38:38   00:12:57 
-13876014.ba+       COMPLE+   03:27:12  0:0   5539.97M       sumner091                                      2022-03-24T01:25:41 2022-03-24T01:25:41 2022-03-24T01:38:38   00:12:57 
-13876014.ex+       COMPLE+   03:27:12  0:0      1.76M       sumner091                                      2022-03-24T01:25:41 2022-03-24T01:25:41 2022-03-24T01:38:38   00:12:57 
+13878271     whit+ COMPLE+   02:46:24  0:0                  sumner090    compute billing=16,cpu=16,mem=51+ 2022-03-24T02:26:29 2022-03-24T02:26:49 2022-03-24T02:37:13   00:10:24 
+13878271.ba+       COMPLE+   02:46:24  0:0   3053.88M       sumner090                                      2022-03-24T02:26:49 2022-03-24T02:26:49 2022-03-24T02:37:13   00:10:24 
+13878271.ex+       COMPLE+   02:46:24  0:0      1.76M       sumner090                                      2022-03-24T02:26:49 2022-03-24T02:26:49 2022-03-24T02:37:13   00:10:24 
 -------------------------------------------------------------

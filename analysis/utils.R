@@ -1033,9 +1033,15 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
                        })
 
     # na.rm <- FALSE
+    second.col.summary.fun <- NULL
+    if(col.summary.fun != "mean") { second.col.summary.fun <- "mean" }
     cell.type.summaries <- ddply(df, .variables = cell.type.var,
                              .fun = function(tmp) {
                                  ret <- data.frame(id = col.summary.fun, cor = do.call(col.summary.fun, list(tmp[, cor.var], na.rm=TRUE)), highlight = FALSE)
+                                 if(!is.null(second.col.summary.fun)) {
+                                   tmp <- data.frame(id = second.col.summary.fun, cor = do.call(second.col.summary.fun, list(tmp[, cor.var], na.rm=TRUE)), highlight = FALSE)
+                                   ret <- rbind(ret, tmp)
+                                 }
                                  colnames(ret)[1] <- id.var
                                  colnames(ret)[2] <- cor.var                                 
                                  ret
@@ -1071,11 +1077,13 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
         cell.type.levels <- c(cell.type.levels, nnrow.summary.fun, row.summary.fun)
     }
     
-    ## method.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
+    col.summary.funs <- col.summary.fun
+    if(!is.null(second.col.summary.fun)) { col.summary.funs <- c(col.summary.fun, second.col.summary.fun) }
+    ## method.levels <- c(col.summary.funs, method.summaries[!(method.summaries[, id.var] %in% col.summary.funs), id.var])
     if(is.null(method.levels)) {
-        method.levels <- c(col.summary.fun, method.summaries[method.summaries[, id.var] != col.summary.fun, id.var])
+        method.levels <- c(col.summary.funs, method.summaries[!(method.summaries[, id.var] %in% col.summary.funs), id.var])
     } else {
-        method.levels <- c(col.summary.fun, method.levels)
+        method.levels <- c(col.summary.funs, method.levels)
     }
     
     
