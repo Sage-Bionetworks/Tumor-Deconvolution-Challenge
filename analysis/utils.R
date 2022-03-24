@@ -1015,21 +1015,32 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     df[, id.var] <- as.character(df[, id.var])
     df[, cell.type.var] <- as.character(df[, cell.type.var])
 
+    ## Round the correlation values (not just the text below), so that when we highlight
+    ## the max values we will highlight any ties (up to rounding)
+    df[, cor.var] <- unlist(lapply(df[, cor.var], function(x) as.numeric(formatter(x))))
+
     ## Add NAs for any missing entries
     df <- acast(df, as.formula(paste0(id.var, " ~ ", cell.type.var)), value.var = cor.var, fill = NA)
     df <- reshape2::melt(as.matrix(df))
     colnames(df) <- c(id.var, cell.type.var, cor.var)
     df[, id.var] <- as.character(df[, id.var])
     df[, cell.type.var] <- as.character(df[, cell.type.var])
-    
+    # highlight the max performer
+    df <- ddply(df, .variables=c(cell.type.var), 
+                .fun = function(sub.df) { 
+                         sub.df$highlight <- !is.na(sub.df[,cor.var]) & ( (sub.df[,cor.var] == max(sub.df[,cor.var], na.rm=TRUE)) )
+                         sub.df
+                       })
+
     # na.rm <- FALSE
     cell.type.summaries <- ddply(df, .variables = cell.type.var,
                              .fun = function(tmp) {
-                                 ret <- data.frame(id = col.summary.fun, cor = do.call(col.summary.fun, list(tmp[, cor.var], na.rm=TRUE)))
+                                 ret <- data.frame(id = col.summary.fun, cor = do.call(col.summary.fun, list(tmp[, cor.var], na.rm=TRUE)), highlight = FALSE)
                                  colnames(ret)[1] <- id.var
                                  colnames(ret)[2] <- cor.var                                 
                                  ret
                              })
+
     cell.type.summaries <- cell.type.summaries[order(cell.type.summaries[, cor.var], decreasing = order.decreasing),]
     
     # Calculate the method summary over cell types (e.g., mean) with and without excluding NAs (if use.include.and.exclude.null.in.summary == TRUE)
@@ -1040,16 +1051,16 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     method.summaries <- ddply(df, .variables = c(id.var),
                           .fun = function(tmp) {
                               if(use.include.and.exclude.null.in.summary) {
-                                ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=FALSE)))
-                                nnret <- data.frame(cell.type = nnrow.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=TRUE)))
+                                ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=FALSE)), highlight = FALSE)
+                                nnret <- data.frame(cell.type = nnrow.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=TRUE)), highlight = FALSE)
                                 ret <- rbind(ret, nnret)
                               } else {
-                                ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=na.rm.summary)))
+                                ret <- data.frame(cell.type = row.summary.fun, cor = do.call(row.summary.fun, list(tmp[, cor.var], na.rm=na.rm.summary)), highlight = FALSE)
                               }
-                              colnames(ret) <- c(cell.type.var, cor.var)
+                              colnames(ret)[1:2] <- c(cell.type.var, cor.var)
                               ret
                           })
-    
+
     method.summaries <- method.summaries[order(method.summaries[, cor.var], decreasing = order.decreasing),]
 
 
@@ -1068,8 +1079,8 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     }
     
     
-    df <- rbind(df, cell.type.summaries[, c(id.var, cell.type.var, cor.var)])
-    df <- rbind(df, method.summaries[, c(id.var, cell.type.var, cor.var)])    
+    df <- rbind(df, cell.type.summaries[, c(id.var, cell.type.var, cor.var, "highlight")])
+    df <- rbind(df, method.summaries[, c(id.var, cell.type.var, cor.var, "highlight")])    
 
     ## df$cor.label <- formatC(df[, cor.var], format="f", digits=digits)
     ## formatter <- function(x) formatC(x, format="f", digits=2)
@@ -1086,7 +1097,9 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     g <- ggplot(data = df, aes_string(y = id.var, x = cell.type.var, fill = cor.var))
     g <- g + geom_tile()
     if(show.corr.text) {
-        g <- g + geom_text(aes(label = cor.label))
+#        g <- g + geom_text(aes(label = cor.label))
+        g <- g + geom_text(data = subset(df, highlight == TRUE), aes(label = cor.label), fontface = "bold.italic")
+        g <- g + geom_text(data = subset(df, highlight != TRUE), aes(label = cor.label))
     }
     g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
                    text = element_text(size=15))

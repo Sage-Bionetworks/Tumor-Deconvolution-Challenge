@@ -1,6 +1,6 @@
 Welcome, Brian White!NULL
 Registering 71 cores.
-Doing round latest
+Downloading  [####################]100.00%   10.9kB/10.9kB (2.8MB/s) deconvolution-method-annotation.xlsx Done...    Doing round latest
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
 2            score         ensemble  Aginome-XMU       coarse     latest
@@ -42,28 +42,29 @@ Doing round latest
 9          fraction                     SVR       CIBERSORT         <NA>
 10         fraction                     SVR      CIBERSORTx         <NA>
 11         fraction                ensemble          D3Team         <NA>
-12         fraction                     SVR          DA_505         <NA>
-13            score                ensemble        ensemble         <NA>
-14         fraction                    NNLS            EPIC         <NA>
-15       proportion                 unknown           HM159         <NA>
-16            score                     NMF            ICTD         <NA>
-17       proportion probabilistic inference             IZI         <NA>
-18       proportion                 unknown         jbkcose         <NA>
-19         fraction        other regression           jdroz         <NA>
-20         fraction                 unknown        LeiliLab       coarse
-21         fraction                 unknown        LeiliLab         fine
-22            score                 summary     MCP-counter         <NA>
-23            score                 summary    mitten_TDC19         <NA>
-24       proportion                    NNLS             NPU         <NA>
-25 normalized.score                   other NYIT_glomerular         <NA>
-26 normalized.score        other regression         Patrick         <NA>
-27         fraction                    NNLS       quanTIseq         <NA>
-28         fraction                    NNLS      REGGEN_LAB         <NA>
-29       proportion                 unknown     Rubbernecks         <NA>
-30         fraction                    NNLS           TIMER         <NA>
-31            score                 unknown             TJU         <NA>
-32       proportion                 unknown      Tonys Boys         <NA>
-33         fraction                 summary           xCell         <NA>
+12         fraction                     SVR          DA_505       coarse
+13         fraction                     SVR          DA_505         fine
+14            score                ensemble        ensemble         <NA>
+15         fraction                    NNLS            EPIC         <NA>
+16       proportion                 unknown           HM159         <NA>
+17            score                     NMF            ICTD         <NA>
+18       proportion probabilistic inference             IZI         <NA>
+19       proportion                 unknown         jbkcose         <NA>
+20         fraction        other regression           jdroz         <NA>
+21         fraction                 unknown        LeiliLab       coarse
+22         fraction                 unknown        LeiliLab         fine
+23            score                 summary     MCP-counter         <NA>
+24            score                 summary    mitten_TDC19         <NA>
+25       proportion                    NNLS             NPU         <NA>
+26 normalized.score                   other NYIT_glomerular         <NA>
+27 normalized.score        other regression         Patrick         <NA>
+28         fraction                    NNLS       quanTIseq         <NA>
+29         fraction                    NNLS      REGGEN_LAB         <NA>
+30       proportion                 unknown     Rubbernecks         <NA>
+31         fraction                    NNLS           TIMER         <NA>
+32            score                 unknown             TJU         <NA>
+33       proportion                 unknown      Tonys Boys         <NA>
+34         fraction                 summary           xCell         <NA>
    submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
 1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
 2      latest        FALSE       FALSE      FALSE            TRUE    ENS  Score
@@ -76,32 +77,33 @@ Doing round latest
 9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
-12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
-13       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
-14       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-15       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-16       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
-17       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
-18       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-19       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
-20     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+12     latest        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+13     latest        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+14       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
+15       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+16       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+17       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+18       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+19       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+20       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
 21     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
-22       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
-23       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
-24       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
-25       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
-26       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
-27       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-28       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-29       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-30       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-31       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
-32       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-33       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+22     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+23       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+24       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+25       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+26       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+27       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+28       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+31       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+32       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+33       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+34       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
 [1] "subchallenge"
  [1]  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
-[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
-[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[13] FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
        method.name Output Method
 1      Aboensis IV  Score    SUM
 2      Aginome-XMU  Score    ENS
@@ -113,26 +115,26 @@ Doing round latest
 10      CIBERSORTx   Frac    SVR
 11          D3Team   Frac    ENS
 12          DA_505   Frac    SVR
-13        ensemble  Score    ENS
-14            EPIC   Frac   NNLS
-15           HM159   Prop    UNK
-16            ICTD  Score    NMF
-17             IZI   Prop     PI
-18         jbkcose   Prop    UNK
-19           jdroz   Frac    REG
-20        LeiliLab   Frac    UNK
-22     MCP-counter  Score    SUM
-23    mitten_TDC19  Score    SUM
-24             NPU   Prop   NNLS
-25 NYIT_glomerular   Norm    OTH
-26         Patrick   Norm    REG
-27       quanTIseq   Frac   NNLS
-28      REGGEN_LAB   Frac   NNLS
-29     Rubbernecks   Prop    UNK
-30           TIMER   Frac   NNLS
-31             TJU  Score    UNK
-32      Tonys Boys   Prop    UNK
-33           xCell   Frac    SUM
+14        ensemble  Score    ENS
+15            EPIC   Frac   NNLS
+16           HM159   Prop    UNK
+17            ICTD  Score    NMF
+18             IZI   Prop     PI
+19         jbkcose   Prop    UNK
+20           jdroz   Frac    REG
+21        LeiliLab   Frac    UNK
+23     MCP-counter  Score    SUM
+24    mitten_TDC19  Score    SUM
+25             NPU   Prop   NNLS
+26 NYIT_glomerular   Norm    OTH
+27         Patrick   Norm    REG
+28       quanTIseq   Frac   NNLS
+29      REGGEN_LAB   Frac   NNLS
+30     Rubbernecks   Prop    UNK
+31           TIMER   Frac   NNLS
+32             TJU  Score    UNK
+33      Tonys Boys   Prop    UNK
+34           xCell   Frac    SUM
 [1] "fine"
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
@@ -160,28 +162,29 @@ Doing round latest
 9          fraction                     SVR       CIBERSORT         <NA>
 10         fraction                     SVR      CIBERSORTx         <NA>
 11         fraction                ensemble          D3Team         <NA>
-12         fraction                     SVR          DA_505         <NA>
-13            score                ensemble        ensemble         <NA>
-14         fraction                    NNLS            EPIC         <NA>
-15       proportion                 unknown           HM159         <NA>
-16            score                     NMF            ICTD         <NA>
-17       proportion probabilistic inference             IZI         <NA>
-18       proportion                 unknown         jbkcose         <NA>
-19         fraction        other regression           jdroz         <NA>
-20         fraction                 unknown        LeiliLab       coarse
-21         fraction                 unknown        LeiliLab         fine
-22            score                 summary     MCP-counter         <NA>
-23            score                 summary    mitten_TDC19         <NA>
-24       proportion                    NNLS             NPU         <NA>
-25 normalized.score                   other NYIT_glomerular         <NA>
-26 normalized.score        other regression         Patrick         <NA>
-27         fraction                    NNLS       quanTIseq         <NA>
-28         fraction                    NNLS      REGGEN_LAB         <NA>
-29       proportion                 unknown     Rubbernecks         <NA>
-30         fraction                    NNLS           TIMER         <NA>
-31            score                 unknown             TJU         <NA>
-32       proportion                 unknown      Tonys Boys         <NA>
-33         fraction                 summary           xCell         <NA>
+12         fraction                     SVR          DA_505       coarse
+13         fraction                     SVR          DA_505         fine
+14            score                ensemble        ensemble         <NA>
+15         fraction                    NNLS            EPIC         <NA>
+16       proportion                 unknown           HM159         <NA>
+17            score                     NMF            ICTD         <NA>
+18       proportion probabilistic inference             IZI         <NA>
+19       proportion                 unknown         jbkcose         <NA>
+20         fraction        other regression           jdroz         <NA>
+21         fraction                 unknown        LeiliLab       coarse
+22         fraction                 unknown        LeiliLab         fine
+23            score                 summary     MCP-counter         <NA>
+24            score                 summary    mitten_TDC19         <NA>
+25       proportion                    NNLS             NPU         <NA>
+26 normalized.score                   other NYIT_glomerular         <NA>
+27 normalized.score        other regression         Patrick         <NA>
+28         fraction                    NNLS       quanTIseq         <NA>
+29         fraction                    NNLS      REGGEN_LAB         <NA>
+30       proportion                 unknown     Rubbernecks         <NA>
+31         fraction                    NNLS           TIMER         <NA>
+32            score                 unknown             TJU         <NA>
+33       proportion                 unknown      Tonys Boys         <NA>
+34         fraction                 summary           xCell         <NA>
    submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
 1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
 2      latest        FALSE       FALSE      FALSE            TRUE    ENS  Score
@@ -194,32 +197,33 @@ Doing round latest
 9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
-12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
-13       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
-14       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-15       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-16       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
-17       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
-18       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-19       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
-20     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+12     latest        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+13     latest        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+14       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
+15       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+16       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+17       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+18       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+19       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+20       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
 21     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
-22       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
-23       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
-24       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
-25       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
-26       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
-27       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-28       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-29       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-30       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-31       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
-32       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-33       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+22     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+23       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+24       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+25       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+26       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+27       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+28       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+31       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+32       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+33       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+34       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
 [1] "subchallenge"
- [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
-[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
-[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
+[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
        method.name Output Method
 1      Aboensis IV  Score    SUM
 3      Aginome-XMU  Score    ENS
@@ -230,27 +234,27 @@ Doing round latest
 9        CIBERSORT   Frac    SVR
 10      CIBERSORTx   Frac    SVR
 11          D3Team   Frac    ENS
-12          DA_505   Frac    SVR
-13        ensemble  Score    ENS
-14            EPIC   Frac   NNLS
-15           HM159   Prop    UNK
-16            ICTD  Score    NMF
-17             IZI   Prop     PI
-18         jbkcose   Prop    UNK
-19           jdroz   Frac    REG
-21        LeiliLab   Frac    UNK
-22     MCP-counter  Score    SUM
-23    mitten_TDC19  Score    SUM
-24             NPU   Prop   NNLS
-25 NYIT_glomerular   Norm    OTH
-26         Patrick   Norm    REG
-27       quanTIseq   Frac   NNLS
-28      REGGEN_LAB   Frac   NNLS
-29     Rubbernecks   Prop    UNK
-30           TIMER   Frac   NNLS
-31             TJU  Score    UNK
-32      Tonys Boys   Prop    UNK
-33           xCell   Frac    SUM
+13          DA_505   Frac    SVR
+14        ensemble  Score    ENS
+15            EPIC   Frac   NNLS
+16           HM159   Prop    UNK
+17            ICTD  Score    NMF
+18             IZI   Prop     PI
+19         jbkcose   Prop    UNK
+20           jdroz   Frac    REG
+22        LeiliLab   Frac    UNK
+23     MCP-counter  Score    SUM
+24    mitten_TDC19  Score    SUM
+25             NPU   Prop   NNLS
+26 NYIT_glomerular   Norm    OTH
+27         Patrick   Norm    REG
+28       quanTIseq   Frac   NNLS
+29      REGGEN_LAB   Frac   NNLS
+30     Rubbernecks   Prop    UNK
+31           TIMER   Frac   NNLS
+32             TJU  Score    UNK
+33      Tonys Boys   Prop    UNK
+34           xCell   Frac    SUM
 Aboensis IV -round-latest max diff between coarse and fine-grained is: 0
 Aginome-XMU -round-latest max diff between coarse and fine-grained is: 0.101033450220807
   cell.type method.name.x     cor.x method.name.y     cor.y       diff
@@ -467,28 +471,29 @@ Doing round 1
 9          fraction                     SVR       CIBERSORT         <NA>
 10         fraction                     SVR      CIBERSORTx         <NA>
 11         fraction                ensemble          D3Team         <NA>
-12         fraction                     SVR          DA_505         <NA>
-13            score                ensemble        ensemble         <NA>
-14         fraction                    NNLS            EPIC         <NA>
-15       proportion                 unknown           HM159         <NA>
-16            score                     NMF            ICTD         <NA>
-17       proportion probabilistic inference             IZI         <NA>
-18       proportion                 unknown         jbkcose         <NA>
-19         fraction        other regression           jdroz         <NA>
-20       proportion                 unknown        LeiliLab       coarse
-21         fraction                 unknown        LeiliLab         fine
-22            score                 summary     MCP-counter         <NA>
-23            score                 summary    mitten_TDC19         <NA>
-24       proportion                    NNLS             NPU         <NA>
-25 normalized.score                   other NYIT_glomerular         <NA>
-26 normalized.score        other regression         Patrick         <NA>
-27         fraction                    NNLS       quanTIseq         <NA>
-28         fraction                    NNLS      REGGEN_LAB         <NA>
-29       proportion                 unknown     Rubbernecks         <NA>
-30         fraction                    NNLS           TIMER         <NA>
-31            score                 unknown             TJU         <NA>
-32       proportion                 unknown      Tonys Boys         <NA>
-33         fraction                 summary           xCell         <NA>
+12         fraction        other regression          DA_505       coarse
+13         fraction        other regression          DA_505         fine
+14            score                ensemble        ensemble         <NA>
+15         fraction                    NNLS            EPIC         <NA>
+16       proportion                 unknown           HM159         <NA>
+17            score                     NMF            ICTD         <NA>
+18       proportion probabilistic inference             IZI         <NA>
+19       proportion                 unknown         jbkcose         <NA>
+20         fraction        other regression           jdroz         <NA>
+21       proportion                 unknown        LeiliLab       coarse
+22         fraction                 unknown        LeiliLab         fine
+23            score                 summary     MCP-counter         <NA>
+24            score                 summary    mitten_TDC19         <NA>
+25       proportion                    NNLS             NPU         <NA>
+26 normalized.score                   other NYIT_glomerular         <NA>
+27 normalized.score        other regression         Patrick         <NA>
+28         fraction                    NNLS       quanTIseq         <NA>
+29         fraction                    NNLS      REGGEN_LAB         <NA>
+30       proportion                 unknown     Rubbernecks         <NA>
+31         fraction                    NNLS           TIMER         <NA>
+32            score                 unknown             TJU         <NA>
+33       proportion                 unknown      Tonys Boys         <NA>
+34         fraction                 summary           xCell         <NA>
    submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
 1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
 2           1        FALSE       FALSE       TRUE           FALSE    DNN   Frac
@@ -501,32 +506,33 @@ Doing round 1
 9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
-12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
-13       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
-14       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-15       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-16       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
-17       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
-18       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-19       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
-20          1         TRUE        TRUE       TRUE           FALSE    UNK   Prop
-21          1         TRUE       FALSE       TRUE           FALSE    UNK   Frac
-22       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
-23       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
-24       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
-25       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
-26       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
-27       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-28       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-29       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-30       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-31       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
-32       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-33       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+12          1        FALSE       FALSE       TRUE           FALSE    REG   Frac
+13          1        FALSE       FALSE       TRUE           FALSE    REG   Frac
+14       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
+15       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+16       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+17       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+18       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+19       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+20       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
+21          1         TRUE        TRUE       TRUE           FALSE    UNK   Prop
+22          1         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+23       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+24       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+25       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+26       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+27       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+28       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+31       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+32       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+33       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+34       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
 [1] "subchallenge"
  [1]  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
-[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
-[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[13] FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
        method.name Output Method
 1      Aboensis IV  Score    SUM
 2      Aginome-XMU   Frac    DNN
@@ -537,27 +543,27 @@ Doing round 1
 9        CIBERSORT   Frac    SVR
 10      CIBERSORTx   Frac    SVR
 11          D3Team   Frac    ENS
-12          DA_505   Frac    SVR
-13        ensemble  Score    ENS
-14            EPIC   Frac   NNLS
-15           HM159   Prop    UNK
-16            ICTD  Score    NMF
-17             IZI   Prop     PI
-18         jbkcose   Prop    UNK
-19           jdroz   Frac    REG
-20        LeiliLab   Prop    UNK
-22     MCP-counter  Score    SUM
-23    mitten_TDC19  Score    SUM
-24             NPU   Prop   NNLS
-25 NYIT_glomerular   Norm    OTH
-26         Patrick   Norm    REG
-27       quanTIseq   Frac   NNLS
-28      REGGEN_LAB   Frac   NNLS
-29     Rubbernecks   Prop    UNK
-30           TIMER   Frac   NNLS
-31             TJU  Score    UNK
-32      Tonys Boys   Prop    UNK
-33           xCell   Frac    SUM
+12          DA_505   Frac    REG
+14        ensemble  Score    ENS
+15            EPIC   Frac   NNLS
+16           HM159   Prop    UNK
+17            ICTD  Score    NMF
+18             IZI   Prop     PI
+19         jbkcose   Prop    UNK
+20           jdroz   Frac    REG
+21        LeiliLab   Prop    UNK
+23     MCP-counter  Score    SUM
+24    mitten_TDC19  Score    SUM
+25             NPU   Prop   NNLS
+26 NYIT_glomerular   Norm    OTH
+27         Patrick   Norm    REG
+28       quanTIseq   Frac   NNLS
+29      REGGEN_LAB   Frac   NNLS
+30     Rubbernecks   Prop    UNK
+31           TIMER   Frac   NNLS
+32             TJU  Score    UNK
+33      Tonys Boys   Prop    UNK
+34           xCell   Frac    SUM
 [1] "fine"
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
@@ -585,28 +591,29 @@ Doing round 1
 9          fraction                     SVR       CIBERSORT         <NA>
 10         fraction                     SVR      CIBERSORTx         <NA>
 11         fraction                ensemble          D3Team         <NA>
-12         fraction                     SVR          DA_505         <NA>
-13            score                ensemble        ensemble         <NA>
-14         fraction                    NNLS            EPIC         <NA>
-15       proportion                 unknown           HM159         <NA>
-16            score                     NMF            ICTD         <NA>
-17       proportion probabilistic inference             IZI         <NA>
-18       proportion                 unknown         jbkcose         <NA>
-19         fraction        other regression           jdroz         <NA>
-20       proportion                 unknown        LeiliLab       coarse
-21         fraction                 unknown        LeiliLab         fine
-22            score                 summary     MCP-counter         <NA>
-23            score                 summary    mitten_TDC19         <NA>
-24       proportion                    NNLS             NPU         <NA>
-25 normalized.score                   other NYIT_glomerular         <NA>
-26 normalized.score        other regression         Patrick         <NA>
-27         fraction                    NNLS       quanTIseq         <NA>
-28         fraction                    NNLS      REGGEN_LAB         <NA>
-29       proportion                 unknown     Rubbernecks         <NA>
-30         fraction                    NNLS           TIMER         <NA>
-31            score                 unknown             TJU         <NA>
-32       proportion                 unknown      Tonys Boys         <NA>
-33         fraction                 summary           xCell         <NA>
+12         fraction        other regression          DA_505       coarse
+13         fraction        other regression          DA_505         fine
+14            score                ensemble        ensemble         <NA>
+15         fraction                    NNLS            EPIC         <NA>
+16       proportion                 unknown           HM159         <NA>
+17            score                     NMF            ICTD         <NA>
+18       proportion probabilistic inference             IZI         <NA>
+19       proportion                 unknown         jbkcose         <NA>
+20         fraction        other regression           jdroz         <NA>
+21       proportion                 unknown        LeiliLab       coarse
+22         fraction                 unknown        LeiliLab         fine
+23            score                 summary     MCP-counter         <NA>
+24            score                 summary    mitten_TDC19         <NA>
+25       proportion                    NNLS             NPU         <NA>
+26 normalized.score                   other NYIT_glomerular         <NA>
+27 normalized.score        other regression         Patrick         <NA>
+28         fraction                    NNLS       quanTIseq         <NA>
+29         fraction                    NNLS      REGGEN_LAB         <NA>
+30       proportion                 unknown     Rubbernecks         <NA>
+31         fraction                    NNLS           TIMER         <NA>
+32            score                 unknown             TJU         <NA>
+33       proportion                 unknown      Tonys Boys         <NA>
+34         fraction                 summary           xCell         <NA>
    submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
 1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
 2           1        FALSE       FALSE       TRUE           FALSE    DNN   Frac
@@ -619,32 +626,33 @@ Doing round 1
 9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
-12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
-13       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
-14       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-15       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-16       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
-17       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
-18       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-19       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
-20          1         TRUE        TRUE       TRUE           FALSE    UNK   Prop
-21          1         TRUE       FALSE       TRUE           FALSE    UNK   Frac
-22       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
-23       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
-24       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
-25       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
-26       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
-27       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-28       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-29       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-30       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-31       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
-32       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-33       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+12          1        FALSE       FALSE       TRUE           FALSE    REG   Frac
+13          1        FALSE       FALSE       TRUE           FALSE    REG   Frac
+14       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
+15       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+16       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+17       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+18       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+19       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+20       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
+21          1         TRUE        TRUE       TRUE           FALSE    UNK   Prop
+22          1         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+23       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+24       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+25       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+26       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+27       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+28       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+31       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+32       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+33       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+34       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
 [1] "subchallenge"
- [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
-[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
-[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
+[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
        method.name Output Method
 1      Aboensis IV  Score    SUM
 3      Aginome-XMU   Frac    DNN
@@ -655,27 +663,27 @@ Doing round 1
 9        CIBERSORT   Frac    SVR
 10      CIBERSORTx   Frac    SVR
 11          D3Team   Frac    ENS
-12          DA_505   Frac    SVR
-13        ensemble  Score    ENS
-14            EPIC   Frac   NNLS
-15           HM159   Prop    UNK
-16            ICTD  Score    NMF
-17             IZI   Prop     PI
-18         jbkcose   Prop    UNK
-19           jdroz   Frac    REG
-21        LeiliLab   Frac    UNK
-22     MCP-counter  Score    SUM
-23    mitten_TDC19  Score    SUM
-24             NPU   Prop   NNLS
-25 NYIT_glomerular   Norm    OTH
-26         Patrick   Norm    REG
-27       quanTIseq   Frac   NNLS
-28      REGGEN_LAB   Frac   NNLS
-29     Rubbernecks   Prop    UNK
-30           TIMER   Frac   NNLS
-31             TJU  Score    UNK
-32      Tonys Boys   Prop    UNK
-33           xCell   Frac    SUM
+13          DA_505   Frac    REG
+14        ensemble  Score    ENS
+15            EPIC   Frac   NNLS
+16           HM159   Prop    UNK
+17            ICTD  Score    NMF
+18             IZI   Prop     PI
+19         jbkcose   Prop    UNK
+20           jdroz   Frac    REG
+22        LeiliLab   Frac    UNK
+23     MCP-counter  Score    SUM
+24    mitten_TDC19  Score    SUM
+25             NPU   Prop   NNLS
+26 NYIT_glomerular   Norm    OTH
+27         Patrick   Norm    REG
+28       quanTIseq   Frac   NNLS
+29      REGGEN_LAB   Frac   NNLS
+30     Rubbernecks   Prop    UNK
+31           TIMER   Frac   NNLS
+32             TJU  Score    UNK
+33      Tonys Boys   Prop    UNK
+34           xCell   Frac    SUM
 Aboensis IV -round-1 max diff between coarse and fine-grained is: 0.00279378374513639
     cell.type method.name.x     cor.x method.name.y     cor.y          diff
 2 fibroblasts   Aboensis IV 0.7944960   Aboensis IV 0.7917023  0.0027937837
@@ -901,28 +909,29 @@ Doing round 2
 9          fraction                     SVR       CIBERSORT         <NA>
 10         fraction                     SVR      CIBERSORTx         <NA>
 11         fraction                ensemble          D3Team         <NA>
-12         fraction                     SVR          DA_505         <NA>
-13            score                ensemble        ensemble         <NA>
-14         fraction                    NNLS            EPIC         <NA>
-15       proportion                 unknown           HM159         <NA>
-16            score                     NMF            ICTD         <NA>
-17       proportion probabilistic inference             IZI         <NA>
-18       proportion                 unknown         jbkcose         <NA>
-19         fraction        other regression           jdroz         <NA>
-20         fraction                 unknown        LeiliLab       coarse
-21         fraction                 unknown        LeiliLab         fine
-22            score                 summary     MCP-counter         <NA>
-23            score                 summary    mitten_TDC19         <NA>
-24       proportion                    NNLS             NPU         <NA>
-25 normalized.score                   other NYIT_glomerular         <NA>
-26 normalized.score        other regression         Patrick         <NA>
-27         fraction                    NNLS       quanTIseq         <NA>
-28         fraction                    NNLS      REGGEN_LAB         <NA>
-29       proportion                 unknown     Rubbernecks         <NA>
-30         fraction                    NNLS           TIMER         <NA>
-31            score                 unknown             TJU         <NA>
-32       proportion                 unknown      Tonys Boys         <NA>
-33         fraction                 summary           xCell         <NA>
+12         fraction        other regression          DA_505       coarse
+13         fraction        other regression          DA_505         fine
+14            score                ensemble        ensemble         <NA>
+15         fraction                    NNLS            EPIC         <NA>
+16       proportion                 unknown           HM159         <NA>
+17            score                     NMF            ICTD         <NA>
+18       proportion probabilistic inference             IZI         <NA>
+19       proportion                 unknown         jbkcose         <NA>
+20         fraction        other regression           jdroz         <NA>
+21         fraction                 unknown        LeiliLab       coarse
+22         fraction                 unknown        LeiliLab         fine
+23            score                 summary     MCP-counter         <NA>
+24            score                 summary    mitten_TDC19         <NA>
+25       proportion                    NNLS             NPU         <NA>
+26 normalized.score                   other NYIT_glomerular         <NA>
+27 normalized.score        other regression         Patrick         <NA>
+28         fraction                    NNLS       quanTIseq         <NA>
+29         fraction                    NNLS      REGGEN_LAB         <NA>
+30       proportion                 unknown     Rubbernecks         <NA>
+31         fraction                    NNLS           TIMER         <NA>
+32            score                 unknown             TJU         <NA>
+33       proportion                 unknown      Tonys Boys         <NA>
+34         fraction                 summary           xCell         <NA>
    submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
 1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
 2           2        FALSE       FALSE      FALSE            TRUE    ENS  Score
@@ -935,32 +944,33 @@ Doing round 2
 9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
-12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
-13       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
-14       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-15       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-16       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
-17       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
-18       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-19       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
-20          2         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+12          2        FALSE       FALSE       TRUE           FALSE    REG   Frac
+13          2        FALSE       FALSE       TRUE           FALSE    REG   Frac
+14       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
+15       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+16       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+17       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+18       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+19       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+20       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
 21          2         TRUE       FALSE       TRUE           FALSE    UNK   Frac
-22       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
-23       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
-24       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
-25       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
-26       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
-27       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-28       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-29       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-30       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-31       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
-32       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-33       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+22          2         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+23       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+24       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+25       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+26       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+27       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+28       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+31       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+32       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+33       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+34       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
 [1] "subchallenge"
  [1]  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
-[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
-[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[13] FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
        method.name Output Method
 1      Aboensis IV  Score    SUM
 2      Aginome-XMU  Score    ENS
@@ -971,27 +981,27 @@ Doing round 2
 9        CIBERSORT   Frac    SVR
 10      CIBERSORTx   Frac    SVR
 11          D3Team   Frac    ENS
-12          DA_505   Frac    SVR
-13        ensemble  Score    ENS
-14            EPIC   Frac   NNLS
-15           HM159   Prop    UNK
-16            ICTD  Score    NMF
-17             IZI   Prop     PI
-18         jbkcose   Prop    UNK
-19           jdroz   Frac    REG
-20        LeiliLab   Frac    UNK
-22     MCP-counter  Score    SUM
-23    mitten_TDC19  Score    SUM
-24             NPU   Prop   NNLS
-25 NYIT_glomerular   Norm    OTH
-26         Patrick   Norm    REG
-27       quanTIseq   Frac   NNLS
-28      REGGEN_LAB   Frac   NNLS
-29     Rubbernecks   Prop    UNK
-30           TIMER   Frac   NNLS
-31             TJU  Score    UNK
-32      Tonys Boys   Prop    UNK
-33           xCell   Frac    SUM
+12          DA_505   Frac    REG
+14        ensemble  Score    ENS
+15            EPIC   Frac   NNLS
+16           HM159   Prop    UNK
+17            ICTD  Score    NMF
+18             IZI   Prop     PI
+19         jbkcose   Prop    UNK
+20           jdroz   Frac    REG
+21        LeiliLab   Frac    UNK
+23     MCP-counter  Score    SUM
+24    mitten_TDC19  Score    SUM
+25             NPU   Prop   NNLS
+26 NYIT_glomerular   Norm    OTH
+27         Patrick   Norm    REG
+28       quanTIseq   Frac   NNLS
+29      REGGEN_LAB   Frac   NNLS
+30     Rubbernecks   Prop    UNK
+31           TIMER   Frac   NNLS
+32             TJU  Score    UNK
+33      Tonys Boys   Prop    UNK
+34           xCell   Frac    SUM
 [1] "fine"
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
@@ -1019,28 +1029,29 @@ Doing round 2
 9          fraction                     SVR       CIBERSORT         <NA>
 10         fraction                     SVR      CIBERSORTx         <NA>
 11         fraction                ensemble          D3Team         <NA>
-12         fraction                     SVR          DA_505         <NA>
-13            score                ensemble        ensemble         <NA>
-14         fraction                    NNLS            EPIC         <NA>
-15       proportion                 unknown           HM159         <NA>
-16            score                     NMF            ICTD         <NA>
-17       proportion probabilistic inference             IZI         <NA>
-18       proportion                 unknown         jbkcose         <NA>
-19         fraction        other regression           jdroz         <NA>
-20         fraction                 unknown        LeiliLab       coarse
-21         fraction                 unknown        LeiliLab         fine
-22            score                 summary     MCP-counter         <NA>
-23            score                 summary    mitten_TDC19         <NA>
-24       proportion                    NNLS             NPU         <NA>
-25 normalized.score                   other NYIT_glomerular         <NA>
-26 normalized.score        other regression         Patrick         <NA>
-27         fraction                    NNLS       quanTIseq         <NA>
-28         fraction                    NNLS      REGGEN_LAB         <NA>
-29       proportion                 unknown     Rubbernecks         <NA>
-30         fraction                    NNLS           TIMER         <NA>
-31            score                 unknown             TJU         <NA>
-32       proportion                 unknown      Tonys Boys         <NA>
-33         fraction                 summary           xCell         <NA>
+12         fraction        other regression          DA_505       coarse
+13         fraction        other regression          DA_505         fine
+14            score                ensemble        ensemble         <NA>
+15         fraction                    NNLS            EPIC         <NA>
+16       proportion                 unknown           HM159         <NA>
+17            score                     NMF            ICTD         <NA>
+18       proportion probabilistic inference             IZI         <NA>
+19       proportion                 unknown         jbkcose         <NA>
+20         fraction        other regression           jdroz         <NA>
+21         fraction                 unknown        LeiliLab       coarse
+22         fraction                 unknown        LeiliLab         fine
+23            score                 summary     MCP-counter         <NA>
+24            score                 summary    mitten_TDC19         <NA>
+25       proportion                    NNLS             NPU         <NA>
+26 normalized.score                   other NYIT_glomerular         <NA>
+27 normalized.score        other regression         Patrick         <NA>
+28         fraction                    NNLS       quanTIseq         <NA>
+29         fraction                    NNLS      REGGEN_LAB         <NA>
+30       proportion                 unknown     Rubbernecks         <NA>
+31         fraction                    NNLS           TIMER         <NA>
+32            score                 unknown             TJU         <NA>
+33       proportion                 unknown      Tonys Boys         <NA>
+34         fraction                 summary           xCell         <NA>
    submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
 1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
 2           2        FALSE       FALSE      FALSE            TRUE    ENS  Score
@@ -1053,32 +1064,33 @@ Doing round 2
 9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
-12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
-13       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
-14       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-15       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-16       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
-17       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
-18       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-19       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
-20          2         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+12          2        FALSE       FALSE       TRUE           FALSE    REG   Frac
+13          2        FALSE       FALSE       TRUE           FALSE    REG   Frac
+14       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
+15       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+16       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+17       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+18       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+19       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+20       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
 21          2         TRUE       FALSE       TRUE           FALSE    UNK   Frac
-22       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
-23       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
-24       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
-25       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
-26       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
-27       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-28       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-29       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-30       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-31       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
-32       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-33       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+22          2         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+23       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+24       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+25       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+26       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+27       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+28       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+31       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+32       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+33       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+34       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
 [1] "subchallenge"
- [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
-[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
-[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
+[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
        method.name Output Method
 1      Aboensis IV  Score    SUM
 3      Aginome-XMU  Score    ENS
@@ -1089,27 +1101,27 @@ Doing round 2
 9        CIBERSORT   Frac    SVR
 10      CIBERSORTx   Frac    SVR
 11          D3Team   Frac    ENS
-12          DA_505   Frac    SVR
-13        ensemble  Score    ENS
-14            EPIC   Frac   NNLS
-15           HM159   Prop    UNK
-16            ICTD  Score    NMF
-17             IZI   Prop     PI
-18         jbkcose   Prop    UNK
-19           jdroz   Frac    REG
-21        LeiliLab   Frac    UNK
-22     MCP-counter  Score    SUM
-23    mitten_TDC19  Score    SUM
-24             NPU   Prop   NNLS
-25 NYIT_glomerular   Norm    OTH
-26         Patrick   Norm    REG
-27       quanTIseq   Frac   NNLS
-28      REGGEN_LAB   Frac   NNLS
-29     Rubbernecks   Prop    UNK
-30           TIMER   Frac   NNLS
-31             TJU  Score    UNK
-32      Tonys Boys   Prop    UNK
-33           xCell   Frac    SUM
+13          DA_505   Frac    REG
+14        ensemble  Score    ENS
+15            EPIC   Frac   NNLS
+16           HM159   Prop    UNK
+17            ICTD  Score    NMF
+18             IZI   Prop     PI
+19         jbkcose   Prop    UNK
+20           jdroz   Frac    REG
+22        LeiliLab   Frac    UNK
+23     MCP-counter  Score    SUM
+24    mitten_TDC19  Score    SUM
+25             NPU   Prop   NNLS
+26 NYIT_glomerular   Norm    OTH
+27         Patrick   Norm    REG
+28       quanTIseq   Frac   NNLS
+29      REGGEN_LAB   Frac   NNLS
+30     Rubbernecks   Prop    UNK
+31           TIMER   Frac   NNLS
+32             TJU  Score    UNK
+33      Tonys Boys   Prop    UNK
+34           xCell   Frac    SUM
 Aboensis IV -round-2 max diff between coarse and fine-grained is: 0.0038792863614141
     cell.type method.name.x     cor.x method.name.y     cor.y          diff
 1 endothelial   Aboensis IV 0.9826318   Aboensis IV 0.9820028  0.0006289488
@@ -1331,28 +1343,29 @@ Doing round 3
 9          fraction                     SVR       CIBERSORT         <NA>
 10         fraction                     SVR      CIBERSORTx         <NA>
 11         fraction                ensemble          D3Team         <NA>
-12         fraction                     SVR          DA_505         <NA>
-13            score                ensemble        ensemble         <NA>
-14         fraction                    NNLS            EPIC         <NA>
-15       proportion                 unknown           HM159         <NA>
-16            score                     NMF            ICTD         <NA>
-17       proportion probabilistic inference             IZI         <NA>
-18       proportion                 unknown         jbkcose         <NA>
-19         fraction        other regression           jdroz         <NA>
-20         fraction                 unknown        LeiliLab       coarse
-21         fraction                 unknown        LeiliLab         fine
-22            score                 summary     MCP-counter         <NA>
-23            score                 summary    mitten_TDC19         <NA>
-24       proportion                    NNLS             NPU         <NA>
-25 normalized.score                   other NYIT_glomerular         <NA>
-26 normalized.score        other regression         Patrick         <NA>
-27         fraction                    NNLS       quanTIseq         <NA>
-28         fraction                    NNLS      REGGEN_LAB         <NA>
-29       proportion                 unknown     Rubbernecks         <NA>
-30         fraction                    NNLS           TIMER         <NA>
-31            score                 unknown             TJU         <NA>
-32       proportion                 unknown      Tonys Boys         <NA>
-33         fraction                 summary           xCell         <NA>
+12         fraction                     SVR          DA_505       coarse
+13         fraction                     SVR          DA_505         fine
+14            score                ensemble        ensemble         <NA>
+15         fraction                    NNLS            EPIC         <NA>
+16       proportion                 unknown           HM159         <NA>
+17            score                     NMF            ICTD         <NA>
+18       proportion probabilistic inference             IZI         <NA>
+19       proportion                 unknown         jbkcose         <NA>
+20         fraction        other regression           jdroz         <NA>
+21         fraction                 unknown        LeiliLab       coarse
+22         fraction                 unknown        LeiliLab         fine
+23            score                 summary     MCP-counter         <NA>
+24            score                 summary    mitten_TDC19         <NA>
+25       proportion                    NNLS             NPU         <NA>
+26 normalized.score                   other NYIT_glomerular         <NA>
+27 normalized.score        other regression         Patrick         <NA>
+28         fraction                    NNLS       quanTIseq         <NA>
+29         fraction                    NNLS      REGGEN_LAB         <NA>
+30       proportion                 unknown     Rubbernecks         <NA>
+31         fraction                    NNLS           TIMER         <NA>
+32            score                 unknown             TJU         <NA>
+33       proportion                 unknown      Tonys Boys         <NA>
+34         fraction                 summary           xCell         <NA>
    submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
 1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
 2      latest        FALSE       FALSE      FALSE            TRUE    ENS  Score
@@ -1365,32 +1378,33 @@ Doing round 3
 9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
-12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
-13       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
-14       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-15       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-16       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
-17       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
-18       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-19       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
-20     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+12     latest        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+13     latest        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+14       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
+15       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+16       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+17       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+18       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+19       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+20       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
 21     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
-22       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
-23       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
-24       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
-25       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
-26       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
-27       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-28       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-29       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-30       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-31       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
-32       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-33       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+22     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+23       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+24       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+25       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+26       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+27       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+28       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+31       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+32       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+33       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+34       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
 [1] "subchallenge"
  [1]  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
-[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
-[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[13] FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
        method.name Output Method
 1      Aboensis IV  Score    SUM
 2      Aginome-XMU  Score    ENS
@@ -1402,26 +1416,26 @@ Doing round 3
 10      CIBERSORTx   Frac    SVR
 11          D3Team   Frac    ENS
 12          DA_505   Frac    SVR
-13        ensemble  Score    ENS
-14            EPIC   Frac   NNLS
-15           HM159   Prop    UNK
-16            ICTD  Score    NMF
-17             IZI   Prop     PI
-18         jbkcose   Prop    UNK
-19           jdroz   Frac    REG
-20        LeiliLab   Frac    UNK
-22     MCP-counter  Score    SUM
-23    mitten_TDC19  Score    SUM
-24             NPU   Prop   NNLS
-25 NYIT_glomerular   Norm    OTH
-26         Patrick   Norm    REG
-27       quanTIseq   Frac   NNLS
-28      REGGEN_LAB   Frac   NNLS
-29     Rubbernecks   Prop    UNK
-30           TIMER   Frac   NNLS
-31             TJU  Score    UNK
-32      Tonys Boys   Prop    UNK
-33           xCell   Frac    SUM
+14        ensemble  Score    ENS
+15            EPIC   Frac   NNLS
+16           HM159   Prop    UNK
+17            ICTD  Score    NMF
+18             IZI   Prop     PI
+19         jbkcose   Prop    UNK
+20           jdroz   Frac    REG
+21        LeiliLab   Frac    UNK
+23     MCP-counter  Score    SUM
+24    mitten_TDC19  Score    SUM
+25             NPU   Prop   NNLS
+26 NYIT_glomerular   Norm    OTH
+27         Patrick   Norm    REG
+28       quanTIseq   Frac   NNLS
+29      REGGEN_LAB   Frac   NNLS
+30     Rubbernecks   Prop    UNK
+31           TIMER   Frac   NNLS
+32             TJU  Score    UNK
+33      Tonys Boys   Prop    UNK
+34           xCell   Frac    SUM
 [1] "fine"
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
@@ -1449,28 +1463,29 @@ Doing round 3
 9          fraction                     SVR       CIBERSORT         <NA>
 10         fraction                     SVR      CIBERSORTx         <NA>
 11         fraction                ensemble          D3Team         <NA>
-12         fraction                     SVR          DA_505         <NA>
-13            score                ensemble        ensemble         <NA>
-14         fraction                    NNLS            EPIC         <NA>
-15       proportion                 unknown           HM159         <NA>
-16            score                     NMF            ICTD         <NA>
-17       proportion probabilistic inference             IZI         <NA>
-18       proportion                 unknown         jbkcose         <NA>
-19         fraction        other regression           jdroz         <NA>
-20         fraction                 unknown        LeiliLab       coarse
-21         fraction                 unknown        LeiliLab         fine
-22            score                 summary     MCP-counter         <NA>
-23            score                 summary    mitten_TDC19         <NA>
-24       proportion                    NNLS             NPU         <NA>
-25 normalized.score                   other NYIT_glomerular         <NA>
-26 normalized.score        other regression         Patrick         <NA>
-27         fraction                    NNLS       quanTIseq         <NA>
-28         fraction                    NNLS      REGGEN_LAB         <NA>
-29       proportion                 unknown     Rubbernecks         <NA>
-30         fraction                    NNLS           TIMER         <NA>
-31            score                 unknown             TJU         <NA>
-32       proportion                 unknown      Tonys Boys         <NA>
-33         fraction                 summary           xCell         <NA>
+12         fraction                     SVR          DA_505       coarse
+13         fraction                     SVR          DA_505         fine
+14            score                ensemble        ensemble         <NA>
+15         fraction                    NNLS            EPIC         <NA>
+16       proportion                 unknown           HM159         <NA>
+17            score                     NMF            ICTD         <NA>
+18       proportion probabilistic inference             IZI         <NA>
+19       proportion                 unknown         jbkcose         <NA>
+20         fraction        other regression           jdroz         <NA>
+21         fraction                 unknown        LeiliLab       coarse
+22         fraction                 unknown        LeiliLab         fine
+23            score                 summary     MCP-counter         <NA>
+24            score                 summary    mitten_TDC19         <NA>
+25       proportion                    NNLS             NPU         <NA>
+26 normalized.score                   other NYIT_glomerular         <NA>
+27 normalized.score        other regression         Patrick         <NA>
+28         fraction                    NNLS       quanTIseq         <NA>
+29         fraction                    NNLS      REGGEN_LAB         <NA>
+30       proportion                 unknown     Rubbernecks         <NA>
+31         fraction                    NNLS           TIMER         <NA>
+32            score                 unknown             TJU         <NA>
+33       proportion                 unknown      Tonys Boys         <NA>
+34         fraction                 summary           xCell         <NA>
    submission non.negative sums.to.one sum.lt.one any.cell.gt.one Method Output
 1        <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
 2      latest        FALSE       FALSE      FALSE            TRUE    ENS  Score
@@ -1483,32 +1498,33 @@ Doing round 3
 9        <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 10       <NA>         TRUE       FALSE       TRUE           FALSE    SVR   Frac
 11       <NA>         TRUE       FALSE       TRUE           FALSE    ENS   Frac
-12       <NA>        FALSE       FALSE       TRUE           FALSE    SVR   Frac
-13       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
-14       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-15       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-16       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
-17       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
-18       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-19       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
-20     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+12     latest        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+13     latest        FALSE       FALSE       TRUE           FALSE    SVR   Frac
+14       <NA>         TRUE       FALSE      FALSE            TRUE    ENS  Score
+15       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+16       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+17       <NA>         TRUE       FALSE      FALSE            TRUE    NMF  Score
+18       <NA>         TRUE        TRUE      FALSE           FALSE     PI   Prop
+19       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+20       <NA>        FALSE       FALSE       TRUE           FALSE    REG   Frac
 21     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
-22       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
-23       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
-24       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
-25       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
-26       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
-27       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
-28       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-29       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-30       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
-31       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
-32       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
-33       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
+22     latest         TRUE       FALSE       TRUE           FALSE    UNK   Frac
+23       <NA>         TRUE       FALSE      FALSE            TRUE    SUM  Score
+24       <NA>         TRUE       FALSE       TRUE           FALSE    SUM  Score
+25       <NA>         TRUE        TRUE      FALSE           FALSE   NNLS   Prop
+26       <NA>        FALSE       FALSE       TRUE            TRUE    OTH   Norm
+27       <NA>         TRUE       FALSE      FALSE            TRUE    REG   Norm
+28       <NA>         TRUE       FALSE       TRUE           FALSE   NNLS   Frac
+29       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+30       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+31       <NA>         TRUE       FALSE       TRUE            TRUE   NNLS   Frac
+32       <NA>         TRUE       FALSE      FALSE            TRUE    UNK  Score
+33       <NA>         TRUE        TRUE      FALSE           FALSE    UNK   Prop
+34       <NA>         TRUE       FALSE       TRUE           FALSE    SUM   Frac
 [1] "subchallenge"
- [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
-[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
-[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
+[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+[25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
        method.name Output Method
 1      Aboensis IV  Score    SUM
 3      Aginome-XMU  Score    ENS
@@ -1519,27 +1535,27 @@ Doing round 3
 9        CIBERSORT   Frac    SVR
 10      CIBERSORTx   Frac    SVR
 11          D3Team   Frac    ENS
-12          DA_505   Frac    SVR
-13        ensemble  Score    ENS
-14            EPIC   Frac   NNLS
-15           HM159   Prop    UNK
-16            ICTD  Score    NMF
-17             IZI   Prop     PI
-18         jbkcose   Prop    UNK
-19           jdroz   Frac    REG
-21        LeiliLab   Frac    UNK
-22     MCP-counter  Score    SUM
-23    mitten_TDC19  Score    SUM
-24             NPU   Prop   NNLS
-25 NYIT_glomerular   Norm    OTH
-26         Patrick   Norm    REG
-27       quanTIseq   Frac   NNLS
-28      REGGEN_LAB   Frac   NNLS
-29     Rubbernecks   Prop    UNK
-30           TIMER   Frac   NNLS
-31             TJU  Score    UNK
-32      Tonys Boys   Prop    UNK
-33           xCell   Frac    SUM
+13          DA_505   Frac    SVR
+14        ensemble  Score    ENS
+15            EPIC   Frac   NNLS
+16           HM159   Prop    UNK
+17            ICTD  Score    NMF
+18             IZI   Prop     PI
+19         jbkcose   Prop    UNK
+20           jdroz   Frac    REG
+22        LeiliLab   Frac    UNK
+23     MCP-counter  Score    SUM
+24    mitten_TDC19  Score    SUM
+25             NPU   Prop   NNLS
+26 NYIT_glomerular   Norm    OTH
+27         Patrick   Norm    REG
+28       quanTIseq   Frac   NNLS
+29      REGGEN_LAB   Frac   NNLS
+30     Rubbernecks   Prop    UNK
+31           TIMER   Frac   NNLS
+32             TJU  Score    UNK
+33      Tonys Boys   Prop    UNK
+34           xCell   Frac    SUM
 Aboensis IV -round-3 max diff between coarse and fine-grained is: 0
 Aginome-XMU -round-3 max diff between coarse and fine-grained is: 0.101033450220807
   cell.type method.name.x     cor.x method.name.y     cor.y       diff
@@ -1875,8 +1891,8 @@ Round 1 coarse method count:
 5     OTH    1
 6      PI    1
 3     NMF    2
-7     REG    3
-9     SVR    3
+9     SVR    2
+7     REG    4
 4    NNLS    5
 8     SUM    5
 10    UNK    5
@@ -1904,8 +1920,8 @@ Round 1 fine method count:
 2    ENS    1
 5     PI    1
 3    NMF    2
-6    REG    2
-8    SVR    3
+8    SVR    2
+6    REG    3
 9    UNK    3
 7    SUM    4
 4   NNLS    5
@@ -1936,21 +1952,21 @@ Exiting successfully
 -------------------------------------------------------------
 SUMNER/WINTER EPILOGUE
 -------------------------------------------------------------
-Job ID: 13864626
+Job ID: 13876014
 Cluster: slurm_cluster
 User/Group: root/jaxuser
 State: COMPLETED (exit code 0)
 Nodes: 1
 Cores per node: 16
-CPU Utilized: 00:12:57
-CPU Efficiency: 7.14% of 03:01:20 core-walltime
-Job Wall-clock time: 00:11:20
-Memory Utilized: 2.99 GB
-Memory Efficiency: 0.60% of 500.00 GB
+CPU Utilized: 00:14:43
+CPU Efficiency: 7.10% of 03:27:12 core-walltime
+Job Wall-clock time: 00:12:57
+Memory Utilized: 5.41 GB
+Memory Efficiency: 1.08% of 500.00 GB
 -------------------------------------------------------------
        JobID  User   State    CPUTime Exit     MaxRSS        NodeList  Partition                   ReqTRES              Submit               Start                 End    Elapsed 
 ------------ ----- ------- ---------- ---- ---------- --------------- ---------- ------------------------- ------------------- ------------------- ------------------- ---------- 
-13864626     whit+ COMPLE+   03:01:20  0:0                  sumner073    compute billing=16,cpu=16,mem=51+ 2022-03-23T16:34:13 2022-03-23T16:34:29 2022-03-23T16:45:49   00:11:20 
-13864626.ba+       COMPLE+   03:01:20  0:0   3060.38M       sumner073                                      2022-03-23T16:34:29 2022-03-23T16:34:29 2022-03-23T16:45:49   00:11:20 
-13864626.ex+       COMPLE+   03:01:36  0:0      1.76M       sumner073                                      2022-03-23T16:34:29 2022-03-23T16:34:29 2022-03-23T16:45:50   00:11:21 
+13876014     whit+ COMPLE+   03:27:12  0:0                  sumner091    compute billing=16,cpu=16,mem=51+ 2022-03-24T01:25:26 2022-03-24T01:25:41 2022-03-24T01:38:38   00:12:57 
+13876014.ba+       COMPLE+   03:27:12  0:0   5539.97M       sumner091                                      2022-03-24T01:25:41 2022-03-24T01:25:41 2022-03-24T01:38:38   00:12:57 
+13876014.ex+       COMPLE+   03:27:12  0:0      1.76M       sumner091                                      2022-03-24T01:25:41 2022-03-24T01:25:41 2022-03-24T01:38:38   00:12:57 
 -------------------------------------------------------------
