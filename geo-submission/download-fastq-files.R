@@ -32,7 +32,7 @@ dir.create(download.dir, recursive=TRUE)
 new.download.dir <- "/fastscratch/whitebr/download-new/"
 dir.create(new.download.dir, recursive=TRUE)
 
-l_ply(synIds, .parallel = TRUE,
+l_ply(synIds, .parallel = FALSE,
         .fun = function(synId) {
                  obj <- synGet(synId, downloadFile=FALSE)
                  if(!file.exists(paste0(download.dir, "/", obj$properties$name)) && !file.exists(paste0(new.download.dir, "/", obj$properties$name))) {
