@@ -1266,7 +1266,7 @@ limit.matrix.to.protein.coding <- function(mat, use.symbols = TRUE) {
     # devtools::install_github("hadley/dplyr@v0.8.0")
 
     #Install previous version of dbplyr (1.3)
-    #devtools::install_url(https://cran.r-project.org/src/contrib/Archive/dbplyr/dbplyr_1.3.0.tar.gz)
+    #devtools::install_url("https://cran.r-project.org/src/contrib/Archive/dbplyr/dbplyr_1.3.0.tar.gz")
 
     #Install AnnotationHub for Bioconductor 3.10 
     #BiocManager::install("AnnotationHub", version = "3.10", dependencies = TRUE)

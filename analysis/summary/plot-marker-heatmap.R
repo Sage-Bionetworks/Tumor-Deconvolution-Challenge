@@ -110,7 +110,8 @@ plot.marker.heatmap <- function(mat, marker.tbl, marker.gene.id.col = "marker.sy
 
 source("../utils.R")
 cat("Limiting to protein coding genes\n")
-pc.expr.mat <- limit.matrix.to.protein.coding(expr.mat)
+# pc.expr.mat <- limit.matrix.to.protein.coding(expr.mat)
+pc.expr.mat <- expr.mat
 if(include.cd45ro) {
   pc.expr.mat <- rbind(pc.expr.mat, CD45RO = as.numeric(trans.expr.mat[cd45ro.enst.id,]))
 }
