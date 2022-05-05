@@ -349,9 +349,8 @@ g
 prefix <- "b-cell-score"
 ggsave(paste0(prefix, ".png"), width=10,height=5)
 
-create.admixture <- function(all.expr.log.scale, seed = 1234) {
+create.admixture <- function(all.expr.log.scale, seed = 1234, n.col = 22) {
   set.seed(seed)
-  n.col <- 22
   tmp <- llply(1:n.col,
                .fun = function(i) {
                    sample.indices <- sample.int(ncol(all.expr.log.scale),
@@ -363,16 +362,17 @@ create.admixture <- function(all.expr.log.scale, seed = 1234) {
   tmp.long
 }
 
-axis.text.size <- 65
+axis.text.size <- 55
 
 prefix <- "admixture-matrix-1"
 png(paste0(prefix, ".png"))
-tmp.long <- create.admixture(all.expr.log.scale, seed = 1234)
+n.in.vitro.admixtures <- 96
+tmp.long <- create.admixture(all.expr.log.scale, seed = 1234, n.col = n.in.vitro.admixtures)
 g <- ggplot(data=tmp.long, aes(x=Var2, y=Var1, fill=value)) 
 g <- g + geom_tile()
 g <- g + scale_fill_gradient2(low = low.col, mid = mid.col, high = high.col)
 g <- remove.axes(g, remove.title=FALSE, remove.axis.labels=FALSE)
-g <- g + ylab("Genes") + xlab("Admixtures")
+g <- g + ylab("Genes") + xlab(paste0(n.in.vitro.admixtures, " Admixtures"))
 ## g <- g + scale_x_discrete(position="top")
 g <- g + theme(text = element_text(size = axis.text.size),
                axis.title.x = element_text(size = axis.text.size),
@@ -385,12 +385,13 @@ d <- dev.off()
 
 prefix <- "admixture-matrix-2"
 png(paste0(prefix, ".png"))
-tmp.long <- create.admixture(all.expr.log.scale, seed = 4321)
+n.in.silico.admixtures <- 140
+tmp.long <- create.admixture(all.expr.log.scale, seed = 4321, n.col = n.in.silico.admixtures)
 g <- ggplot(data=tmp.long, aes(x=Var2, y=Var1, fill=value)) 
 g <- g + geom_tile()
 g <- g + scale_fill_gradient2(low = low.col, mid = mid.col, high = high.col)
 g <- remove.axes(g, remove.title=FALSE, remove.axis.labels=FALSE)
-g <- g + ylab("Genes") + xlab("Admixtures")
+g <- g + ylab("Genes") + xlab(paste0(n.in.silico.admixtures, " Admixtures"))
 ## g <- g + scale_x_discrete(position="top")
 g <- g + theme(text = element_text(size = axis.text.size),
                axis.title.x = element_text(size = axis.text.size),
