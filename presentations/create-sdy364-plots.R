@@ -374,9 +374,10 @@ plot.cell.type.large  <- function(df, cell.type, x.val = "value.gt",
                       show.correlation = FALSE,
                       show.identity = FALSE,
                       show.legend = FALSE)
+  axis.text.size <- 55		      
   g <- g + theme(text = element_text(size = 35),
-                 axis.title.x = element_text(size = 35),
-                 axis.title.y = element_text(size = 35))
+                 axis.title.x = element_text(size = axis.text.size),
+                 axis.title.y = element_text(size = axis.text.size))
   g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
   g
 }

@@ -363,6 +363,8 @@ create.admixture <- function(all.expr.log.scale, seed = 1234) {
   tmp.long
 }
 
+axis.text.size <- 65
+
 prefix <- "admixture-matrix-1"
 png(paste0(prefix, ".png"))
 tmp.long <- create.admixture(all.expr.log.scale, seed = 1234)
@@ -372,9 +374,9 @@ g <- g + scale_fill_gradient2(low = low.col, mid = mid.col, high = high.col)
 g <- remove.axes(g, remove.title=FALSE, remove.axis.labels=FALSE)
 g <- g + ylab("Genes") + xlab("Admixtures")
 ## g <- g + scale_x_discrete(position="top")
-g <- g + theme(text = element_text(size = 35),
-               axis.title.x = element_text(size = 35),
-               axis.title.y = element_text(size = 35))
+g <- g + theme(text = element_text(size = axis.text.size),
+               axis.title.x = element_text(size = axis.text.size),
+               axis.title.y = element_text(size = axis.text.size))
 ## g <- g + ggtitle("Admixtures") + theme(plot.title = element_text(hjust = 0.5))
 g
 print(g)
@@ -390,9 +392,9 @@ g <- g + scale_fill_gradient2(low = low.col, mid = mid.col, high = high.col)
 g <- remove.axes(g, remove.title=FALSE, remove.axis.labels=FALSE)
 g <- g + ylab("Genes") + xlab("Admixtures")
 ## g <- g + scale_x_discrete(position="top")
-g <- g + theme(text = element_text(size = 35),
-               axis.title.x = element_text(size = 35),
-               axis.title.y = element_text(size = 35))
+g <- g + theme(text = element_text(size = axis.text.size),
+               axis.title.x = element_text(size = axis.text.size),
+               axis.title.y = element_text(size = axis.text.size))
 ## g <- g + ggtitle("Admixtures") + theme(plot.title = element_text(hjust = 0.5))
 g
 print(g)
@@ -419,11 +421,11 @@ g <- g + geom_tile()
 print(c(low.col, mid.col, high.col))
 g <- g + scale_fill_gradient2(low = low.col, mid = mid.col, high = high.col, midpoint = median(tmp))
 g <- remove.axes(g, remove.title=FALSE, remove.axis.labels=FALSE)
-g <- g + ylab("Genes") + xlab("Purified Samples")
+g <- g + ylab("Genes") + xlab("Purified Cells")
 ## g <- g + scale_x_discrete(position="top")
-g <- g + theme(text = element_text(size = 35),
-               axis.title.x = element_text(size = 35),
-               axis.title.y = element_text(size = 35))
+g <- g + theme(text = element_text(size = axis.text.size),
+               axis.title.x = element_text(size = axis.text.size),
+               axis.title.y = element_text(size = axis.text.size))
 ## g <- g + ggtitle("Admixtures") + theme(plot.title = element_text(hjust = 0.5))
 g
 print(g)
