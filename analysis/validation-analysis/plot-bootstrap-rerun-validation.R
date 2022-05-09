@@ -128,6 +128,8 @@ plot.bootstrap.analysis <-
              postfix) {
 
         top.performers <- c("Aginome-XMU", "DA_505", "mitten_TDC19", "Biogem")
+        comparator.methods <- unique(subset(res, comparator==TRUE)[, method.name.col])
+	print(comparator.methods)
         priority.methods <- unique(c(top.performers, unique(subset(res, comparator==TRUE)[, method.name.col])))
 
         for(sub.challenge in sub.challenges) {
@@ -157,6 +159,8 @@ print(method.anno.round.sc)
             flag <- ( !is.na(scores$pearson) & !is.na(scores$spearman) ) | ( scores[,method.name.col] == "ensemble")
             scores <- scores[flag, ] 
             scores[, method.name.col] <- factor(scores[, method.name.col], levels = median.scores[, method.name.col])
+            bold.labels <- ifelse(levels(scores[,method.name.col]) %in% comparator.methods, yes = "bold", no = "plain")
+print(table(bold.labels))
 #            scores <- na.omit(scores)
             flag <- ( !is.na(median.scores$pearson) & !is.na(median.scores$spearman) ) | ( median.scores[,method.name.col] == "ensemble")
             median.scores[, method.name.col] <- factor(median.scores[, method.name.col], levels = median.scores[, method.name.col])
@@ -170,7 +174,10 @@ print(method.anno.round.sc)
             ## g1 <- g1 + ylab("Pearson Correlation")
             g1 <- g1 + ylab("Pearson")
             g1 <- g1 + ylim(c(-0.25, 1))
-            g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20))
+            g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20), axis.text.x = element_text(face = bold.labels))
+            # g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20))
+            # g1 <- g1 + scale_y_discrete(labels = function(x) bold.highlight(x, comparator.methods))
+            # g1 <- g1 + theme(axis.text.y=element_markdown())
 
             g2 <- ggplot(data = median.scores)
             g2 <- g2 + geom_col(aes_string(x = method.name.col, y = "spearman"), fill = "#E69F00")
@@ -269,9 +276,8 @@ print(method.levels[[sub.challenge]])
                                                     id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
                                                     second.col.summary.fun = "mean",
                                                     method.levels = method.levels[[sub.challenge]],
-                                                    cell.type.levels = cell.type.levels[[sub.challenge]])
+                                                    cell.type.levels = cell.type.levels[[sub.challenge]], ids.to.bold = comparator.methods)
 ##            g <- plot.cell.type.correlation.strip.plots(means, show.corr.text = TRUE, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
-
             heatmaps[[sub.challenge]] <- g
             
             title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
@@ -316,7 +322,7 @@ print(method.levels[[sub.challenge]])
                                                 id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
                                                 second.col.summary.fun = "mean",
                                                 method.levels = method.levels[["merged"]],
-                                                cell.type.levels = cell.type.levels[["merged"]])
+                                                cell.type.levels = cell.type.levels[["merged"]], ids.to.bold = comparator.methods)
         merged.all.means <- all.means
         heatmaps[["merged"]] <- g
 
@@ -336,7 +342,7 @@ print(method.levels[[sub.challenge]])
                     "merged" = "merged", "merged-priority" = "merged-priority")
         strip.plots <-
             llply(nms,
-                  .parallel = TRUE,
+                  .parallel = FALSE,
                   .fun = function(nm) {
                       sub.challenge <- NA
                       df <- NULL
@@ -357,18 +363,42 @@ print(method.levels[[sub.challenge]])
                       g <- NULL
                       if(grepl(nm, pattern="priority")) {
                           flag <- df[, method.name.col] %in% priority.methods
-                          g <- plot.strip.plots(df[flag, ], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor",
+                          ret <- plot.strip.plots(df[flag, ], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor",
                                                 method.levels = method.levels[[entry]],
                                                 cell.type.levels = cell.type.levels[[entry]],
                                                 label = "Pearson Correlation")
+                          g <- ret[["g"]]
+                          df <- ret[["df"]]
+                          lvls <- levels(df[,method.name.col])
+                          lvls <- lvls[lvls %in% df[,method.name.col]]
+                          y.bold.labels <- ifelse(lvls %in% comparator.methods, yes = "bold", no = "plain")
+print("here\n")
+print(comparator.methods)
+print(priority.methods)
+print(lvls)
+print(y.bold.labels)
                       } else {
                           # Exclude ensemble, which has NAs for pearson
                           flag <- !(df[, method.name.col] == "ensemble")
-                          g <- plot.strip.plots(df[flag,], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor",
+                          ret <- plot.strip.plots(df[flag,], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor",
                                                 method.levels = method.levels[[entry]],
                                                 cell.type.levels = cell.type.levels[[entry]],
                                                 label = "Pearson Correlation")
+                          g <- ret[["g"]]
+                          df <- ret[["df"]]
+                          lvls <- levels(df[,method.name.col])
+                          lvls <- lvls[lvls %in% df[,method.name.col]]
+                          y.bold.labels <- ifelse(lvls %in% comparator.methods, yes = "bold", no = "plain")
+print("there\n")
+print(comparator.methods)
+print(lvls)
+print(y.bold.labels)
+
+
                       }
+		      g <- g + theme(axis.text.y = element_text(face = y.bold.labels))
+		      # g <- g + scale_y_discrete(labels = function(x) bold.highlight(x, comparator.methods))
+                      # g <- g + theme(axis.text.y=element_markdown())
                   })
 
         ## "boxplots" = boxplots,

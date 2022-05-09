@@ -1003,6 +1003,15 @@ calculate.cell.type.levels <- function(df, id.var = "modelId", cell.type.var = "
 }
 
 
+# See
+# https://stackoverflow.com/questions/61733297/apply-bold-font-on-specific-axis-ticks
+#library(ggtext)
+#library(glue)
+#bold.highlight <- function(x, strings.to.bolden) {
+#  # ifelse(grepl(pat, x), glue("<b style='font-family:{family}; color:{color}'>{x}</b>"), x)
+#  ifelse(x %in% strings.to.bolden, glue("<b>{x}</b>"), x)
+#}
+
 plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.var = "modelId", cell.type.var = "cell.type", cor.var = "cor.p",
                                                cor.type.label = "Pearson\nCorrelation", limits = c(-1, 1),
                                                pval.var = NULL, row.summary.fun = "mean", col.summary.fun = "max",
@@ -1011,6 +1020,7 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
                                                method.levels = NULL,
                                                cell.type.levels = NULL,
                                                highlight.fun = "max",
+                                               ids.to.bold = NULL,
                                                formatter = function(x) formatC(x, format="f", digits=2)) {
     orig.df <- df
     df <- df[, c(id.var, cell.type.var, cor.var)]
@@ -1101,6 +1111,7 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     }
     df[, cell.type.var] <- factor(df[, cell.type.var], levels = cell.type.levels)
     df[, id.var] <- factor(df[, id.var], levels = method.levels)
+
     g <- ggplot(data = df, aes_string(y = id.var, x = cell.type.var, fill = cor.var))
     g <- g + geom_tile()
 
@@ -1111,6 +1122,11 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
     }
     g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
                    text = element_text(size=15))
+    if(!is.null(ids.to.bold)) {
+      # g <- g + scale_y_discrete(labels = function(x) bold.highlight(x, ids.to.bold)) + theme(axis.text.y=element_markdown())
+      bold.labels <- ifelse(levels(df[,id.var]) %in% ids.to.bold, yes = "bold", no = "plain")
+      g <- g + theme(axis.text.y = element_text(face = bold.labels))
+    }
     ## g <- g + ylab("Method") + xlab("")
     g <- g + theme(axis.title.x = element_blank(), axis.title.y = element_blank())
     ## g <- g + scale_fill_continuous("Pearson\ncorrelation", limits = c(-1,1))
@@ -1193,7 +1209,7 @@ plot.strip.plots <- function(df, id.var = "modelId", cell.type.var = "cell.type"
     
     g <- g + scale_x_continuous(labels = proportion.labels)
     g <- g + xlab(label) + ylab("")
-    g
+    return(list("g" = g, "df" = df))
 }
 
 plot.correlation <- function(x, y, labels = NULL, colors = NULL, display.r2 = FALSE, method = "pearson", display.pval = FALSE, xoffset = 0.5, ...) {

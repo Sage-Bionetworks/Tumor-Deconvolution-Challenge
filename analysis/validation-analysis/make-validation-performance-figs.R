@@ -84,6 +84,22 @@ g.heatmap.merged.round1 <- plots[["1"]][["heatmaps"]][["merged"]]
 ## print(g.heatmap.merged.round1)
 ## d <- dev.off()
 
+# error here
+#Error in `merge_element()`:
+#! Only elements of the same class can be merged
+#Run `rlang::last_error()` to see where the error occurred.
+#  1. base::source("./plot-bootstrap-rerun-validation.R")
+#  9. ggplot2:::`+.gg`(...)
+#       at make-validation-performance-figs.R:88:0
+# 10. ggplot2:::add_ggplot(e1, e2, e2name)
+# 12. ggplot2:::ggplot_add.theme(object, p, objectname)
+# 13. ggplot2:::add_theme(plot$theme, object)
+# 15. ggplot2:::merge_element.element(t2[[item]], t1[[item]])
+
+#g.strip.merged.round1.priority
+#Error in check.length("fontface") : 
+#  'gpar' element 'fontface' must not be length 0
+#In addition: Warning message:
 g.strip.merged.round1.priority <- plots[["1"]][["strip.plots"]][["merged-priority"]]
 g.strip.merged.round1.priority <- g.strip.merged.round1.priority +
     theme(axis.text.y = element_text(size = 12),
@@ -94,6 +110,8 @@ g.strip.merged.round1.priority <- g.strip.merged.round1.priority +
 ## print(g.strip.merged.round1.priority)
 ## d <- dev.off()
 
+# Introduce extra space for a "title" so that the label does not run into the text on the axis
+g.heatmap.merged.round1 <- g.heatmap.merged.round1 + ggtitle("")
 # g <- plot_grid(g.strip.merged.round1.priority, g.heatmap.merged.round1, nrow = 2, labels = "AUTO")
 g <- plot_grid(g.heatmap.merged.round1, g.strip.merged.round1.priority, nrow = 2, labels = "AUTO")
 
