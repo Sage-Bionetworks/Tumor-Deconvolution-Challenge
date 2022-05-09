@@ -15,6 +15,8 @@ Doing round latest
 4         TRUE       FALSE       TRUE           FALSE    REG   Norm
 5         TRUE       FALSE      FALSE            TRUE    NMF  Score
 6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
 [1] "coarse"
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
@@ -255,6 +257,29 @@ Doing round latest
 32             TJU  Score    UNK
 33      Tonys Boys   Prop    UNK
 34           xCell   Frac    SUM
+scores[, method.name.col]
+ [1] "jbkcose"         "LeiliLab"        "TJU"             "NYIT_glomerular"
+ [5] "REGGEN_LAB"      "NPU"             "HM159"           "Rubbernecks"    
+ [9] "jdroz"           "Patrick"         "CancerSysBio"    "D3Team"         
+[13] "ICTD"            "Cancer_Decon"    "CCB"             "IZI"            
+[17] "xCell"           "Aboensis IV"     "mitten_TDC19"    "Biogem"         
+[21] "DA_505"          "CIBERSORTx"      "Aginome-XMU"     "ensemble"       
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "plain"
+[19] "plain" "plain" "plain" "bold"  "plain" "plain"
+bold.labels
+ bold plain 
+    2    22 
+scores[, method.name.col]
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "IZI"         
+ [6] "REGGEN_LAB"   "Patrick"      "ICTD"         "Cancer_Decon" "D3Team"      
+[11] "Aboensis IV"  "CCB"          "Biogem"       "xCell"        "mitten_TDC19"
+[16] "DA_505"       "Aginome-XMU"  "ensemble"    
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain" "plain"
+bold.labels
+ bold plain 
+    1    17 
 Aboensis IV -round-latest max diff between coarse and fine-grained is: 0
 Aginome-XMU -round-latest max diff between coarse and fine-grained is: 0.101033450220807
   cell.type method.name.x     cor.x method.name.y     cor.y       diff
@@ -381,11 +406,76 @@ levels
 Creating merged means.over.dataset
 Plotting strip plots
 ggplot'ing
+[1] "there\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
+ [5] "NYIT_glomerular" "NPU"             "HM159"           "Rubbernecks"    
+ [9] "jdroz"           "Patrick"         "CancerSysBio"    "EPIC"           
+[13] "D3Team"          "IZI"             "CCB"             "ICTD"           
+[17] "Cancer_Decon"    "xCell"           "Aboensis IV"     "mitten_TDC19"   
+[21] "CIBERSORT"       "quanTIseq"       "Biogem"          "MCP-counter"    
+[25] "DA_505"          "CIBERSORTx"      "Aginome-XMU"    
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "bold"  "plain" "plain" "plain" "plain" "plain" "bold" 
+[19] "plain" "plain" "bold"  "bold"  "plain" "bold"  "plain" "bold"  "plain"
 ggplot'ing
+[1] "there\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "IZI"         
+ [6] "REGGEN_LAB"   "quanTIseq"    "ICTD"         "Cancer_Decon" "Patrick"     
+[11] "CIBERSORT"    "CCB"          "D3Team"       "Aboensis IV"  "xCell"       
+[16] "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"       "EPIC"        
+[21] "Aginome-XMU"  "MCP-counter" 
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "plain"
+[10] "plain" "bold"  "plain" "plain" "plain" "bold"  "plain" "bold"  "plain"
+[19] "plain" "bold"  "plain" "bold" 
 ggplot'ing
+[1] "here\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
+ [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [1] "EPIC"         "xCell"        "mitten_TDC19" "CIBERSORT"    "quanTIseq"   
+ [6] "Biogem"       "MCP-counter"  "DA_505"       "CIBERSORTx"   "Aginome-XMU" 
+ [1] "bold"  "bold"  "plain" "bold"  "bold"  "plain" "bold"  "plain" "bold" 
+[10] "plain"
 ggplot'ing
+[1] "here\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
+ [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [1] "quanTIseq"    "CIBERSORT"    "xCell"        "Biogem"       "CIBERSORTx"  
+ [6] "mitten_TDC19" "DA_505"       "EPIC"         "Aginome-XMU"  "MCP-counter" 
+ [1] "bold"  "bold"  "bold"  "plain" "bold"  "plain" "plain" "bold"  "plain"
+[10] "bold" 
 ggplot'ing
+[1] "there\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "jbkcose"         "LeiliLab"        "NPU"             "TJU"            
+ [5] "Tonys Boys"      "NYIT_glomerular" "REGGEN_LAB"      "Rubbernecks"    
+ [9] "HM159"           "IZI"             "Patrick"         "ICTD"           
+[13] "Cancer_Decon"    "CCB"             "quanTIseq"       "jdroz"          
+[17] "D3Team"          "Aboensis IV"     "CIBERSORT"       "xCell"          
+[21] "Biogem"          "EPIC"            "CancerSysBio"    "mitten_TDC19"   
+[25] "CIBERSORTx"      "DA_505"          "Aginome-XMU"     "MCP-counter"    
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain"
+[19] "bold"  "bold"  "plain" "bold"  "plain" "plain" "bold"  "plain" "plain"
+[28] "bold" 
 ggplot'ing
+[1] "here\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
+ [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [1] "quanTIseq"    "CIBERSORT"    "xCell"        "Biogem"       "EPIC"        
+ [6] "mitten_TDC19" "CIBERSORTx"   "DA_505"       "Aginome-XMU"  "MCP-counter" 
+ [1] "bold"  "bold"  "bold"  "plain" "bold"  "plain" "bold"  "plain" "plain"
+[10] "bold" 
 Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
 Top performer for Round latest in coarse sub-challenge: Aginome-XMU
               team pearson    spearman
@@ -444,6 +534,8 @@ Doing round 1
 4         TRUE       FALSE       TRUE           FALSE    REG   Norm
 5         TRUE       FALSE      FALSE            TRUE    NMF  Score
 6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
 [1] "coarse"
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
@@ -684,6 +776,29 @@ Doing round 1
 32             TJU  Score    UNK
 33      Tonys Boys   Prop    UNK
 34           xCell   Frac    SUM
+scores[, method.name.col]
+ [1] "jbkcose"         "NYIT_glomerular" "TJU"             "Rubbernecks"    
+ [5] "REGGEN_LAB"      "LeiliLab"        "NPU"             "HM159"          
+ [9] "jdroz"           "Patrick"         "CancerSysBio"    "D3Team"         
+[13] "CCB"             "Aboensis IV"     "ICTD"            "Cancer_Decon"   
+[17] "xCell"           "mitten_TDC19"    "IZI"             "Biogem"         
+[21] "DA_505"          "Aginome-XMU"     "CIBERSORTx"      "ensemble"       
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "plain"
+[19] "plain" "plain" "plain" "plain" "bold"  "plain"
+bold.labels
+ bold plain 
+    2    22 
+scores[, method.name.col]
+ [1] "LeiliLab"     "Rubbernecks"  "NPU"          "Tonys Boys"   "REGGEN_LAB"  
+ [6] "Patrick"      "Aboensis IV"  "CCB"          "ICTD"         "Cancer_Decon"
+[11] "Biogem"       "IZI"          "D3Team"       "xCell"        "DA_505"      
+[16] "mitten_TDC19" "Aginome-XMU"  "ensemble"    
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain" "plain"
+bold.labels
+ bold plain 
+    1    17 
 Aboensis IV -round-1 max diff between coarse and fine-grained is: 0.00279378374513639
     cell.type method.name.x     cor.x method.name.y     cor.y          diff
 2 fibroblasts   Aboensis IV 0.7944960   Aboensis IV 0.7917023  0.0027937837
@@ -819,11 +934,76 @@ levels
 Creating merged means.over.dataset
 Plotting strip plots
 ggplot'ing
+[1] "there\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "jbkcose"         "NYIT_glomerular" "TJU"             "REGGEN_LAB"     
+ [5] "Rubbernecks"     "LeiliLab"        "NPU"             "HM159"          
+ [9] "jdroz"           "Patrick"         "CancerSysBio"    "EPIC"           
+[13] "D3Team"          "CCB"             "ICTD"            "Cancer_Decon"   
+[17] "Aboensis IV"     "IZI"             "xCell"           "mitten_TDC19"   
+[21] "Biogem"          "CIBERSORT"       "DA_505"          "quanTIseq"      
+[25] "Aginome-XMU"     "MCP-counter"     "CIBERSORTx"     
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "bold"  "plain" "plain" "plain" "plain" "plain" "plain"
+[19] "bold"  "plain" "plain" "bold"  "plain" "bold"  "plain" "bold"  "bold" 
 ggplot'ing
+[1] "there\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "Rubbernecks"  "LeiliLab"     "NPU"          "Tonys Boys"   "REGGEN_LAB"  
+ [6] "quanTIseq"    "CCB"          "ICTD"         "Cancer_Decon" "Patrick"     
+[11] "Aboensis IV"  "Biogem"       "IZI"          "CIBERSORT"    "D3Team"      
+[16] "xCell"        "DA_505"       "mitten_TDC19" "CIBERSORTx"   "Aginome-XMU" 
+[21] "EPIC"         "MCP-counter" 
+ [1] "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "bold"  "plain" "bold"  "plain" "plain"
+[19] "bold"  "plain" "bold"  "bold" 
 ggplot'ing
+[1] "here\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
+ [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [1] "EPIC"         "xCell"        "mitten_TDC19" "Biogem"       "CIBERSORT"   
+ [6] "DA_505"       "quanTIseq"    "Aginome-XMU"  "MCP-counter"  "CIBERSORTx"  
+ [1] "bold"  "bold"  "plain" "plain" "bold"  "plain" "bold"  "plain" "bold" 
+[10] "bold" 
 ggplot'ing
+[1] "here\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
+ [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [1] "quanTIseq"    "Biogem"       "CIBERSORT"    "xCell"        "DA_505"      
+ [6] "mitten_TDC19" "CIBERSORTx"   "Aginome-XMU"  "EPIC"         "MCP-counter" 
+ [1] "bold"  "plain" "bold"  "bold"  "plain" "plain" "bold"  "plain" "bold" 
+[10] "bold" 
 ggplot'ing
+[1] "there\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "jbkcose"         "Rubbernecks"     "NYIT_glomerular" "LeiliLab"       
+ [5] "NPU"             "TJU"             "Tonys Boys"      "REGGEN_LAB"     
+ [9] "HM159"           "CCB"             "Patrick"         "ICTD"           
+[13] "Cancer_Decon"    "quanTIseq"       "Aboensis IV"     "D3Team"         
+[17] "Biogem"          "jdroz"           "IZI"             "CIBERSORT"      
+[21] "xCell"           "EPIC"            "mitten_TDC19"    "DA_505"         
+[25] "CancerSysBio"    "Aginome-XMU"     "CIBERSORTx"      "MCP-counter"    
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain" "plain"
+[19] "plain" "bold"  "bold"  "bold"  "plain" "plain" "plain" "plain" "bold" 
+[28] "bold" 
 ggplot'ing
+[1] "here\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
+ [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [1] "quanTIseq"    "Biogem"       "CIBERSORT"    "xCell"        "EPIC"        
+ [6] "mitten_TDC19" "DA_505"       "Aginome-XMU"  "CIBERSORTx"   "MCP-counter" 
+ [1] "bold"  "plain" "bold"  "bold"  "bold"  "plain" "plain" "plain" "bold" 
+[10] "bold" 
 Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
 Top performer for Round 1 in coarse sub-challenge: CIBERSORTx
               team pearson spearman
@@ -882,6 +1062,8 @@ Doing round 2
 4         TRUE       FALSE       TRUE           FALSE    REG   Norm
 5         TRUE       FALSE      FALSE            TRUE    NMF  Score
 6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
 [1] "coarse"
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
@@ -1122,6 +1304,29 @@ Doing round 2
 32             TJU  Score    UNK
 33      Tonys Boys   Prop    UNK
 34           xCell   Frac    SUM
+scores[, method.name.col]
+ [1] "jbkcose"         "LeiliLab"        "TJU"             "NYIT_glomerular"
+ [5] "REGGEN_LAB"      "NPU"             "HM159"           "Rubbernecks"    
+ [9] "jdroz"           "Patrick"         "CancerSysBio"    "D3Team"         
+[13] "ICTD"            "mitten_TDC19"    "Cancer_Decon"    "CCB"            
+[17] "DA_505"          "xCell"           "Aboensis IV"     "IZI"            
+[21] "Biogem"          "CIBERSORTx"      "Aginome-XMU"     "ensemble"       
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "bold" 
+[19] "plain" "plain" "plain" "bold"  "plain" "plain"
+bold.labels
+ bold plain 
+    2    22 
+scores[, method.name.col]
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "REGGEN_LAB"  
+ [6] "Patrick"      "Aboensis IV"  "ICTD"         "Cancer_Decon" "IZI"         
+[11] "CCB"          "D3Team"       "Biogem"       "xCell"        "mitten_TDC19"
+[16] "DA_505"       "Aginome-XMU"  "ensemble"    
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain" "plain"
+bold.labels
+ bold plain 
+    1    17 
 Aboensis IV -round-2 max diff between coarse and fine-grained is: 0.0038792863614141
     cell.type method.name.x     cor.x method.name.y     cor.y          diff
 1 endothelial   Aboensis IV 0.9826318   Aboensis IV 0.9820028  0.0006289488
@@ -1253,11 +1458,76 @@ levels
 Creating merged means.over.dataset
 Plotting strip plots
 ggplot'ing
+[1] "there\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
+ [5] "NYIT_glomerular" "NPU"             "HM159"           "Rubbernecks"    
+ [9] "jdroz"           "Patrick"         "CancerSysBio"    "EPIC"           
+[13] "D3Team"          "CCB"             "ICTD"            "Cancer_Decon"   
+[17] "mitten_TDC19"    "DA_505"          "IZI"             "xCell"          
+[21] "Aboensis IV"     "CIBERSORT"       "Biogem"          "quanTIseq"      
+[25] "MCP-counter"     "CIBERSORTx"      "Aginome-XMU"    
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "bold"  "plain" "plain" "plain" "plain" "plain" "plain"
+[19] "plain" "bold"  "plain" "bold"  "plain" "bold"  "bold"  "bold"  "plain"
 ggplot'ing
+[1] "there\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "REGGEN_LAB"  
+ [6] "quanTIseq"    "ICTD"         "Cancer_Decon" "Patrick"      "Aboensis IV" 
+[11] "CIBERSORT"    "CCB"          "IZI"          "D3Team"       "Biogem"      
+[16] "xCell"        "mitten_TDC19" "DA_505"       "CIBERSORTx"   "Aginome-XMU" 
+[21] "EPIC"         "MCP-counter" 
+ [1] "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain"
+[10] "plain" "bold"  "plain" "plain" "plain" "plain" "bold"  "plain" "plain"
+[19] "bold"  "plain" "bold"  "bold" 
 ggplot'ing
+[1] "here\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
+ [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [1] "EPIC"         "mitten_TDC19" "DA_505"       "xCell"        "CIBERSORT"   
+ [6] "Biogem"       "quanTIseq"    "MCP-counter"  "CIBERSORTx"   "Aginome-XMU" 
+ [1] "bold"  "plain" "plain" "bold"  "bold"  "plain" "bold"  "bold"  "bold" 
+[10] "plain"
 ggplot'ing
+[1] "here\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
+ [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [1] "quanTIseq"    "CIBERSORT"    "Biogem"       "xCell"        "mitten_TDC19"
+ [6] "DA_505"       "CIBERSORTx"   "Aginome-XMU"  "EPIC"         "MCP-counter" 
+ [1] "bold"  "bold"  "plain" "bold"  "plain" "plain" "bold"  "plain" "bold" 
+[10] "bold" 
 ggplot'ing
+[1] "there\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "jbkcose"         "LeiliLab"        "NPU"             "TJU"            
+ [5] "Tonys Boys"      "NYIT_glomerular" "REGGEN_LAB"      "Rubbernecks"    
+ [9] "HM159"           "Patrick"         "ICTD"            "Cancer_Decon"   
+[13] "CCB"             "quanTIseq"       "jdroz"           "Aboensis IV"    
+[17] "IZI"             "D3Team"          "CIBERSORT"       "Biogem"         
+[21] "xCell"           "mitten_TDC19"    "EPIC"            "DA_505"         
+[25] "CancerSysBio"    "CIBERSORTx"      "Aginome-XMU"     "MCP-counter"    
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain" "plain"
+[19] "bold"  "plain" "bold"  "plain" "bold"  "plain" "plain" "bold"  "plain"
+[28] "bold" 
 ggplot'ing
+[1] "here\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
+ [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [1] "quanTIseq"    "CIBERSORT"    "Biogem"       "xCell"        "mitten_TDC19"
+ [6] "EPIC"         "DA_505"       "CIBERSORTx"   "Aginome-XMU"  "MCP-counter" 
+ [1] "bold"  "bold"  "plain" "bold"  "plain" "bold"  "plain" "bold"  "plain"
+[10] "bold" 
 Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
 Top performer for Round 2 in coarse sub-challenge: Aginome-XMU
               team pearson    spearman
@@ -1316,6 +1586,8 @@ Doing round 3
 4         TRUE       FALSE       TRUE           FALSE    REG   Norm
 5         TRUE       FALSE      FALSE            TRUE    NMF  Score
 6        FALSE       FALSE       TRUE           FALSE    SUM  Score
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
 [1] "coarse"
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
@@ -1556,6 +1828,29 @@ Doing round 3
 32             TJU  Score    UNK
 33      Tonys Boys   Prop    UNK
 34           xCell   Frac    SUM
+scores[, method.name.col]
+ [1] "jbkcose"         "LeiliLab"        "TJU"             "NYIT_glomerular"
+ [5] "REGGEN_LAB"      "NPU"             "HM159"           "Rubbernecks"    
+ [9] "jdroz"           "Patrick"         "CancerSysBio"    "D3Team"         
+[13] "ICTD"            "Cancer_Decon"    "CCB"             "IZI"            
+[17] "xCell"           "Aboensis IV"     "mitten_TDC19"    "Biogem"         
+[21] "DA_505"          "CIBERSORTx"      "Aginome-XMU"     "ensemble"       
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "plain"
+[19] "plain" "plain" "plain" "bold"  "plain" "plain"
+bold.labels
+ bold plain 
+    2    22 
+scores[, method.name.col]
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "IZI"         
+ [6] "REGGEN_LAB"   "Patrick"      "ICTD"         "Cancer_Decon" "D3Team"      
+[11] "Aboensis IV"  "CCB"          "Biogem"       "xCell"        "mitten_TDC19"
+[16] "DA_505"       "Aginome-XMU"  "ensemble"    
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain" "plain"
+bold.labels
+ bold plain 
+    1    17 
 Aboensis IV -round-3 max diff between coarse and fine-grained is: 0
 Aginome-XMU -round-3 max diff between coarse and fine-grained is: 0.101033450220807
   cell.type method.name.x     cor.x method.name.y     cor.y       diff
@@ -1682,11 +1977,76 @@ levels
 Creating merged means.over.dataset
 Plotting strip plots
 ggplot'ing
+[1] "there\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
+ [5] "NYIT_glomerular" "NPU"             "HM159"           "Rubbernecks"    
+ [9] "jdroz"           "Patrick"         "CancerSysBio"    "EPIC"           
+[13] "D3Team"          "IZI"             "CCB"             "ICTD"           
+[17] "Cancer_Decon"    "xCell"           "Aboensis IV"     "mitten_TDC19"   
+[21] "CIBERSORT"       "quanTIseq"       "Biogem"          "MCP-counter"    
+[25] "DA_505"          "CIBERSORTx"      "Aginome-XMU"    
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "bold"  "plain" "plain" "plain" "plain" "plain" "bold" 
+[19] "plain" "plain" "bold"  "bold"  "plain" "bold"  "plain" "bold"  "plain"
 ggplot'ing
+[1] "there\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "IZI"         
+ [6] "REGGEN_LAB"   "quanTIseq"    "ICTD"         "Cancer_Decon" "Patrick"     
+[11] "CIBERSORT"    "CCB"          "D3Team"       "Aboensis IV"  "xCell"       
+[16] "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"       "EPIC"        
+[21] "Aginome-XMU"  "MCP-counter" 
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "plain"
+[10] "plain" "bold"  "plain" "plain" "plain" "bold"  "plain" "bold"  "plain"
+[19] "plain" "bold"  "plain" "bold" 
 ggplot'ing
+[1] "here\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
+ [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [1] "EPIC"         "xCell"        "mitten_TDC19" "CIBERSORT"    "quanTIseq"   
+ [6] "Biogem"       "MCP-counter"  "DA_505"       "CIBERSORTx"   "Aginome-XMU" 
+ [1] "bold"  "bold"  "plain" "bold"  "bold"  "plain" "bold"  "plain" "bold" 
+[10] "plain"
 ggplot'ing
+[1] "here\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
+ [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [1] "quanTIseq"    "CIBERSORT"    "xCell"        "Biogem"       "CIBERSORTx"  
+ [6] "mitten_TDC19" "DA_505"       "EPIC"         "Aginome-XMU"  "MCP-counter" 
+ [1] "bold"  "bold"  "bold"  "plain" "bold"  "plain" "plain" "bold"  "plain"
+[10] "bold" 
 ggplot'ing
+[1] "there\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "jbkcose"         "LeiliLab"        "NPU"             "TJU"            
+ [5] "Tonys Boys"      "NYIT_glomerular" "REGGEN_LAB"      "Rubbernecks"    
+ [9] "HM159"           "IZI"             "Patrick"         "ICTD"           
+[13] "Cancer_Decon"    "CCB"             "quanTIseq"       "jdroz"          
+[17] "D3Team"          "Aboensis IV"     "CIBERSORT"       "xCell"          
+[21] "Biogem"          "EPIC"            "CancerSysBio"    "mitten_TDC19"   
+[25] "CIBERSORTx"      "DA_505"          "Aginome-XMU"     "MCP-counter"    
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain"
+[19] "bold"  "bold"  "plain" "bold"  "plain" "plain" "bold"  "plain" "plain"
+[28] "bold" 
 ggplot'ing
+[1] "here\n"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
+ [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [1] "quanTIseq"    "CIBERSORT"    "xCell"        "Biogem"       "EPIC"        
+ [6] "mitten_TDC19" "CIBERSORTx"   "DA_505"       "Aginome-XMU"  "MCP-counter" 
+ [1] "bold"  "bold"  "bold"  "plain" "bold"  "plain" "bold"  "plain" "plain"
+[10] "bold" 
 Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
 Top performer for Round 3 in coarse sub-challenge: Aginome-XMU
               team pearson    spearman
@@ -1730,6 +2090,7 @@ Top performer for Round 3 in fine sub-challenge: Aginome-XMU
 14   Tonys Boys     Inf       Inf
 15          NPU     Inf       Inf
 16     LeiliLab     Inf       Inf
+There were 50 or more warnings (use warnings() to see the first 50)
 Round 1: 10 were top performer in at least one of the 17
 [1] "B"
    method.name cell.type       cor       diff comparator.corr  comparator
@@ -1948,25 +2309,37 @@ coarse 21 teams had 39
 fine 16 teams had 33
 [1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
 [6] "TIMER"       "xCell"      
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+Scale for 'y' is already present. Adding another scale for 'y', which will
+replace the existing scale.
+There were 50 or more warnings (use warnings() to see the first 50)
 Exiting successfully
--------------------------------------------------------------
-SUMNER/WINTER EPILOGUE
--------------------------------------------------------------
-Job ID: 13878271
-Cluster: slurm_cluster
-User/Group: root/jaxuser
-State: COMPLETED (exit code 0)
-Nodes: 1
-Cores per node: 16
-CPU Utilized: 00:12:04
-CPU Efficiency: 7.25% of 02:46:24 core-walltime
-Job Wall-clock time: 00:10:24
-Memory Utilized: 2.98 GB
-Memory Efficiency: 0.60% of 500.00 GB
--------------------------------------------------------------
-       JobID  User   State    CPUTime Exit     MaxRSS        NodeList  Partition                   ReqTRES              Submit               Start                 End    Elapsed 
------------- ----- ------- ---------- ---- ---------- --------------- ---------- ------------------------- ------------------- ------------------- ------------------- ---------- 
-13878271     whit+ COMPLE+   02:46:24  0:0                  sumner090    compute billing=16,cpu=16,mem=51+ 2022-03-24T02:26:29 2022-03-24T02:26:49 2022-03-24T02:37:13   00:10:24 
-13878271.ba+       COMPLE+   02:46:24  0:0   3053.88M       sumner090                                      2022-03-24T02:26:49 2022-03-24T02:26:49 2022-03-24T02:37:13   00:10:24 
-13878271.ex+       COMPLE+   02:46:24  0:0      1.76M       sumner090                                      2022-03-24T02:26:49 2022-03-24T02:26:49 2022-03-24T02:37:13   00:10:24 
--------------------------------------------------------------

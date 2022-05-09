@@ -159,7 +159,13 @@ print(method.anno.round.sc)
             flag <- ( !is.na(scores$pearson) & !is.na(scores$spearman) ) | ( scores[,method.name.col] == "ensemble")
             scores <- scores[flag, ] 
             scores[, method.name.col] <- factor(scores[, method.name.col], levels = median.scores[, method.name.col])
-            bold.labels <- ifelse(levels(scores[,method.name.col]) %in% comparator.methods, yes = "bold", no = "plain")
+
+            lvls <- levels(scores[,method.name.col]) 
+            lvls <- lvls[lvls %in% scores[, method.name.col]]
+            bold.labels <- ifelse(lvls %in% comparator.methods, yes = "bold", no = "plain")
+cat("scores[, method.name.col]\n")
+print(lvls)
+print(bold.labels)
 print(table(bold.labels))
 #            scores <- na.omit(scores)
             flag <- ( !is.na(median.scores$pearson) & !is.na(median.scores$spearman) ) | ( median.scores[,method.name.col] == "ensemble")
@@ -167,6 +173,7 @@ print(table(bold.labels))
 #            median.scores <- na.omit(median.scores)
             median.scores <- median.scores[flag, ] 
             
+
             g1 <- ggplot(data = scores, aes_string(x = method.name.col, y = "pearson"))
             g1 <- g1 + geom_boxplotMod(fill = "#56B4E9")
             g1 <- g1 + coord_flip()
@@ -174,7 +181,7 @@ print(table(bold.labels))
             ## g1 <- g1 + ylab("Pearson Correlation")
             g1 <- g1 + ylab("Pearson")
             g1 <- g1 + ylim(c(-0.25, 1))
-            g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20), axis.text.x = element_text(face = bold.labels))
+            g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20), axis.text.y = element_text(face = bold.labels))
             # g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20))
             # g1 <- g1 + scale_y_discrete(labels = function(x) bold.highlight(x, comparator.methods))
             # g1 <- g1 + theme(axis.text.y=element_markdown())
