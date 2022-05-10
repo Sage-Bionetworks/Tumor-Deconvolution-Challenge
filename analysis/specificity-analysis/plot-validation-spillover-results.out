@@ -1,0 +1,33 @@
+Welcome, Brian White!NULL
+Assigning objectId
+Assigning comparator
+Ensuring
+flag
+ FALSE   TRUE 
+  3304 202724 
+       repo_name objectId submitterId
+127913   bescape  9704311     3397741
+[1] "Tonys Boys"
+Merging with res.comp
+Defining team name tbl
+Merging team name tbl
+[1] "objectId"     "subchallenge" "submitterId"  "comparator"   "method.name" 
+[6] "submission"  
+Done merging team name tbl
+Warning message:
+In assign.result.team.names.and.rounds(res, error.fun = warning) :
+  Some competitive objectIds are not in post-competitive results
+
+Doing round 1
+[1] "1"                "First Submission"
+Using norm.score as value column: use value.var to override.
+Using norm.score as value column: use value.var to override.
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+ggplot'ing
+There were 50 or more warnings (use warnings() to see the first 50)

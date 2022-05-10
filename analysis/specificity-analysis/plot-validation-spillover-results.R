@@ -322,7 +322,7 @@ perform.spillover.analysis <- function(res.input,
     }
     
 
-
+print(c(round, round.text))
     title.postfix <- round.text
     
     ## Calculate the score for cell type y in y-purified cells
@@ -485,10 +485,11 @@ perform.spillover.analysis <- function(res.input,
     print(g1)
     d <- dev.off()
 
-    g.strip.deconv.coarse <- plot.strip.plots(subset(deconv.res[flag, ], measured == 0),
+    g.res <- plot.strip.plots(subset(deconv.res[flag, ], measured == 0),
                                           id.var = method.name.col, cell.type.var = cell.type.col,
                                           var = "prediction", label = "Prediction", col.summary.fun = "mean",
                                           order.decreasing = TRUE)
+    g.strip.deconv.coarse <- g.res[["g"]]
     g.strip.deconv.coarse <- g.strip.deconv.coarse + ggtitle(paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")"))
     
     png(paste0(figs.dir, "spillover-deconv-fine-grained", postfix, ".png"), width = 2 * 480)
@@ -498,10 +499,11 @@ perform.spillover.analysis <- function(res.input,
     print(g2)
     d <- dev.off()
 
-    g.strip.deconv.fine <- plot.strip.plots(subset(deconv.res[flag, ], measured == 0),
+    g.res <- plot.strip.plots(subset(deconv.res[flag, ], measured == 0),
                                             id.var = method.name.col, cell.type.var = cell.type.col,
                                             var = "prediction", label = "Prediction", col.summary.fun = "mean",
                                             order.decreasing = TRUE)
+    g.strip.deconv.fine <- g.res[["g"]]
     g.strip.deconv.fine <- g.strip.deconv.fine + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")"))
     
     png(paste0(figs.dir, "spillover-non-deconv-coarse-grained", postfix, ".png"), width = 2 * 480)
@@ -512,10 +514,11 @@ perform.spillover.analysis <- function(res.input,
     print(g3)
     d <- dev.off()
 
-    g.strip.non.deconv.coarse <- plot.strip.plots(subset(sub, measured == 0),
+    g.res <- plot.strip.plots(subset(sub, measured == 0),
                                                   id.var = method.name.col, cell.type.var = cell.type.col,
                                                   var = "norm.score", label = "Normalized Score", col.summary.fun = "mean",
                                                   order.decreasing = TRUE)
+    g.strip.non.deconv.coarse <- g.res[["g"]]
     g.strip.non.deconv.coarse <- g.strip.non.deconv.coarse + ggtitle(paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")"))
 
     
@@ -527,10 +530,11 @@ perform.spillover.analysis <- function(res.input,
     print(g4)
     d <- dev.off()
 
-    g.strip.non.deconv.fine <- plot.strip.plots(subset(sub, measured == 0),
+    g.res <- plot.strip.plots(subset(sub, measured == 0),
                                                 id.var = method.name.col, cell.type.var = cell.type.col,
                                                 var = "norm.score", label = "Normalized Score", col.summary.fun = "mean",
                                                 order.decreasing = TRUE)
+    g.strip.non.deconv.fine <- g.res[["g"]]
     g.strip.non.deconv.fine <- g.strip.deconv.fine + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")"))
 
 
@@ -578,10 +582,11 @@ perform.spillover.analysis <- function(res.input,
 
     png(paste0(figs.dir, "spillover-all-scores-coarse-grained-strip", postfix, ".png"), width = 2 * 480)
     sub <- coarse.res
-    g.all.strip.coarse <- plot.strip.plots(subset(sub, measured == 0),
+    g.res <- plot.strip.plots(subset(sub, measured == 0),
                                            id.var = method.name.col, cell.type.var = cell.type.col,
                                            var = "norm.score", label = "Normalized Score", col.summary.fun = "mean",
                                            order.decreasing = TRUE)
+    g.all.strip.coarse <- g.res[["g"]]
     g.all.strip.coarse <- g.all.strip.coarse + ggtitle(paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")"))
     print(g.all.strip.coarse)
     d <- dev.off()
@@ -591,10 +596,11 @@ perform.spillover.analysis <- function(res.input,
     sub <- coarse.res
     flag <- sub[, method.name.col] %in% priority.methods
     sub <- sub[flag, ]
-    g.all.strip.coarse.top <- plot.strip.plots(subset(sub, measured == 0),
+    g.res <- plot.strip.plots(subset(sub, measured == 0),
                                                id.var = method.name.col, cell.type.var = cell.type.col,
                                                var = "norm.score", label = "Normalized Score", col.summary.fun = "mean",
                                                order.decreasing = TRUE)
+    g.all.strip.coarse.top <- g.res[["g"]]
     g.all.strip.coarse.top <- g.all.strip.coarse.top + ggtitle(paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")"))
     
     print(g.all.strip.coarse.top)
@@ -642,10 +648,11 @@ perform.spillover.analysis <- function(res.input,
 
     png(paste0(figs.dir, "spillover-all-scores-fine-grained-strip", postfix, ".png"), width = 2 * 480)
     sub <- fine.res
-    g.all.strip.fine <- plot.strip.plots(subset(sub, measured == 0),
+    g.res <- plot.strip.plots(subset(sub, measured == 0),
                                          id.var = method.name.col, cell.type.var = cell.type.col,
                                          var = "norm.score", label = "Normalized Score", col.summary.fun = "mean",
                                          order.decreasing = TRUE)
+    g.all.strip.fine <- g.res[["g"]]
     g.all.strip.fine <- g.all.strip.fine + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")"))
     print(g.all.strip.fine)
     d <- dev.off()
@@ -655,10 +662,11 @@ perform.spillover.analysis <- function(res.input,
     sub <- fine.res
     flag <- sub[, method.name.col] %in% priority.methods
     sub <- sub[flag, ]
-    g.all.strip.fine.top <- plot.strip.plots(subset(sub, measured == 0),
+    g.res <- plot.strip.plots(subset(sub, measured == 0),
                                              id.var = method.name.col, cell.type.var = cell.type.col,
                                              var = "norm.score", label = "Normalized Score", col.summary.fun = "mean",
                                              order.decreasing = TRUE)
+    g.all.strip.fine.top <- g.res[["g"]]
     g.all.strip.fine.top <- g.all.strip.fine.top + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")"))
     print(g.all.strip.fine.top)
     d <- dev.off()
@@ -748,6 +756,11 @@ perform.spillover.analysis <- function(res.input,
                      tbl <- merge(tbl, method.anno.round.sc, by = method.name.col, all.x = TRUE)
                      tbl[, method.name.col] <- factor(tbl[, method.name.col], levels = levels)
 
+                     lvls <- levels(tbl[,method.name.col]) 
+                     lvls <- lvls[lvls %in% tbl[, method.name.col]]
+                     comparator.methods <- unique(subset(res, comparator==TRUE)[, method.name.col])
+                     bold.labels <- ifelse(lvls %in% comparator.methods, yes = "bold", no = "plain")
+
                      g2 <- ggplot(data = tbl,
                                   aes_string(x = method.name.col, y = "spillover"))
                      g2 <- g2 + geom_boxplot()
@@ -757,6 +770,7 @@ perform.spillover.analysis <- function(res.input,
 		     g2 <- g2 + theme(text = element_text(size = 16))
                      g2 <- g2 + xlab("") + ylab("Spillover")
                      g2 <- g2 + coord_flip()
+                     g2 <- g2 + theme(axis.text.y = element_text(face = bold.labels))
 
                      ## Add annotations
                      tmp <- tbl[, c(method.name.col, "Output", "Method")]
