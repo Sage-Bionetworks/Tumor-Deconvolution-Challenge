@@ -730,17 +730,24 @@ d <- dev.off()
 file <- paste0(figs.dir, "rerun-validation-mixture-and-distribution-effects.tsv")
 write.table(file = file, lm.fits, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
-plot.scores.over.rounds <- function(df) {
+plot.scores.over.rounds <- function(df, comparator.methods) {
     order.round <- "1"
     df.order <- subset(df, Round == order.round)
     o <- order(df.order$pearson)
     lvls <- df.order[o, method.name.col]
     df <- subset(df, Round != "latest")
+    lvls <- lvls[lvls %in% df[, method.name.col]]
+    bold.labels <- ifelse(lvls %in% comparator.methods, yes = "bold", no = "plain")
+print("plot.scores.over.rounds")
+print(comparator.methods)
+print(lvls)
+print(bold.labels)
     df[, method.name.col] <- factor(df[, method.name.col], levels = lvls)
     df$Submission <- df$Round
     g <- ggplot()
     g <- g + geom_point(data = df, aes_string(x = "pearson", y = method.name.col, colour = "Submission"))
     g <- g + xlab("Pearson Correlation") + ylab("Method")
+    g <- g + theme(axis.text.y = element_text(face = bold.labels))
     g
 }
 
@@ -760,7 +767,12 @@ all.means <-
           })
 
 g.score.vs.round <-
-    llply(sub.challenges, .fun = function(subchallenge) plot.scores.over.rounds(all.means[[subchallenge]]))
+    llply(sub.challenges, 
+          .fun = function(sc) {
+                   comparator.methods <- llply(results, .fun = function(df) unique(subset(df[["res.round"]], subchallenge == sc & comparator == TRUE)[, method.name.col]))
+                   comparator.methods <- unique(as.vector(unlist(comparator.methods)))
+                   plot.scores.over.rounds(all.means[[sc]], comparator.methods)
+                 })
 
 if(FALSE) {
     l_ply(sub.challenges,

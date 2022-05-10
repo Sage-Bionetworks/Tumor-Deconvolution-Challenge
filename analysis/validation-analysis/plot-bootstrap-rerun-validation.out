@@ -2304,6 +2304,32 @@ Prop  0.60 0.96 -
 Score 1.00 0.96 0.60
 
 P value adjustment method: BH 
+[1] "plot.scores.over.rounds"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "jbkcose"         "NYIT_glomerular" "TJU"             "Rubbernecks"    
+ [5] "REGGEN_LAB"      "LeiliLab"        "NPU"             "HM159"          
+ [9] "jdroz"           "Patrick"         "CancerSysBio"    "D3Team"         
+[13] "CCB"             "Aboensis IV"     "ICTD"            "Cancer_Decon"   
+[17] "mitten_TDC19"    "xCell"           "IZI"             "Biogem"         
+[21] "DA_505"          "Aginome-XMU"     "CIBERSORTx"     
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "bold" 
+[19] "plain" "plain" "plain" "plain" "bold" 
+[1] "plot.scores.over.rounds"
+[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
+[6] "xCell"      
+ [1] "LeiliLab"     "Rubbernecks"  "NPU"          "Tonys Boys"   "REGGEN_LAB"  
+ [6] "Patrick"      "Aboensis IV"  "CCB"          "ICTD"         "Cancer_Decon"
+[11] "Biogem"       "IZI"          "D3Team"       "xCell"        "DA_505"      
+[16] "mitten_TDC19" "Aginome-XMU" 
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain"
+Warning messages:
+1: Vectorized input to `element_text()` is not officially supported.
+Results may be unexpected or may change in future versions of ggplot2. 
+2: Vectorized input to `element_text()` is not officially supported.
+Results may be unexpected or may change in future versions of ggplot2. 
 Annotated methods not in results: ensemble
 coarse 21 teams had 39
 fine 16 teams had 33
