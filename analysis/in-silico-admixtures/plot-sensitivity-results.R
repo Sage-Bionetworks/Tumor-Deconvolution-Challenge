@@ -94,14 +94,19 @@ for(round in rounds) {
                                 
                                 ## Cast from long to matrix form to introduce NAs for missing values,
                                 ## then melt back to long form
-                                
+                     
+                                comparator.methods <- unique(subset(tbls[["sensitivity-analysis-data"]], comparator==TRUE)[, method.name.col])           
                                 g <- plot.cell.type.correlation.heatmap(res.ds, show.corr.text = TRUE,
                                                                         id.var = method.name.col, cell.type.var = cell.type.col,
                                                                         cor.var = "label", formatter = my.format,
                                                                         col.summary.fun = "min", cor.type.label = "LoD (Percent)",
                                                                         limits = c(0, 100),
                                                                         highlight.fun = "min",
-                                                                        order.decreasing = TRUE)
+                                                                        order.decreasing = TRUE, ids.to.bold = comparator.methods)
+
+                     
+
+
                                 return(g)
 
                                 ## limits = c(log2(min(res$measured[res$measured > 0])), log2(1))
@@ -216,7 +221,10 @@ o.file <- paste0(figs.dir, "/", "sensitivity-spikein-and-summary.png")
 png(o.file, width = 2 * 480, height = 2 * 480)
 g1 <- spike.in.plots[["1"]][["Aginome-XMU.CD4 T.coarse.Random"]]
 g2 <- summary.plots[["1"]][["coarse"]][["Random"]]
+# Add an empty title so that the fig label does not run into the axis text
+g2 <- g2 + ggtitle("")
 g3 <- summary.plots[["1"]][["fine"]][["Random"]]
+g3 <- g3 + ggtitle("")
 bottom_row <- plot_grid(g2, g3, labels = c("B", "C"))
 g <- plot_grid(g1, bottom_row, labels = c("A", ""), ncol =1)
 ## g <- plot_grid(g1, g2, g3, labels = c("A", "B", "C"))

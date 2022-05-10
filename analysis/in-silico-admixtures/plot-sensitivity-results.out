@@ -1,0 +1,26 @@
+Welcome, Brian White!NULL
+Doing round 1
+Excluding methods: TIMER
+Excluding methods: TIMER
+Doing round 2
+Excluding methods: TIMER
+Excluding methods: TIMER
+Doing round 3
+Excluding methods: TIMER
+Excluding methods: TIMER
+Doing round latest
+Excluding methods: TIMER
+Excluding methods: TIMER
+There were 48 warnings (use warnings() to see them)
+Doing round 1
+Doing round 2
+Doing round 3
+Doing round latest
+Warning message:
+Using `as.character()` on a quosure is deprecated as of rlang 0.3.0.
+Please use `as_label()` or `as_name()` instead.
+This warning is displayed once per session. 
+Warning messages:
+1: Removed 6 rows containing missing values (geom_text). 
+2: Removed 26 rows containing missing values (geom_text). 
+Exiting successfully
