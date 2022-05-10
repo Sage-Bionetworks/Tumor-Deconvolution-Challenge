@@ -512,6 +512,12 @@ for(round in rounds) {
     ## grid.arrange(g.sum.coarse, g.sum.fine)
     d <- dev.off()
 
+    pdf(paste0(figs.dir, "/sample-level-metric-summary", postfix, ".pdf"))
+    g <- plot_grid(g.sum.coarse, g.sum.fine, nrow = 2, labels = "AUTO") 
+    print(g)
+    ## grid.arrange(g.sum.coarse, g.sum.fine)
+    d <- dev.off()
+
     g.swarm.coarse <- results[[round]][["g.swarm.no.color"]][["coarse"]]
     title <- paste0("Coarse-Grained (", sub.title, ")")    
 ##    g.swarm.coarse <- g.swarm.coarse + ggtitle(title) + theme(plot.title = element_text(hjust = 0.5))
@@ -519,6 +525,12 @@ for(round in rounds) {
     title <- paste0("Fine-Grained (", sub.title, ")")        
 ##    g.swarm.fine <- g.swarm.fine + ggtitle(title) + theme(plot.title = element_text(hjust = 0.5))
     png(paste0(figs.dir, "/sample-level-metric-swarm", postfix, ".png"), width = 2 * 480)
+    g <- plot_grid(g.swarm.coarse, g.swarm.fine, nrow = 2, labels = "AUTO") 
+    print(g)
+    ## grid.arrange(g.swarm.coarse, g.swarm.fine)
+    d <- dev.off()
+
+    pdf(paste0(figs.dir, "/sample-level-metric-swarm", postfix, ".pdf"), width = 2 * 7)
     g <- plot_grid(g.swarm.coarse, g.swarm.fine, nrow = 2, labels = "AUTO") 
     print(g)
     ## grid.arrange(g.swarm.coarse, g.swarm.fine)

@@ -129,17 +129,30 @@ for(round in rounds) {
             g <- g + ggtitle(paste0(firstup(sub.challenge), "-Grained Sub-Challenge (Round ", round, ", ", mixture.type, " Admixtures", ")"))
             print(g)
             d <- dev.off()
+
+            o.file <- paste0(figs.dir, "/", "sensitivity-summary-", sub.challenge, "-round-", round, "-", mixture.type, ".pdf")
+            pdf(o.file)
+            print(g)
+            d <- dev.off()
+
         }
         g.bio <- plts[["Biological"]]
         g.bio <- g.bio + ggtitle("Biological Admixtures")
         g.rand <- plts[["Random"]]
         g.rand <- g.rand + ggtitle("Random Admixtures")
+
         o.file <- paste0(figs.dir, "/", "sensitivity-summary-", sub.challenge, "-round-", round, "-both-mixture-types.png")
         png(o.file, width = 2 * 480, height = 1 * 480)
         title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge (Round ", round, ")")
         g <- grid.arrange(g.bio, g.rand, nrow = 1, top = textGrob(title, gp=gpar(fontsize=25)))
         grid.draw(g)
         d <- dev.off()
+
+        o.file <- paste0(figs.dir, "/", "sensitivity-summary-", sub.challenge, "-round-", round, "-both-mixture-types.pdf")
+        pdf(o.file, width = 2 * 480, height = 1 * 7)
+        grid.draw(g)
+        d <- dev.off()
+
     }
 }
 
@@ -248,7 +261,14 @@ for(round in rounds) {
                   png(o.file, width = 2 * 480)
                   print(g)
                   d <- dev.off()
+
+                  o.file <- paste0(figs.dir, "/", "sensitivity-spikein-", make.names(mn), "-",
+                                   make.names(ct), "-", sc, "-", mx, "-round-", round, ".pdf")
+                  pdf(o.file, width = 2 * 7)
+                  print(g)
+                  d <- dev.off()
                   return(g)
+
               })
 }
 
@@ -267,6 +287,11 @@ g <- plot_grid(g1, bottom_row, labels = c("A", ""), ncol =1)
 ## g <- plot_grid(g1, g2, g3, labels = c("A", "B", "C"))
 ## g <- grid.arrange(g1, g2, g3)
 ## grid.draw(g)
+print(g)
+d <- dev.off()
+
+o.file <- paste0(figs.dir, "/", "sensitivity-spikein-and-summary.pdf")
+pdf(o.file, width = 2 * 7, height = 2 * 7)
 print(g)
 d <- dev.off()
 

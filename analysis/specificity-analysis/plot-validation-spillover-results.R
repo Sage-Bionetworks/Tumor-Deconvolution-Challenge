@@ -485,6 +485,10 @@ print(c(round, round.text))
     print(g1)
     d <- dev.off()
 
+    pdf(paste0(figs.dir, "spillover-deconv-coarse-grained", postfix, ".pdf"), width = 2 * 7)
+    print(g1)
+    d <- dev.off()
+
     g.res <- plot.strip.plots(subset(deconv.res[flag, ], measured == 0),
                                           id.var = method.name.col, cell.type.var = cell.type.col,
                                           var = "prediction", label = "Prediction", col.summary.fun = "mean",
@@ -496,6 +500,10 @@ print(c(round, round.text))
     flag <- deconv.res[, subchallenge.col] == "fine"    
     g2 <- plot.cell.type.score.heatmap(deconv.res[flag, ])
     g2 <- g2 + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")"))
+    print(g2)
+    d <- dev.off()
+
+    pdf(paste0(figs.dir, "spillover-deconv-fine-grained", postfix, ".pdf"), width = 2 * 7)
     print(g2)
     d <- dev.off()
 
@@ -514,6 +522,10 @@ print(c(round, round.text))
     print(g3)
     d <- dev.off()
 
+    pdf(paste0(figs.dir, "spillover-non-deconv-coarse-grained", postfix, ".pdf"), width = 2 * 7)
+    print(g3)
+    d <- dev.off()
+
     g.res <- plot.strip.plots(subset(sub, measured == 0),
                                                   id.var = method.name.col, cell.type.var = cell.type.col,
                                                   var = "norm.score", label = "Normalized Score", col.summary.fun = "mean",
@@ -527,6 +539,10 @@ print(c(round, round.text))
     sub <- non.deconv.res[flag, ]
     g4 <- plot.cell.type.score.heatmap(sub, score.col = "norm.score", normalized.score = TRUE)
     g4 <- g4 + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")"))
+    print(g4)
+    d <- dev.off()
+
+    pdf(paste0(figs.dir, "spillover-non-deconv-fine-grained", postfix, ".pdf"), width = 2 * 7)
     print(g4)
     d <- dev.off()
 
@@ -549,11 +565,19 @@ print(c(round, round.text))
     grid.draw(g)
     d <- dev.off()
 
+    pdf(paste0(figs.dir, "spillover-all-coarse-grained", postfix, ".pdf"), width = 4 * 7, height = 2 * 7)
+    grid.draw(g)
+    d <- dev.off()
+
     png(paste0(figs.dir, "spillover-all-scores-coarse-grained", postfix, ".png"), width = 4 * 480, height = 2 * 480)
     sub <- coarse.res
     g.all.coarse <- plot.cell.type.score.heatmap(sub, score.col = "norm.score", normalized.score = TRUE, nrow = 2)
     g.all.coarse <- g.all.coarse + theme(axis.text.x = element_text(size = 15)) + theme(plot.title = element_text(hjust = 0.5))
     g.all.coarse <- g.all.coarse + ggtitle(paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")"))
+    print(g.all.coarse)
+    d <- dev.off()
+
+    pdf(paste0(figs.dir, "spillover-all-scores-coarse-grained", postfix, ".pdf"), width = 4 * 7, height = 2 * 7)
     print(g.all.coarse)
     d <- dev.off()
 
@@ -570,6 +594,10 @@ print(c(round, round.text))
     print(g.all.coarse.top)
     d <- dev.off()
 
+    pdf(paste0(figs.dir, "spillover-all-scores-coarse-grained-top", postfix, ".pdf"), width = 2 * 7)
+    print(g.all.coarse.top)
+    d <- dev.off()
+
     png(paste0(figs.dir, "spillover-all-coarse-grained-strip", postfix, ".png"), width = 4 * 480, height = 2 * 480)
     g.strip.deconv.coarse <- g.strip.deconv.coarse + ggtitle("")
     g.strip.non.deconv.coarse <- g.strip.non.deconv.coarse + ggtitle("")
@@ -577,6 +605,10 @@ print(c(round, round.text))
     g.strip.non.deconv.coarse <- g.strip.non.deconv.coarse + theme(axis.text.x = element_text(size = 15))
     title <- paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")")
     g <- grid.arrange(g.strip.deconv.coarse, g.strip.non.deconv.coarse, nrow = 2, top = textGrob(title, gp = gpar(fontsize = 25)))
+    grid.draw(g)
+    d <- dev.off()
+
+    pdf(paste0(figs.dir, "spillover-all-coarse-grained-strip", postfix, ".pdf"), width = 4 * 7, height = 2 * 7)
     grid.draw(g)
     d <- dev.off()
 
@@ -588,6 +620,10 @@ print(c(round, round.text))
                                            order.decreasing = TRUE)
     g.all.strip.coarse <- g.res[["g"]]
     g.all.strip.coarse <- g.all.strip.coarse + ggtitle(paste0("Coarse-Grained Sub-Challenge (", title.postfix, ")"))
+    print(g.all.strip.coarse)
+    d <- dev.off()
+
+    pdf(paste0(figs.dir, "spillover-all-scores-coarse-grained-strip", postfix, ".pdf"), width = 2 * 7)
     print(g.all.strip.coarse)
     d <- dev.off()
 
@@ -605,6 +641,10 @@ print(c(round, round.text))
     
     print(g.all.strip.coarse.top)
     d <- dev.off()
+
+    pdf(paste0(figs.dir, "spillover-all-scores-coarse-grained-strip-top", postfix, ".pdf"), width = 2 * 7)
+    print(g.all.strip.coarse.top)
+    d <- dev.off()
     
     png(paste0(figs.dir, "spillover-all-fine-grained", postfix, ".png"), width = 4 * 480, height = 2 * 480)
     g2 <- g2 + ggtitle("")
@@ -616,11 +656,19 @@ print(c(round, round.text))
     grid.draw(g)
     d <- dev.off()
 
+    pdf(paste0(figs.dir, "spillover-all-fine-grained", postfix, ".pdf"), width = 4 * 7, height = 2 * 7)
+    grid.draw(g)
+    d <- dev.off()
+
     png(paste0(figs.dir, "spillover-all-scores-fine-grained", postfix, ".png"), width = 4 * 480, height = 2 * 480)
     sub <- fine.res
     g.all.fine <- plot.cell.type.score.heatmap(sub, score.col = "norm.score", normalized.score = TRUE, nrow = 2)
     g.all.fine <- g.all.fine + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
     g.all.fine <- g.all.fine + theme(axis.text.x = element_text(size = 15))
+    print(g.all.fine)
+    d <- dev.off()
+
+    pdf(paste0(figs.dir, "spillover-all-scores-fine-grained", postfix, ".pdf"), width = 4 * 7, height = 2 * 7)
     print(g.all.fine)
     d <- dev.off()
 
@@ -636,6 +684,10 @@ print(c(round, round.text))
     print(g.all.fine.top)
     d <- dev.off()
 
+    pdf(paste0(figs.dir, "spillover-all-scores-fine-grained-top", postfix, ".pdf"), width = 2 * 7)
+    print(g.all.fine.top)
+    d <- dev.off()
+
     png(paste0(figs.dir, "spillover-all-fine-grained-strip", postfix, ".png"), width = 4 * 480, height = 2 * 480)
     g.strip.deconv.fine <- g.strip.deconv.fine + ggtitle("")
     g.strip.non.deconv.fine <- g.strip.non.deconv.fine + ggtitle("")
@@ -643,6 +695,10 @@ print(c(round, round.text))
     g.strip.non.deconv.fine <- g.strip.non.deconv.fine + theme(axis.text.x = element_text(size = 15))
     title <- paste0("Fine-Grained Sub-Challenge (", title.postfix, ")")
     g <- grid.arrange(g.strip.deconv.fine, g.strip.non.deconv.fine, nrow = 2, top = textGrob(title, gp = gpar(fontsize = 25)))
+    grid.draw(g)
+    d <- dev.off()
+
+    pdf(paste0(figs.dir, "spillover-all-fine-grained-strip", postfix, ".pdf"), width = 4 * 7, height = 2 * 7)
     grid.draw(g)
     d <- dev.off()
 
@@ -654,6 +710,10 @@ print(c(round, round.text))
                                          order.decreasing = TRUE)
     g.all.strip.fine <- g.res[["g"]]
     g.all.strip.fine <- g.all.strip.fine + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")"))
+    print(g.all.strip.fine)
+    d <- dev.off()
+
+    pdf(paste0(figs.dir, "spillover-all-scores-fine-grained-strip", postfix, ".pdf"), width = 2 * 7)
     print(g.all.strip.fine)
     d <- dev.off()
 
@@ -670,6 +730,10 @@ print(c(round, round.text))
     g.all.strip.fine.top <- g.all.strip.fine.top + ggtitle(paste0("Fine-Grained Sub-Challenge (", title.postfix, ")"))
     print(g.all.strip.fine.top)
     d <- dev.off()
+
+    pdf(paste0(figs.dir, "spillover-all-scores-fine-grained-strip-top", postfix, ".pdf"), width = 2 * 7)
+    print(g.all.strip.fine.top)
+    d <- dev.off()
     
     for(sub.challenge in names(mean.norm.score.by.cell.type.method)) {
         means <- mean.norm.score.by.cell.type.method[[sub.challenge]]
@@ -681,6 +745,11 @@ print(c(round, round.text))
         png(paste0(figs.dir, "spillover-all-scores-", sub.challenge, "-grained-heatmap", postfix, ".png"), width = 2 * 480)
         print(g)
         d <- dev.off()
+
+        pdf(paste0(figs.dir, "spillover-all-scores-", sub.challenge, "-grained-heatmap", postfix, ".pdf"), width = 2 * 7)
+        print(g)
+        d <- dev.off()
+
     }
 
     summary.fun <- mean
@@ -828,5 +897,9 @@ g4 <- results[["1"]][["spillover.method.summary.plots"]][["fine"]]
 g <- plot_grid(g1, g2, g3, g4, labels = c("A", "B", "C", "D"))
 
 png(paste0(figs.dir, "spillover-summary.png"), width = 4 * 480, height = 2 * 480)
+print(g)
+d <- dev.off()
+
+pdf(paste0(figs.dir, "spillover-summary.pdf"), width = 4 * 7, height = 2 * 7)
 print(g)
 d <- dev.off()
