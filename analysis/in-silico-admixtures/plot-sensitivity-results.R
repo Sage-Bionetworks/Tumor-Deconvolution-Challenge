@@ -143,7 +143,7 @@ for(round in rounds) {
     }
 }
 
-plot.spikein.predictions <- function(df.ds) {
+plot.spikein.predictions.with.brackets <- function(df.ds) {
     ct <- as.character(df.ds[1, cell.type.col])
     df.ds <- df.ds[order(df.ds[, measured.col]),]
     df.ds$val <- as.numeric(as.character(df.ds[, measured.col])) * 100
@@ -165,6 +165,42 @@ plot.spikein.predictions <- function(df.ds) {
     ## Remove label = ..p.signif.. to plot the actual pvalues
     g <- g + stat_compare_means(aes(label = ..p.signif..), comparisons = my_comparisons, size = 5, vjust = 0.5)
     g <- g + geom_beeswarm()
+    g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    xlab <- paste0(fix.string(ct), " Spike-in (%)")
+    g <- g + xlab(xlab) + ylab("Score")
+    g
+}
+
+plot.spikein.predictions <- function(df.ds) {
+    ct <- as.character(df.ds[1, cell.type.col])
+    df.ds <- df.ds[order(df.ds[, measured.col]),]
+    df.ds$val <- as.numeric(as.character(df.ds[, measured.col])) * 100
+    ## sci <- formatC(as.numeric(as.character(df.ds$measured))*100, format="e", digits=2)
+    sci <- my.format2(df.ds$val)
+    df.ds$val <- factor(sci, levels = unique(sci))
+    cmps <- as.data.frame(compare_means(prediction ~ val,  data = df.ds))
+    ## cmps <- cmps[cmps$group1 == "0.00e+00",]
+    cmps <- cmps[cmps$group1 == "0",]
+    display.p.cutoff <- 0.1
+    display.p.cutoff <- 0.01
+    cmps <- cmps[cmps$p < display.p.cutoff,]
+
+    my_comparisons <-
+        llply(1:nrow(cmps),
+              .fun = function(i) c(cmps[i,2], cmps[i,3]))
+
+    fill.df <- data.frame(val = as.character(df.ds$val), fill = "white")
+    fill.df$fill <- as.character(fill.df$fill)
+    fill.df[as.character(fill.df$val) %in% cmps$group2, "fill"] <- "blue"
+    fill.df$fill <- as.character(fill.df$fill)
+    fill.df$val <- factor(fill.df$val, levels = levels(df.ds$val))
+    df.ds <- merge(df.ds, fill.df)                            
+
+    g <- ggplot(data = df.ds, aes_string(x = "val", y = prediction.col))
+    g <- g + geom_boxplot(aes(fill=fill))
+    g <- g + scale_fill_manual(name = "Above\nBackground", values = c("#00FFFF", "#FFFFFF"), breaks = c("blue", "white"), labels = c(paste0("p < ", display.p.cutoff), paste0("p >= ", display.p.cutoff)))
+    ## Remove label = ..p.signif.. to plot the actual pvalues
+    # g <- g + geom_beeswarm()
     g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
     xlab <- paste0(fix.string(ct), " Spike-in (%)")
     g <- g + xlab(xlab) + ylab("Score")
@@ -220,6 +256,7 @@ for(round in rounds) {
 o.file <- paste0(figs.dir, "/", "sensitivity-spikein-and-summary.png")
 png(o.file, width = 2 * 480, height = 2 * 480)
 g1 <- spike.in.plots[["1"]][["Aginome-XMU.CD4 T.coarse.Random"]]
+g1 <- g1 + theme(text = element_text(size=15))
 g2 <- summary.plots[["1"]][["coarse"]][["Random"]]
 # Add an empty title so that the fig label does not run into the axis text
 g2 <- g2 + ggtitle("")
