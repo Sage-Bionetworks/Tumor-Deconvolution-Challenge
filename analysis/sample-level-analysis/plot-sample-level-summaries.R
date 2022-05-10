@@ -379,7 +379,13 @@ do.sample.level.analysis <-
                                 g1 <- g1 + theme(text = element_text(size=sz), axis.text.y = element_text(size=y.sz), title = element_text(size = title.sz))
                                 g1 <- g1 + theme(axis.title.y = element_blank())
                                 g1 <- g1 + scale_y_continuous(labels = my.zero.format, limits = c(-1, 1))
-				
+		
+                                lvls <- levels(tbl[,method.name.col]) 
+                                lvls <- lvls[lvls %in% tbl[, method.name.col]]
+                                comparator.methods <- unique(subset(res, comparator==TRUE)[, method.name.col])
+                                bold.labels <- ifelse(lvls %in% comparator.methods, yes = "bold", no = "plain")
+                                g1 <- g1 + theme(axis.text.y = element_text(face = bold.labels))
+		
                                 g2 <- ggplot(data = tbl)
                                 g2 <- g2 + geom_boxplot(aes_string(x = method.name.col, y = "Spearman"))
                                 g2 <- g2 + coord_flip()
