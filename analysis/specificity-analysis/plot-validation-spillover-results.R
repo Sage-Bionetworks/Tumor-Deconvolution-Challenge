@@ -247,10 +247,10 @@ plot.cell.type.score.heatmap <- function(df, score.col = "prediction",
     }
     g <- ggplot(data = df, aes_string(y = "sample.id", x = "cell.type", fill = score.col))
     g <- g + geom_tile()
-    g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1),
-                   text = element_text(size = 16))
+    g <- g + theme(text = element_text(size = 22), axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_text(size = 13))
+#                   
 ##                   title = element_text(size = 8))
-    g <- g + ylab("Purified Sample") + xlab("Predicted Cell Type")
+    g <- g + ylab("Purified Sample\n") + xlab("\nPredicted Cell Type")
     if(normalized.score) {
         g <- g + scale_fill_gradient2("Normalized\nPrediction", 
                                       low = "red", high = "blue", mid = "white", na.value = "black")
@@ -734,7 +734,8 @@ print(c(round, round.text))
     ## g <- g + geom_boxplot(outlier.shape = NA)
     ## g <- g + geom_beeswarm()
     ## g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1), text = element_text(size = 16))
-    g <- g + theme(text = element_text(size = 16))
+    # text size
+    # g <- g + theme(text = element_text(size = 20))
     g <- g + xlab("") + ylab("Spillover")
     g <- g + coord_flip()
     g <- g + ggtitle(paste0("Merged Sub-Challenges (", title.postfix, ")")) + theme(plot.title = element_text(hjust = 0.5))
@@ -767,7 +768,11 @@ print(c(round, round.text))
                      ## g2 <- g2 + geom_boxplot(outlier.shape = NA)
                      ## g2 <- g2 + geom_beeswarm()
                      ## g2 <- g2 + theme(axis.text.x = element_text(angle = 45, hjust = 1), text = element_text(size = 16))
-		     g2 <- g2 + theme(text = element_text(size = 16))
+                     # text size
+		     #     g2 <- g2 + theme(axis.text.y = element_text(size = 18), text = element_text(size = 22))
+                     sz <- 18
+                     if(sc == "fine") { sz <- 20 }
+                     g2 <- g2 + theme(text = element_text(size = 22), axis.text.y = element_text(size = sz))
                      g2 <- g2 + xlab("") + ylab("Spillover")
                      g2 <- g2 + coord_flip()
                      g2 <- g2 + theme(axis.text.y = element_text(face = bold.labels))
@@ -815,7 +820,9 @@ for(round in rounds) {
 }
 
 g1 <- results[["1"]][["method.plots"]][["Biogem-coarse"]]
+# g1 <- g1 + theme(axis.text.y = element_text(size=18))
 g2 <- results[["1"]][["spillover.summary.plot"]]
+g2 <- g2 + theme(text = element_text(size = 22), axis.text.y = element_text(size=22))
 g3 <- results[["1"]][["spillover.method.summary.plots"]][["coarse"]]
 g4 <- results[["1"]][["spillover.method.summary.plots"]][["fine"]]
 g <- plot_grid(g1, g2, g3, g4, labels = c("A", "B", "C", "D"))
