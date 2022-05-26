@@ -54,6 +54,12 @@ figs <-
        "fig6.pdf" = "analysis/in-silico-admixtures/figs/sensitivity-spikein-and-summary.pdf"
 )
 
+tbls <-
+  list(
+       "tables10.csv" = "training-sample-metadata/geo-expression-array-immune-cells.csv",
+       "tables11.csv" = "training-sample-metadata/geo-rnaseq-immune-cells.csv"
+)
+
 for(fig in names(figs)) {
   fig.file <- figs[[fig]]
   if(file.exists(fig.file)) {
@@ -69,4 +75,21 @@ for(fig in names(figs)) {
   #dest.file <- paste0(dest.fig.dir, "/", fig, ".", extension)
   dest.file <- paste0(dest.fig.dir, "/", fig)
   file.copy(fig.file, dest.file, overwrite=TRUE)
+}
+
+for(tbl in names(tbls)) {
+  tbl.file <- tbls[[tbl]]
+  if(file.exists(tbl.file)) {
+    cat(paste0("Found ", tbl, ": ", tbl.file, "\n"))
+  } else {
+    stop(paste0("Could not find ", tbl, ": ", tbl.file, "\n"))
+  }
+}
+
+for(tbl in names(tbls)) {
+  tbl.file <- tbls[[tbl]]
+  #extension <- file_ext(tbl.file)
+  #dest.file <- paste0(dest.fig.dir, "/", tbl, ".", extension)
+  dest.file <- paste0(dest.fig.dir, "/", tbl)
+  file.copy(tbl.file, dest.file, overwrite=TRUE)
 }
