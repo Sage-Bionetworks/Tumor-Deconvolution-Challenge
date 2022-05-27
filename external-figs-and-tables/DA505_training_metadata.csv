@@ -1,0 +1,912 @@
+"","samplename","platform","label","obervations","batch","bigfamily","family","celltype","coarsegrain","finegrain","treatment","In","In_opt","In_opt2","FINAL"
+"memory.B.cell...donor.a","memory.B.cell...donor.a","not_known","memory.B.cell","healthy","bloodatlas","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","No","Train","Train","Train"
+"memory.B.cell...donor.b","memory.B.cell...donor.b","not_known","memory.B.cell","healthy","bloodatlas","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","No","Train","Train","Train"
+"memory.B.cell...donor.c","memory.B.cell...donor.c","not_known","memory.B.cell","healthy","bloodatlas","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","No","Train","Train","Train"
+"memory.B.cell...donor.d","memory.B.cell...donor.d","not_known","memory.B.cell","healthy","bloodatlas","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","No","Train","Train","Train"
+"memory.B.cell...donor.e","memory.B.cell...donor.e","not_known","memory.B.cell","healthy","bloodatlas","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","No","Train","Train","Train"
+"memory.B.cell...donor.f","memory.B.cell...donor.f","not_known","memory.B.cell","healthy","bloodatlas","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","No","Train","Train","Train"
+"naive.B.cell...donor.a","naive.B.cell...donor.a","not_known","naive.B.cell","healthy","bloodatlas","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","No","Train","Train","Train"
+"naive.B.cell...donor.b","naive.B.cell...donor.b","not_known","naive.B.cell","healthy","bloodatlas","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","No","Train","Train","Train"
+"naive.B.cell...donor.c","naive.B.cell...donor.c","not_known","naive.B.cell","healthy","bloodatlas","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","No","Train","Train","Train"
+"naive.B.cell...donor.d","naive.B.cell...donor.d","not_known","naive.B.cell","healthy","bloodatlas","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","No","Train","Train","Train"
+"naive.B.cell...donor.e","naive.B.cell...donor.e","not_known","naive.B.cell","healthy","bloodatlas","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","No","Train","Train","Train"
+"naive.B.cell...donor.f","naive.B.cell...donor.f","not_known","naive.B.cell","healthy","bloodatlas","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","No","Train","Train","Train"
+"memory.CD4.T.cell...donor.a","memory.CD4.T.cell...donor.a","not_known","memory.CD4.T.cell","healthy","bloodatlas","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no","No","Train","Train","Train"
+"memory.CD4.T.cell...donor.b","memory.CD4.T.cell...donor.b","not_known","memory.CD4.T.cell","healthy","bloodatlas","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no","No","Train","Train","Train"
+"memory.CD4.T.cell...donor.c","memory.CD4.T.cell...donor.c","not_known","memory.CD4.T.cell","healthy","bloodatlas","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no","No","Train","Train","Train"
+"memory.CD4.T.cell...donor.d","memory.CD4.T.cell...donor.d","not_known","memory.CD4.T.cell","healthy","bloodatlas","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no","No","Train","Train","Train"
+"memory.CD4.T.cell...donor.e","memory.CD4.T.cell...donor.e","not_known","memory.CD4.T.cell","healthy","bloodatlas","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no","No","Train","Train","Train"
+"memory.CD4.T.cell...donor.f","memory.CD4.T.cell...donor.f","not_known","memory.CD4.T.cell","healthy","bloodatlas","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no","No","Train","Train","Train"
+"naive.CD4.T.cell...donor.a","naive.CD4.T.cell...donor.a","not_known","naive.CD4.T.cell","healthy","bloodatlas","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","No","Train","Train","Train"
+"naive.CD4.T.cell...donor.b","naive.CD4.T.cell...donor.b","not_known","naive.CD4.T.cell","healthy","bloodatlas","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","No","Train","Train","Train"
+"naive.CD4.T.cell...donor.c","naive.CD4.T.cell...donor.c","not_known","naive.CD4.T.cell","healthy","bloodatlas","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","No","Train","Train","Train"
+"naive.CD4.T.cell...donor.d","naive.CD4.T.cell...donor.d","not_known","naive.CD4.T.cell","healthy","bloodatlas","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","No","Train","Train","Train"
+"naive.CD4.T.cell...donor.e","naive.CD4.T.cell...donor.e","not_known","naive.CD4.T.cell","healthy","bloodatlas","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","No","Train","Train","Train"
+"naive.CD4.T.cell...donor.f","naive.CD4.T.cell...donor.f","not_known","naive.CD4.T.cell","healthy","bloodatlas","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","No","Train","Train","Train"
+"T.reg...donor.a","T.reg...donor.a","not_known","T.reg","healthy","bloodatlas","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","No","Train","Train","Train"
+"T.reg...donor.b","T.reg...donor.b","not_known","T.reg","healthy","bloodatlas","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","No","Train","Train","Train"
+"T.reg...donor.c","T.reg...donor.c","not_known","T.reg","healthy","bloodatlas","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","No","Train","Train","Train"
+"T.reg...donor.d","T.reg...donor.d","not_known","T.reg","healthy","bloodatlas","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","No","Train","Train","Train"
+"T.reg...donor.e","T.reg...donor.e","not_known","T.reg","healthy","bloodatlas","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","No","Train","Train","Train"
+"T.reg...donor.f","T.reg...donor.f","not_known","T.reg","healthy","bloodatlas","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","No","Train","Train","Train"
+"memory.CD8.T.cell...donor.a","memory.CD8.T.cell...donor.a","not_known","memory.CD8.T.cell","healthy","bloodatlas","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","No","Train","Train","Train"
+"memory.CD8.T.cell...donor.b","memory.CD8.T.cell...donor.b","not_known","memory.CD8.T.cell","healthy","bloodatlas","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","No","Train","Train","Train"
+"memory.CD8.T.cell...donor.c","memory.CD8.T.cell...donor.c","not_known","memory.CD8.T.cell","healthy","bloodatlas","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","No","Train","Train","Train"
+"memory.CD8.T.cell...donor.d","memory.CD8.T.cell...donor.d","not_known","memory.CD8.T.cell","healthy","bloodatlas","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","No","Train","Train","Train"
+"memory.CD8.T.cell...donor.f","memory.CD8.T.cell...donor.f","not_known","memory.CD8.T.cell","healthy","bloodatlas","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","No","Train","Train","Train"
+"naive.CD8.T.cell...donor.a","naive.CD8.T.cell...donor.a","not_known","naive.CD8.T.cell","healthy","bloodatlas","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","No","Train","Train","Train"
+"naive.CD8.T.cell...donor.b","naive.CD8.T.cell...donor.b","not_known","naive.CD8.T.cell","healthy","bloodatlas","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","No","Train","Train","Train"
+"naive.CD8.T.cell...donor.c","naive.CD8.T.cell...donor.c","not_known","naive.CD8.T.cell","healthy","bloodatlas","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","No","Train","Train","Train"
+"naive.CD8.T.cell...donor.d","naive.CD8.T.cell...donor.d","not_known","naive.CD8.T.cell","healthy","bloodatlas","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","No","Train","Train","Train"
+"naive.CD8.T.cell...donor.e","naive.CD8.T.cell...donor.e","not_known","naive.CD8.T.cell","healthy","bloodatlas","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","No","Train","Train","Train"
+"naive.CD8.T.cell...donor.f","naive.CD8.T.cell...donor.f","not_known","naive.CD8.T.cell","healthy","bloodatlas","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","No","Train","Train","Train"
+"classical.monocyte...donor.a","classical.monocyte...donor.a","not_known","classical.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","Train","Train","Train"
+"classical.monocyte...donor.b","classical.monocyte...donor.b","not_known","classical.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","Train","Train","Train"
+"classical.monocyte...donor.c","classical.monocyte...donor.c","not_known","classical.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","Train","Train","Train"
+"classical.monocyte...donor.d","classical.monocyte...donor.d","not_known","classical.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","Train","Train","Train"
+"classical.monocyte...donor.e","classical.monocyte...donor.e","not_known","classical.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","Train","Train","Train"
+"classical.monocyte...donor.f","classical.monocyte...donor.f","not_known","classical.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","Train","Train","Train"
+"intermediate.monocyte...donor.a","intermediate.monocyte...donor.a","not_known","intermediate.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","Train","Train","Train"
+"intermediate.monocyte...donor.b","intermediate.monocyte...donor.b","not_known","intermediate.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","Train","Train","Train"
+"intermediate.monocyte...donor.c","intermediate.monocyte...donor.c","not_known","intermediate.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","Train","Train","Train"
+"intermediate.monocyte...donor.d","intermediate.monocyte...donor.d","not_known","intermediate.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","Train","Train","Train"
+"intermediate.monocyte...donor.e","intermediate.monocyte...donor.e","not_known","intermediate.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","Train","Train","Train"
+"intermediate.monocyte...donor.f","intermediate.monocyte...donor.f","not_known","intermediate.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","Train","Train","Train"
+"myeloid.DC...donor.a","myeloid.DC...donor.a","not_known","myeloid.DC","healthy","bloodatlas","Immune","Myeloid","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no","No","Train","Train","Train"
+"myeloid.DC...donor.b","myeloid.DC...donor.b","not_known","myeloid.DC","healthy","bloodatlas","Immune","Myeloid","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no","No","Train","Train","Train"
+"myeloid.DC...donor.c","myeloid.DC...donor.c","not_known","myeloid.DC","healthy","bloodatlas","Immune","Myeloid","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no","No","Train","Train","Train"
+"myeloid.DC...donor.d","myeloid.DC...donor.d","not_known","myeloid.DC","healthy","bloodatlas","Immune","Myeloid","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no","No","Train","Train","Train"
+"myeloid.DC...donor.e","myeloid.DC...donor.e","not_known","myeloid.DC","healthy","bloodatlas","Immune","Myeloid","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no","No","Train","Train","Train"
+"non.classical.monocyte...donor.a","non.classical.monocyte...donor.a","not_known","non.classical.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"non.classical.monocyte...donor.c","non.classical.monocyte...donor.c","not_known","non.classical.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"non.classical.monocyte...donor.d","non.classical.monocyte...donor.d","not_known","non.classical.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"non.classical.monocyte...donor.e","non.classical.monocyte...donor.e","not_known","non.classical.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"non.classical.monocyte...donor.f","non.classical.monocyte...donor.f","not_known","non.classical.monocyte","healthy","bloodatlas","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"neutrophil...donor.a","neutrophil...donor.a","not_known","neutrophil","healthy","bloodatlas","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","No","Train","Train","Train"
+"neutrophil...donor.b","neutrophil...donor.b","not_known","neutrophil","healthy","bloodatlas","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","No","Train","Train","Train"
+"neutrophil...donor.c","neutrophil...donor.c","not_known","neutrophil","healthy","bloodatlas","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","No","Train","Train","Train"
+"neutrophil...donor.d","neutrophil...donor.d","not_known","neutrophil","healthy","bloodatlas","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","No","Train","Train","Train"
+"neutrophil...donor.e","neutrophil...donor.e","not_known","neutrophil","healthy","bloodatlas","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","No","Train","Train","Train"
+"neutrophil...donor.f","neutrophil...donor.f","not_known","neutrophil","healthy","bloodatlas","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","No","Train","Train","Train"
+"NK.cell...donor.a","NK.cell...donor.a","not_known","NK.cell","healthy","bloodatlas","Immune","NK","NK.cells","NK.cells","NK.cells","no","No","Train","Train","Train"
+"NK.cell...donor.b","NK.cell...donor.b","not_known","NK.cell","healthy","bloodatlas","Immune","NK","NK.cells","NK.cells","NK.cells","no","No","Train","Train","Train"
+"NK.cell...donor.c","NK.cell...donor.c","not_known","NK.cell","healthy","bloodatlas","Immune","NK","NK.cells","NK.cells","NK.cells","no","No","Train","Train","Train"
+"NK.cell...donor.d","NK.cell...donor.d","not_known","NK.cell","healthy","bloodatlas","Immune","NK","NK.cells","NK.cells","NK.cells","no","No","Train","Train","Train"
+"NK.cell...donor.e","NK.cell...donor.e","not_known","NK.cell","healthy","bloodatlas","Immune","NK","NK.cells","NK.cells","NK.cells","no","No","Train","Train","Train"
+"NK.cell...donor.f","NK.cell...donor.f","not_known","NK.cell","healthy","bloodatlas","Immune","NK","NK.cells","NK.cells","NK.cells","no","No","Train","Train","Train"
+"basophil...donor.c","basophil...donor.c","not_known","basophil","healthy","bloodatlas","Immune","Myeloid","basophils","noise","noise","no","No","No","No","Train"
+"basophil...donor.d","basophil...donor.d","not_known","basophil","healthy","bloodatlas","Immune","Myeloid","basophils","noise","noise","no","No","No","No","Train"
+"basophil...donor.e","basophil...donor.e","not_known","basophil","healthy","bloodatlas","Immune","Myeloid","basophils","noise","noise","no","No","No","No","Train"
+"basophil...donor.f","basophil...donor.f","not_known","basophil","healthy","bloodatlas","Immune","Myeloid","basophils","noise","noise","no","No","No","No","Train"
+"eosinophil...donor.a","eosinophil...donor.a","not_known","eosinophil","healthy","bloodatlas","Immune","Myeloid","eosinophil","noise","noise","no","No","No","No","Train"
+"eosinophil...donor.b","eosinophil...donor.b","not_known","eosinophil","healthy","bloodatlas","Immune","Myeloid","eosinophil","noise","noise","no","No","No","No","Train"
+"eosinophil...donor.c","eosinophil...donor.c","not_known","eosinophil","healthy","bloodatlas","Immune","Myeloid","eosinophil","noise","noise","no","No","No","No","Train"
+"eosinophil...donor.d","eosinophil...donor.d","not_known","eosinophil","healthy","bloodatlas","Immune","Myeloid","eosinophil","noise","noise","no","No","No","No","Train"
+"eosinophil...donor.e","eosinophil...donor.e","not_known","eosinophil","healthy","bloodatlas","Immune","Myeloid","eosinophil","noise","noise","no","No","No","No","Train"
+"eosinophil...donor.f","eosinophil...donor.f","not_known","eosinophil","healthy","bloodatlas","Immune","Myeloid","eosinophil","noise","noise","no","No","No","No","Train"
+"plasmacytoid.DC...donor.a","plasmacytoid.DC...donor.a","not_known","plasmacytoid.DC","healthy","bloodatlas","Immune","Myeloid","plasmacytoid.DC","noise","other","no","No","No","No","Train"
+"plasmacytoid.DC...donor.b","plasmacytoid.DC...donor.b","not_known","plasmacytoid.DC","healthy","bloodatlas","Immune","Myeloid","plasmacytoid.DC","noise","other","no","No","No","No","Train"
+"plasmacytoid.DC...donor.c","plasmacytoid.DC...donor.c","not_known","plasmacytoid.DC","healthy","bloodatlas","Immune","Myeloid","plasmacytoid.DC","noise","other","no","No","No","No","Train"
+"plasmacytoid.DC...donor.d","plasmacytoid.DC...donor.d","not_known","plasmacytoid.DC","healthy","bloodatlas","Immune","Myeloid","plasmacytoid.DC","noise","other","no","No","No","No","Train"
+"plasmacytoid.DC...donor.e","plasmacytoid.DC...donor.e","not_known","plasmacytoid.DC","healthy","bloodatlas","Immune","Myeloid","plasmacytoid.DC","noise","other","no","No","No","No","Train"
+"plasmacytoid.DC...donor.f","plasmacytoid.DC...donor.f","not_known","plasmacytoid.DC","healthy","bloodatlas","Immune","Myeloid","plasmacytoid.DC","noise","other","no","No","No","No","Train"
+"total.PBMC...donor.a","total.PBMC...donor.a","not_known","total.PBMC","healthy","bloodatlas","Immune","total","total.PBMC","noise","noise","no","No","No","No","No"
+"total.PBMC...donor.b","total.PBMC...donor.b","not_known","total.PBMC","healthy","bloodatlas","Immune","total","total.PBMC","noise","noise","no","No","No","No","No"
+"total.PBMC...donor.c","total.PBMC...donor.c","not_known","total.PBMC","healthy","bloodatlas","Immune","total","total.PBMC","noise","noise","no","No","No","No","No"
+"total.PBMC...donor.d","total.PBMC...donor.d","not_known","total.PBMC","healthy","bloodatlas","Immune","total","total.PBMC","noise","noise","no","No","No","No","No"
+"total.PBMC...donor.e","total.PBMC...donor.e","not_known","total.PBMC","healthy","bloodatlas","Immune","total","total.PBMC","noise","noise","no","No","No","No","No"
+"total.PBMC...donor.f","total.PBMC...donor.f","not_known","total.PBMC","healthy","bloodatlas","Immune","total","total.PBMC","noise","noise","no","No","No","No","No"
+"gdTCR...donor.a","gdTCR...donor.a","not_known","gdTCR","healthy","bloodatlas","Immune","GD","gdTCR","other","other","no","No","No","No","Train"
+"gdTCR...donor.b","gdTCR...donor.b","not_known","gdTCR","healthy","bloodatlas","Immune","GD","gdTCR","other","other","no","No","No","No","Train"
+"gdTCR...donor.c","gdTCR...donor.c","not_known","gdTCR","healthy","bloodatlas","Immune","GD","gdTCR","other","other","no","No","No","No","Train"
+"gdTCR...donor.d","gdTCR...donor.d","not_known","gdTCR","healthy","bloodatlas","Immune","GD","gdTCR","other","other","no","No","No","No","Train"
+"gdTCR...donor.e","gdTCR...donor.e","not_known","gdTCR","healthy","bloodatlas","Immune","GD","gdTCR","other","other","no","No","No","No","Train"
+"gdTCR...donor.f","gdTCR...donor.f","not_known","gdTCR","healthy","bloodatlas","Immune","GD","gdTCR","other","other","no","No","No","No","Train"
+"MAIT.T.cell...donor.a","MAIT.T.cell...donor.a","not_known","MAIT.T.cell","healthy","bloodatlas","Immune","T","MAIT.T.cell","other","other","no","No","No","No","Train"
+"MAIT.T.cell...donor.b","MAIT.T.cell...donor.b","not_known","MAIT.T.cell","healthy","bloodatlas","Immune","T","MAIT.T.cell","other","other","no","No","No","No","Train"
+"MAIT.T.cell...donor.c","MAIT.T.cell...donor.c","not_known","MAIT.T.cell","healthy","bloodatlas","Immune","T","MAIT.T.cell","other","other","no","No","No","No","Train"
+"MAIT.T.cell...donor.d","MAIT.T.cell...donor.d","not_known","MAIT.T.cell","healthy","bloodatlas","Immune","T","MAIT.T.cell","other","other","no","No","No","No","Train"
+"MAIT.T.cell...donor.e","MAIT.T.cell...donor.e","not_known","MAIT.T.cell","healthy","bloodatlas","Immune","T","MAIT.T.cell","other","other","no","No","No","No","Train"
+"MAIT.T.cell...donor.f","MAIT.T.cell...donor.f","not_known","MAIT.T.cell","healthy","bloodatlas","Immune","T","MAIT.T.cell","other","other","no","No","No","No","Train"
+"ERR1018689","ERR1018689","Illumina Genome Analyzer IIx","colon cancer","HCT116","ERP002049","Cancer","Colon","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"ERR208903","ERR208903","Illumina Genome Analyzer IIx","colon cancer","HCT15","ERP002049","Cancer","Colon","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"ERR208904","ERR208904","Illumina Genome Analyzer IIx","colon cancer","HT29","ERP002049","Cancer","Colon","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"ERR208905","ERR208905","Illumina Genome Analyzer IIx","colon cancer","LS1034","ERP002049","Cancer","Colon","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"ERR208906","ERR208906","Illumina Genome Analyzer IIx","colon cancer","RKO","ERP002049","Cancer","Colon","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"ERR208907","ERR208907","Illumina Genome Analyzer IIx","colon cancer","SW48","ERP002049","Cancer","Colon","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"ERR208908","ERR208908","Illumina Genome Analyzer IIx","colon cancer","SW480","ERP002049","Cancer","Colon","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"ERR701467","ERR701467","Illumina HiSeq 1500","macrophages","tumor associated macrophages","ERP009022","Immune","Myeloid","macrophages","monocytic.lineage","macrophages","no","Test","Train","Train","Train"
+"ERR701468","ERR701468","Illumina HiSeq 1500","macrophages","tumor associated macrophages","ERP009022","Immune","Myeloid","macrophages","monocytic.lineage","macrophages","no","Test","Train","Train","Train"
+"ERR701469","ERR701469","Illumina HiSeq 1500","macrophages","tumor associated macrophages","ERP009022","Immune","Myeloid","macrophages","monocytic.lineage","macrophages","no","Test","Train","Train","Train"
+"ERR701470","ERR701470","Illumina HiSeq 1500","macrophages","tumor associated macrophages","ERP009022","Immune","Myeloid","macrophages","monocytic.lineage","macrophages","no","Test","Train","Train","Train"
+"ERR701471","ERR701471","Illumina Genome Analyzer II","macrophages","tumor associated macrophages","ERP009022","Immune","Myeloid","macrophages","monocytic.lineage","macrophages","no","Test","Train","Train","Train"
+"ERR701472","ERR701472","Illumina HiSeq 1500","macrophages","tumor associated macrophages","ERP009022","Immune","Myeloid","macrophages","monocytic.lineage","macrophages","no","Test","Train","Train","Train"
+"ERR701473","ERR701473","Illumina Genome Analyzer II","macrophages","tumor associated macrophages","ERP009022","Immune","Myeloid","macrophages","monocytic.lineage","macrophages","no","Test","Train","Train","Train"
+"ERR701474","ERR701474","Illumina HiSeq 1500","macrophages","tumor associated macrophages","ERP009022","Immune","Myeloid","macrophages","monocytic.lineage","macrophages","no","Test","Train","Train","Train"
+"ERR701475","ERR701475","Illumina HiSeq 1500","macrophages","tumor associated macrophages","ERP009022","Immune","Myeloid","macrophages","monocytic.lineage","macrophages","no","Test","Train","Train","Train"
+"ERR701476","ERR701476","Illumina HiSeq 1500","macrophages","tumor associated macrophages","ERP009022","Immune","Myeloid","macrophages","monocytic.lineage","macrophages","no","Test","Train","Train","Train"
+"ERR701477","ERR701477","Illumina HiSeq 1500","macrophages","tumor associated macrophages","ERP009022","Immune","Myeloid","macrophages","monocytic.lineage","macrophages","no","Test","Train","Train","Train"
+"ERR701478","ERR701478","Illumina Genome Analyzer II","macrophages","tumor associated macrophages","ERP009022","Immune","Myeloid","macrophages","monocytic.lineage","macrophages","no","Test","Train","Train","Train"
+"ERR701479","ERR701479","Illumina HiSeq 1500","macrophages","tumor associated macrophages","ERP009022","Immune","Myeloid","macrophages","monocytic.lineage","macrophages","no","Test","Train","Train","Train"
+"SAMN12838786","SAMN12838786","Illumina HiSeq 4000","TRM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838788","SAMN12838788","Illumina HiSeq 4000","TRM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838790","SAMN12838790","Illumina HiSeq 4000","TRM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838792","SAMN12838792","Illumina HiSeq 4000","TRM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838794","SAMN12838794","Illumina HiSeq 4000","TRM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838795","SAMN12838795","Illumina HiSeq 4000","TRM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838797","SAMN12838797","Illumina HiSeq 4000","EM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838799","SAMN12838799","Illumina HiSeq 4000","TRM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838801","SAMN12838801","Illumina HiSeq 4000","TRM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838803","SAMN12838803","Illumina HiSeq 4000","TRM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838805","SAMN12838805","Illumina HiSeq 4000","TRM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838807","SAMN12838807","Illumina HiSeq 4000","TRM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838808","SAMN12838808","Illumina HiSeq 4000","TRM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838811","SAMN12838811","Illumina HiSeq 4000","naive.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838813","SAMN12838813","Illumina HiSeq 4000","naive.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838815","SAMN12838815","Illumina HiSeq 4000","naive.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838817","SAMN12838817","Illumina HiSeq 4000","TRM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838819","SAMN12838819","Illumina HiSeq 4000","TRM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838820","SAMN12838820","Illumina HiSeq 4000","TRM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838823","SAMN12838823","Illumina HiSeq 4000","TRM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838825","SAMN12838825","Illumina HiSeq 4000","TRM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838827","SAMN12838827","Illumina HiSeq 4000","TRM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838829","SAMN12838829","Illumina HiSeq 4000","TRM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838831","SAMN12838831","Illumina HiSeq 4000","TRM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838833","SAMN12838833","Illumina HiSeq 4000","TRM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838834","SAMN12838834","Illumina HiSeq 4000","naive.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838835","SAMN12838835","Illumina HiSeq 4000","CM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838836","SAMN12838836","Illumina HiSeq 4000","CM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838837","SAMN12838837","Illumina HiSeq 4000","CM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838838","SAMN12838838","Illumina HiSeq 4000","CM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838840","SAMN12838840","Illumina HiSeq 4000","CM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838841","SAMN12838841","Illumina HiSeq 4000","CM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838844","SAMN12838844","Illumina HiSeq 4000","CM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838845","SAMN12838845","Illumina HiSeq 4000","CM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838846","SAMN12838846","Illumina HiSeq 4000","CM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838847","SAMN12838847","Illumina HiSeq 4000","CM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838848","SAMN12838848","Illumina HiSeq 4000","CM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838849","SAMN12838849","Illumina HiSeq 4000","CM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838850","SAMN12838850","Illumina HiSeq 4000","CM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838851","SAMN12838851","Illumina HiSeq 4000","CM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838853","SAMN12838853","Illumina HiSeq 4000","naive.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838855","SAMN12838855","Illumina HiSeq 4000","naive.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838857","SAMN12838857","Illumina HiSeq 4000","naive.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838858","SAMN12838858","Illumina HiSeq 4000","naive.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838860","SAMN12838860","Illumina HiSeq 4000","naive.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838861","SAMN12838861","Illumina HiSeq 4000","naive.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838863","SAMN12838863","Illumina HiSeq 4000","naive.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838865","SAMN12838865","Illumina HiSeq 4000","naive.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838867","SAMN12838867","Illumina HiSeq 4000","naive.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838869","SAMN12838869","Illumina HiSeq 4000","naive.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838871","SAMN12838871","Illumina HiSeq 4000","naive.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838873","SAMN12838873","Illumina HiSeq 4000","naive.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838875","SAMN12838875","Illumina HiSeq 4000","naive.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838877","SAMN12838877","Illumina HiSeq 4000","naive.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838879","SAMN12838879","Illumina HiSeq 4000","naive.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838881","SAMN12838881","Illumina HiSeq 4000","EM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838882","SAMN12838882","Illumina HiSeq 4000","EM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838883","SAMN12838883","Illumina HiSeq 4000","EM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838885","SAMN12838885","Illumina HiSeq 4000","EM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838887","SAMN12838887","Illumina HiSeq 4000","EM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838888","SAMN12838888","Illumina HiSeq 4000","EM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838890","SAMN12838890","Illumina HiSeq 4000","EM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838891","SAMN12838891","Illumina HiSeq 4000","EM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838892","SAMN12838892","Illumina HiSeq 4000","EM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838894","SAMN12838894","Illumina HiSeq 4000","EM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838896","SAMN12838896","Illumina HiSeq 4000","EM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838897","SAMN12838897","Illumina HiSeq 4000","CM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838898","SAMN12838898","Illumina HiSeq 4000","CM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838899","SAMN12838899","Illumina HiSeq 4000","CM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838900","SAMN12838900","Illumina HiSeq 4000","CM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838901","SAMN12838901","Illumina HiSeq 4000","CM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838902","SAMN12838902","Illumina HiSeq 4000","naive.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838903","SAMN12838903","Illumina HiSeq 4000","naive.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838906","SAMN12838906","Illumina HiSeq 4000","naive.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838914","SAMN12838914","Illumina HiSeq 4000","EM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838915","SAMN12838915","Illumina HiSeq 4000","EM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838918","SAMN12838918","Illumina HiSeq 4000","EM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838920","SAMN12838920","Illumina HiSeq 4000","EM.CD4 T cells.Lung","Lung","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838921","SAMN12838921","Illumina HiSeq 4000","EM.CD4 T cells.LN","LN","PRJNA574052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN12838785","SAMN12838785","Illumina HiSeq 4000","TRM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838787","SAMN12838787","Illumina HiSeq 4000","TRM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838789","SAMN12838789","Illumina HiSeq 4000","TRM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838791","SAMN12838791","Illumina HiSeq 4000","TRM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838793","SAMN12838793","Illumina HiSeq 4000","TRM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838796","SAMN12838796","Illumina HiSeq 4000","EM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838798","SAMN12838798","Illumina HiSeq 4000","TRM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838800","SAMN12838800","Illumina HiSeq 4000","TRM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838802","SAMN12838802","Illumina HiSeq 4000","TRM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838804","SAMN12838804","Illumina HiSeq 4000","TRM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838806","SAMN12838806","Illumina HiSeq 4000","TRM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838809","SAMN12838809","Illumina HiSeq 4000","TRM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838810","SAMN12838810","Illumina HiSeq 4000","naive.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838812","SAMN12838812","Illumina HiSeq 4000","naive.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838814","SAMN12838814","Illumina HiSeq 4000","naive.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838816","SAMN12838816","Illumina HiSeq 4000","naive.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838818","SAMN12838818","Illumina HiSeq 4000","TRM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838821","SAMN12838821","Illumina HiSeq 4000","TRM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838822","SAMN12838822","Illumina HiSeq 4000","TRM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838824","SAMN12838824","Illumina HiSeq 4000","TRM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838826","SAMN12838826","Illumina HiSeq 4000","TRM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838828","SAMN12838828","Illumina HiSeq 4000","TRM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838830","SAMN12838830","Illumina HiSeq 4000","TRM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838832","SAMN12838832","Illumina HiSeq 4000","TRM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838839","SAMN12838839","Illumina HiSeq 4000","CM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838842","SAMN12838842","Illumina HiSeq 4000","CM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838843","SAMN12838843","Illumina HiSeq 4000","CM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838852","SAMN12838852","Illumina HiSeq 4000","naive.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838854","SAMN12838854","Illumina HiSeq 4000","naive.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838856","SAMN12838856","Illumina HiSeq 4000","naive.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838859","SAMN12838859","Illumina HiSeq 4000","naive.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838862","SAMN12838862","Illumina HiSeq 4000","naive.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838864","SAMN12838864","Illumina HiSeq 4000","naive.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838866","SAMN12838866","Illumina HiSeq 4000","naive.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838868","SAMN12838868","Illumina HiSeq 4000","naive.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838870","SAMN12838870","Illumina HiSeq 4000","naive.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838872","SAMN12838872","Illumina HiSeq 4000","naive.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838874","SAMN12838874","Illumina HiSeq 4000","naive.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838876","SAMN12838876","Illumina HiSeq 4000","naive.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838878","SAMN12838878","Illumina HiSeq 4000","naive.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838880","SAMN12838880","Illumina HiSeq 4000","naive.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838884","SAMN12838884","Illumina HiSeq 4000","EM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838886","SAMN12838886","Illumina HiSeq 4000","EM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838889","SAMN12838889","Illumina HiSeq 4000","EM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838893","SAMN12838893","Illumina HiSeq 4000","EM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838895","SAMN12838895","Illumina HiSeq 4000","EM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838904","SAMN12838904","Illumina HiSeq 4000","naive.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838907","SAMN12838907","Illumina HiSeq 4000","naive.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838908","SAMN12838908","Illumina HiSeq 4000","naive.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838913","SAMN12838913","Illumina HiSeq 4000","EM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838916","SAMN12838916","Illumina HiSeq 4000","EM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838919","SAMN12838919","Illumina HiSeq 4000","EM.CD8 T cells.LN","LN","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SAMN12838924","SAMN12838924","Illumina HiSeq 4000","EM.CD8 T cells.Lung","Lung","PRJNA574052","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SRR452328","SRR452328","Illumina HiSeq 2000","M1 macrophages (classically activated)","no_treament","SRP012015","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR452329","SRR452329","Illumina HiSeq 2000","M1 macrophages (classically activated)","no_treament","SRP012015","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR452330","SRR452330","Illumina HiSeq 2000","M1 macrophages (classically activated)","no_treament","SRP012015","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR452331","SRR452331","Illumina HiSeq 2000","M2 macrophages (alternatively activated)","no_treament","SRP012015","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR452332","SRR452332","Illumina HiSeq 2000","M2 macrophages (alternatively activated)","no_treament","SRP012015","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR452333","SRR452333","Illumina HiSeq 2000","M2 macrophages (alternatively activated)","no_treament","SRP012015","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR1283038","SRR1283038","Illumina Genome Analyzer IIx","breast cancer","MDAMB453","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925687","SRR925687","Illumina Genome Analyzer IIx","breast cancer","184A1","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925688","SRR925688","Illumina Genome Analyzer IIx","breast cancer","184B5","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925689","SRR925689","Illumina Genome Analyzer IIx","breast cancer","21MT1","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925690","SRR925690","Illumina Genome Analyzer IIx","breast cancer","21MT2","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925691","SRR925691","Illumina Genome Analyzer IIx","breast cancer","21NT","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925692","SRR925692","Illumina Genome Analyzer IIx","breast cancer","21PT","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925693","SRR925693","Illumina Genome Analyzer IIx","breast cancer","600MPE","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925694","SRR925694","Illumina Genome Analyzer IIx","breast cancer","AU565","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925695","SRR925695","Illumina Genome Analyzer IIx","breast cancer","BT474","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925696","SRR925696","Illumina Genome Analyzer IIx","breast cancer","BT483","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925697","SRR925697","Illumina Genome Analyzer IIx","breast cancer","BT549","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925698","SRR925698","Illumina Genome Analyzer IIx","breast cancer","CAMA1","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925699","SRR925699","Illumina Genome Analyzer IIx","breast cancer","EFM192A","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925700","SRR925700","Illumina Genome Analyzer IIx","breast cancer","EFM192B","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925701","SRR925701","Illumina Genome Analyzer IIx","breast cancer","EFM192C","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925702","SRR925702","Illumina Genome Analyzer IIx","breast cancer","HCC1143","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925703","SRR925703","Illumina Genome Analyzer IIx","breast cancer","HCC1395","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925704","SRR925704","Illumina Genome Analyzer IIx","breast cancer","HCC1419","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925705","SRR925705","Illumina Genome Analyzer IIx","breast cancer","HCC1428","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925706","SRR925706","Illumina Genome Analyzer IIx","breast cancer","HCC1569","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925707","SRR925707","Illumina Genome Analyzer IIx","breast cancer","HCC1599","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925708","SRR925708","Illumina Genome Analyzer IIx","breast cancer","HCC1806","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925709","SRR925709","Illumina Genome Analyzer IIx","breast cancer","HCC1937","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925710","SRR925710","Illumina Genome Analyzer IIx","breast cancer","HCC1954","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925711","SRR925711","Illumina Genome Analyzer IIx","breast cancer","HCC202","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925713","SRR925713","Illumina Genome Analyzer IIx","breast cancer","HCC3153","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925714","SRR925714","Illumina Genome Analyzer IIx","breast cancer","HCC38","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925715","SRR925715","Illumina Genome Analyzer IIx","breast cancer","HCC70","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925716","SRR925716","Illumina Genome Analyzer IIx","breast cancer","HS578T","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925717","SRR925717","Illumina Genome Analyzer IIx","breast cancer","JIMT1","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925718","SRR925718","Illumina Genome Analyzer IIx","breast cancer","LY2","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925719","SRR925719","Illumina Genome Analyzer IIx","breast cancer","MB157","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925720","SRR925720","Illumina Genome Analyzer IIx","breast cancer","MCF10A","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925721","SRR925721","Illumina Genome Analyzer IIx","breast cancer","MCF10F","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR925723","SRR925723","Illumina Genome Analyzer IIx","breast cancer","MCF7","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925724","SRR925724","Illumina Genome Analyzer IIx","breast cancer","MDAMB134VI","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925725","SRR925725","Illumina Genome Analyzer IIx","breast cancer","MDAMB175","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925726","SRR925726","Illumina Genome Analyzer IIx","breast cancer","MDAMB231","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925727","SRR925727","Illumina Genome Analyzer IIx","breast cancer","MDAMB361","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925728","SRR925728","Illumina Genome Analyzer IIx","breast cancer","MX1","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925729","SRR925729","Illumina Genome Analyzer IIx","breast cancer","SKBR3","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925734","SRR925734","Illumina Genome Analyzer IIx","breast cancer","SUM229PE","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925735","SRR925735","Illumina Genome Analyzer IIx","breast cancer","SUM52PE","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925736","SRR925736","Illumina Genome Analyzer IIx","breast cancer","T47D","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925737","SRR925737","Illumina Genome Analyzer IIx","breast cancer","T47D Kbluc","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925740","SRR925740","Illumina Genome Analyzer IIx","breast cancer","ZR751","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925741","SRR925741","Illumina Genome Analyzer IIx","breast cancer","ZR7530","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR925742","SRR925742","Illumina Genome Analyzer IIx","breast cancer","ZR75B","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR934631","SRR934631","Illumina Genome Analyzer IIx","breast cancer","HCC2218","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR934632","SRR934632","Illumina Genome Analyzer IIx","breast cancer","HCC2218","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR934633","SRR934633","Illumina Genome Analyzer IIx","breast cancer","HCC2218","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Train","Train","Train","Train"
+"SRR934634","SRR934634","Illumina Genome Analyzer IIx","breast cancer","MCF12A","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR934635","SRR934635","Illumina Genome Analyzer IIx","breast cancer","MCF12A","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR934636","SRR934636","Illumina Genome Analyzer IIx","breast cancer","SUM1315","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR934637","SRR934637","Illumina Genome Analyzer IIx","breast cancer","SUM1315","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR934638","SRR934638","Illumina Genome Analyzer IIx","breast cancer","SUM149PT","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR934639","SRR934639","Illumina Genome Analyzer IIx","breast cancer","SUM149PT","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR934640","SRR934640","Illumina Genome Analyzer IIx","breast cancer","SUM225CWN","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR934641","SRR934641","Illumina Genome Analyzer IIx","breast cancer","SUM225CWN","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR934642","SRR934642","Illumina Genome Analyzer IIx","breast cancer","UACC812","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR934643","SRR934643","Illumina Genome Analyzer IIx","breast cancer","UACC812","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR934644","SRR934644","Illumina Genome Analyzer IIx","breast cancer","UACC893","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR934645","SRR934645","Illumina Genome Analyzer IIx","breast cancer","UACC893","SRP026537","Cancer","Breast","cancer","cancer","cancer","no","Test","Test","Test","Test"
+"SRR1014762","SRR1014762","Illumina HiSeq 2000","primary skin fibroblast_early timepoint","no_treament","SRP031776","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR1014763","SRR1014763","Illumina HiSeq 2000","primary skin fibroblast_early timepoint","no_treament","SRP031776","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR1014764","SRR1014764","Illumina HiSeq 2000","primary skin fibroblast_early timepoint","no_treament","SRP031776","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR1014765","SRR1014765","Illumina HiSeq 2000","primary skin fibroblast_early timepoint","no_treament","SRP031776","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR1014766","SRR1014766","Illumina HiSeq 2000","primary skin fibroblast_early timepoint","no_treament","SRP031776","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR1014767","SRR1014767","Illumina HiSeq 2000","primary skin fibroblast_early timepoint","no_treament","SRP031776","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR1014772","SRR1014772","Illumina HiSeq 2000","primary skin fibroblast_late timepoint","no_treament","SRP031776","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR1014773","SRR1014773","Illumina HiSeq 2000","primary skin fibroblast_late timepoint","no_treament","SRP031776","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR1014774","SRR1014774","Illumina HiSeq 2000","primary skin fibroblast_late timepoint","no_treament","SRP031776","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR1014775","SRR1014775","Illumina HiSeq 2000","primary skin fibroblast_late timepoint","no_treament","SRP031776","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR1014776","SRR1014776","Illumina HiSeq 2000","primary skin fibroblast_late timepoint","no_treament","SRP031776","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR1014777","SRR1014777","Illumina HiSeq 2000","primary skin fibroblast_late timepoint","no_treament","SRP031776","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR1531314","SRR1531314","Illumina Genome Analyzer IIx","naive CD4T","None","SRP045052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","Train","Test","No","No"
+"SRR1531316","SRR1531316","Illumina Genome Analyzer IIx","memory CD4T","None","SRP045052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no","Train","Test","No","No"
+"SRR1531318","SRR1531318","Illumina Genome Analyzer IIx","naive CD4T","None","SRP045052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","Train","Test","No","No"
+"SRR1531319","SRR1531319","Illumina Genome Analyzer IIx","naive CD4T","None","SRP045052","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","Train","Test","No","No"
+"SRR1531322","SRR1531322","Illumina Genome Analyzer IIx","memory CD4T","None","SRP045052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no","Train","Test","No","No"
+"SRR1531323","SRR1531323","Illumina Genome Analyzer IIx","memory CD4T","None","SRP045052","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no","Train","Test","No","No"
+"SRR1976436","SRR1976436","Illumina HiSeq 2500","endothelial","control HUVEC","SRP057251","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","no","Test","Test","Test","Test"
+"SRR1976437","SRR1976437","Illumina HiSeq 2500","endothelial","control HUVEC","SRP057251","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","no","Test","Test","Test","Test"
+"SRR1976438","SRR1976438","Illumina HiSeq 2500","endothelial","control HUVEC","SRP057251","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","no","Test","Test","Test","Test"
+"SRR1976427","SRR1976427","Illumina HiSeq 2500","fibroblasts","Colon Normal Fibroblasts","SRP057251","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Test","Train","Test","Test"
+"SRR1976428","SRR1976428","Illumina HiSeq 2500","fibroblasts","Colon Normal Fibroblasts","SRP057251","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Test","Train","Test","Test"
+"SRR1976429","SRR1976429","Illumina HiSeq 2500","fibroblasts","Colon Normal Fibroblasts","SRP057251","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Test","Train","Test","Test"
+"SRR1976430","SRR1976430","Illumina HiSeq 2500","fibroblasts","Colon Tumor Fibroblasts","SRP057251","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Test","Train","Test","Test"
+"SRR1976431","SRR1976431","Illumina HiSeq 2500","fibroblasts","Colon Tumor Fibroblasts","SRP057251","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Test","Train","Test","Test"
+"SRR1976432","SRR1976432","Illumina HiSeq 2500","fibroblasts","Colon Tumor Fibroblasts","SRP057251","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Test","Train","Test","Test"
+"SRR1976433","SRR1976433","Illumina HiSeq 2500","fibroblasts","Dermal Normal Fibroblasts","SRP057251","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Test","Train","Test","Test"
+"SRR1976434","SRR1976434","Illumina HiSeq 2500","fibroblasts","Dermal Normal Fibroblasts","SRP057251","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Test","Train","Test","Test"
+"SRR1976435","SRR1976435","Illumina HiSeq 2500","fibroblasts","Dermal Normal Fibroblasts","SRP057251","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Test","Train","Test","Test"
+"SRR5145524","SRR5145524","Illumina HiSeq 2000","Macrophage","no_treament","SRP096073","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR5145525","SRR5145525","Illumina HiSeq 2000","Macrophage","no_treament","SRP096073","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR5145526","SRR5145526","Illumina HiSeq 2000","Macrophage","no_treament","SRP096073","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR5145527","SRR5145527","Illumina HiSeq 2000","Macrophage","no_treament","SRP096073","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR5145528","SRR5145528","Illumina HiSeq 2000","Macrophage","no_treament","SRP096073","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR5145529","SRR5145529","Illumina HiSeq 2000","Macrophage","no_treament","SRP096073","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR5145530","SRR5145530","Illumina HiSeq 2000","Macrophage","no_treament","SRP096073","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR5145531","SRR5145531","Illumina HiSeq 2000","Macrophage","no_treament","SRP096073","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR5145532","SRR5145532","Illumina HiSeq 2000","Macrophage","no_treament","SRP096073","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SAMN07173078","SAMN07173078","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173079","SAMN07173079","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173080","SAMN07173080","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173081","SAMN07173081","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173082","SAMN07173082","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173083","SAMN07173083","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173084","SAMN07173084","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173085","SAMN07173085","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173086","SAMN07173086","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173087","SAMN07173087","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173093","SAMN07173093","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173094","SAMN07173094","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173095","SAMN07173095","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173096","SAMN07173096","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173097","SAMN07173097","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173098","SAMN07173098","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173099","SAMN07173099","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173100","SAMN07173100","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173101","SAMN07173101","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173102","SAMN07173102","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173103","SAMN07173103","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173104","SAMN07173104","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173105","SAMN07173105","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173106","SAMN07173106","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173107","SAMN07173107","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173108","SAMN07173108","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173109","SAMN07173109","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173110","SAMN07173110","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173111","SAMN07173111","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173112","SAMN07173112","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Latent tuberculosis infection","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173113","SAMN07173113","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173114","SAMN07173114","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173115","SAMN07173115","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173116","SAMN07173116","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173117","SAMN07173117","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173118","SAMN07173118","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173119","SAMN07173119","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173120","SAMN07173120","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SAMN07173121","SAMN07173121","Illumina HiSeq 2500","Memory CD3+CD4+ T cells","Healthy","SRP108135","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no",NA,NA,NA,NA
+"SRR6298273","SRR6298273","Illumina HiSeq 2000","Naive B cells","healthy","SRP125125","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","Train","Test","No","No"
+"SRR6298274","SRR6298274","Illumina HiSeq 2000","Non-switched memory B cells","healthy","SRP125125","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","Train","Test","No","No"
+"SRR6298275","SRR6298275","Illumina HiSeq 2000","Exhausted B cells","healthy","SRP125125","Immune","B","B.cells","B.cells","other","no","Train","Test","No","No"
+"SRR6298276","SRR6298276","Illumina HiSeq 2000","Switched memory B cells","healthy","SRP125125","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","Train","Test","No","No"
+"SRR6298277","SRR6298277","Illumina HiSeq 2000","Plasmablasts","healthy","SRP125125","Immune","B","Plasmablasts","B.cells","other","no","Train","Test","No","No"
+"SRR6298302","SRR6298302","Illumina HiSeq 2000","Naive B cells","healthy","SRP125125","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","Train","Test","No","No"
+"SRR6298303","SRR6298303","Illumina HiSeq 2000","Non-switched memory B cells","healthy","SRP125125","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","Train","Test","No","No"
+"SRR6298304","SRR6298304","Illumina HiSeq 2000","Exhausted B cells","healthy","SRP125125","Immune","B","B.cells","B.cells","other","no","Train","Test","No","No"
+"SRR6298305","SRR6298305","Illumina HiSeq 2000","Switched memory B cells","healthy","SRP125125","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","Train","Test","No","No"
+"SRR6298306","SRR6298306","Illumina HiSeq 2000","Plasmablasts","healthy","SRP125125","Immune","B","Plasmablasts","B.cells","other","no","Train","Test","No","No"
+"SRR6298331","SRR6298331","Illumina HiSeq 2000","Naive B cells","healthy","SRP125125","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","Train","Test","No","No"
+"SRR6298332","SRR6298332","Illumina HiSeq 2000","Non-switched memory B cells","healthy","SRP125125","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","Train","Test","No","No"
+"SRR6298333","SRR6298333","Illumina HiSeq 2000","Exhausted B cells","healthy","SRP125125","Immune","B","B.cells","B.cells","other","no","Train","Test","No","No"
+"SRR6298334","SRR6298334","Illumina HiSeq 2000","Switched memory B cells","healthy","SRP125125","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","Train","Test","No","No"
+"SRR6298335","SRR6298335","Illumina HiSeq 2000","Plasmablasts","healthy","SRP125125","Immune","B","Plasmablasts","B.cells","other","no","Train","Test","No","No"
+"SRR6298365","SRR6298365","Illumina HiSeq 2000","Naive B cells","healthy","SRP125125","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","Train","Test","No","No"
+"SRR6298366","SRR6298366","Illumina HiSeq 2000","Non-switched memory B cells","healthy","SRP125125","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","Train","Test","No","No"
+"SRR6298367","SRR6298367","Illumina HiSeq 2000","Exhausted B cells","healthy","SRP125125","Immune","B","B.cells","B.cells","other","no","Train","Test","No","No"
+"SRR6298368","SRR6298368","Illumina HiSeq 2000","Switched memory B cells","healthy","SRP125125","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","Train","Test","No","No"
+"SRR6298369","SRR6298369","Illumina HiSeq 2000","Plasmablasts","healthy","SRP125125","Immune","B","Plasmablasts","B.cells","other","no","Train","Test","No","No"
+"SRR6298265","SRR6298265","Illumina HiSeq 2000","Follicular helper T cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298266","SRR6298266","Illumina HiSeq 2000","T regulatory cells","healthy","SRP125125","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","Train","Test","No","No"
+"SRR6298267","SRR6298267","Illumina HiSeq 2000","Th1 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298268","SRR6298268","Illumina HiSeq 2000","Th1/Th17 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298269","SRR6298269","Illumina HiSeq 2000","Th17 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298270","SRR6298270","Illumina HiSeq 2000","Th2 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298271","SRR6298271","Illumina HiSeq 2000","Naive CD4 T cells","healthy","SRP125125","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","Test","No","No","No"
+"SRR6298293","SRR6298293","Illumina HiSeq 2000","Follicular helper T cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298294","SRR6298294","Illumina HiSeq 2000","T regulatory cells","healthy","SRP125125","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","Train","Test","No","No"
+"SRR6298295","SRR6298295","Illumina HiSeq 2000","Th1 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298296","SRR6298296","Illumina HiSeq 2000","Th1/Th17 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298297","SRR6298297","Illumina HiSeq 2000","Th17 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298298","SRR6298298","Illumina HiSeq 2000","Th2 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298299","SRR6298299","Illumina HiSeq 2000","Naive CD4 T cells","healthy","SRP125125","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","Test","No","No","No"
+"SRR6298300","SRR6298300","Illumina HiSeq 2000","Terminal effector CD4 T cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298322","SRR6298322","Illumina HiSeq 2000","Follicular helper T cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298323","SRR6298323","Illumina HiSeq 2000","T regulatory cells","healthy","SRP125125","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","Train","Test","No","No"
+"SRR6298324","SRR6298324","Illumina HiSeq 2000","Th1 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298325","SRR6298325","Illumina HiSeq 2000","Th1/Th17 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298326","SRR6298326","Illumina HiSeq 2000","Th17 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298327","SRR6298327","Illumina HiSeq 2000","Th2 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298328","SRR6298328","Illumina HiSeq 2000","Naive CD4 T cells","healthy","SRP125125","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","Test","No","No","No"
+"SRR6298329","SRR6298329","Illumina HiSeq 2000","Terminal effector CD4 T cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298357","SRR6298357","Illumina HiSeq 2000","Follicular helper T cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298358","SRR6298358","Illumina HiSeq 2000","T regulatory cells","healthy","SRP125125","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","Train","Test","No","No"
+"SRR6298359","SRR6298359","Illumina HiSeq 2000","Th1 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298360","SRR6298360","Illumina HiSeq 2000","Th1/Th17 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298361","SRR6298361","Illumina HiSeq 2000","Th17 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298362","SRR6298362","Illumina HiSeq 2000","Th2 cells","healthy","SRP125125","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6298363","SRR6298363","Illumina HiSeq 2000","Naive CD4 T cells","healthy","SRP125125","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","Test","No","No","No"
+"SRR6298258","SRR6298258","Illumina HiSeq 2000","naive CD8","healthy","SRP125125","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","Train","Test","No","No"
+"SRR6298259","SRR6298259","Illumina HiSeq 2000","memory CD8","healthy","SRP125125","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Train","Test","No","No"
+"SRR6298260","SRR6298260","Illumina HiSeq 2000","memory CD8","healthy","SRP125125","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Train","Test","No","No"
+"SRR6298261","SRR6298261","Illumina HiSeq 2000","Terminal effector CD8 T cells","healthy","SRP125125","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no","Train","Test","No","No"
+"SRR6298286","SRR6298286","Illumina HiSeq 2000","Naive CD8 T cells","healthy","SRP125125","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","Train","Test","No","No"
+"SRR6298287","SRR6298287","Illumina HiSeq 2000","Central memory CD8 T cell","healthy","SRP125125","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Train","Test","No","No"
+"SRR6298288","SRR6298288","Illumina HiSeq 2000","Effector memory CD8 T cells","healthy","SRP125125","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Train","Test","No","No"
+"SRR6298289","SRR6298289","Illumina HiSeq 2000","Terminal effector CD8 T cells","healthy","SRP125125","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no","Train","Test","No","No"
+"SRR6298315","SRR6298315","Illumina HiSeq 2000","Naive CD8 T cells","healthy","SRP125125","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","Train","Test","No","No"
+"SRR6298316","SRR6298316","Illumina HiSeq 2000","Central memory CD8 T cell","healthy","SRP125125","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Train","Test","No","No"
+"SRR6298317","SRR6298317","Illumina HiSeq 2000","Effector memory CD8 T cells","healthy","SRP125125","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Train","Test","No","No"
+"SRR6298318","SRR6298318","Illumina HiSeq 2000","Terminal effector CD8 T cells","healthy","SRP125125","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no","Train","Test","No","No"
+"SRR6298344","SRR6298344","Illumina HiSeq 2000","Naive CD8 T cells","healthy","SRP125125","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","Train","Test","No","No"
+"SRR6298345","SRR6298345","Illumina HiSeq 2000","Central memory CD8 T cell","healthy","SRP125125","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Train","Test","No","No"
+"SRR6298346","SRR6298346","Illumina HiSeq 2000","Effector memory CD8 T cells","healthy","SRP125125","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Train","Test","No","No"
+"SRR6298353","SRR6298353","Illumina HiSeq 2000","Terminal effector CD8 T cells","healthy","SRP125125","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no","Train","Test","No","No"
+"SRR6298278","SRR6298278","Illumina HiSeq 2000","Classical monocytes","healthy","SRP125125","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","Train","Test","No","No"
+"SRR6298279","SRR6298279","Illumina HiSeq 2000","Intermediate monocytes","healthy","SRP125125","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","Train","Test","No","No"
+"SRR6298280","SRR6298280","Illumina HiSeq 2000","Non classical monocytes","healthy","SRP125125","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"SRR6298283","SRR6298283","Illumina HiSeq 2000","Myeloid dendritic cells","healthy","SRP125125","Immune","Myeloid","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no","Train","Test","No","No"
+"SRR6298307","SRR6298307","Illumina HiSeq 2000","Classical monocytes","healthy","SRP125125","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","Train","Test","No","No"
+"SRR6298308","SRR6298308","Illumina HiSeq 2000","Intermediate monocytes","healthy","SRP125125","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","Train","Test","No","No"
+"SRR6298309","SRR6298309","Illumina HiSeq 2000","Non classical monocytes","healthy","SRP125125","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"SRR6298312","SRR6298312","Illumina HiSeq 2000","Myeloid dendritic cells","healthy","SRP125125","Immune","Myeloid","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no","Train","Test","No","No"
+"SRR6298336","SRR6298336","Illumina HiSeq 2000","Classical monocytes","healthy","SRP125125","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","Train","Test","No","No"
+"SRR6298337","SRR6298337","Illumina HiSeq 2000","Intermediate monocytes","healthy","SRP125125","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","Train","Test","No","No"
+"SRR6298338","SRR6298338","Illumina HiSeq 2000","Non classical monocytes","healthy","SRP125125","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"SRR6298341","SRR6298341","Illumina HiSeq 2000","Myeloid dendritic cells","healthy","SRP125125","Immune","Myeloid","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no","Train","Test","No","No"
+"SRR6298370","SRR6298370","Illumina HiSeq 2000","Classical monocytes","healthy","SRP125125","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","Train","Test","No","No"
+"SRR6298371","SRR6298371","Illumina HiSeq 2000","Intermediate monocytes","healthy","SRP125125","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","Train","Test","No","No"
+"SRR6298372","SRR6298372","Illumina HiSeq 2000","Non classical monocytes","healthy","SRP125125","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"SRR6298375","SRR6298375","Illumina HiSeq 2000","Myeloid dendritic cells","healthy","SRP125125","Immune","Myeloid","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no","Train","Test","No","No"
+"SRR6298284","SRR6298284","Illumina HiSeq 2000","Low-density neutrophils","healthy","SRP125125","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","Test","Test","No","No"
+"SRR6298313","SRR6298313","Illumina HiSeq 2000","Low-density neutrophils","healthy","SRP125125","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","Test","Test","No","No"
+"SRR6298342","SRR6298342","Illumina HiSeq 2000","Low-density neutrophils","healthy","SRP125125","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","Test","Test","No","No"
+"SRR6298376","SRR6298376","Illumina HiSeq 2000","Low-density neutrophils","healthy","SRP125125","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","Test","Test","No","No"
+"SRR6298281","SRR6298281","Illumina HiSeq 2000","Natural killer cells","healthy","SRP125125","Immune","NK","NK.cells","NK.cells","NK.cells","no","Train","Test","No","No"
+"SRR6298310","SRR6298310","Illumina HiSeq 2000","Natural killer cells","healthy","SRP125125","Immune","NK","NK.cells","NK.cells","NK.cells","no","Train","Test","No","No"
+"SRR6298339","SRR6298339","Illumina HiSeq 2000","Natural killer cells","healthy","SRP125125","Immune","NK","NK.cells","NK.cells","NK.cells","no","Train","Test","No","No"
+"SRR6298373","SRR6298373","Illumina HiSeq 2000","Natural killer cells","healthy","SRP125125","Immune","NK","NK.cells","NK.cells","NK.cells","no","Train","Test","No","No"
+"SRR6298272","SRR6298272","Illumina HiSeq 2000","Progenitor cells","healthy","SRP125125","Immune","stem cell","stem cell","noise","noise","no","Train","No","No","No"
+"SRR6298282","SRR6298282","Illumina HiSeq 2000","Plasmacytoid dendritic cells","healthy","SRP125125","Immune","Myeloid","plasmacytoid.DC","noise","other","no","No","No","No","Test"
+"SRR6298285","SRR6298285","Illumina HiSeq 2000","Low-density basophils","healthy","SRP125125","Immune","Myeloid","basophils","noise","noise","no","Train","No","No","Test"
+"SRR6298301","SRR6298301","Illumina HiSeq 2000","Progenitor cells","healthy","SRP125125","Immune","stem cell","stem cell","noise","noise","no","Train","No","No","No"
+"SRR6298311","SRR6298311","Illumina HiSeq 2000","Plasmacytoid dendritic cells","healthy","SRP125125","Immune","Myeloid","plasmacytoid.DC","noise","other","no","No","No","No","Test"
+"SRR6298314","SRR6298314","Illumina HiSeq 2000","Low-density basophils","healthy","SRP125125","Immune","Myeloid","basophils","noise","noise","no","Train","No","No","Test"
+"SRR6298330","SRR6298330","Illumina HiSeq 2000","Progenitor cells","healthy","SRP125125","Immune","stem cell","stem cell","noise","noise","no","Train","No","No","No"
+"SRR6298340","SRR6298340","Illumina HiSeq 2000","Plasmacytoid dendritic cells","healthy","SRP125125","Immune","Myeloid","plasmacytoid.DC","noise","other","no","No","No","No","Test"
+"SRR6298343","SRR6298343","Illumina HiSeq 2000","Low-density basophils","healthy","SRP125125","Immune","Myeloid","basophils","noise","noise","no","Train","No","No","Test"
+"SRR6298347","SRR6298347","Illumina HiSeq 2000","PBMCs","healthy","SRP125125","Immune","total","total.PBMC","noise","noise","no","Train","No","No","No"
+"SRR6298348","SRR6298348","Illumina HiSeq 2000","PBMCs","healthy","SRP125125","Immune","total","total.PBMC","noise","noise","no","Train","No","No","No"
+"SRR6298349","SRR6298349","Illumina HiSeq 2000","PBMCs","healthy","SRP125125","Immune","total","total.PBMC","noise","noise","no","Train","No","No","No"
+"SRR6298350","SRR6298350","Illumina HiSeq 2000","PBMCs","healthy","SRP125125","Immune","total","total.PBMC","noise","noise","no","Train","No","No","No"
+"SRR6298351","SRR6298351","Illumina HiSeq 2000","PBMCs","healthy","SRP125125","Immune","total","total.PBMC","noise","noise","no","Train","No","No","No"
+"SRR6298352","SRR6298352","Illumina HiSeq 2000","PBMCs","healthy","SRP125125","Immune","total","total.PBMC","noise","noise","no","Train","No","No","No"
+"SRR6298364","SRR6298364","Illumina HiSeq 2000","Progenitor cells","healthy","SRP125125","Immune","stem cell","stem cell","noise","noise","no","Train","No","No","No"
+"SRR6298374","SRR6298374","Illumina HiSeq 2000","Plasmacytoid dendritic cells","healthy","SRP125125","Immune","Myeloid","plasmacytoid.DC","noise","other","no","No","No","No","Test"
+"SRR6298377","SRR6298377","Illumina HiSeq 2000","Low-density basophils","healthy","SRP125125","Immune","Myeloid","basophils","noise","noise","no","Train","No","No","Test"
+"SRR6298262","SRR6298262","Illumina HiSeq 2000","MAIT cells","healthy","SRP125125","Immune","T","MAIT.T.cell","other","other","no","Train","No","No","Test"
+"SRR6298263","SRR6298263","Illumina HiSeq 2000","Vd2 gd T cells","healthy","SRP125125","Immune","GD","gdTCR","other","other","no","Train","No","No","Test"
+"SRR6298264","SRR6298264","Illumina HiSeq 2000","Non-Vd2 gd T cells","healthy","SRP125125","Immune","GD","gdTCR","other","other","no","Train","No","No","No"
+"SRR6298290","SRR6298290","Illumina HiSeq 2000","MAIT cells","healthy","SRP125125","Immune","T","MAIT.T.cell","other","other","no","Train","No","No","Test"
+"SRR6298291","SRR6298291","Illumina HiSeq 2000","Vd2 gd T cells","healthy","SRP125125","Immune","GD","gdTCR","other","other","no","Train","No","No","Test"
+"SRR6298292","SRR6298292","Illumina HiSeq 2000","Non-Vd2 gd T cells","healthy","SRP125125","Immune","GD","gdTCR","other","other","no","Train","No","No","No"
+"SRR6298319","SRR6298319","Illumina HiSeq 2000","MAIT cells","healthy","SRP125125","Immune","T","MAIT.T.cell","other","other","no","Train","No","No","Test"
+"SRR6298320","SRR6298320","Illumina HiSeq 2000","Vd2 gd T cells","healthy","SRP125125","Immune","GD","gdTCR","other","other","no","Train","No","No","Test"
+"SRR6298321","SRR6298321","Illumina HiSeq 2000","Non-Vd2 gd T cells","healthy","SRP125125","Immune","GD","gdTCR","other","other","no","Train","No","No","No"
+"SRR6298354","SRR6298354","Illumina HiSeq 2000","MAIT cells","healthy","SRP125125","Immune","T","MAIT.T.cell","other","other","no","Train","No","No","Test"
+"SRR6298355","SRR6298355","Illumina HiSeq 2000","Vd2 gd T cells","healthy","SRP125125","Immune","GD","gdTCR","other","other","no","Train","No","No","Test"
+"SRR6298356","SRR6298356","Illumina HiSeq 2000","Non-Vd2 gd T cells","healthy","SRP125125","Immune","GD","gdTCR","other","other","no","Train","No","No","No"
+"SRR6298378","SRR6298378","Illumina HiSeq 2000","PBMCs","no_treament","SRP125125","Immune","total","total.PBMC","noise","noise","no",NA,NA,NA,NA
+"SRR6298379","SRR6298379","Illumina HiSeq 2000","PBMCs","no_treament","SRP125125","Immune","total","total.PBMC","noise","noise","no",NA,NA,NA,NA
+"SRR6298380","SRR6298380","Illumina HiSeq 2000","PBMCs","no_treament","SRP125125","Immune","total","total.PBMC","noise","noise","no",NA,NA,NA,NA
+"SRR6298381","SRR6298381","Illumina HiSeq 2000","PBMCs","no_treament","SRP125125","Immune","total","total.PBMC","noise","noise","no",NA,NA,NA,NA
+"SRR6298382","SRR6298382","Illumina HiSeq 2000","PBMCs","no_treament","SRP125125","Immune","total","total.PBMC","noise","noise","no",NA,NA,NA,NA
+"SRR6298383","SRR6298383","Illumina HiSeq 2000","PBMCs","no_treament","SRP125125","Immune","total","total.PBMC","noise","noise","no",NA,NA,NA,NA
+"SRR6298384","SRR6298384","Illumina HiSeq 2000","PBMCs","no_treament","SRP125125","Immune","total","total.PBMC","noise","noise","no",NA,NA,NA,NA
+"SRR6497277","SRR6497277","NextSeq 500","Monocytes","no_treament","SRP131052","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","no",NA,NA,NA,NA
+"SRR6497278","SRR6497278","NextSeq 500","Monocytes","no_treament","SRP131052","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","no",NA,NA,NA,NA
+"SRR6497279","SRR6497279","NextSeq 500","Macrophages","no_treament","SRP131052","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR6497280","SRR6497280","NextSeq 500","Macrophages","no_treament","SRP131052","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR6497281","SRR6497281","NextSeq 500","Monocytes","no_treament","SRP131052","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","no",NA,NA,NA,NA
+"SRR6497282","SRR6497282","NextSeq 500","Monocytes","no_treament","SRP131052","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","no",NA,NA,NA,NA
+"SRR6497283","SRR6497283","NextSeq 500","Macrophages","no_treament","SRP131052","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR6497284","SRR6497284","NextSeq 500","Macrophages","no_treament","SRP131052","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR6497285","SRR6497285","NextSeq 500","Monocytes","no_treament","SRP131052","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","no",NA,NA,NA,NA
+"SRR6497286","SRR6497286","NextSeq 500","Monocytes","no_treament","SRP131052","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","no",NA,NA,NA,NA
+"SRR6497287","SRR6497287","NextSeq 500","Macrophages","no_treament","SRP131052","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR6497288","SRR6497288","NextSeq 500","Macrophages","no_treament","SRP131052","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR6497289","SRR6497289","NextSeq 500","Monocytes","no_treament","SRP131052","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","no",NA,NA,NA,NA
+"SRR6497290","SRR6497290","NextSeq 500","Monocytes","no_treament","SRP131052","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","no",NA,NA,NA,NA
+"SRR6497291","SRR6497291","NextSeq 500","Macrophages","no_treament","SRP131052","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR6497292","SRR6497292","NextSeq 500","Macrophages","no_treament","SRP131052","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR6870908","SRR6870908","Illumina HiSeq 2000","Peripheral blood total B cells","Methylprednisolone2","SRP136108","Immune","B","B.cells","B.cells","other","yes","Train","No","No","No"
+"SRR6870911","SRR6870911","Illumina HiSeq 2000","Peripheral blood total B cells","Vehicle2","SRP136108","Immune","B","B.cells","B.cells","other","no","Train","No","No","No"
+"SRR6870915","SRR6870915","Illumina HiSeq 2000","Peripheral blood total B cells","Methylprednisolone6","SRP136108","Immune","B","B.cells","B.cells","other","yes","Train","No","No","No"
+"SRR6870916","SRR6870916","Illumina HiSeq 2000","Peripheral blood total B cells","Vehicle6","SRP136108","Immune","B","B.cells","B.cells","other","no","Train","No","No","No"
+"SRR7963683","SRR7963683","Illumina HiSeq 3000","Peripheral blood total B cells","Methylprednisolone2","SRP136108","Immune","B","B.cells","B.cells","other","yes","Train","No","No","No"
+"SRR7963684","SRR7963684","Illumina HiSeq 3000","Peripheral blood total B cells","Methylprednisolone2","SRP136108","Immune","B","B.cells","B.cells","other","yes","Train","No","No","No"
+"SRR7963685","SRR7963685","Illumina HiSeq 3000","Peripheral blood total B cells","Methylprednisolone2","SRP136108","Immune","B","B.cells","B.cells","other","yes","Train","No","No","No"
+"SRR7963686","SRR7963686","Illumina HiSeq 3000","Peripheral blood total B cells","Vehicle2","SRP136108","Immune","B","B.cells","B.cells","other","no","Train","No","No","No"
+"SRR7963687","SRR7963687","Illumina HiSeq 3000","Peripheral blood total B cells","Vehicle2","SRP136108","Immune","B","B.cells","B.cells","other","no","Train","No","No","No"
+"SRR7963688","SRR7963688","Illumina HiSeq 3000","Peripheral blood total B cells","Vehicle2","SRP136108","Immune","B","B.cells","B.cells","other","no","Train","No","No","No"
+"SRR7963689","SRR7963689","Illumina HiSeq 3000","Peripheral blood total B cells","Methylprednisolone6","SRP136108","Immune","B","B.cells","B.cells","other","yes","Train","No","No","No"
+"SRR7963690","SRR7963690","Illumina HiSeq 3000","Peripheral blood total B cells","Methylprednisolone6","SRP136108","Immune","B","B.cells","B.cells","other","yes","Train","No","No","No"
+"SRR7963691","SRR7963691","Illumina HiSeq 3000","Peripheral blood total B cells","Methylprednisolone6","SRP136108","Immune","B","B.cells","B.cells","other","yes","Train","No","No","No"
+"SRR7963692","SRR7963692","Illumina HiSeq 3000","Peripheral blood total B cells","Vehicle6","SRP136108","Immune","B","B.cells","B.cells","other","no","Train","No","No","No"
+"SRR7963693","SRR7963693","Illumina HiSeq 3000","Peripheral blood total B cells","Vehicle6","SRP136108","Immune","B","B.cells","B.cells","other","no","Train","No","No","No"
+"SRR7963694","SRR7963694","Illumina HiSeq 3000","Peripheral blood total B cells","Vehicle6","SRP136108","Immune","B","B.cells","B.cells","other","no","Train","No","No","No"
+"SRR6870898","SRR6870898","Illumina HiSeq 2000","WCD4T","Vehicle2","SRP136108","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6870902","SRR6870902","Illumina HiSeq 2000","WCD4T","Vehicle6","SRP136108","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR7963674","SRR7963674","Illumina HiSeq 3000","WCD4T","Vehicle2","SRP136108","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR7963675","SRR7963675","Illumina HiSeq 3000","WCD4T","Vehicle2","SRP136108","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR7963676","SRR7963676","Illumina HiSeq 3000","WCD4T","Vehicle2","SRP136108","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR7963680","SRR7963680","Illumina HiSeq 3000","WCD4T","Vehicle6","SRP136108","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR7963681","SRR7963681","Illumina HiSeq 3000","WCD4T","Vehicle6","SRP136108","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR7963682","SRR7963682","Illumina HiSeq 3000","WCD4T","Vehicle6","SRP136108","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Train","No","No","No"
+"SRR6870923","SRR6870923","Illumina HiSeq 2000","endothelial","Methylprednisolone2","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","yes","Train","Train","Train","Train"
+"SRR6870927","SRR6870927","Illumina HiSeq 2000","endothelial","Vehicle2","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","no","Train","Train","Train","Train"
+"SRR6870930","SRR6870930","Illumina HiSeq 2000","endothelial","Methylprednisolone6","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","yes","Train","Train","Train","Train"
+"SRR6870932","SRR6870932","Illumina HiSeq 2000","endothelial","Vehicle6","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","no","Train","Train","Train","Train"
+"SRR7963695","SRR7963695","Illumina HiSeq 3000","endothelial","Methylprednisolone2","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","yes","Train","Train","Train","Train"
+"SRR7963696","SRR7963696","Illumina HiSeq 3000","endothelial","Methylprednisolone2","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","yes","Train","Train","Train","Train"
+"SRR7963697","SRR7963697","Illumina HiSeq 3000","endothelial","Methylprednisolone2","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","yes","Train","Train","Train","Train"
+"SRR7963698","SRR7963698","Illumina HiSeq 3000","endothelial","Vehicle2","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","no","Train","Train","Train","Train"
+"SRR7963699","SRR7963699","Illumina HiSeq 3000","endothelial","Vehicle2","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","no","Train","Train","Train","Train"
+"SRR7963700","SRR7963700","Illumina HiSeq 3000","endothelial","Vehicle2","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","no","Train","Train","Train","Train"
+"SRR7963701","SRR7963701","Illumina HiSeq 3000","endothelial","Methylprednisolone6","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","yes","Train","Train","Train","Train"
+"SRR7963702","SRR7963702","Illumina HiSeq 3000","endothelial","Methylprednisolone6","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","yes","Train","Train","Train","Train"
+"SRR7963703","SRR7963703","Illumina HiSeq 3000","endothelial","Methylprednisolone6","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","yes","Train","Train","Train","Train"
+"SRR7963704","SRR7963704","Illumina HiSeq 3000","endothelial","Vehicle6","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","no","Train","Train","Train","Train"
+"SRR7963705","SRR7963705","Illumina HiSeq 3000","endothelial","Vehicle6","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","no","Train","Train","Train","Train"
+"SRR7963706","SRR7963706","Illumina HiSeq 3000","endothelial","Vehicle6","SRP136108","Stromal","Endothelial","endothelial.cells","endothelial.cells","endothelial.cells","no","Train","Train","Train","Train"
+"SRR6870953","SRR6870953","Illumina HiSeq 2000","fibroblasts","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","yes","Train","Test","Train","Train"
+"SRR6870955","SRR6870955","Illumina HiSeq 2000","fibroblasts","Vehicle2","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Train","Test","Train","Train"
+"SRR6870960","SRR6870960","Illumina HiSeq 2000","fibroblasts","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","yes","Train","Test","Train","Train"
+"SRR6870961","SRR6870961","Illumina HiSeq 2000","fibroblasts","Vehicle6","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Train","Test","Train","Train"
+"SRR7963719","SRR7963719","Illumina HiSeq 3000","fibroblasts","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","yes","Train","Test","Train","Train"
+"SRR7963720","SRR7963720","Illumina HiSeq 3000","fibroblasts","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","yes","Train","Test","Train","Train"
+"SRR7963721","SRR7963721","Illumina HiSeq 3000","fibroblasts","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","yes","Train","Test","Train","Train"
+"SRR7963722","SRR7963722","Illumina HiSeq 3000","fibroblasts","Vehicle2","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Train","Test","Train","Train"
+"SRR7963723","SRR7963723","Illumina HiSeq 3000","fibroblasts","Vehicle2","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Train","Test","Train","Train"
+"SRR7963724","SRR7963724","Illumina HiSeq 3000","fibroblasts","Vehicle2","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Train","Test","Train","Train"
+"SRR7963725","SRR7963725","Illumina HiSeq 3000","fibroblasts","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","yes","Train","Test","Train","Train"
+"SRR7963726","SRR7963726","Illumina HiSeq 3000","fibroblasts","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","yes","Train","Test","Train","Train"
+"SRR7963727","SRR7963727","Illumina HiSeq 3000","fibroblasts","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","yes","Train","Test","Train","Train"
+"SRR7963728","SRR7963728","Illumina HiSeq 3000","fibroblasts","Vehicle6","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Train","Test","Train","Train"
+"SRR7963729","SRR7963729","Illumina HiSeq 3000","fibroblasts","Vehicle6","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Train","Test","Train","Train"
+"SRR7963730","SRR7963730","Illumina HiSeq 3000","fibroblasts","Vehicle6","SRP136108","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no","Train","Test","Train","Train"
+"SRR6870864","SRR6870864","Illumina HiSeq 2000","monocytes","Methylprednisolone2","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","yes","No","No","No","No"
+"SRR6870867","SRR6870867","Illumina HiSeq 2000","monocytes","Vehicle2","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"SRR6870871","SRR6870871","Illumina HiSeq 2000","monocytes","Methylprednisolone6","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","yes","No","No","No","No"
+"SRR6870873","SRR6870873","Illumina HiSeq 2000","monocytes","Vehicle6","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"SRR7963647","SRR7963647","Illumina HiSeq 3000","monocytes","Methylprednisolone2","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","yes","No","No","No","No"
+"SRR7963648","SRR7963648","Illumina HiSeq 3000","monocytes","Methylprednisolone2","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","yes","No","No","No","No"
+"SRR7963649","SRR7963649","Illumina HiSeq 3000","monocytes","Methylprednisolone2","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","yes","No","No","No","No"
+"SRR7963650","SRR7963650","Illumina HiSeq 3000","monocytes","Vehicle2","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"SRR7963651","SRR7963651","Illumina HiSeq 3000","monocytes","Vehicle2","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"SRR7963652","SRR7963652","Illumina HiSeq 3000","monocytes","Vehicle2","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"SRR7963653","SRR7963653","Illumina HiSeq 3000","monocytes","Methylprednisolone6","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","yes","No","No","No","No"
+"SRR7963654","SRR7963654","Illumina HiSeq 3000","monocytes","Methylprednisolone6","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","yes","No","No","No","No"
+"SRR7963655","SRR7963655","Illumina HiSeq 3000","monocytes","Methylprednisolone6","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","yes","No","No","No","No"
+"SRR7963656","SRR7963656","Illumina HiSeq 3000","monocytes","Vehicle6","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"SRR7963657","SRR7963657","Illumina HiSeq 3000","monocytes","Vehicle6","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"SRR7963658","SRR7963658","Illumina HiSeq 3000","monocytes","Vehicle6","SRP136108","Immune","Myeloid","monocytes","monocytic.lineage","monocytes","no","No","No","No","No"
+"SRR6870880","SRR6870880","Illumina HiSeq 2000","neutrophiles","Methylprednisolone2","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","yes","Train","No","Test","Test"
+"SRR6870883","SRR6870883","Illumina HiSeq 2000","neutrophiles","Vehicle2","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","Train","No","Test","Test"
+"SRR6870885","SRR6870885","Illumina HiSeq 2000","neutrophiles","Methylprednisolone6","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","yes","Train","No","Test","Test"
+"SRR6870889","SRR6870889","Illumina HiSeq 2000","neutrophiles","Vehicle6","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","Train","No","Test","Test"
+"SRR7963659","SRR7963659","Illumina HiSeq 3000","neutrophiles","Methylprednisolone2","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","yes","Train","No","Test","Test"
+"SRR7963660","SRR7963660","Illumina HiSeq 3000","neutrophiles","Methylprednisolone2","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","yes","Train","No","Test","Test"
+"SRR7963661","SRR7963661","Illumina HiSeq 3000","neutrophiles","Methylprednisolone2","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","yes","Train","No","Test","Test"
+"SRR7963662","SRR7963662","Illumina HiSeq 3000","neutrophiles","Vehicle2","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","Train","No","Test","Test"
+"SRR7963663","SRR7963663","Illumina HiSeq 3000","neutrophiles","Vehicle2","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","Train","No","Test","Test"
+"SRR7963664","SRR7963664","Illumina HiSeq 3000","neutrophiles","Vehicle2","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","Train","No","Test","Test"
+"SRR7963665","SRR7963665","Illumina HiSeq 3000","neutrophiles","Methylprednisolone6","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","yes","Train","No","Test","Test"
+"SRR7963666","SRR7963666","Illumina HiSeq 3000","neutrophiles","Methylprednisolone6","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","yes","Train","No","Test","Test"
+"SRR7963667","SRR7963667","Illumina HiSeq 3000","neutrophiles","Methylprednisolone6","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","yes","Train","No","Test","Test"
+"SRR7963668","SRR7963668","Illumina HiSeq 3000","neutrophiles","Vehicle6","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","Train","No","Test","Test"
+"SRR7963669","SRR7963669","Illumina HiSeq 3000","neutrophiles","Vehicle6","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","Train","No","Test","Test"
+"SRR7963670","SRR7963670","Illumina HiSeq 3000","neutrophiles","Vehicle6","SRP136108","Immune","Myeloid","neutrophils","neutrophils","neutrophils","no","Train","No","Test","Test"
+"SRR6870939","SRR6870939","Illumina HiSeq 2000","osteoblasts","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","yes","Train","No","No","Train"
+"SRR6870941","SRR6870941","Illumina HiSeq 2000","osteoblasts","Vehicle2","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","no","Train","No","No","Test"
+"SRR6870944","SRR6870944","Illumina HiSeq 2000","osteoblasts","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","yes","Train","No","No","Train"
+"SRR6870946","SRR6870946","Illumina HiSeq 2000","osteoblasts","Vehicle6","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","no","Train","No","No","Test"
+"SRR6870968","SRR6870968","Illumina HiSeq 2000","myoblasts","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","yes","Train","No","No","Train"
+"SRR6870970","SRR6870970","Illumina HiSeq 2000","myoblasts","Vehicle2","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","no","Train","No","No","Test"
+"SRR6870973","SRR6870973","Illumina HiSeq 2000","myoblasts","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","yes","Train","No","No","Train"
+"SRR6870976","SRR6870976","Illumina HiSeq 2000","myoblasts","Vehicle6","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","no","Train","No","No","Test"
+"SRR6870983","SRR6870983","Illumina HiSeq 2000","adipocytes","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","yes","Train","No","No","Train"
+"SRR6870986","SRR6870986","Illumina HiSeq 2000","adipocytes","Vehicle2","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","no","Train","No","No","Train"
+"SRR6870990","SRR6870990","Illumina HiSeq 2000","adipocytes","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","yes","Train","No","No","Train"
+"SRR6870991","SRR6870991","Illumina HiSeq 2000","adipocytes","Vehicle6","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","no","Train","No","No","Test"
+"SRR7963707","SRR7963707","Illumina HiSeq 3000","osteoblasts","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","yes","Train","No","No","Train"
+"SRR7963708","SRR7963708","Illumina HiSeq 3000","osteoblasts","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","yes","Train","No","No","Train"
+"SRR7963709","SRR7963709","Illumina HiSeq 3000","osteoblasts","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","yes","Train","No","No","Train"
+"SRR7963710","SRR7963710","Illumina HiSeq 3000","osteoblasts","Vehicle2","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","no","Train","No","No","Train"
+"SRR7963711","SRR7963711","Illumina HiSeq 3000","osteoblasts","Vehicle2","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","no","Train","No","No","Train"
+"SRR7963712","SRR7963712","Illumina HiSeq 3000","osteoblasts","Vehicle2","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","no","Train","No","No","Train"
+"SRR7963713","SRR7963713","Illumina HiSeq 3000","osteoblasts","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","yes","Train","No","No","Test"
+"SRR7963714","SRR7963714","Illumina HiSeq 3000","osteoblasts","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","yes","Train","No","No","Test"
+"SRR7963715","SRR7963715","Illumina HiSeq 3000","osteoblasts","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","yes","Train","No","No","Test"
+"SRR7963716","SRR7963716","Illumina HiSeq 3000","osteoblasts","Vehicle6","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","no","Train","No","No","Test"
+"SRR7963717","SRR7963717","Illumina HiSeq 3000","osteoblasts","Vehicle6","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","no","Train","No","No","Test"
+"SRR7963718","SRR7963718","Illumina HiSeq 3000","osteoblasts","Vehicle6","SRP136108","Stromal","Mesenchimal","osteoblasts","noise","noise","no","Train","No","No","Test"
+"SRR7963731","SRR7963731","Illumina HiSeq 3000","myoblasts","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","yes","Train","No","No","Train"
+"SRR7963732","SRR7963732","Illumina HiSeq 3000","myoblasts","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","yes","Train","No","No","Train"
+"SRR7963733","SRR7963733","Illumina HiSeq 3000","myoblasts","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","yes","Train","No","No","Train"
+"SRR7963734","SRR7963734","Illumina HiSeq 3000","myoblasts","Vehicle2","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","no","Train","No","No","Train"
+"SRR7963735","SRR7963735","Illumina HiSeq 3000","myoblasts","Vehicle2","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","no","Train","No","No","Train"
+"SRR7963736","SRR7963736","Illumina HiSeq 3000","myoblasts","Vehicle2","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","no","Train","No","No","Train"
+"SRR7963737","SRR7963737","Illumina HiSeq 3000","myoblasts","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","yes","Train","No","No","Test"
+"SRR7963738","SRR7963738","Illumina HiSeq 3000","myoblasts","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","yes","Train","No","No","Test"
+"SRR7963739","SRR7963739","Illumina HiSeq 3000","myoblasts","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","yes","Train","No","No","Test"
+"SRR7963740","SRR7963740","Illumina HiSeq 3000","myoblasts","Vehicle6","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","no","Train","No","No","Test"
+"SRR7963741","SRR7963741","Illumina HiSeq 3000","myoblasts","Vehicle6","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","no","Train","No","No","Test"
+"SRR7963742","SRR7963742","Illumina HiSeq 3000","myoblasts","Vehicle6","SRP136108","Stromal","Mesenchimal","myoblasts","noise","noise","no","Train","No","No","Test"
+"SRR7963743","SRR7963743","Illumina HiSeq 3000","adipocytes","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","yes","Train","No","No","Train"
+"SRR7963744","SRR7963744","Illumina HiSeq 3000","adipocytes","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","yes","Train","No","No","Train"
+"SRR7963745","SRR7963745","Illumina HiSeq 3000","adipocytes","Methylprednisolone2","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","yes","Train","No","No","Train"
+"SRR7963746","SRR7963746","Illumina HiSeq 3000","adipocytes","Vehicle2","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","no","Train","No","No","Train"
+"SRR7963747","SRR7963747","Illumina HiSeq 3000","adipocytes","Vehicle2","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","no","Train","No","No","Train"
+"SRR7963748","SRR7963748","Illumina HiSeq 3000","adipocytes","Vehicle2","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","no","Train","No","No","Train"
+"SRR7963749","SRR7963749","Illumina HiSeq 3000","adipocytes","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","yes","Train","No","No","Test"
+"SRR7963750","SRR7963750","Illumina HiSeq 3000","adipocytes","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","yes","Train","No","No","Test"
+"SRR7963751","SRR7963751","Illumina HiSeq 3000","adipocytes","Methylprednisolone6","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","yes","Train","No","No","Test"
+"SRR7963752","SRR7963752","Illumina HiSeq 3000","adipocytes","Vehicle6","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","no","Train","No","No","Test"
+"SRR7963753","SRR7963753","Illumina HiSeq 3000","adipocytes","Vehicle6","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","no","Train","No","No","Test"
+"SRR7963754","SRR7963754","Illumina HiSeq 3000","adipocytes","Vehicle6","SRP136108","Stromal","Mesenchimal","adipocytes","noise","noise","no","Train","No","No","Test"
+"SRR7059149","SRR7059149","Illumina HiSeq 4000","Peripheral Blood Effector memory CD8 T cells","no_treament","SRP142468","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SRR7059150","SRR7059150","Illumina HiSeq 4000","Peripheral Blood Effector memory CD8 T cells","no_treament","SRP142468","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SRR7059151","SRR7059151","Illumina HiSeq 4000","Peripheral Blood Effector memory CD8 T cells","no_treament","SRP142468","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SRR7059152","SRR7059152","Illumina HiSeq 4000","Peripheral Blood Effector memory CD8 T cells","no_treament","SRP142468","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SRR7059153","SRR7059153","Illumina HiSeq 4000","Peripheral Blood Effector memory CD8 T cells","no_treament","SRP142468","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no",NA,NA,NA,NA
+"SRR7059154","SRR7059154","Illumina HiSeq 4000","Peripheral Blood Naive CD8 T cells","no_treament","SRP142468","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SRR7059155","SRR7059155","Illumina HiSeq 4000","Peripheral Blood Naive CD8 T cells","no_treament","SRP142468","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SRR7059156","SRR7059156","Illumina HiSeq 4000","Peripheral Blood Naive CD8 T cells","no_treament","SRP142468","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SRR7059157","SRR7059157","Illumina HiSeq 4000","Peripheral Blood Naive CD8 T cells","no_treament","SRP142468","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no",NA,NA,NA,NA
+"SRR7059158","SRR7059158","Illumina HiSeq 4000","Tumor infiltrating CD39- CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059159","SRR7059159","Illumina HiSeq 4000","Tumor infiltrating CD39- CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059160","SRR7059160","Illumina HiSeq 4000","Tumor infiltrating CD39- CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059161","SRR7059161","Illumina HiSeq 4000","Tumor infiltrating CD39- CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059162","SRR7059162","Illumina HiSeq 4000","Tumor infiltrating CD39- CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059163","SRR7059163","Illumina HiSeq 4000","Tumor infiltrating CD39- CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059164","SRR7059164","Illumina HiSeq 4000","Tumor infiltrating CD39- CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059165","SRR7059165","Illumina HiSeq 4000","Tumor infiltrating CD39+ CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059166","SRR7059166","Illumina HiSeq 4000","Tumor infiltrating CD39+ CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059167","SRR7059167","Illumina HiSeq 4000","Tumor infiltrating CD39+ CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059168","SRR7059168","Illumina HiSeq 4000","Tumor infiltrating CD39+ CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059169","SRR7059169","Illumina HiSeq 4000","Tumor infiltrating CD39+ CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059170","SRR7059170","Illumina HiSeq 4000","Tumor infiltrating CD39+ CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059171","SRR7059171","Illumina HiSeq 4000","Tumor infiltrating CD39+ CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7059172","SRR7059172","Illumina HiSeq 4000","Tumor infiltrating CD39+ CD8 T cells","no_treament","SRP142468","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no",NA,NA,NA,NA
+"SRR7547693","SRR7547693","Illumina HiSeq 2000","proliferating cells","no_treament","SRP154577","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR7547694","SRR7547694","Illumina HiSeq 2000","proliferating cells","no_treament","SRP154577","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR7547695","SRR7547695","Illumina HiSeq 2000","proliferating cells","no_treament","SRP154577","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR7547696","SRR7547696","Illumina HiSeq 2000","7 day contact inhibited cells (quiescent)","no_treament","SRP154577","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR7547697","SRR7547697","Illumina HiSeq 2000","7 day contact inhibited cells (quiescent)","no_treament","SRP154577","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR7547698","SRR7547698","Illumina HiSeq 2000","7 day contact inhibited cells (quiescent)","no_treament","SRP154577","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR7647654","SRR7647654","Illumina NovaSeq 6000","Bulk_B","no_treament","SRP156452","Immune","B","B.cells","B.cells","other","no","Test","No","Test","Test"
+"SRR7647655","SRR7647655","Illumina NovaSeq 6000","Bulk_B","treatment1","SRP156452","Immune","B","B.cells","B.cells","other","yes","Test","No","Test","Test"
+"SRR7647656","SRR7647656","Illumina NovaSeq 6000","Mem_B","no_treament","SRP156452","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","Test","No","Test","Test"
+"SRR7647657","SRR7647657","Illumina NovaSeq 6000","Mem_B","treatment1","SRP156452","Immune","B","memory.B.cells","B.cells","memory.B.cells","yes","Test","No","Test","Test"
+"SRR7647658","SRR7647658","Illumina NovaSeq 6000","Naive_B","no_treament","SRP156452","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","Test","No","Test","Test"
+"SRR7647659","SRR7647659","Illumina NovaSeq 6000","Naive_B","treatment1","SRP156452","Immune","B","naive.B.cells","B.cells","naive.B.cells","yes","Test","No","Test","Test"
+"SRR7647660","SRR7647660","Illumina NovaSeq 6000","Plasmablasts","no_treament","SRP156452","Immune","B","Plasmablasts","B.cells","other","no","Test","No","Test","Test"
+"SRR7647696","SRR7647696","Illumina NovaSeq 6000","Bulk_B","no_treament","SRP156452","Immune","B","B.cells","B.cells","other","no","Test","No","Test","Test"
+"SRR7647697","SRR7647697","Illumina NovaSeq 6000","Bulk_B","treatment1","SRP156452","Immune","B","B.cells","B.cells","other","yes","Test","No","Test","Test"
+"SRR7647698","SRR7647698","Illumina NovaSeq 6000","Mem_B","no_treament","SRP156452","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","Test","No","Test","Test"
+"SRR7647699","SRR7647699","Illumina NovaSeq 6000","Mem_B","treatment1","SRP156452","Immune","B","memory.B.cells","B.cells","memory.B.cells","yes","Test","No","Test","Test"
+"SRR7647700","SRR7647700","Illumina NovaSeq 6000","Naive_B","no_treament","SRP156452","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","Test","No","Test","Test"
+"SRR7647731","SRR7647731","Illumina NovaSeq 6000","Bulk_B","no_treament","SRP156452","Immune","B","B.cells","B.cells","other","no","Test","No","Test","Test"
+"SRR7647732","SRR7647732","Illumina NovaSeq 6000","Bulk_B","treatment1","SRP156452","Immune","B","B.cells","B.cells","other","yes","Test","No","Test","Test"
+"SRR7647733","SRR7647733","Illumina NovaSeq 6000","Mem_B","treatment1","SRP156452","Immune","B","memory.B.cells","B.cells","memory.B.cells","yes","Test","No","Test","Test"
+"SRR7647734","SRR7647734","Illumina NovaSeq 6000","Naive_B","treatment1","SRP156452","Immune","B","naive.B.cells","B.cells","naive.B.cells","yes","Test","No","Test","Test"
+"SRR7647767","SRR7647767","Illumina NovaSeq 6000","Bulk_B","no_treament","SRP156452","Immune","B","B.cells","B.cells","other","no","Test","No","Test","Test"
+"SRR7647768","SRR7647768","Illumina NovaSeq 6000","Mem_B","no_treament","SRP156452","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","Test","No","Test","Test"
+"SRR7647769","SRR7647769","Illumina NovaSeq 6000","Naive_B","no_treament","SRP156452","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","Test","No","Test","Test"
+"SRR7647802","SRR7647802","Illumina HiSeq 4000","Naive_B","treatment2","SRP156452","Immune","B","naive.B.cells","B.cells","naive.B.cells","yes","Test","No","Test","Test"
+"SRR7647807","SRR7647807","Illumina HiSeq 4000","Mem_B","no_treament","SRP156452","Immune","B","memory.B.cells","B.cells","memory.B.cells","no","Test","No","Test","Test"
+"SRR7647808","SRR7647808","Illumina HiSeq 4000","Naive_B","no_treament","SRP156452","Immune","B","naive.B.cells","B.cells","naive.B.cells","no","Test","No","Test","Test"
+"SRR7647817","SRR7647817","Illumina HiSeq 4000","Naive_B","treatment2","SRP156452","Immune","B","naive.B.cells","B.cells","naive.B.cells","yes","Test","No","Test","Test"
+"SRR11007071","SRR11007071","Illumina NovaSeq 6000","Effector_CD4pos_T","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007073","SRR11007073","Illumina NovaSeq 6000","Follicular_T_Helper","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007075","SRR11007075","Illumina NovaSeq 6000","Memory_Teffs","no_treament","SRP156452","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no","Test","No","Test","Test"
+"SRR11007077","SRR11007077","Illumina NovaSeq 6000","Memory_Tregs","no_treament","SRP156452","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","No","No","Test","Test"
+"SRR11007079","SRR11007079","Illumina NovaSeq 6000","Naive_Teffs","no_treament","SRP156452","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","No","No","Test","Test"
+"SRR11007081","SRR11007081","Illumina NovaSeq 6000","Naive_Tregs","no_treament","SRP156452","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","Test","No","Test","Test"
+"SRR11007082","SRR11007082","Illumina NovaSeq 6000","Regulatory_T","no_treament","SRP156452","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","Test","No","Test","Test"
+"SRR11007084","SRR11007084","Illumina NovaSeq 6000","Th1_precursors","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007086","SRR11007086","Illumina NovaSeq 6000","Th17_precursors","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007088","SRR11007088","Illumina NovaSeq 6000","Th2_precursors","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007106","SRR11007106","Illumina NovaSeq 6000","Follicular_T_Helper","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007108","SRR11007108","Illumina NovaSeq 6000","Memory_Teffs","no_treament","SRP156452","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no","Test","No","Test","Test"
+"SRR11007111","SRR11007111","Illumina NovaSeq 6000","Naive_Teffs","no_treament","SRP156452","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","No","No","Test","Test"
+"SRR11007113","SRR11007113","Illumina NovaSeq 6000","Regulatory_T","no_treament","SRP156452","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","Test","No","Test","Test"
+"SRR11007115","SRR11007115","Illumina NovaSeq 6000","Th1_precursors","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007117","SRR11007117","Illumina NovaSeq 6000","Th17_precursors","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007119","SRR11007119","Illumina NovaSeq 6000","Th2_precursors","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007137","SRR11007137","Illumina NovaSeq 6000","Effector_CD4pos_T","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007139","SRR11007139","Illumina NovaSeq 6000","Follicular_T_Helper","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007141","SRR11007141","Illumina NovaSeq 6000","Memory_Teffs","no_treament","SRP156452","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no","Test","No","Test","Test"
+"SRR11007143","SRR11007143","Illumina NovaSeq 6000","Memory_Tregs","no_treament","SRP156452","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","Test","No","Test","Test"
+"SRR11007145","SRR11007145","Illumina NovaSeq 6000","Naive_Teffs","no_treament","SRP156452","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","No","No","Test","Test"
+"SRR11007147","SRR11007147","Illumina NovaSeq 6000","Regulatory_T","no_treament","SRP156452","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","Test","No","Test","Test"
+"SRR11007149","SRR11007149","Illumina NovaSeq 6000","Th1_precursors","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007152","SRR11007152","Illumina NovaSeq 6000","Th17_precursors","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007154","SRR11007154","Illumina NovaSeq 6000","Th2_precursors","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007170","SRR11007170","Illumina NovaSeq 6000","Effector_CD4pos_T","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007172","SRR11007172","Illumina NovaSeq 6000","Follicular_T_Helper","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007174","SRR11007174","Illumina NovaSeq 6000","Memory_Teffs","no_treament","SRP156452","Immune","CD4","memory.CD4.T.cells","CD4.T.cells","memory.CD4.T.cells","no","Test","No","Test","Test"
+"SRR11007176","SRR11007176","Illumina NovaSeq 6000","Memory_Tregs","no_treament","SRP156452","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","Test","No","Test","Test"
+"SRR11007178","SRR11007178","Illumina NovaSeq 6000","Naive_Teffs","no_treament","SRP156452","Immune","CD4","naive.CD4.T.cells","CD4.T.cells","naive.CD4.T.cells","no","No","No","Test","Test"
+"SRR11007180","SRR11007180","Illumina NovaSeq 6000","Naive_Tregs","no_treament","SRP156452","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","Test","No","Test","Test"
+"SRR11007182","SRR11007182","Illumina NovaSeq 6000","Regulatory_T","no_treament","SRP156452","Immune","CD4","regulatory.T.cells","CD4.T.cells","regulatory.T.cells","no","Test","No","Test","Test"
+"SRR7647809","SRR7647809","Illumina HiSeq 4000","Effector_CD4pos_T","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR7647811","SRR7647811","Illumina HiSeq 4000","Th1_precursors","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR7647812","SRR7647812","Illumina HiSeq 4000","Th17_precursors","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR7647813","SRR7647813","Illumina HiSeq 4000","Th2_precursors","no_treament","SRP156452","Immune","CD4","CD4.T.cells","CD4.T.cells","other","no","Test","No","Test","Test"
+"SRR11007061","SRR11007061","Illumina NovaSeq 6000","CD8pos_T","no_treament","SRP156452","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no","Test","No","Test","Test"
+"SRR11007063","SRR11007063","Illumina NovaSeq 6000","Central_memory_CD8pos_T","no_treament","SRP156452","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Test","No","Test","Test"
+"SRR11007065","SRR11007065","Illumina NovaSeq 6000","Effector_memory_CD8pos_T","no_treament","SRP156452","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Test","No","Test","Test"
+"SRR11007067","SRR11007067","Illumina NovaSeq 6000","Naive_CD8_T","no_treament","SRP156452","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","Test","No","Test","Test"
+"SRR11007096","SRR11007096","Illumina NovaSeq 6000","CD8pos_T","no_treament","SRP156452","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no","Test","No","Test","Test"
+"SRR11007099","SRR11007099","Illumina NovaSeq 6000","Effector_memory_CD8pos_T","no_treament","SRP156452","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Test","No","Test","Test"
+"SRR11007102","SRR11007102","Illumina NovaSeq 6000","Naive_CD8_T","no_treament","SRP156452","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","Test","No","Test","Test"
+"SRR11007127","SRR11007127","Illumina NovaSeq 6000","CD8pos_T","no_treament","SRP156452","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no","Test","No","Test","Test"
+"SRR11007129","SRR11007129","Illumina NovaSeq 6000","Central_memory_CD8pos_T","no_treament","SRP156452","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Test","No","Test","Test"
+"SRR11007131","SRR11007131","Illumina NovaSeq 6000","Effector_memory_CD8pos_T","no_treament","SRP156452","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Test","No","Test","Test"
+"SRR11007133","SRR11007133","Illumina NovaSeq 6000","Naive_CD8_T","no_treament","SRP156452","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","Test","No","Test","Test"
+"SRR11007160","SRR11007160","Illumina NovaSeq 6000","CD8pos_T","no_treament","SRP156452","Immune","CD8","CD8.T.cells","CD8.T.cells","other","no","Test","No","Test","Test"
+"SRR11007162","SRR11007162","Illumina NovaSeq 6000","Central_memory_CD8pos_T","no_treament","SRP156452","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Test","No","Test","Test"
+"SRR11007164","SRR11007164","Illumina NovaSeq 6000","Effector_memory_CD8pos_T","no_treament","SRP156452","Immune","CD8","memory.CD8.T.cells","CD8.T.cells","memory.CD8.T.cells","no","Test","No","Test","Test"
+"SRR11007166","SRR11007166","Illumina NovaSeq 6000","Naive_CD8_T","no_treament","SRP156452","Immune","CD8","naive.CD8.T.cells","CD8.T.cells","naive.CD8.T.cells","no","Test","No","Test","Test"
+"SRR11007092","SRR11007092","Illumina NovaSeq 6000","Monocytes","no_treament","SRP156452","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","no","Test","No","Test","Test"
+"SRR11007093","SRR11007093","Illumina NovaSeq 6000","Monocytes","treatment1","SRP156452","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","yes","Test","No","Test","Test"
+"SRR11007094","SRR11007094","Illumina NovaSeq 6000","Myeloid_DCs","no_treament","SRP156452","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no","Test","No","Test","Test"
+"SRR11007124","SRR11007124","Illumina NovaSeq 6000","Monocytes","no_treament","SRP156452","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","no","Test","No","Test","Test"
+"SRR11007125","SRR11007125","Illumina NovaSeq 6000","Monocytes","treatment1","SRP156452","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","yes","Test","No","Test","Test"
+"SRR11007126","SRR11007126","Illumina NovaSeq 6000","Myeloid_DCs","no_treament","SRP156452","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no","Test","No","Test","Test"
+"SRR11007158","SRR11007158","Illumina NovaSeq 6000","Monocytes","no_treament","SRP156452","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","no","Test","No","Test","Test"
+"SRR11007159","SRR11007159","Illumina NovaSeq 6000","Monocytes","treatment1","SRP156452","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","yes","Test","No","Test","Test"
+"SRR11007188","SRR11007188","Illumina NovaSeq 6000","Monocytes","no_treament","SRP156452","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","no","Test","No","Test","Test"
+"SRR11007189","SRR11007189","Illumina NovaSeq 6000","Monocytes","treatment1","SRP156452","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","yes","Test","No","Test","Test"
+"SRR11007190","SRR11007190","Illumina NovaSeq 6000","Myeloid_DCs","no_treament","SRP156452","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no","Test","No","Test","Test"
+"SRR11007192","SRR11007192","Illumina HiSeq 4000","Monocytes","treatment2","SRP156452","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","yes","Test","No","Test","Test"
+"SRR7647801","SRR7647801","Illumina HiSeq 4000","Monocytes","treatment2","SRP156452","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","yes","Test","No","Test","Test"
+"SRR7647819","SRR7647819","Illumina HiSeq 4000","Monocytes","treatment2","SRP156452","Immune","MYELOID","monocytes","monocytic.lineage","monocytes","yes","Test","No","Test","Test"
+"SRR11007090","SRR11007090","Illumina NovaSeq 6000","Mature_NK","no_treament","SRP156452","Immune","NK","NK.cells","NK.cells","NK.cells","no","Test","No","Test","Test"
+"SRR11007091","SRR11007091","Illumina NovaSeq 6000","Mature_NK","treatment1","SRP156452","Immune","NK","NK.cells","NK.cells","NK.cells","yes","Test","No","Test","Test"
+"SRR11007121","SRR11007121","Illumina NovaSeq 6000","Mature_NK","no_treament","SRP156452","Immune","NK","NK.cells","NK.cells","NK.cells","no","Test","No","Test","Test"
+"SRR11007122","SRR11007122","Illumina NovaSeq 6000","Mature_NK","treatment1","SRP156452","Immune","NK","NK.cells","NK.cells","NK.cells","yes","Test","No","Test","Test"
+"SRR11007123","SRR11007123","Illumina NovaSeq 6000","Memory_NK","no_treament","SRP156452","Immune","NK","NK.cells","NK.cells","NK.cells","no","Test","No","Test","Test"
+"SRR11007156","SRR11007156","Illumina NovaSeq 6000","Mature_NK","no_treament","SRP156452","Immune","NK","NK.cells","NK.cells","NK.cells","no","Test","No","Test","Test"
+"SRR11007157","SRR11007157","Illumina NovaSeq 6000","Mature_NK","treatment1","SRP156452","Immune","NK","NK.cells","NK.cells","NK.cells","yes","Test","No","Test","Test"
+"SRR11007186","SRR11007186","Illumina NovaSeq 6000","Mature_NK","no_treament","SRP156452","Immune","NK","NK.cells","NK.cells","NK.cells","no","Test","No","Test","Test"
+"SRR11007187","SRR11007187","Illumina NovaSeq 6000","Mature_NK","treatment1","SRP156452","Immune","NK","NK.cells","NK.cells","NK.cells","yes","Test","No","Test","Test"
+"SRR11007191","SRR11007191","Illumina HiSeq 4000","Mature_NK","treatment2","SRP156452","Immune","NK","NK.cells","NK.cells","NK.cells","yes","Test","No","Test","Test"
+"SRR11007193","SRR11007193","Illumina HiSeq 4000","Immature_NK","no_treament","SRP156452","Immune","NK","NK.cells","NK.cells","NK.cells","no","Test","No","Test","Test"
+"SRR11007194","SRR11007194","Illumina HiSeq 4000","Mature_NK","treatment2","SRP156452","Immune","NK","NK.cells","NK.cells","NK.cells","yes","Test","No","Test","Test"
+"SRR11007069","SRR11007069","Illumina NovaSeq 6000","Gamma_delta_T","no_treament","SRP156452","Immune","GD","gdTCR","other","other","no","Test","No","Test","Test"
+"SRR11007070","SRR11007070","Illumina NovaSeq 6000","Gamma_delta_T","treatment1","SRP156452","Immune","GD","gdTCR","other","other","yes","No","No","No","Test"
+"SRR11007095","SRR11007095","Illumina NovaSeq 6000","pDCs","no_treament","SRP156452","Immune","MYELOID","plasmacytoid.DC","other","other","no","Test","No","Test","Test"
+"SRR11007104","SRR11007104","Illumina NovaSeq 6000","Gamma_delta_T","no_treament","SRP156452","Immune","GD","gdTCR","other","other","no","Test","No","Test","Test"
+"SRR11007135","SRR11007135","Illumina NovaSeq 6000","Gamma_delta_T","no_treament","SRP156452","Immune","GD","gdTCR","other","other","no","Test","No","Test","Test"
+"SRR11007136","SRR11007136","Illumina NovaSeq 6000","Gamma_delta_T","treatment1","SRP156452","Immune","GD","gdTCR","other","other","yes","Test","No","No","Test"
+"SRR11007168","SRR11007168","Illumina NovaSeq 6000","Gamma_delta_T","no_treament","SRP156452","Immune","GD","gdTCR","other","other","no","Test","No","Test","Test"
+"SRR11007169","SRR11007169","Illumina NovaSeq 6000","Gamma_delta_T","treatment1","SRP156452","Immune","GD","gdTCR","other","other","yes","Test","No","No","Test"
+"SRR8088187","SRR8088187","Illumina HiSeq 2500","human vulval carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088188","SRR8088188","Illumina HiSeq 2500","human vulval carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088189","SRR8088189","Illumina HiSeq 2500","human vulval carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088190","SRR8088190","Illumina HiSeq 2500","human vulval carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088191","SRR8088191","Illumina HiSeq 2500","human vulval carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088192","SRR8088192","Illumina HiSeq 2500","human vulval carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088193","SRR8088193","Illumina HiSeq 2500","human oral carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088194","SRR8088194","Illumina HiSeq 2500","human oral carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088195","SRR8088195","Illumina HiSeq 2500","human oral carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088196","SRR8088196","Illumina HiSeq 2500","human cervical carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088197","SRR8088197","Illumina HiSeq 2500","human cervical carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088198","SRR8088198","Illumina HiSeq 2500","human cervical carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088199","SRR8088199","Illumina HiSeq 2500","human metastatic melanoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088200","SRR8088200","Illumina HiSeq 2500","human metastatic melanoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088201","SRR8088201","Illumina HiSeq 2500","human breast carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8088202","SRR8088202","Illumina HiSeq 2500","human breast carcinoma fibroblast","no_treament","SRP166344","Stromal","Mesenchimal","fibroblasts","fibroblasts","fibroblasts","no",NA,NA,NA,NA
+"SRR8404142","SRR8404142","Illumina HiSeq 4000","J7 differetiated macrophages","no_treament","SRP176434","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR8404143","SRR8404143","Illumina HiSeq 4000","J7 differetiated macrophages","no_treament","SRP176434","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR8404144","SRR8404144","Illumina HiSeq 4000","J7 differetiated macrophages","no_treament","SRP176434","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR8404145","SRR8404145","Illumina HiSeq 4000","J7 differetiated macrophages","no_treament","SRP176434","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR8404146","SRR8404146","Illumina HiSeq 4000","J7 differetiated macrophages","no_treament","SRP176434","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR8404147","SRR8404147","Illumina HiSeq 4000","J7 differetiated macrophages","no_treament","SRP176434","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR8404148","SRR8404148","Illumina HiSeq 4000","J7 differetiated macrophages","no_treament","SRP176434","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR8404149","SRR8404149","Illumina HiSeq 4000","J7 differetiated macrophages","no_treament","SRP176434","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR8404150","SRR8404150","Illumina HiSeq 4000","J7 differetiated macrophages","no_treament","SRP176434","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR8404151","SRR8404151","Illumina HiSeq 4000","J7 differetiated macrophages","no_treament","SRP176434","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR8404152","SRR8404152","Illumina HiSeq 4000","J7 differetiated macrophages","no_treament","SRP176434","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR8404153","SRR8404153","Illumina HiSeq 4000","J7 differetiated macrophages","no_treament","SRP176434","Immune","MYELOID","macrophages","monocytic.lineage","macrophages","no",NA,NA,NA,NA
+"SRR10983473","SRR10983473","Illumina HiSeq 2500","Clec9A+CD141+ cDC1","no_treament","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR10983474","SRR10983474","Illumina HiSeq 2500","Clec9A+CD141+ cDC1","no_treament","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR10983475","SRR10983475","Illumina HiSeq 2500","Clec9A+CD141+ cDC2","no_treament","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR10983476","SRR10983476","Illumina HiSeq 2500","CD1c+ cDC2","no_treament","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR10983477","SRR10983477","Illumina HiSeq 2500","CD1c+ cDC2","no_treament","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR10983478","SRR10983478","Illumina HiSeq 2500","CD1c+ cDC2","no_treament","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR10983479","SRR10983479","Illumina HiSeq 2500","Clec9A+CD141+ cells","Co-cultured with MS5_FS12","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR10983480","SRR10983480","Illumina HiSeq 2500","Clec9A+CD141+ cells","Co-cultured with MS5_FS12","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR10983481","SRR10983481","Illumina HiSeq 2500","Clec9A+CD141+ cells","Co-cultured with MS5_FS12","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR10983482","SRR10983482","Illumina HiSeq 2500","CD1c+ CD206- cells","Co-cultured with MS5_FS12","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR10983483","SRR10983483","Illumina HiSeq 2500","CD1c+ CD206- cells","Co-cultured with MS5_FS12","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR10983484","SRR10983484","Illumina HiSeq 2500","CD1c+ CD206- cells","Co-cultured with MS5_FS12","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR10983485","SRR10983485","Illumina HiSeq 2500","CD1c+ CD206+ cells","Co-cultured with MS5_FS12","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR10983486","SRR10983486","Illumina HiSeq 2500","CD1c+ CD206+ cells","Co-cultured with MS5_FS12","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR10983487","SRR10983487","Illumina HiSeq 2500","CD1c+ CD206+ cells","Co-cultured with MS5_FS12","SRP245802","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164692","SRR11164692","Illumina HiSeq 2500","CD1c+ cells","Co-cultured with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164693","SRR11164693","Illumina HiSeq 2500","CD1c+ cells","Co-cultured with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164694","SRR11164694","Illumina HiSeq 2500","CD1c+ cells","Co-cultured with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164695","SRR11164695","Illumina HiSeq 2500","CD45RA+CD123+Siglec6-Axl- cells","Co-cultured with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164696","SRR11164696","Illumina HiSeq 2500","CD45RA+CD123+Siglec6-Axl- cells","Co-cultured with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164697","SRR11164697","Illumina HiSeq 2500","CD45RA+CD123+Siglec6-Axl- cells","Co-cultured with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164698","SRR11164698","Illumina HiSeq 2500","CD45RA+CD123+Siglec6+Axl+ cells","Co-cultured with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164699","SRR11164699","Illumina HiSeq 2500","CD45RA+CD123+Siglec6+Axl+ cells","Co-cultured with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164700","SRR11164700","Illumina HiSeq 2500","CD45RA+CD123+Siglec6+Axl+ cells","Co-cultured with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164701","SRR11164701","Illumina HiSeq 2500","CD1c+ cells","Co-cultured in matrigel with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164702","SRR11164702","Illumina HiSeq 2500","CD1c+ cells","Co-cultured in matrigel with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164703","SRR11164703","Illumina HiSeq 2500","CD1c+ cells","Co-cultured in matrigel with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164704","SRR11164704","Illumina HiSeq 2500","CD45RA+CD123+Siglec6-Axl- cells","Co-cultured in matrigel with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164705","SRR11164705","Illumina HiSeq 2500","CD45RA+CD123+Siglec6-Axl- cells","Co-cultured in matrigel with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164706","SRR11164706","Illumina HiSeq 2500","CD45RA+CD123+Siglec6+Axl+ cells","Co-cultured in matrigel with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR11164707","SRR11164707","Illumina HiSeq 2500","CD45RA+CD123+Siglec6+Axl+ cells","Co-cultured in matrigel with MS5_FS12","SRP250478","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR5569312","SRR5569312","NextSeq 500","CD141+ dendritic cell","healthy","SRP107192","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR5569313","SRR5569313","NextSeq 500","CD141+ dendritic cell","healthy","SRP107192","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR5569314","SRR5569314","NextSeq 500","CD141+ dendritic cell","healthy","SRP107192","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR5569315","SRR5569315","NextSeq 500","CD141+ dendritic cell","healthy","SRP107192","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR5569316","SRR5569316","NextSeq 500","CD141+ dendritic cell","healthy","SRP107192","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR5569317","SRR5569317","NextSeq 500","CD141+ dendritic cell","inflammatory arthritis","SRP107192","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR5569318","SRR5569318","NextSeq 500","CD141+ dendritic cell","inflammatory arthritis","SRP107192","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR5569319","SRR5569319","NextSeq 500","CD141+ dendritic cell","inflammatory arthritis","SRP107192","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR5569320","SRR5569320","NextSeq 500","CD141+ dendritic cell","inflammatory arthritis","SRP107192","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR5569321","SRR5569321","NextSeq 500","CD141+ dendritic cell","inflammatory arthritis","SRP107192","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR5569322","SRR5569322","NextSeq 500","CD141+ dendritic cell","inflammatory arthritis","SRP107192","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR1514132","SRR1514132","Illumina Genome Analyzer II","Mo-DC nascent RNA rep 1.1","no_treament","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR1514133","SRR1514133","Illumina Genome Analyzer II","Mo-DC nascent RNA rep 1.2","no_treament","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR1514134","SRR1514134","Illumina Genome Analyzer II","Mo-DC 1h LPS nascent RNA rep 1.1","treated","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR1514135","SRR1514135","Illumina Genome Analyzer II","Mo-DC 1h LPS nascent RNA rep 1.2","treated","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR1514136","SRR1514136","Illumina Genome Analyzer II","Mo-DC nascent RNA rep 2","no_treament","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR1514137","SRR1514137","Illumina Genome Analyzer II","Mo-DC 1h LPS nascent RNA rep 2","treated","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR1514138","SRR1514138","Illumina HiSeq 2000","Mo-DC nascent RNA rep 3","no_treament","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR1514139","SRR1514139","Illumina HiSeq 2000","Mo-DC 1h LPS nascent RNA rep 3","treated","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR1514140","SRR1514140","Illumina Genome Analyzer II","Mo-DC mRNA rep 1","no_treament","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR1514141","SRR1514141","Illumina Genome Analyzer II","Mo-DC 1h LPS mRNA rep 1","treated","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR1514142","SRR1514142","Illumina HiSeq 2000","Mo-DC mRNA rep 2","no_treament","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR1514143","SRR1514143","Illumina HiSeq 2000","Mo-DC 1h LPS mRNA rep 2","treated","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA
+"SRR1514144","SRR1514144","Illumina HiSeq 2000","Mo-DC mRNA rep 3","no_treament","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","no",NA,NA,NA,NA
+"SRR1514145","SRR1514145","Illumina HiSeq 2000","Mo-DC 1h LPS mRNA rep 3","treated","SRP044286","Immune","MYELOID","myeloid.dendritic.cells","monocytic.lineage","myeloid.dendritic.cells","yes",NA,NA,NA,NA

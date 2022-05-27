@@ -24,3 +24,15 @@ download.and.save.xlsx.as.csv(synId)
 # Download sample-level GEO rna-seq data
 synId <- "syn18751454"
 download.and.save.xlsx.as.csv(synId)
+
+# Download Aginome-XMU bulk training sample metadata
+synId <- "syn25312568"
+synGet(synId, downloadFile = TRUE, downloadLocation = ".")
+
+# Download Mitten-TDC19 bulk training sample metadata
+synId <- "syn25314240"
+synGet(synId, downloadFile = TRUE, downloadLocation = ".")
+
+# Download Biogem bulk training sample metadata
+synId <- "syn25557820"
+synGet(synId, downloadFile = TRUE, downloadLocation = ".")
