@@ -7,10 +7,11 @@ dir.create(dest.fig.dir)
 
 figs <- 
   list(
-       "figs1a.svg" = "presentations/challenge-website/Hierarchical\ Relationship\ of\ Immune\ Cells/V1.3-coarse-grained-aggregated-scaled.svg",
+#       "figs1a.svg" = "presentations/challenge-website/Hierarchical\ Relationship\ of\ Immune\ Cells/V1.3-coarse-grained-aggregated-scaled.svg",
 #       "figs1b.svg" = "presentations/challenge-website/Hierarchical Relationship of Immune Cells/V1.2-fine-grained-scaled.svg",
        "figs1.png" = "analysis/summary/purified-samples-marker-heatmap-protein-coding-genes-no-title.png",
        "figs1.pdf" = "analysis/summary/purified-samples-marker-heatmap-protein-coding-genes-no-title.pdf",
+       "fig1a.png" = "external-figs-and-tables/V4.png",
        "fig1b.png" = "presentations/deconvolution-schematic.png",
        "fig2.png" = "analysis/validation-analysis/figs/fig-validation-round-1-performance.png",
        "fig2.pdf" = "analysis/validation-analysis/figs/fig-validation-round-1-performance.pdf",
