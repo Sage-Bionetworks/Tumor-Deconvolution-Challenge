@@ -1,19 +1,22 @@
 library(pacman)
 p_load(png)
 p_load(cowplot)
-f1a <- readPNG("fig1a.png")
-f1b <- readPNG("fig1b.png")
+p_load(magick)
+p_load(ggplot2)
+#f1a <- readPNG("fig1a.png")
+#f1b <- readPNG("fig1b.png")
 
-# See https://stackoverflow.com/questions/23807021/how-to-do-in-r-load-an-image-file-print-text-on-image-save-modified-image
-m1a <- grid::rasterGrob(f1a, interpolate = TRUE)
-m1b <- grid::rasterGrob(f1b, interpolate = TRUE)
+# See https://stackoverflow.com/questions/46799022/how-to-add-an-in-memory-png-image-to-a-plot
+#interpolate = TRUE
+#m1a <- grid::rasterGrob(f1a, interpolate = interpolate)
+#m1b <- grid::rasterGrob(f1b, interpolate = interpolate)
 
-g <- plot_grid(m1a,m1b,nrow=2,labels="AUTO")
+#g <- plot_grid(m1a,m1b,nrow=2,labels="AUTO")
 
-png("fig1.png")
-print(g)
-d <- dev.off()
+p1 <- ggdraw() + draw_image("fig1a.png")
+p2 <- ggdraw() + draw_image("fig1b.png")
+g <- plot_grid(p1,p2,nrow=2,labels="AUTO")
 
-pdf("fig1.pdf")
-print(g)
-d <- dev.off()
+ggsave("fig1.png", g, dpi=2400)
+
+ggsave("fig1.pdf", g, dpi=2400)
