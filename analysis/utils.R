@@ -510,7 +510,7 @@ get.deconvolution.genes <- function() {
     sort(unique(unlist(lapply(xCell.data$signatures, function(x) x@geneIds))))
 
     lm22 <- NULL
-    files <- c("/home/bwhite/LM22.txt", "/Users/Brian/Downloads/new-cibersort-code/LM22.txt")
+    files <- c("/home/bwhite/LM22.txt", "/Users/Brian/Downloads/new-cibersort-code/LM22.txt", "/home/whitebr/LM22.txt")
     for(file in files) {
         if(file.exists(file)) {
             lm22 <- read.table(file, sep="\t", header=TRUE)
