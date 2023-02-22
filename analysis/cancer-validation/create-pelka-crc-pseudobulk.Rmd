@@ -3,6 +3,17 @@ title: "R Notebook"
 output: html_notebook
 ---
 
+```{r}
+# Flow for Pelka goes like this:
+# Input is ENSG raw counts at cell level
+# -> read.and.process.dataset.into.pseudobulk -> {ensg,sym}.counts (Pelka-cluster level raw counts)
+# -> normalize counts to max count
+# -> create.in.silico.admixtures.from.pseudo.bulk
+# -> {ensg,sym}.cnts.pb (challenge-level admixtures)
+# -> cpm
+# -> {ensg,sym}.cpm.pb
+```
+
 
 ```{r}
 options(rlib_downstream_check = FALSE)
@@ -53,6 +64,7 @@ if(!is.na(num.cores) && (num.cores > 1)) {
 
 ```{r}
 source("../../scripts/utils.R") # for aggregate_matrix
+source("deconv-utils.R")
 ```
 
 ```{r}
@@ -107,6 +119,9 @@ create.admixtures.from.pseudobulk <- function(expr.mat, metadata, patient.cluste
   return(lst)
 }
 
+# NB: outputs
+# counts.ensg: ensg counts cluster-level pseudo-bulk 
+# counts.sym: sym counts cluster-level pseudo-bulk
 read.and.process.dataset.into.pseudobulk <- function(dataset.path) {
   # This is the h5 file from GEO:
   # https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE178341
@@ -398,17 +413,17 @@ fine.cell.trans <- list(
   "cTNI24 (NK GZMK+)" = "NK.cells",
   "cTNI25 (NK XCL1+)" = "NK.cells",
   "cTNI26 (ILC3)" = "ILC3",
-  "Tumor cE01 (Stem/TA-like)" = "CRC",
-  "Tumor cE02 (Stem/TA-like/Immature Goblet)" = "CRC",
-  "Tumor cE03 (Stem/TA-like prolif)" = "CRC",
-  "Tumor cE04 (Enterocyte 1)" = "CRC",
-  "Tumor cE05 (Enterocyte 2)" = "CRC",
-  "Tumor cE06 (Immature Goblet)" = "CRC",
-  "Tumor cE07 (Goblet/Enterocyte)" = "CRC",
-  "Tumor cE08 (Goblet)" = "CRC",
-  "Tumor cE09 (Best4)" = "CRC",
-  "Tumor cE10 (Tuft)" = "CRC",
-  "Tumor cE11 (Enteroendocrine)" = "CRC"
+  "Tumor cE01 (Stem/TA-like)" = "cancer",
+  "Tumor cE02 (Stem/TA-like/Immature Goblet)" = "cancer",
+  "Tumor cE03 (Stem/TA-like prolif)" = "cancer",
+  "Tumor cE04 (Enterocyte 1)" = "cancer",
+  "Tumor cE05 (Enterocyte 2)" = "cancer",
+  "Tumor cE06 (Immature Goblet)" = "cancer",
+  "Tumor cE07 (Goblet/Enterocyte)" = "cancer",
+  "Tumor cE08 (Goblet)" = "cancer",
+  "Tumor cE09 (Best4)" = "cancer",
+  "Tumor cE10 (Tuft)" = "cancer",
+  "Tumor cE11 (Enteroendocrine)" = "cancer"
 )
 
 cell.type.trans.tbl <- 
@@ -574,81 +589,12 @@ collapse.annotated.cell.types.to.challenge.cell.types <- function(mat, cell.type
 ```
 
 ```{r}
-# Create umap using deconv.genes of challenge samples
-challenge.umap <- function(mat) {
-  #source("/projects/compsci/jgeorge/whitebr/Tumor-Deconvolution-Challenge/analysis/utils.R") # for get.deconvolution.genes
-  #install.packages("remotes")
-  #remotes::install_github("omnideconv/immunedeconv")
-  #deconv.genes <- get.deconvolution.genes()
-  deconv.gene.file <- "/projects/compsci/jgeorge/whitebr/Tumor-Deconvolution-Challenge/external/deconv-genes.tsv"
-  deconv.genes <- read.table(deconv.gene.file, header=TRUE)$gene
 
-  # Assume colnames are of the form <patient>_<challenge cell type>
-  # Limit to challenge cell types
-  splitf <- sapply(stringr::str_split(colnames(mat), 
-                                      pattern = "_",n = 2), `[`, 2)
-  flag <- splitf %in% c(coarse_cell_types, fine_cell_types)
-  mat <- mat[, flag]
-
-  # Create umap using deconvolution genes
-  umap <- umap(t(mat[rownames(mat) %in% deconv.genes,]))
-  df <- data.frame(umap1 = umap$layout[,1], umap2 = umap$layout[,2], sample = rownames(umap$layout))
-  splitf <- sapply(stringr::str_split(df$sample,pattern = "_",n = 2), `[`, 2)
-  df$cell.type <- splitf
-  splitf <- sapply(stringr::str_split(df$sample,pattern = "_",n = 2), `[`, 1)
-  df$patient <- splitf
-  df
-}
-
-plot.challenge.umap <- function(df, plot.labels = TRUE) {
-  cbbPalette <- Blue2OrangeRed14Steps
-  cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-  # g <- ggplot(data = df, aes(x = umap1, y = umap2, colour = cell.type)) + geom_point() + scale_colour_manual(values = cbbPalette)
-  df$cell.type <- unlist(lapply(df$cell.type, function(str) substr(str, start=0, stop=4)))
-  if(plot.labels) {
-    g <- ggplot(data = df, aes(x = umap1, y = umap2, colour = cell.type)) + geom_point() + scale_colour_manual(values = cbbPalette) + geom_text(aes(label = cell.type))
-  } else {
-    g <- ggplot(data = df, aes(x = umap1, y = umap2, colour = cell.type)) + geom_point() + scale_colour_manual(values = cbbPalette)   
-  }
-  g
-}
 
 ```
 
 ```{r}
-# Find cell types that cluster "incorrectly" -- i.e., strongly with other cell types
-# in umap space 
-# df should have samples as rownames and columns umap1, umap2, and cell.type
-find.inconsistent.umap.cell.types <- function(df) {
-  dst <- as.matrix(dist(as.matrix(df[,c("umap1", "umap2")])))
-  flag <- unlist(lapply(1:nrow(dst), function(i) {
-    dists <- dst[i,]
-    dists <- dists[-i]
-    lbl <- df$cell.type[i]
-    lbls <- df$cell.type[-i]
-    full.lbls <- rownames(df)[-i]
-    o <- order(dists, decreasing=FALSE)
-    lbls <- lbls[o]
-    # Don't distinguish between CD4 and CD8 t cells -- they are likely to be intermixed
-    lbls <- gsub(lbls, pattern="CD..", replacement="")
-    lbl <- gsub(lbl, pattern="CD..", replacement="")
-    dists <- dists[o]
-    full.lbls <- full.lbls[o]
-    n.top <- 10
-    tp <- lbls[1:n.top]
-    tp <- as.data.frame(table(tp))
-    max.ct <- as.character(tp[which.max(tp$Freq), "tp"])
-    if(!(all(max.ct == lbl))) {
-      print(rownames(dst)[i])
-      print(tp)
-      print(full.lbls[1:n.top])
-      cat("\n")
-      return(TRUE)
-    }
-    return(FALSE)
-  }))
-  return(df[flag,])
-}
+
 ```
 
 
@@ -730,7 +676,7 @@ pbs <-
                   tmp.metadata <- tmp.metadata[!is.na(tmp.metadata[, cell.type.col]),]
                   
                   if(cell.type.subset == "only.challenge.types") {
-                    tmp.metadata <- tmp.metadata[tmp.metadata[, cell.type.col] %in% c("CRC", coarse_cell_types, fine_cell_types),]
+                    tmp.metadata <- tmp.metadata[tmp.metadata[, cell.type.col] %in% c("cancer", coarse_cell_types, fine_cell_types),]
                   }
                   
                   # Exclude patients
@@ -759,9 +705,7 @@ pbs <-
                   tmp <- collapse.annotated.cell.types.to.challenge.cell.types(ensg.counts, cell.type.trans.tbl, metadata[exclude.flag,], challenge.cell.type.col = cell.type.col)
                   ensg.cpm.challenge.cell.type.pb <- cpm(tmp)
                                     
-                  coarse.sym.cnts <- collapse.annotated.cell.types.to.challenge.cell.types(sym.counts, cell.type.trans.tbl, metadata[exclude.flag,], challenge.cell.type.col = cell.type.col)
-                  coarse.sym.cpm <- cpm(coarse.sym.cnts)
-                  
+
                   # Normalize the count matrix so that each pseudobulk cell types has the same number of counts (set to the max of all cell types)
                   ensg.genes <- as.data.frame(ensg.counts)[,1]
                   tmp <- ensg.counts[,-1]
@@ -870,276 +814,14 @@ for(nm in nms) {
 
 
 ```{r}
-# tpm.expr is expected to have a Gene column
-run.mcpcounter.coarse <- function(tpm.expr) {
-  rownames(tpm.expr) <- tpm.expr$Gene
-  tpm.expr <- tpm.expr[, !(colnames(tpm.expr) == "Gene")]
-  res <- MCPcounter.estimate(tpm.expr, featuresType="HUGO_symbols")
-  res <- melt(res)
-  colnames(res) <- c("mcpcounter.cell.type", "sample", "value")
-  
-  translation_df <- tibble::tribble(
-    ~cell.type, ~mcpcounter.cell.type,
-    "B.cells", "B lineage",
-    "CD8.T.cells", "CD8 T cells",
-    "NK.cells", "NK cells",
-    "neutrophils", "Neutrophils",
-    "monocytic.lineage", "Monocytic lineage",
-    "fibroblasts", "Fibroblasts",
-    "endothelial.cells", "Endothelial cells")
-    
-    res <- merge(res, translation_df)
-    # res <- res[, c("cell.type", "sample", "value")]
-    res
-}
-```
-
-
-
-
-
-```{r}
-run.xcell_ <- function(tpm.expr, translation_df) {
-  rownames(tpm.expr) <- tpm.expr$Gene
-  tpm.expr <- tpm.expr[, !(colnames(tpm.expr) == "Gene")]
-
-  res <- xCell::xCellAnalysis(tpm.expr,
-                              rnaseq = TRUE,
-                              cell.types.use = translation_df$xcell.cell.type)
-  res <- melt(res)
-  colnames(res) <- c("xcell.cell.type", "sample", "value")
-
-  res <- merge(res, translation_df)
-  # res <- res[, c("cell.type", "sample", "value")]
-  res
-}
-
-
-run.xcell.fine <- function(tpm.expr) {
-
-  # Translate xCell output to challenge subtypes
-  translation_df <- tibble::tribble(
-    ~cell.type, ~xcell.cell.type,
-    "memory.B.cells", "Memory B-cells",
-    "naive.B.cells", "naive B-cells",
-    "memory.CD4.T.cells", "CD4+ memory T-cells",
-    "naive.CD4.T.cells", "CD4+ naive T-cells",
-    "regulatory.T.cells", "Tregs",
-    "memory.CD8.T.cells", "CD8+ Tem",
-    "naive.CD8.T.cells", "CD8+ naive T-cells",
-    "NK.cells", "NK cells",
-    "neutrophils", "Neutrophils",
-    "monocytes", "Monocytes",
-    "myeloid.dendritic.cells", "DC",
-    "macrophages", "Macrophages",
-    "fibroblasts", "Fibroblasts",
-    "endothelial.cells", "Endothelial cells"
-    )
-
-  run.xcell_(tpm.expr, translation_df)
-  
-}
-
-run.xcell.coarse <- function(tpm.expr) {
-
-  translation_df <- tibble::tribble(
-    ~cell.type, ~xcell.cell.type,
-    "B.cells", "B-cells",
-    "CD4.T.cells", "CD4+ T-cells",
-    "CD8.T.cells", "CD8+ T-cells",
-    "NK.cells", "NK cells",
-    "neutrophils", "Neutrophils",
-    "monocytic.lineage", "Monocytes",
-    "fibroblasts", "Fibroblasts",
-    "endothelial.cells","Endothelial cells"
-    )
-
-  run.xcell_(tpm.expr, translation_df)
-}
-
-```
-
-
-```{r}
-plot.deconv.results <- function(res, gt.col = "frac") {
-  # g <- ggplot(data = res, aes(x = frac, y = value)) + geom_point() + facet_wrap(~ cell.type, scales="free") + xlab("Ground Truth Fraction") + ylab("Prediction")
-  g <- ggscatter(res, x = gt.col, y = "value",
-   add = "reg.line",  # Add regressin line
-   add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
-   conf.int = TRUE # Add confidence interval
-   )
-  # Add correlation coefficient
-  g <- facet(g, facet.by = "cell.type", scales="free") 
-  g <- g + stat_cor(method = "pearson")
-  g <- g + xlab("Ground Truth Fraction") + ylab("Prediction") + theme(plot.title = element_text(hjust = 0.5))
-  g
-}
-```
-
-```{r}
 cibersort.base <- "/home/whitebr/"
 source(paste0(cibersort.base, "CIBERSORT.R"))
 cibersort.lm22.sig.file <- paste0(cibersort.base, "LM22.txt")
 cibersort.2l.sig.file <- paste0(cibersort.base, "cibersort-sig-matrix-2l.txt")
 
-run.cibersort_ <- function(tpm.expr, sig.file, file, translation_df = NULL) {
-  write.table(file = file, tpm.expr, row.names=FALSE, col.names=TRUE, quote=FALSE, sep="\t")
-  res <- CIBERSORT(sig.file, file, QN = FALSE, absmean = TRUE, abs_method = 'sig.score')
-
-  if(!is.null(translation_df)) {
-    res <- melt(res)
-    colnames(res) <- c("sample", "cibersort.cell.type", "value")
-    
-    res <- merge(res, translation_df)
-    res <- ddply(res, .variables = c("sample", "cell.type"),
-                 .fun = function(df) {
-                   data.frame(cell.type = df[1, "cell.type"], sample = df[1, "sample"], value = sum(df$value))
-                 })
-    # res <- res[, c("cell.type", "sample", "value")]
-  }
-  file.remove(file)
-  res
-}
-
-format.cibersort.results <- function(res, translation_df) {
-  res <- melt(res)
-  colnames(res) <- c("sample", "cibersort.cell.type", "value")
-
-  res <- merge(res, translation_df)
-  res <- ddply(res, .variables = c("sample", "cell.type"),
-               .fun = function(df) {
-                 data.frame(cell.type = df[1, "cell.type"], sample = df[1, "sample"], value = sum(df$value))
-               })
-  # res <- res[, c("cell.type", "sample", "value")]
-  res
-}
-
-cibersort_fine_translation_df <- tibble::tribble(
-    ~cell.type, ~cibersort.cell.type,
-    "memory.B.cells", "B cells memory",
-    "naive.B.cells", "B cells naive",
-    "memory.CD4.T.cells", "T cells CD4 memory activated",
-    "memory.CD4.T.cells", "T cells CD4 memory resting",
-    "naive.CD4.T.cells", "T cells CD4 naive",
-    "regulatory.T.cells", "T cells regulatory (Tregs)",
-    "NK.cells", "NK cells resting",
-    "NK.cells", "NK cells activated",
-    "neutrophils", "Neutrophils",
-    "monocytes", "Monocytes",
-    "myeloid.dendritic.cells", "Dendritic cells resting",
-    "myeloid.dendritic.cells", "Dendritic cells activated",
-    "macrophages", "Macrophages M0",
-    "macrophages", "Macrophages M1",
-    "macrophages", "Macrophages M2",
-    "endothelial.cells", "CD31",
-    "fibroblasts", "CD10",
-    "cancer", "EPCAM"
-    )
-run.cibersort.fine <- function(tpm.expr, sig.file, file) {
-
-  # Translate cibersort output to challenge subtypes
-  
-  run.cibersort_(tpm.expr, sig.file, file, cibersort_fine_translation_df)
-  
-}
-
-cibersort_coarse_translation_df <- tibble::tribble(
-    ~cell.type, ~cibersort.cell.type,
-    "B.cells", "B cells naive",
-    "B.cells", "B cells memory",
-    "CD4.T.cells", "T cells CD4 naive", 
-    "CD4.T.cells", "T cells CD4 memory resting", 
-    "CD4.T.cells", "T cells CD4 memory activated",
-    "CD4.T.cells", "T cells regulatory (Tregs)", 
-    "CD4.T.cells", "T cells follicular helper",
-    "CD8.T.cells", "T cells CD8",
-    "CD8.T.cells", "T cells gamma delta", 
-    "NK.cells", "NK cells resting", 
-    "NK.cells", "NK cells activated",
-    "neutrophils", "Neutrophils",
-    "monocytic.lineage", "Monocytes",
-    "monocytic.lineage", "Macrophages M0",
-    "monocytic.lineage", "Macrophages M1",
-    "monocytic.lineage", "Macrophages M2",
-    "monocytic.lineage", "Dendritic cells resting",
-    "monocytic.lineage", "Dendritic cells activated",
-    "endothelial.cells", "CD31",
-    "fibroblasts", "CD10",
-    "cancer", "EPCAM"
-    )
-
-run.cibersort.coarse <- function(tpm.expr, sig.file, file) {
-
-  # Translate cibersort output to challenge subtypes
-  
-  run.cibersort_(tpm.expr, sig.file, file, cibersort_coarse_translation_df)
-  
-}
-```
-
-
-```{r}
-run.all.deconv <- function(ensg.mat, sym.mat, cell.type.freq, grain="fine") {
-  cs.res <- NULL
-  
-
-  cs.lm22.out.file <- tempfile(pattern = "cs-lm22")
-  cs.2l.out.file <- tempfile(pattern = "csx-2l")
-
-  cs.lm22.res <- run.cibersort_(sym.mat, cibersort.lm22.sig.file, cs.lm22.out.file)
-  cs.2l.res <- run.cibersort_(sym.mat, cibersort.2l.sig.file, cs.2l.out.file)
-  cs.lm22.res <- cbind("Mixture" = rownames(cs.lm22.res), as.data.frame(cs.lm22.res))
-  cs.2l.res <- cbind("Mixture" = rownames(cs.2l.res), as.data.frame(cs.2l.res))
-  
-  csx.res <- as.data.frame(merge(cs.2l.res, cs.lm22.res, by=c("Mixture")))
-  cell.types <- colnames(cs.lm22.res)
-  cell.types <- cell.types[!(cell.types %in% c("Mixture", "P-value", "Correlation", "RMSE"))]
-  # Scale by immune proportion
-  for(ct in cell.types) { csx.res[, ct] <- csx.res[,ct] * csx.res[,"CD45"]}
-  csx.res <- csx.res[,c("Mixture", cell.types, "CD10", "CD31", "EPCAM")]
-  rownames(csx.res) <- csx.res[,1]
-  csx.res <- csx.res[,-1]
-  
-  cs.res <- cs.lm22.res
-  cs.res <- cs.res[, c("Mixture", cell.types)]
-  rownames(cs.res) <- cs.res[,1]
-  cs.res <- cs.res[,-1]
-  if(grain == "fine") {
-    csx.res <- format.cibersort.results(as.matrix(csx.res), cibersort_fine_translation_df)
-    csx.res <- merge(csx.res, cell.type.freq, by.x = c("cell.type", "sample"), by.y = c("cell.type", "sample.id"))
-    
-    cs.res <- format.cibersort.results(as.matrix(cs.res), cibersort_fine_translation_df)
-    cs.res <- merge(cs.res, cell.type.freq, by.x = c("cell.type", "sample"), by.y = c("cell.type", "sample.id"))
-  } else {
-    csx.res <- format.cibersort.results(as.matrix(csx.res), cibersort_coarse_translation_df)
-    csx.res <- merge(csx.res, cell.type.freq, by.x = c("cell.type", "sample"), by.y = c("cell.type", "sample.id"))
-    
-    cs.res <- format.cibersort.results(as.matrix(cs.res), cibersort_coarse_translation_df)
-    cs.res <- merge(cs.res, cell.type.freq, by.x = c("cell.type", "sample"), by.y = c("cell.type", "sample.id"))
-  }
-  
-  da.res <- run.da505_(ensg.mat, grain=grain)
-  da.res <- merge(da.res, cell.type.freq, by.x = c("cell.type", "sample"), by.y = c("cell.type", "sample.id"))
-
-  mcp.res <- NULL
-  if(grain == "coarse") {
-    mcp.res <- run.mcpcounter.coarse(sym.mat)
-    mcp.res <- merge(mcp.res, cell.type.freq, by.x = c("cell.type", "sample"), by.y = c("cell.type", "sample.id"))
-  }
-  
-  xcell.res <- NULL
-  if(grain == "coarse") {
-    xcell.res <- run.xcell.coarse(sym.mat)
-  } else {
-    xcell.res <- run.xcell.fine(sym.mat)
-  }
-  xcell.res <- merge(xcell.res, cell.type.freq, by.x = c("cell.type", "sample"), by.y = c("cell.type", "sample.id"))
-  
-  res <- list("da505" = da.res, "mcp" = mcp.res, "xcell" = xcell.res, "cs" = cs.res, "csx" = csx.res)
-
-}
 
 ```
+
 
 ```{r}
 if(FALSE) {
@@ -1172,10 +854,6 @@ res <- run.all.deconv(sym.mat = pbs[[grain]][[cell.type.subset]][["sym.cpm.pb"]]
 ```
 
 ```{r}
-firstup <- function(x) {
-  substr(x, 1, 1) <- toupper(substr(x, 1, 1))
-  x
-}
 
 
 ```
