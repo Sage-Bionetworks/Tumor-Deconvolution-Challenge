@@ -1,0 +1,45 @@
+Aginome
+-------
+
+pip install daism
+
+Rscript ./prepare-aginome-training-input.R --input-csv-file=../../../deconvolution-data/GSE199324_symbol_tpm.csv \
+   --output-purified-csv-anno-file=aginome-coarse-challenge-validation-purified-anno.csv \
+   --output-purified-tsv-file=aginome-coarse-challenge-validation-purified.tsv \
+   --grain=coarse
+
+Rscript ./prepare-aginome-training-input.R --input-csv-file=../../../deconvolution-data/GSE199324_symbol_tpm.csv \
+   --output-purified-csv-anno-file=aginome-fine-challenge-validation-purified-anno.csv \
+   --output-purified-tsv-file=aginome-fine-challenge-validation-purified.tsv \
+   --grain=fine
+
+conda activate base
+
+python create_h5ad.py -anno ../aginome-coarse-challenge-validation-purified-anno.csv -exp ../aginome-coarse-challenge-validation-purified.tsv -outdir ../aginome-coarse-challenge-validation/ -prefix aginome-coarse-challenge-validation
+
+python create_h5ad.py -anno ../aginome-fine-challenge-validation-purified-anno.csv -exp ../aginome-fine-challenge-validation-purified.tsv -outdir ../aginome-fine-challenge-validation/ -prefix aginome-fine-challenge-validation
+
+
+
+conda create -n daism python=3.7
+conda activate daism
+pip install daism
+
+
+# See ~/sbatch-scripts/sbatch-daism-coarse-simulation
+daism Generic_simulation -platform R -aug ../aginome-coarse-challenge-validation/aginome-coarse-challenge-validation.h5ad -N 16000 -testexp ../aginome-coarse-challenge-validation-purified.tsv -outdir ./
+
+conda create -n daism-gpu python=3.7
+conda activate daism-gpu
+pip install daism
+
+# TODO
+
+# See ~/sbatch-scripts/sbatch-daism-coarse-train-cpu
+
+$daism training -trainexp ./output/Generic_mixsam.txt - trainfra ./output/Generic_mixfra.txt -outdir ./ -ncuda 0
+
+# See ~/sbatch-scripts/sbatch-daism-coarse-predict-cpu
+
+$python prediction_DAISM.py -In testexp.csv -Out ./prediction.csv -scale Linear -dataset testexp -model ./output/DAISM_model.pkl - celltype ./output/DAISM_model_celltypes.txt -
+feature ./output/DAISM_model_feature.txt
