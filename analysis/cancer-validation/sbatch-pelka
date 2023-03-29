@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+#SBATCH --job-name="pelka"
+#SBATCH -t 0-72:00:00
+#SBATCH -N 1
+#SBATCH -n 16
+#SBATCH --mem=500GB
+#SBATCH -q batch
+#SBATCH -p compute
+#SBATCH -e /home/whitebr/sbatch-output/pelka.e
+#SBATCH -o /home/whitebr/sbatch-output/pelka.o
+cd $SLURM_SUBMIT_DIR
+unset XDG_RUNTIME_DIR
+##/home/whitebr/anaconda3/bin/activate
+. /home/whitebr/anaconda3/etc/profile.d/conda.sh
+#conda activate cv
+conda activate r4
+# cd /projects/compsci/whitebr/dream_beat_aml/Scripts/
+# Rscript train_glmnet_drop_data_modality_recoded.R
+# Rscript predict-all-drugs-drop-data-modality-recoded.R
+# Rscript train_glmnet_univariate.R
+cd /projects/compsci/jgeorge/whitebr/Tumor-Deconvolution-Challenge/analysis/cancer-validation
+Rscript create-pelka-crc-pseudobulk.R

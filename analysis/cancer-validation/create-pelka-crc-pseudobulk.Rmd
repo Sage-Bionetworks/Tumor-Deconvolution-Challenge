@@ -933,7 +933,7 @@ for(grain in fine.vs.coarse) {
       list("hugo-cpm" = paste0("pelka-", grain, "-hugo-cpm-expr-", cell.type.subset, ".csv"),
            "hugo-cnts" = paste0("pelka-", grain, "-hugo-raw-expr-", cell.type.subset, ".csv"),
            "ensg-cpm" = paste0("pelka-", grain, "-ensg-cpm-expr-", cell.type.subset, ".csv"),
-           "ensg-cnts" = paste0("pelka-", grain, "-hugo-raw-expr-", cell.type.subset, ".csv")
+           "ensg-cnts" = paste0("pelka-", grain, "-ensg-raw-expr-", cell.type.subset, ".csv")
       )
 
     for(nm in names(expr.mats[[grain]][[cell.type.subset]])) {

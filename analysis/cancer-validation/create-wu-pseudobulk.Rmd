@@ -79,9 +79,9 @@ if(!is.na(num.cores) && (num.cores > 1)) {
 ```
 
 ```{r}
-wu.metadata.dir <- '/home/whitebr/wu-breast'
-wu.norm.expr.dir <- '/home/whitebr/wu-breast'
-wu.raw.expr.dir <- '/home/whitebr/wu-breast/BrCa_Atlas_Count_out/'
+wu.metadata.dir <- '/projects/compsci/jgeorge/whitebr/wu-breast/'
+wu.norm.expr.dir <- '/projects/compsci/jgeorge/whitebr/wu-breast/'
+wu.raw.expr.dir <- '/projects/compsci/jgeorge/whitebr/wu-breast//BrCa_Atlas_Count_out/'
 wu.metadata.file <- paste0(wu.metadata.dir, '/', 'Whole_miniatlas_meta.csv')
 ```
 
@@ -745,7 +745,7 @@ for(grain in fine.vs.coarse) {
       list("hugo-cpm" = paste0("wu-", grain, "-hugo-cpm-expr-", cell.type.subset, ".csv"),
            "hugo-cnts" = paste0("wu-", grain, "-hugo-raw-expr-", cell.type.subset, ".csv"),
            "ensg-cpm" = paste0("wu-", grain, "-ensg-cpm-expr-", cell.type.subset, ".csv"),
-           "ensg-cnts" = paste0("wu-", grain, "-hugo-raw-expr-", cell.type.subset, ".csv")
+           "ensg-cnts" = paste0("wu-", grain, "-ensg-raw-expr-", cell.type.subset, ".csv")
       )
 
     for(nm in names(expr.mats[[grain]][[cell.type.subset]])) {
@@ -1150,8 +1150,8 @@ stop("stop")
 
 ```{r}
 # Synapse destination folder for these admixtures
-parent.id <- "syn50734650"
-gs.parent.id <- "syn50734679"
+##parent.id <- "syn50734650"
+##gs.parent.id <- "syn50734679"
 
 # Copy over ensg.to.native.mapping.file
 # Note, in our case this is ensg to hugo. In the Challenge, native was ensg and this was the identity.
