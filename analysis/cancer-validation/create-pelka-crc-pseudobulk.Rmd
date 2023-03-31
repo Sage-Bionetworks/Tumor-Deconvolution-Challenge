@@ -1,0 +1,1107 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# Flow for Pelka goes like this:
+# Input is ENSG raw counts at cell level
+# -> read.and.process.dataset.into.pseudobulk -> {ensg,sym}.counts (Pelka-cluster level raw counts)
+# -> normalize counts to max count
+# -> create.in.silico.admixtures.from.pseudo.bulk
+# -> {ensg,sym}.cnts.pb (challenge-level admixtures)
+# -> cpm
+# -> {ensg,sym}.cpm.pb
+```
+
+
+```{r}
+options(rlib_downstream_check = FALSE)
+suppressPackageStartupMessages(library(pacman)) 
+suppressPackageStartupMessages(p_load(Seurat))
+suppressPackageStartupMessages(p_load(Matrix.utils))
+suppressPackageStartupMessages(p_load(reshape2))
+suppressPackageStartupMessages(p_load(plyr))
+suppressPackageStartupMessages(p_load(GenomicFeatures))
+suppressPackageStartupMessages(p_load(TxDb.Hsapiens.UCSC.hg38.knownGene))
+suppressPackageStartupMessages(p_load(Homo.sapiens))
+# suppressPackageStartupMessages(p_load(BSgenome.Hsapiens.NCBI.GRCh38))
+#install.packages(c("devtools","curl")) ##Installs devtools and the MCPcounter dependancy 'curl'
+#library(devtools)
+#install_github("ebecht/MCPcounter",ref="master", subdir="Source")
+suppressPackageStartupMessages(p_load(MCPcounter))
+#install.packages("synapser", repos=c("http://ran.synapse.org", "https://cloud.r-project.org"))
+suppressPackageStartupMessages(p_load(synapser))
+suppressPackageStartupMessages(p_load(edgeR))
+suppressPackageStartupMessages(p_load(umap))
+suppressPackageStartupMessages(p_load(ggplot2))
+suppressPackageStartupMessages(p_load(ggpubr))
+suppressPackageStartupMessages(p_load(GSEABase)) # for xCell
+# devtools::install_github('dviraran/xCell')
+suppressPackageStartupMessages(p_load(xCell)) # for xCell
+#BiocManager::install("ComplexHeatmap")
+p_load(ComplexHeatmap)
+p_load(colorBlindness)
+suppressPackageStartupMessages(p_load(data.table))
+synLogin()
+```
+
+```{r}
+suppressPackageStartupMessages(p_load(foreach))
+suppressPackageStartupMessages(p_load(parallel))
+```
+
+```{r}
+num.cores <- detectCores()
+num.cores <- min(num.cores, 16)
+if(!is.na(num.cores) && (num.cores > 1)) {
+  suppressPackageStartupMessages(p_load("doMC"))
+  cat(paste("Registering ", num.cores-1, " cores.\n", sep=""))
+  registerDoMC(cores=(num.cores-1))
+}
+```
+
+
+```{r}
+source("../../scripts/utils.R") # for aggregate_matrix
+source("deconv-utils.R")
+```
+
+```{r}
+translate.matrix <- function(mat, translation.tbl, from.col, to.col) {
+  # rownames(mat) <- mat$Gene
+  # translation.tbl <- translation.tbl[translation.tbl[,from.col] %in% rownames(mat),]
+  # mat <- mat[, !(colnames(mat) == "Gene")]
+  # tmp <- t(mat)
+  ttbl <- translation.tbl[translation.tbl[, from.col] %in% rownames(mat),]
+  tmp <- (t(mat))[, unique(ttbl[, from.col])]
+  ret <- aggregate_matrix(tmp, ttbl, to.col, from.col, aggregate_fun = sum)
+  #ret <- cbind(Gene = colnames(ret), as.data.frame(t(ret)))
+  return(t(ret))
+}
+```
+
+
+```{r}
+dataset.path <- '/projects/compsci/jgeorge/whitebr/pelka-crc/'
+
+# Based on https://github.com/hbc/knowledgebase/blob/master/scrnaseq/pseudobulkDE_edgeR.md
+# Metadata should have cell ids as rownames and columns patient.col and cluster.col.
+create.pseudobulk <- function(expr.mat, metadata, patient.col = "Patient", cluster.col = "celltype_coarse") {
+  common.cells <- intersect(colnames(expr.mat), rownames(metadata))
+  expr.mat <- expr.mat[, common.cells]
+  metadata <- metadata[common.cells,]
+  groups <- metadata[, c(patient.col, cluster.col)]
+  cell.type.freq <- melt(table(groups))
+  colnames(cell.type.freq)[3] <- "cnt"
+  cell.type.freq <- ddply(cell.type.freq, .variables = c("Patient"), .fun = function(df) { tot = sum(df$cnt); df$frac <- df$cnt / tot; df})
+  pb <- aggregate.Matrix(t(expr.mat), 
+                       groupings = groups, fun = "sum") 
+  lst <- list("freq" = cell.type.freq, "pb" = pb)
+  return(lst)
+}
+
+## # expr.mat is assumed to be a pseudobulk matrix, with first column Gene and with other columns named as in patient.cluster.col 
+## # in metadata (e.g., <patient id>_<cluster id>)
+## # metadata should also have columns patient.col and cluster.col
+create.admixtures.from.pseudobulk <- function(expr.mat, metadata, patient.cluster.col = "patient_cluster",
+                                              patient.col = "Patient", cluster.col = "celltype_coarse") {
+  common.cell.types <- intersect(colnames(expr.mat), metadata[, patient.cluster.col])
+  expr.mat <- expr.mat[, common.cell.types]
+  metadata <- metadata[metadata[, patient.cluster.col] %in% common.cell.types, ]
+  groups <- metadata[, c(patient.col, cluster.col)]
+  cell.type.freq <- melt(table(groups))
+  colnames(cell.type.freq)[3] <- "cnt"
+  cell.type.freq <- ddply(cell.type.freq, .variables = c("Patient"), .fun = function(df) { tot = sum(df$cnt); df$frac <- df$cnt / tot; df})
+  pb <- aggregate.Matrix(t(expr.mat), 
+                       groupings = groups, fun = "sum") 
+  lst <- list("freq" = cell.type.freq, "pb" = pb)
+  return(lst)
+}
+
+# NB: outputs
+# counts.ensg: ensg counts cluster-level pseudo-bulk 
+# counts.sym: sym counts cluster-level pseudo-bulk
+read.and.process.dataset.into.pseudobulk <- function(dataset.path) {
+  # This is the h5 file from GEO:
+  # https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE178341
+  h5.file <- paste0(dataset.path, '/GSE178341_crc10x_full_c295v4_submit.h5')
+  # NB: use this metadata file from the Broad single-cell portal
+  # https://singlecell.broadinstitute.org/single_cell/study/SCP1162/human-colon-cancer-atlas-c295
+  # since it differentiates between normal and tumor epithelial, whereas the 
+  # cluster file on GEO (GSE178341_crc10x_full_c295v4_submit_cluster.csv) does not
+  cat(paste0("Reading metadata\n"))
+  metadata.file <- paste0(dataset.path, 'crc10x_tSNE_cl_global.tsv')
+  
+  # These files from the Broad portal seem to be for some kind of normalized data:
+  # mtx.file <- paste0(dataset.path, 'matrix.mtx.gz')
+  # gene.file <- paste0(dataset.path, 'matrix.genes.tsv')
+  # barcode.file <- paste0(dataset.path, 'matrix.barcodes.tsv')
+  
+  metadata <- read.table(metadata.file, header=TRUE, sep="\t")
+  # Drop the first row, which gives the types
+  metadata <- metadata[-1,]
+  rownames(metadata) <- metadata$NAME
+  
+  # use.names=FALSE gives use ENSG ids
+  # unique.features=FALSE ensures Read10X_h5 doesn't arbitrarily make the features unique by appending a numeric suffix.
+  # there shouldn't be non-unique features with ENSG ids
+  cat(paste0("Reading h5 file\n"))
+  mat <- Read10X_h5(h5.file, use.names=FALSE, unique.features=FALSE)
+
+  cat(paste0("Parsing symbols and gene ids\n"))  
+  # The h5 file has both ENSG and symbols -- extract them to get a mapping
+  infile <- hdf5r::H5File$new(filename = h5.file, mode = "r")
+  symbol_feature_slot <- "features/name"
+  ensg_feature_slot <- "features/id"
+  symbol_features <- infile[[paste0("matrix/", symbol_feature_slot)]][]
+  ensg_features <- infile[[paste0("matrix/", ensg_feature_slot)]][]
+  gene.trans.tbl <- data.frame(symbol = symbol_features, ensg_id = ensg_features)
+  
+  # There are a small number of genes with ENSG ids ending in _PAR_Y. These are:
+  # 'The pseudoautosomal regions, PAR1, PAR2,[1] are homologous sequences of nucleotides on the X and Y chromosomes.'
+  # The prefix of these gene ids can be duplicated (without the _PAR_Y). For simplicity to avoid name clashes,
+  # let's remove them.
+  cat(paste0("Excluding genes from matrix\n"))
+  gene_ensg_ids <- rownames(mat)
+  flag <- grepl(gene_ensg_ids, pattern="_PAR_Y")
+  mat <- mat[!flag,]
+  gene_ensg_ids <- rownames(mat)
+  
+  flag <- grepl(gene.trans.tbl$ensg_id, pattern="_PAR_Y")
+  gene.trans.tbl <- gene.trans.tbl[!flag,]
+  
+  # Remove everything following the . in ENSGXXXX.Y so that we are left with ENSGXXXX
+  gene_ensg_ids <- unlist(lapply(gene_ensg_ids, function(str) unlist(strsplit(str, split="\\."))[1]))
+  # There should be no duplicates at this point.
+  stopifnot(!duplicated(gene_ensg_ids))
+  rownames(mat) <- gene_ensg_ids
+  
+  gene.trans.tbl$ensg_id <- unlist(lapply(gene.trans.tbl$ensg_id, function(str) unlist(strsplit(str, split="\\."))[1])) 
+  gene.trans.tbl <- subset(gene.trans.tbl, ensg_id %in% rownames(mat))
+  
+  cat(paste0("Subsetting cells\n"))
+  common.cells <- intersect(rownames(metadata), colnames(mat))
+  metadata <- metadata[common.cells,]
+  mat <- mat[, common.cells]
+  
+  cell_ids <- rownames(metadata)
+  
+  # Extract the sample ids (i.e., the id before the first "_")
+  sample_ids <- unlist(lapply(cell_ids, function(str) unlist(strsplit(str, split="_"))[1]))
+  # We are expecting 34 MMRd + 28 MMRp individuals
+  stopifnot(length(unique(sample_ids)) == (34+28))
+  metadata$Patient <- sample_ids
+  
+  # Create the pseudo bulk
+  cat("Creating pseudobulk")
+  metadata$patient_cluster <- paste0(metadata$Patient, "_", metadata$ClusterFull)
+  pb.mat <- t(translate.matrix(t(mat), metadata, from.col="NAME", to.col="patient_cluster"))
+  
+  # Create a symbol based matrix by summing all gene_ids belonging to a symbol
+  # NB: I'm _not_ using Read10X_h5(..., use.names=TRUE) which would return a matrix
+  # with symbol names because it doesn't aggregrate them at all (and would require
+  # unique.features = TRUE, which just appends a suffix to make names unique)
+  cat(paste0("Translating matrix\n"))
+  pb.counts.sym <- translate.matrix(pb.mat, gene.trans.tbl, from.col = "ensg_id", to.col = "symbol")
+  
+  cat(paste0("Computing frequencies\n"))
+  freq.tbl <- 
+    ddply(metadata, .variables = c("Patient", "ClusterFull"),
+          .fun = function(df) {
+            data.frame(cnt = nrow(df))
+          })
+  
+  cat(paste0("Done\n"))
+  return(list("metadata" = metadata, "freq.tbl" = freq.tbl, "counts.ensg" = pb.mat, "counts.sym" = pb.counts.sym))
+}
+
+
+read.dataset.old <- function(dataset.path) {
+  mtx.file <- paste0(dataset.path, 'matrix.mtx.gz')
+  gene.file <- paste0(dataset.path, 'matrix.genes.tsv')
+  barcode.file <- paste0(dataset.path, 'matrix.barcodes.tsv')
+  metadata.file <- paste0(dataset.path, 'crc10x_tSNE_cl_global.tsv')
+  
+  metadata <- read.table(metadata.file, header=TRUE, sep="\t")
+  # Drop the first row, which gives the types
+  metadata <- metadata[-1,]
+  
+  # Read in `matrix.mtx`
+  counts <- readMM(mtx.file)
+
+  # Read in `genes.tsv`
+  genes <- read.table(gene.file, header=FALSE, sep="\t")
+  gene_ensg_ids <- genes$V1
+  gene_symbols <- genes$V2
+  
+  # There are a small number of genes with ENSG ids ending in _PAR_Y. These are:
+  # 'The pseudoautosomal regions, PAR1, PAR2,[1] are homologous sequences of nucleotides on the X and Y chromosomes.'
+  # The prefix of these gene ids can be duplicated (without the _PAR_Y). For simplicity to avoid name clashes,
+  # let's remove them.
+  flag <- grepl(gene_ensg_ids, pattern="_PAR_Y")
+  gene_ensg_ids <- gene_ensg_ids[!flag]
+  gene_symbols <- gene_symbols[!flag]
+  mat <- mat[!flag,]
+  
+  # Remove everything following the . in ENSGXXXX.Y so that we are left with ENSGXXXX
+  gene_ensg_ids <- unlist(lapply(gene_ensg_ids, function(str) unlist(strsplit(str, split="\\."))[1]))
+  # There should be no duplicates at this point.
+  stopifnot(!duplicated(gene_ensg_ids))
+  
+  # Read in `barcodes.tsv`
+  cell_ids <- read.table(barcode.file, header=FALSE)$V1
+  
+  # Extract the sample ids (i.e., the id before the first "_")
+  sample_ids <- unlist(lapply(cell_ids, function(str) unlist(strsplit(str, split="_"))[1]))
+  # We are expecting 34 MMRd + 28 MMRp individuals
+  stopifnot(length(unique(sample_ids)) == (34+28))
+  metadata$Patient <- sample_ids
+  
+  rownames(counts) <- gene_ensg_ids
+  #counts <- cbind(Gene = gene_ensg_ids, )
+  colnames(counts) <- cell_ids
+  
+  # Create a symbol based matrix by summing all gene_ids belonging to a symbol
+  trans.tbl <- data.frame("ensg" = gene_ensg_ids, "symbol" = gene_symbols)
+  # counts.sym <- translate.matrix(counts[1:50,1:50], trans.tbl, from.col = "ensg", to.col = "symbol")
+  
+  return(list())
+}
+
+# Rename Pelka cell types to those used in Challenge
+fine_cell_types <- c(
+    "myeloid.dendritic.cells",
+    "endothelial.cells",
+    "fibroblasts",
+    "macrophages",
+    "memory.CD4.T.cells",
+    "memory.CD8.T.cells",
+    "monocytes",
+    "naive.B.cells",
+    "naive.CD4.T.cells",
+    "naive.CD8.T.cells",
+    "neutrophils",
+    "NK.cells",
+    "regulatory.T.cells",
+    "memory.B.cells"
+)
+
+coarse_cell_types <- c(
+    "B.cells",
+    "CD4.T.cells",
+    "CD8.T.cells",
+    "NK.cells",
+    "neutrophils",
+    "monocytic.lineage",
+    "fibroblasts",
+    "endothelial.cells"
+)
+
+fine.to.coarse.trans <- list(
+    "myeloid.dendritic.cells" = "monocytic.lineage",
+    "endothelial.cells" = "endothelial.cells",
+    "fibroblasts" = "fibroblasts",
+    "macrophages" = "monocytic.lineage",
+    "memory.CD4.T.cells" = "CD4.T.cells",
+    "memory.CD8.T.cells" = "CD8.T.cells",
+    "monocytes" = "monocytic.lineage",
+    "naive.B.cells" = "B.cells",
+    "naive.CD4.T.cells" = "CD4.T.cells",
+    "naive.CD8.T.cells" = "CD8.T.cells",
+    "fibroblasts" = "fibroblasts",
+    "NK.cells" = "NK.cells",
+    "regulatory.T.cells" = "CD4.T.cells",
+    "memory.B.cells" = "B.cells"
+)
+
+fine.to.coarse.trans.tbl <- 
+  data.frame(celltype_fine = names(fine.to.coarse.trans), celltype_coarse = unlist(unname(fine.to.coarse.trans)))
+
+# NA's will be excluded.
+# Note that the new names (on the right hand side) are either challenge subtypes
+# or aggregate types (e.g., epithelial pericyte) that can (optionally) be included
+# in admixtures but that will not be scored.
+fine.cell.trans <- list(
+  "cB1 (B IGD+IgM+)" = "naive.B.cells",
+  "cB2 (B GC-like)" = NA,
+  "cB3 (B CD40+ GC-like)" = "memory.B.cells",
+  "cE01 (Stem/TA-like)" = "epithelial",
+  "cE02 (Stem/TA-like/Immature Goblet)" = "epithelial",
+  "cE03 (Stem/TA-like prolif)" = "epithelial",
+  "cE04 (Enterocyte 1)" = "epithelial",
+  "cE05 (Enterocyte 2)" = "epithelial",
+  "cE06 (Immature Goblet)" = "epithelial",
+  "cE07 (Goblet/Enterocyte)" = "epithelial",
+  "cE08 (Goblet)" = "epithelial",
+  "cE09 (Best4)" = "epithelial",
+  "cE10 (Tuft)" = "epithelial",
+  "cE11 (Enteroendocrine)" = "epithelial",
+  "cM01 (Monocyte)" = "monocytes",
+  "cM02 (Macrophage-like)" = "macrophages",
+  "cM03 (DC1)" = "myeloid.dendritic.cells",
+  "cM04 (DC2)" = "myeloid.dendritic.cells",
+  "cM05 (DC2 C1Q+)" = "myeloid.dendritic.cells",
+  "cM06 (DC IL22RA2)" = "myeloid.dendritic.cells",
+  "cM07 (pDC)" = "myeloid.dendritic.cells",
+  "cM08 (AS-DC)" = "myeloid.dendritic.cells",
+  "cM09 (mregDC)" = "myeloid.dendritic.cells",
+  "cM10 (Granulocyte)" = "neutrophils",
+  "cMA01 (Mast)" = NA,
+  "cP1 (Plasma IgA)" = NA,
+  "cP2 (Plasma IgG)" = NA,
+  "cP3 (Plasma IgG prolif)" = NA,
+  "cS01 (Endo arterial)" = "endothelial.cells",
+  "cS02 (Endo capillary)" = "endothelial.cells",
+  "cS03 (Endo capillary)" = "endothelial.cells",
+  "cS04 (Endo)" = "endothelial.cells",
+  "cS05 (Endo venous)" = "endothelial.cells",
+  "cS06 (Endo lymphatic)" = "endothelial.cells",
+  "cS07 (Endo capillary-like)" = "endothelial.cells",
+  "cS08 (Endo arterial-like)" = "endothelial.cells",
+  "cS09 (Endo)" = "endothelial.cells",
+  "cS10 (Endo tip cells)" = "endothelial.cells",
+  "cS11 (Endo proif)" = "endothelial.cells",
+  "cS12 (Endo)" = "endothelial.cells",
+  "cS13 (Endo venous-like)" = "endothelial.cells",
+  "cS14 (Endo)" = "endothelial.cells",
+  "cS15 (Pericyte)" = "pericyte",
+  "cS16 (Pericyte)" = "pericyte",
+  "cS17 (Pericyte)" = "pericyte",
+  "cS18 (Pericyte)" = "pericyte",
+  "cS19 (Pericyte)" = "pericyte",
+  "cS20 (Pericyte prolif)" = "pericyte",
+  "cS21 (Fibro stem cell niche)" = "fibroblasts",
+  "cS22 (Fibro stem cell niche)" = "fibroblasts",
+  "cS23 (Fibro BMP-producing)" = "fibroblasts",
+  "cS24 (Fibro BMP-producing)" = "fibroblasts",
+  "cS25 (Fibro CCL8+)" = "fibroblasts",
+  "cS26 (Myofibro)" = "fibroblasts",
+  "cS27 (CXCL14+ CAF)" = "fibroblasts",
+  "cS28 (GREM1+ CAF)" = "fibroblasts",
+  "cS29 (MMP3+ CAF)" = "fibroblasts",
+  "cS30 (CAF CCL8 Fibro-like)" = "fibroblasts",
+  "cS31 (CAF stem niche Fibro-like)" = "fibroblasts",
+  # There are few smooth muscle and schwann cells in many samples; let's drop them.
+  "cS32 (Smooth Muscle)" = NA,
+  "cS33 (Schwann)" = NA,
+  # NB: IL7R = CD127
+  "cTNI01 (CD4+ IL7R+)" = "CD4.T.cells",
+  "cTNI02 (CD4+ IL7R+SELL+)" = "CD4.T.cells",
+  "cTNI03 (CD4+ IL7R+HSP+)" = "CD4.T.cells",
+  "cTNI04 (CD4+ IL7R+CCL5+)" = "CD4.T.cells",
+  "cTNI05 (CD4+ IL17+)" = "CD4.T.cells",
+  "cTNI06 (CD4+ TFH)" = "CD4.T.cells",
+  "cTNI07 (CD4+ CXCL13+)" = "CD4.T.cells",
+  "cTNI08 (CD4+ Treg)" = "regulatory.T.cells",
+  "cTNI09 (CD4+ Treg prolif)" = "regulatory.T.cells",
+  "cTNI10 (CD8+ IL7R+)" = "CD8.T.cells",
+  "cTNI11 (CD8+GZMK+)" = "CD8.T.cells",
+  "cTNI12 (CD8+ IL7R+)" = "CD8.T.cells",
+  "cTNI13 (CD8+ T IL17+)" = "CD8.T.cells",
+  "cTNI14 (CD8+ CXCL13+)" = "CD8.T.cells",
+  "cTNI15 (CD8+ CXCL13+ HSP+)" = "CD8.T.cells",
+  "cTNI16 (CD8+ CXCL13+ prolif)" = "CD8.T.cells",
+  # Not sure what these next T cells are. Let's drop them.
+  "cTNI17 (gd-like T)" = NA,
+  "cTNI18 (gd-like T PDCD1+)" = NA,
+  "cTNI19 (gd-like T prolif)" = NA,
+  "cTNI20 (PLZF+ T)" = NA,
+  "cTNI21 (PLZF+ T prolif)" = NA,
+  "cTNI22 (cTNI22)" = NA,
+  "cTNI23 (NK CD16A+)" = "NK.cells",
+  "cTNI24 (NK GZMK+)" = "NK.cells",
+  "cTNI25 (NK XCL1+)" = "NK.cells",
+  "cTNI26 (ILC3)" = "ILC3",
+  "Tumor cE01 (Stem/TA-like)" = "cancer",
+  "Tumor cE02 (Stem/TA-like/Immature Goblet)" = "cancer",
+  "Tumor cE03 (Stem/TA-like prolif)" = "cancer",
+  "Tumor cE04 (Enterocyte 1)" = "cancer",
+  "Tumor cE05 (Enterocyte 2)" = "cancer",
+  "Tumor cE06 (Immature Goblet)" = "cancer",
+  "Tumor cE07 (Goblet/Enterocyte)" = "cancer",
+  "Tumor cE08 (Goblet)" = "cancer",
+  "Tumor cE09 (Best4)" = "cancer",
+  "Tumor cE10 (Tuft)" = "cancer",
+  "Tumor cE11 (Enteroendocrine)" = "cancer"
+)
+
+cell.type.trans.tbl <- 
+  data.frame(orig = names(fine.cell.trans), cell_type = unlist(unname(fine.cell.trans)))
+cell.type.trans.tbl$celltype_fine <- NA
+flag <- cell.type.trans.tbl$cell_type %in% fine_cell_types
+cell.type.trans.tbl[flag, "celltype_fine"] <- cell.type.trans.tbl[flag, "cell_type"]
+
+# condense the fine-grained cell types to coarse-grained cell types
+cell.type.trans.tbl <- merge(cell.type.trans.tbl, fine.to.coarse.trans.tbl, all.x = TRUE)
+
+# If the fine-grained cell type is NA/missing, just copy over the "cell_type."
+# This will either contribute biological noise to the admixtures (in one scenario)
+# or be removed (in another). Recall that NAs (i.e., copied over from cell_type)
+# will always be excluded.
+flag <- is.na(cell.type.trans.tbl$celltype_fine)
+cell.type.trans.tbl[flag, "celltype_fine"] <- cell.type.trans.tbl[flag, "cell_type"]
+
+# Do above for coarse-grained cell types as well.
+flag <- is.na(cell.type.trans.tbl$celltype_coarse)
+cell.type.trans.tbl[flag, "celltype_coarse"] <- cell.type.trans.tbl[flag, "cell_type"]
+
+```
+
+```{r}
+#p_load(knitr)
+#purl("create-pelka-crc-pseudobulk.Rmd", output="create-pelka-crc-pseudobulk.R")
+```
+
+
+```{r}
+out.dir <- "./"
+metadata.file <- paste0(out.dir, "pelka-crc-processed-metadata.tsv")
+freq.tbl.file <- paste0(out.dir, "pelka-crc-processed-freq-table.tsv")
+ensg.counts.mat.file <- paste0(out.dir, "pelka-crc-pseudo-bulk-ensg-counts-mat.csv")
+sym.counts.mat.file <- paste0(out.dir, "pelka-crc-pseudo-bulk-sym-counts-mat.csv")
+if(!file.exists(metadata.file) ||
+   !file.exists(freq.tbl.file) ||
+   !file.exists(ensg.counts.mat.file) ||
+   !file.exists(sym.counts.mat.file)) {
+  cat("Reading Pelka dataset\n")
+  ret <- read.and.process.dataset.into.pseudobulk(dataset.path)
+  metadata <- ret[["metadata"]]
+  freq.tbl <- ret[["freq.tbl"]]
+  # ENSG and sym counts files are pseudo bulks in which individual cells have been collpased/sum
+  # based on their annotated cell type in the Pelka et al publication.
+  # This is _not_ the same cell type as used in the coarse or fine-grained challenge!
+  ensg.counts <- ret[["counts.ensg"]]
+  sym.counts <- ret[["counts.sym"]]
+  write.table(file=metadata.file, metadata, row.names=FALSE, col.names=TRUE, sep="\t", quote=FALSE)
+  write.table(file=freq.tbl.file, freq.tbl, row.names=FALSE, col.names=TRUE, sep="\t", quote=FALSE)
+  fwrite(file=ensg.counts.mat.file, x=cbind(Gene = rownames(ensg.counts), as.data.frame(ensg.counts)), row.names=FALSE, col.names=TRUE, sep=",", quote=FALSE)
+  fwrite(file=sym.counts.mat.file, x=cbind(Gene = rownames(sym.counts), as.data.frame(sym.counts)), row.names=FALSE, col.names=TRUE, sep=",", quote=FALSE)
+}
+
+print(getwd())
+cat("Done\n")
+#q(status = 0)
+
+metadata <- read.table(metadata.file, sep="\t", header=TRUE)
+freq.tbl <- read.table(freq.tbl.file, sep="\t", header=TRUE)
+ensg.counts <- fread(ensg.counts.mat.file, sep=",", header=TRUE)
+sym.counts <- fread(sym.counts.mat.file, sep=",", header=TRUE)
+
+```
+
+```{r}
+# michael love's tpm
+# https://support.bioconductor.org/p/91218/
+
+#' @title Compute TPM for a read count matrix
+#' @param counts A numeric data.frame of read counts with samples (columns) and genes (rows).
+#' @param len A vector of gene length equal to number of rows of counts.
+#' 
+tpm <- function(counts,len) {
+  x <- counts/len
+  return(t(t(x)*1e6/colSums(x)))
+}
+
+# I find the above code (and its recycling) very confusing. 
+# Here is a function that makes this more explicit.
+# However, this seems to lead to dense matrices.
+my.tpm <- function(counts, len) {
+  # Normalize by length
+  x <- sweep(counts,1,len,`/`)
+  # Normalize by sample / column sum
+  x <- sweep(x,2,colSums(x),`/`)
+  # Scale by 1 million
+  return(x * 1e6)
+}
+
+# Same as my.tpm, but without normalizing by gene length
+my.cpm <- function(counts) {
+  x <- counts
+  # x <- sweep(counts,1,len,`/`)
+  # Normalize by sample / column sum
+  x <- sweep(x,2,colSums(x),`/`)
+  # Scale by 1 million
+  return(x * 1e6)
+}
+
+
+```
+
+```{r}
+## Create in silico admixtures from pseudo-bulk
+## sample.ratios is a data frame with columns sample.col (indicating the name of a sample
+## admixture), cell.type.col (indicating a cell type within the sample), and fraction.col
+## (indicating the fraction of the corresponding cell type within the sample). 
+## mat is an expression matrix, whose rows are genes and whose columns
+## are named <sample>_<cell type>. 
+create.in.silico.admixtures.from.pseudo.bulk <- function(mat, sample.ratios,
+                                        sample.col = "sample", cell.type.col = "cell.type",
+                                        fraction.col = "actual") {
+    insilico.admixtures <-
+        dlply(sample.ratios,
+              .variables = sample.col,
+              .fun = function(df) {
+                  df <- df[as.numeric(df[, fraction.col]) >0 ,]
+                  cell_types <- as.character(df[, cell.type.col])
+                  sample.name <- df[1, sample.col]
+                  # print(sample.name)
+                  cols <- paste0(sample.name, "_", cell_types)
+                  fracs <- as.numeric(df[, fraction.col])
+                  tmp.mat <- mat[, cols]
+                  ret <- as.matrix(tmp.mat) %*% fracs
+                  colnames(ret) <- sample.name
+                  ret
+              })
+    insilico.admixtures <- do.call(cbind, insilico.admixtures)
+    # insilico.admixtures <- cbind(Gene = mat$Gene, insilico.admixtures)
+    insilico.admixtures
+}
+
+```
+
+
+```{r}
+collapse.annotated.cell.types.to.challenge.cell.types <- function(mat, cell.type.trans.tbl, metadata, challenge.cell.type.col = "celltype_coarse") {
+  cell.type.col <- challenge.cell.type.col
+  patient.col <- "Patient"
+  tmp.metadata <- cell.type.trans.tbl
+  tmp.metadata <- tmp.metadata[!is.na(tmp.metadata[, cell.type.col]),]
+  tmp.metadata <- merge(tmp.metadata, metadata, by.x = c("orig"), by.y = c("ClusterFull"))
+  tmp2 <- unique(tmp.metadata[, c("orig", patient.col, cell.type.col, "patient_cluster")])
+  rownames(tmp2) <- tmp2$patient_cluster
+  
+  # Create a pseudo bulk where the cell types as annotated in Pelka et al (i.e., the colnames of ensg.counts and sym.counts)
+  # are collapsed/summed into the challenge cell types.
+  # This will only be used for QC (i.e., umaps)
+  stopifnot("Gene" == colnames(mat)[1])
+                  
+  tmp <- as.data.frame(mat)[,-1]
+  rownames(tmp) <- mat$Gene
+  ret <- create.pseudobulk(tmp, tmp2, patient.col = "Patient", cluster.col = cell.type.col)
+  challenge.cell.type.pb <- as.data.frame(t(ret$pb))
+  challenge.cell.type.pb
+}
+```
+
+```{r}
+
+```
+
+```{r}
+
+
+```
+
+```{r}
+
+```
+
+
+```{r}
+coarse.sym.cnts <- collapse.annotated.cell.types.to.challenge.cell.types(sym.counts, cell.type.trans.tbl, metadata, challenge.cell.type.col = "celltype_coarse")
+coarse.sym.cpm <- cpm(coarse.sym.cnts)
+df <- challenge.umap(coarse.sym.cpm)
+g <- plot.challenge.umap(df, plot.labels = FALSE)
+g
+```
+
+```{r}
+foo <- find.inconsistent.umap.cell.types(df)
+if(FALSE) {
+poor <- merge(pbs[["coarse"]][["all"]][["gt"]], foo, by.x = c("cell.type", "sample.id"), by.y = c("cell.type", "patient"))
+poor$pct <- 100 * poor$measured
+poor <- poor[order(poor$sample.id),]
+}
+exclude.pts <- unique(foo$patient)
+```
+
+```{r}
+flag <- !(metadata$Patient %in% exclude.pts)
+coarse.sym.cnts <- collapse.annotated.cell.types.to.challenge.cell.types(sym.counts, cell.type.trans.tbl, metadata[flag,], challenge.cell.type.col = "celltype_coarse")
+coarse.sym.cpm <- cpm(coarse.sym.cnts)
+df <- challenge.umap(coarse.sym.cpm)
+g <- plot.challenge.umap(df, plot.labels = FALSE)
+g
+foo <- find.inconsistent.umap.cell.types(df)
+exclude.pts <- unique(c(exclude.pts, foo$patient))
+
+```
+```{r}
+flag <- !(metadata$Patient %in% exclude.pts)
+coarse.sym.cnts <- collapse.annotated.cell.types.to.challenge.cell.types(sym.counts, cell.type.trans.tbl, metadata[flag,], challenge.cell.type.col = "celltype_coarse")
+coarse.sym.cpm <- cpm(coarse.sym.cnts)
+df <- challenge.umap(coarse.sym.cpm)
+g <- plot.challenge.umap(df, plot.labels = FALSE)
+g
+print(g)
+foo <- find.inconsistent.umap.cell.types(df)
+print(foo)
+
+# Stop excluding patients here:
+for(pt in exclude.pts) { cat(paste0(pt, "\n"))}
+```
+
+
+```{r}
+set.seed(4321) # though there shouldn't be any randomness here
+## Create in silico admixtures from pseudo-bulk
+## sample.ratios is a data frame with columns sample.col (indicating the name of a sample
+## admixture), cell.type.col (indicating a cell type within the sample), and fraction.col
+## (indicating the fraction of the corresponding cell type within the sample). 
+## mat is an expression matrix, whose rows are genes and whose columns
+## are named <sample>_<cell type>. 
+
+stopifnot(all(unique(cell.type.trans.tbl$orig) %in% unique(metadata$ClusterFull)))
+stopifnot(all(unique(metadata$ClusterFull) %in% unique(cell.type.trans.tbl$orig)))
+
+# fine vs coarse
+# only crc and cell types vs all
+# ensg vs sym
+fine.vs.coarse <- list("fine" = "fine", "coarse" = "coarse")
+subsets <- list("only.challenge.types" = "only.challenge.types", "all" = "all")
+#fine.vs.coarse <- list("coarse" = "coarse")
+#subsets <- list("all" = "all")
+pbs <-
+  llply(fine.vs.coarse,
+        .fun = function(sc) {
+          llply(subsets,
+                .fun = function(cell.type.subset) {
+                  
+                  
+                  cell.type.col <- paste0("celltype_", sc)
+                  sample.col <- "Patient"
+                  cluster.col <- cell.type.col
+                  tmp.metadata <- cell.type.trans.tbl
+                  tmp.metadata <- tmp.metadata[!is.na(tmp.metadata[, cell.type.col]),]
+                  
+                  if(cell.type.subset == "only.challenge.types") {
+                    tmp.metadata <- tmp.metadata[tmp.metadata[, cell.type.col] %in% c("cancer", coarse_cell_types, fine_cell_types),]
+                  }
+                  
+                  # Exclude patients
+                  exclude.flag <- !(metadata[, sample.col] %in% exclude.pts)
+                  print(table(exclude.flag))
+                  
+                  tmp.metadata <- merge(tmp.metadata, metadata[exclude.flag,], by.x = c("orig"), by.y = c("ClusterFull"))
+                  groups <- tmp.metadata[, c(sample.col, "orig")]
+                  cell.type.freq <- melt(table(groups))
+                  colnames(cell.type.freq)[3] <- "cnt"
+                  cell.type.freq <- ddply(cell.type.freq, .variables = c(sample.col), .fun = function(df) { tot = sum(df$cnt); df$frac <- df$cnt / tot; df})
+
+                  tmp2 <- merge(unique(tmp.metadata[, c("orig", sample.col, cell.type.col, "patient_cluster")]), cell.type.freq)
+                  rownames(tmp2) <- tmp2$patient_cluster
+                  gt.freq <- ddply(tmp2, .variables = c(sample.col, cell.type.col),
+                                   .fun = function(df) {
+                                     data.frame(frac = sum(df$frac))
+                                   })
+                  gt.freq <- gt.freq[, c(sample.col, cell.type.col, "frac")]
+                  gt.freq <- cbind(dataset.name = paste0("pelka-", cell.type.subset), gt.freq[, c(sample.col, cell.type.col, "frac")])
+                  colnames(gt.freq) <- c("dataset.name", "sample.id", "cell.type", "measured")
+
+                  tmp <- collapse.annotated.cell.types.to.challenge.cell.types(sym.counts, cell.type.trans.tbl, metadata[exclude.flag,], challenge.cell.type.col = cell.type.col)
+                  sym.cpm.challenge.cell.type.pb <- cpm(tmp)
+
+                  tmp <- collapse.annotated.cell.types.to.challenge.cell.types(ensg.counts, cell.type.trans.tbl, metadata[exclude.flag,], challenge.cell.type.col = cell.type.col)
+                  ensg.cpm.challenge.cell.type.pb <- cpm(tmp)
+                                    
+
+                  # Normalize the count matrix so that each pseudobulk cell types has the same number of counts (set to the max of all cell types)
+                  ensg.genes <- as.data.frame(ensg.counts)[,1]
+                  tmp <- ensg.counts[,-1]
+                  tot.cnts <- colSums(tmp)
+                  max.tot.cnts <- max(tot.cnts)
+                  tmp <- sweep(tmp, 2, max.tot.cnts / colSums(tmp),`*`) 
+                  tmp <- cbind(Gene = ensg.genes, as.data.frame(tmp))
+                  
+                  ensg.cnts.pb <- create.in.silico.admixtures.from.pseudo.bulk(as.data.frame(tmp), tmp2, sample.col = sample.col, cell.type.col = "orig", fraction.col = "frac")
+
+                  sym.genes <- as.data.frame(sym.counts)[,1]
+                  tmp <- sym.counts[,-1]
+                  tot.cnts <- colSums(tmp)
+                  max.tot.cnts <- max(tot.cnts)
+                  tmp <- sweep(tmp, 2, max.tot.cnts / colSums(tmp),`*`) 
+                  tmp <- cbind(Gene = sym.genes, as.data.frame(tmp))
+
+                  sym.cnts.pb <- create.in.silico.admixtures.from.pseudo.bulk(as.data.frame(tmp), tmp2, sample.col = sample.col, cell.type.col = "orig", fraction.col = "frac")
+
+                  # Compute CPMs
+                  ensg.cpm.pb <- cpm(as.matrix(ensg.cnts.pb))
+                  sym.cpm.pb <- cpm(as.matrix(sym.cnts.pb))
+                  
+                  # Add Gene as first column
+                  ensg.cnts.pb <- cbind(Gene = ensg.genes, as.data.frame(ensg.cnts.pb))
+                  ensg.cpm.pb <- cbind(Gene = ensg.genes, as.data.frame(ensg.cpm.pb))
+                  sym.cnts.pb <- cbind(Gene = sym.genes, as.data.frame(sym.cnts.pb))
+                  sym.cpm.pb <- cbind(Gene = sym.genes, as.data.frame(sym.cpm.pb))
+                  
+                  list("gt" = gt.freq, "ensg.cnts.pb" = ensg.cnts.pb, "sym.cnts.pb" = sym.cnts.pb, "ensg.cpm.pb" = ensg.cpm.pb, "sym.cpm.pb" = sym.cpm.pb,
+                       "sym.cpm.challenge.cell.type.pb" = sym.cpm.challenge.cell.type.pb, "ensg.cpm.challenge.cell.type.pb" = ensg.cpm.challenge.cell.type.pb)
+
+                }) 
+          
+        })
+
+```
+
+
+
+```{r}
+run.da505_ <- function(mat, grain="fine") {
+  path <- "/projects/compsci/jgeorge/USERS/whitebr/Dream_Deconv_Challenge_Team_DA505/"
+  cur.wd <- getwd()
+  setwd(path)
+  source("cps_functions.R")
+  suppressPackageStartupMessages(p_load(glmnet))
+  suppressPackageStartupMessages(p_load(e1071))
+  rownames(mat) <- mat$Gene
+  mat <- mat[, -1]
+  if(grain=="fine") {
+    res <- do_CPS_fine_glmnet(mat)
+  } else {
+    res <- do_CPS_coarse_glmnet(mat)
+  }
+  setwd(cur.wd)
+  
+  res <- melt(as.matrix(res))
+  colnames(res) <- c("cell.type", "sample", "value")
+  
+  return(res)
+  mat.file <- tempfile()
+  out.file <- tempfile()
+  write.table(mat, file=mat.file, row.names=FALSE, col.names=TRUE, sep=",", quote=FALSE)
+  cmd <- paste0("Rscript ", path, "./cps_run.R --input=", mat.file, " --output=", out.file, " --", grain)
+  system(cmd)
+  ret <- read.table(out.file)
+  file.remove(mat.file)
+  file.remove(out.file)
+  setwd(cur.wd)
+  ret
+}
+
+run.da505.fine <- function(mat) {
+  run.da505_(mat, grain="fine")
+}
+
+run.da505.coarse <- function(mat) {
+  run.da505_(mat, grain="coarse")
+}
+
+```
+
+```{r}
+if(FALSE) {
+# Diagnose what is wrong with poor NK and myeloid DC DA505 behavior:
+load("/projects/compsci/jgeorge/USERS/whitebr/Dream_Deconv_Challenge_Team_DA505/models/glmnet_model_coarsegrained.rdata")
+nms <- names(COURSEGRAIN)
+for(nm in nms) {
+  print(nm)
+  coefs <- as.data.frame(coefficients(COURSEGRAIN[[nm]]$glmnet.fit))
+  flag <- unlist(lapply(1:nrow(coefs), function(i) any(coefs[i,] > 0)))
+  print(table(rownames(coefs)[flag] %in% rownames(coarse.cpm.admixture.ensg)))
+}
+
+load("/projects/compsci/jgeorge/USERS/whitebr/Dream_Deconv_Challenge_Team_DA505/models/glmnet_model_finegrained.rdata")
+nms <- names(FINEGRAIN)
+for(nm in nms) {
+  print(nm)
+  coefs <- as.data.frame(coefficients(FINEGRAIN[[nm]]$glmnet.fit))
+  flag <- unlist(lapply(1:nrow(coefs), function(i) any(coefs[i,] > 0)))
+  print(table(rownames(coefs)[flag] %in% rownames(fine.cpm.admixture.ensg)))
+}
+}
+```
+
+
+```{r}
+cibersort.base <- "/home/whitebr/"
+source(paste0(cibersort.base, "CIBERSORT.R"))
+cibersort.lm22.sig.file <- paste0(cibersort.base, "LM22.txt")
+cibersort.2l.sig.file <- paste0(cibersort.base, "cibersort-sig-matrix-2l.txt")
+
+
+```
+
+
+```{r}
+if(FALSE) {
+load("/projects/compsci/jgeorge/USERS/whitebr/Dream_Deconv_Challenge_Team_DA505/models/glmnet_model_finegrained.rdata")
+nms <- names(FINEGRAIN)
+for(nm in nms) {
+  print(nm)
+  coefs <- as.data.frame(coefficients(FINEGRAIN[[nm]]$glmnet.fit))
+  flag <- unlist(lapply(1:nrow(coefs), function(i) any(coefs[i,] > 0)))
+  print(table(rownames(coefs)[flag] %in% pbs[[grain]][["all"]][["ensg.cpm.pb"]]$Gene))
+}
+}
+```
+
+```{r}
+# Gene the aginome genes and see whether they are in the CRC data
+aginome.genes <- read.csv("https://raw.githubusercontent.com/xmuyulab/DCTD_Team_Aginome-XMU/main/validation_features_5080.txt", sep="\t", header=TRUE)$feature_left
+stopifnot(all(aginome.genes %in% sym.counts$Gene))
+```
+
+```{r}
+grain <- "fine"
+cell.type.subset <- "all"
+cell.type.subset <- "only.challenge.types"
+if(FALSE) {
+res <- run.all.deconv(sym.mat = pbs[[grain]][[cell.type.subset]][["sym.cpm.pb"]], ensg.mat = pbs[[grain]][[cell.type.subset]][["ensg.cpm.pb"]], 
+                      cell.type.freq = pbs[[grain]][[cell.type.subset]][["gt"]], grain=grain)
+}
+
+```
+
+```{r}
+
+
+```
+
+
+```{r}
+grain <- "fine"
+cell.type.subset <- "all"
+cell.type.subset <- "only.challenge.types"
+fine.vs.coarse <- list("fine" = "fine", "coarse" = "coarse")
+subsets <- list("only.challenge.types" = "only.challenge.types", "all" = "all")
+
+method.trans <- list("da505" = "DA505", "mcp" = "MCP-Counter", "xcell" = "xCell", "cs" = "CIBERSORT", "csx" = "CIBERSORTx")
+
+for(grain in fine.vs.coarse) {
+  for(cell.type.subset in subsets) {
+    print(c(grain, cell.type.subset))
+    res <- run.all.deconv(sym.mat = pbs[[grain]][[cell.type.subset]][["sym.cpm.pb"]], ensg.mat = pbs[[grain]][[cell.type.subset]][["ensg.cpm.pb"]],
+                          cell.type.freq = pbs[[grain]][[cell.type.subset]][["gt"]], grain=grain)
+    for(method in names(res)) {
+      if(!is.null(res[[method]])) {
+        g <- plot.deconv.results(res[[method]], gt.col = "measured")
+        g <- g + ggtitle(paste0(method.trans[[method]], " (", "CRC; ", firstup(grain), "-grained; ", cell.type.subset, ")"))
+        file <- paste0("crc-deconv-", method, "-", grain, "-", cell.type.subset, ".png")
+        png(file)
+        print(g)
+        d <- dev.off()
+      }
+    }
+  }
+}
+```
+```{r}
+# stop("stop")
+```
+
+```{r}
+# Synapse destination folder for these admixtures
+parent.id <- "syn50918678"
+gs.parent.id <- "syn50918679"
+
+# Copy over ensg.to.hugo.mapping.file from the Challenge.
+# This will be the native.to.hugo mapping
+# Note, in our case this is ensg to hugo. In the Challenge, native was ensg and this was the identity.
+ensg.to.hugo.trans.id <- "syn22394938"
+ensg.to.hugo.trans.tbl <- read.table(synGet(ensg.to.hugo.trans.id, downloadFile=TRUE)$path, sep="\t", header=TRUE)
+native.to.hugo.tbl.file <- "ensg_to_hugo.tsv"
+file <- native.to.hugo.tbl.file
+write.table(file = file, ensg.to.hugo.trans.tbl, col.names = TRUE, row.names = FALSE, sep = "\t", quote = FALSE)
+cat(paste0("Storing ", native.to.hugo.tbl.file, " to synapse\n"))
+f <- File(file, parentId = parent.id, synapseStore = TRUE)
+synStore(f)
+
+
+# Create a native_to_ensg.tsv file, which is just the identity
+native.to.ensg.tbl.file <- "ensg_to_ensg.tsv"
+native.to.ensg.tbl <- data.frame(from = pbs[["fine"]][["all"]][["ensg.cpm.pb"]]$Gene, to = pbs[["fine"]][["all"]][["ensg.cpm.pb"]]$Gene)
+file <- native.to.ensg.tbl.file
+write.table(file = file, native.to.ensg.tbl, col.names = TRUE, row.names = FALSE, sep = "\t", quote = FALSE)
+cat(paste0("Storing ",native.to.ensg.tbl.file, " to synapse\n"))
+f <- File(file, parentId = parent.id, synapseStore = TRUE)
+synStore(f)
+
+expr.mats <- list()
+expr.mat.files <- list()
+for(grain in fine.vs.coarse) {
+  expr.mats[[grain]] <- list()
+  expr.mat.files[[grain]] <- list()
+  for(cell.type.subset in subsets) {
+    expr.mats[[grain]][[cell.type.subset]] <- 
+      list("hugo-cpm" = pbs[[grain]][[cell.type.subset]][["sym.cpm.pb"]],
+           "hugo-cnts" = pbs[[grain]][[cell.type.subset]][["sym.cnts.pb"]],
+           "ensg-cpm" = pbs[[grain]][[cell.type.subset]][["ensg.cpm.pb"]],
+           "ensg-cnts" = pbs[[grain]][[cell.type.subset]][["ensg.cnts.pb"]]
+      )
+    expr.mat.files[[grain]][[cell.type.subset]] <- 
+      list("hugo-cpm" = paste0("pelka-", grain, "-hugo-cpm-expr-", cell.type.subset, ".csv"),
+           "hugo-cnts" = paste0("pelka-", grain, "-hugo-raw-expr-", cell.type.subset, ".csv"),
+           "ensg-cpm" = paste0("pelka-", grain, "-ensg-cpm-expr-", cell.type.subset, ".csv"),
+           "ensg-cnts" = paste0("pelka-", grain, "-ensg-raw-expr-", cell.type.subset, ".csv")
+      )
+
+    for(nm in names(expr.mats[[grain]][[cell.type.subset]])) {
+      print(nm)
+      file <- expr.mat.files[[grain]][[cell.type.subset]][[nm]]
+      mat <- expr.mats[[grain]][[cell.type.subset]][[nm]]
+      write.table(file = file, mat, col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
+      cat(paste0("Storing ", file, " to synapse\n"))
+      f <- File(file, parentId = parent.id, synapseStore = TRUE)
+      synStore(f)
+    }
+
+  }
+  
+  # Create the gold standards with columns:
+  # dataset.name	sample.id	cell.type	measured
+  gs <- Reduce(rbind, lapply(subsets, function(cell.type.subset) {
+                pbs[[grain]][[cell.type.subset]][["gt"]][,c("dataset.name", "sample.id", "cell.type", "measured")]
+  }))
+  if(grain == "fine") {
+    gs <- subset(gs, cell.type %in% fine_cell_types)
+  } else {
+    gs <- subset(gs, cell.type %in% coarse_cell_types)
+  }
+  file <- paste0("pelka-", grain, "-gold-standard.csv")
+  write.table(file = file, gs, col.names=TRUE, row.names=FALSE, sep=",", quote=FALSE)
+  cat(paste0("Storing ", file, " to synapse\n"))
+  f <- File(file, parentId = gs.parent.id, synapseStore = TRUE)
+  synStore(f)
+}
+```
+
+```{r}
+# stop("stop")
+```
+
+
+```{r}
+input.tbl <- 
+  ldply(fine.vs.coarse,
+        .fun = function(grain) {
+          ret <- ldply(subsets, 
+                       .fun = function(cell.type.subset) {
+                         df <- list(
+                                  "dataset.name" = paste0("pelka-", cell.type.subset),
+                                  "cancer.type" = "CRC",
+                                  "platform" = "Illumina",
+                                  "scale" = "Linear",
+                                  "normalization" = "CPM",
+                                  "native.probe.type" = "ENSG",
+                                  "symbol.compression.function" = "colSums",
+                                  "ensg.compression.function" = NA,
+                                  "symbol.to.native.mapping.file" = native.to.hugo.tbl.file,
+                                  "ensg.to.native.mapping.file" = native.to.ensg.tbl.file,
+                                  "hugo.expr.file" = expr.mat.files[[grain]][[cell.type.subset]][["hugo-cpm"]],
+                                  "hugo.expr.est.counts.file" = expr.mat.files[[grain]][[cell.type.subset]][["hugo-cnts"]],
+                                  "ensg.expr.file" = expr.mat.files[[grain]][[cell.type.subset]][["ensg-cpm"]],
+                                  "ensg.expr.est.counts.file" = expr.mat.files[[grain]][[cell.type.subset]][["ensg-cnts"]],
+                                  "fastq.samples" = NA,
+                                  "fastq1.files" = NA,
+                                  "fastq2.files" = NA,
+                                  "native.expr.file" = expr.mat.files[[grain]][[cell.type.subset]][["ensg-cpm"]],
+                                  "native.expr.est.counts.file" = expr.mat.files[[grain]][[cell.type.subset]][["ensg-cnts"]],
+                                  "symbol.compression.est.counts.function" = "colSums",
+                                  "ensg.compression.est.counts.function" = "NA"
+                                )
+                        df <- as.data.frame(df)
+                       })
+          colnames(ret)[1] <- "subset"
+          ret
+})
+colnames(input.tbl)[1] <- "grain"
+input.tbl <- input.tbl[, !(colnames(input.tbl) == "subset")]
+```
+
+```{r}
+file <- "fine-input.csv"
+write.table(file = file, subset(input.tbl, grain == "fine")[, !(colnames(input.tbl) == "grain")], col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
+cat(paste0("Storing ", file, " to synapse\n"))
+f <- File(file, parentId = parent.id, synapseStore = TRUE)
+synStore(f)
+
+file <- "coarse-input.csv"
+write.table(file = file, subset(input.tbl, grain == "coarse")[, !(colnames(input.tbl) == "grain")], col.names = TRUE, row.names = FALSE, sep = ",", quote = FALSE)
+cat(paste0("Storing ", file, " to synapse\n"))
+f <- File(file, parentId = parent.id, synapseStore = TRUE)
+synStore(f)
+```
+
+```{r}
+cat("Done\n")
+q(status=0)
+```
+
+
+```{r}
+# Load in CIBERSORTx Wu fine-grained results run manually
+library(data.table)
+csx.l2 <- fread("CIBERSORTx_Job4_Adjusted-wu-fine-2l.txt")
+csx.lm22 <- fread("CIBERSORTx_Job3_Adjusted-wu-fine-lm22.txt")
+csx.lm22 <- fread("CIBERSORT-Results.txt")
+csx.res <- as.data.frame(merge(csx.l2, csx.lm22, by=c("Mixture")))
+cell.types <- colnames(csx.lm22)
+cell.types <- cell.types[!(cell.types %in% c("Mixture", "P-value", "Correlation", "RMSE"))]
+# Scale by immune proportion
+for(ct in cell.types) { csx.res[, ct] <- csx.res[,ct] * csx.res[,"CD45"]}
+csx.res <- csx.res[,c("Mixture", cell.types, "CD10", "CD31", "EPCAM")]
+rownames(csx.res) <- csx.res[,1]
+csx.res <- csx.res[,-1]
+csx.res <- format.cibersort.results(as.matrix(csx.res), cibersort_fine_translation_df)
+csx.res <- merge(csx.res, fine.cell.type.freq, by.x = c("cell.type", "sample"), by.y = c("celltype_fine", "Patient"))
+#csx.res <- format.cibersort.results(as.matrix(csx.res), cibersort_coarse_translation_df)
+#csx.res <- merge(csx.res, coarse.cell.type.freq, by.x = c("cell.type", "sample"), by.y = c("celltype_coarse", "Patient"))
+g <- plot.deconv.results(csx.res)
+g <- g + ggtitle("CIBERSORTx (Wu et al. Breast)")
+```
+
+```{r}
+lm22 <- fread("LM22.txt")
+lm22[as.data.frame(lm22)[,1] %in% missing.genes,]
+```
+
+```{r}
+p_load(biomaRt)
+ensembl92 <- useEnsembl(biomart = 'genes', 
+                        dataset = 'hsapiens_gene_ensembl',
+                        version = 92)
+
+
+
+foo <- getBM(attributes = c('ensembl_gene_id', 'external_gene_name'), filters = 'ensembl_gene_id', values=unique(trans.tbl$ensembl_gene_id), mart=ensembl92)
+table(challenge.genes %in% foo$external_gene_name)
+# https://ftp.ensembl.org/pub/release-92/gtf/homo_sapiens/
+```
+
+```{r}
+p_load("GenomicFeatures")
+# https://www.biostars.org/p/456800/
+#gtf_txdb <- makeTxDbFromGFF('Homo_sapiens.GRCh38.92.gtf.gz', organism="Homo sapiens")
+gtf_txdb <- makeTxDbFromGFF('Homo_sapiens.GRCh38.92.gtf.gz')
+gene_list <- genes(gtf_txdb)
+gene_list <- as.data.frame(gene_list)
+gene_list[1:3, 1:4]
+s <- subset(unique(trans.tbl[, c("ensembl_gene_id", "hgnc_symbol")]), hgnc_symbol %in% lm22$`Gene symbol`)
+table(unique(s$ensembl_gene_id) %in% gene_list$gene_id)
+```
+
+```{r}
+
+
+```
+
+
+```{r}
+library(Homo.sapiens)
+TxDb(Homo.sapiens) <- gtf_txdb
+
+```
+
+```{r}
+# https://www.biostars.org/p/317962/
+table(challenge.genes %in% trans.tbl$hgnc_symbol)
+s <- subset(trans.tbl, hgnc_symbol %in% challenge.genes)
+
+#library (EDASeq)
+#ensembl_list <- c("ENSG00000000003","ENSG00000000419","ENSG00000000457","ENSG00000000460")
+#gl <- getGeneLengthAndGCContent(ensembl_list, "hsa")
+#gl <- getGeneLengthAndGCContent(ensembl_list, "hsa")
+
+```
+
