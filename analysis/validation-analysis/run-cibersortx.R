@@ -18,9 +18,19 @@ suppressPackageStartupMessages(library(reshape2))
 cat(paste0("Run on a machine with Docker installed\n"))
 cat(paste0("I ran on tdaws2: 10.23.19.191 in //home/bwhite/\n"))
 
+## NB: need to first csx-input and then copy LM22.txt and cibersort-sig-matrix-2l.txt to it,
+## even though this script creates csx-input, if it doesn't exist.
+
 ## path=/home/bwhite/Tumor-Deconvolution-Challenge/analysis/validation-analysis/
 ## token=efd223f57902e9a25ace81427862aa8a
 ## user=brian.white@sagebase.org
+
+## At JAX (i.e., for Wu/BRCA and Pelka/CRC pseudobulk datasets)
+## path=/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/
+## token=
+## user=
+
+## https://cibersortx.stanford.edu/activate.php?email=brian.white%40jax.org&key=01e7985500e3c40cc466c427d17777b9
 
 ## Suddenly, I need to run docker as sudo, so:
 ## To re-run validation data
@@ -49,6 +59,24 @@ cat(paste0("I ran on tdaws2: 10.23.19.191 in //home/bwhite/\n"))
 ## To run B-all analysis
 ## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
 ##   --input-file-synId=syn22780464 --input-folder-synId=syn22492020 --output-folder-synId=syn22780563 --prefix=b-all
+
+## To run Wu/BRCA fine-grained tumor pseudo-bulk analysis
+## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
+##   --input-file-synId=syn51121875 --input-folder-synId=syn51121855 --output-folder-synId=syn51277079 --prefix=wu-brca-fine
+
+## To run Wu/BRCA coarse-grained tumor pseudo-bulk analysis
+## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
+##   --input-file-synId=syn51121876 --input-folder-synId=syn51121855 --output-folder-synId=syn51277079 --prefix=wu-brca-coarse
+
+## To run Pelka/CRC fine-grained tumor pseudo-bulk analysis
+## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
+##   --input-file-synId=syn51021836 --input-folder-synId=syn50918678 --output-folder-synId=syn51277135 --prefix=pelka-crc-fine
+
+
+## To run Pelka/CRC coarse-grained tumor pseudo-bulk analysis
+## sudo Rscript $path/run-cibersortx.R --token=$token --username=$user
+##   --input-file-synId=syn51021837 --input-folder-synId=syn50918678 --output-folder-synId=syn51277135 --prefix=pelka-crc-coarse
+
 
 option_list <- list(
     make_option(c("--prefix"), action="store",
@@ -379,8 +407,8 @@ print(head(csx.all.gene.res))
 file <- paste0(prefix, "-csx-all-gene-predictions-sum.tsv")
 write.table(file = file, csx.all.gene.res, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
-#f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
-#synStore(f)
+f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
+synStore(f)
 
 cat("Exiting successfully\n")
 q(status=0)
