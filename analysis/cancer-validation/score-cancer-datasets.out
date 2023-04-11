@@ -1,0 +1,73 @@
+Welcome, Brian White!NULL
+There were 28 warnings (use warnings() to see them)
+There were 50 or more warnings (use warnings() to see the first 50)
+  method.name         cell.type method.cell.type.mean
+1 Aboensis IV           B.cells             0.9652585
+2 Aboensis IV       CD4.T.cells             0.6401138
+3 Aboensis IV       CD8.T.cells             0.8256377
+4 Aboensis IV endothelial.cells             0.9830153
+5 Aboensis IV       fibroblasts             0.8195190
+6 Aboensis IV       macrophages             0.4913030
+[1] "B.cells"
+B.cells: cor.p.method.adj ~ 0 + dataset.name
+[1] "CD4.T.cells"
+CD4.T.cells: cor.p.method.adj ~ 0 + dataset.name
+[1] "CD8.T.cells"
+CD8.T.cells: cor.p.method.adj ~ 0 + dataset.name
+[1] "endothelial.cells"
+endothelial.cells: cor.p.method.adj ~ 0 + dataset.name
+[1] "fibroblasts"
+fibroblasts: cor.p.method.adj ~ 0 + dataset.name
+[1] "macrophages"
+macrophages: cor.p.method.adj ~ 0 + dataset.name
+[1] "memory.CD4.T.cells"
+memory.CD4.T.cells: cor.p.method.adj ~ 0 + dataset.name
+[1] "memory.CD8.T.cells"
+memory.CD8.T.cells: cor.p.method.adj ~ 0 + dataset.name
+[1] "monocytes"
+monocytes: cor.p.method.adj ~ 0 + dataset.name
+[1] "monocytic.lineage"
+monocytic.lineage: cor.p.method.adj ~ 0 + dataset.name
+[1] "myeloid.dendritic.cells"
+myeloid.dendritic.cells: cor.p.method.adj ~ 0 + dataset.name
+[1] "naive.B.cells"
+naive.B.cells: cor.p.method.adj ~ 0 + dataset.name
+[1] "naive.CD4.T.cells"
+naive.CD4.T.cells: cor.p.method.adj ~ 0 + dataset.name
+[1] "naive.CD8.T.cells"
+naive.CD8.T.cells: cor.p.method.adj ~ 0 + dataset.name
+[1] "neutrophils"
+neutrophils: cor.p.method.adj ~ 0 + dataset.name
+[1] "NK.cells"
+NK.cells: cor.p.method.adj ~ 0 + dataset.name
+[1] "regulatory.T.cells"
+regulatory.T.cells: cor.p.method.adj ~ 0 + dataset.name
+Warning messages:
+1: In setup_parallel() : No parallel backend registered
+2: executing %dopar% sequentially: no parallel backend registered 
+All Anovas are significant for Wu/Pelka datasets max pvalue: 0.000163840631998484
+Warning message:
+NAs introduced by coercion 
+
+   dataset.nameAA    dataset.nameAB    dataset.nameAE    dataset.nameAF 
+                2                 2                 1                 3 
+  dataset.nameDS1   dataset.nameDS2   dataset.nameDS3   dataset.nameDS4 
+                2                 6                 1                 1 
+dataset.namePelka    dataset.nameWu 
+                4                 2 
+< table of extent 0 >
+
+   dataset.nameAA    dataset.nameAB    dataset.nameAE    dataset.nameAF 
+                2                 2                 1                 3 
+  dataset.nameDS1   dataset.nameDS2   dataset.nameDS3   dataset.nameDS4 
+                2                 6                 1                 1 
+dataset.namePelka    dataset.nameWu 
+                4                 2 
+           cell.type          variable   Estimate one.sided.pval
+3        CD4.T.cells dataset.namePelka -0.1427426   2.198134e-06
+7  endothelial.cells dataset.namePelka -0.1227323   2.476448e-05
+22     naive.B.cells    dataset.nameWu -0.2029551   1.963598e-07
+23       neutrophils dataset.namePelka -0.1885630   7.361772e-15
+24          NK.cells dataset.namePelka -0.2010097   1.173294e-14
+25          NK.cells    dataset.nameWu -0.1159128   2.493720e-06
+Exiting successfully
