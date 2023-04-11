@@ -54,13 +54,18 @@ figs <-
        "figs17.png" = "analysis/specificity-analysis/figs/spillover-all-scores-fine-grained-round-1.png",
        "figs17.pdf" = "analysis/specificity-analysis/figs/spillover-all-scores-fine-grained-round-1.pdf",
        "fig6.png" = "analysis/in-silico-admixtures/figs/sensitivity-spikein-and-summary.png",
-       "fig6.pdf" = "analysis/in-silico-admixtures/figs/sensitivity-spikein-and-summary.pdf"
+       "fig6.pdf" = "analysis/in-silico-admixtures/figs/sensitivity-spikein-and-summary.pdf",
+       "fig7.png" = "analysis/cancer-validation/figs/fig-cancer-validation.png",
+       "fig7.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation.pdf"       
+
 )
 
 tbls <-
   list(
        "tables10.csv" = "training-sample-metadata/geo-expression-array-immune-cells.csv",
-       "tables11.csv" = "training-sample-metadata/geo-rnaseq-immune-cells.csv"
+       "tables11.csv" = "training-sample-metadata/geo-rnaseq-immune-cells.csv",
+       "tables17.tsv" = "analysis/cancer-validation/figs/cancer-validation-correlations.tsv",
+       "tables18.tsv" = "analysis/cancer-validation/figs/cancer-validation-dataset-pvals.tsv"       
 )
 
 for(fig in names(figs)) {
