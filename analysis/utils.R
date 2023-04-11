@@ -1348,3 +1348,40 @@ create.in.silico.admixtures <- function(mat, sample.ratios,
     insilico.admixtures
 }
 
+# Compute predictions for a single method and subchallenge!
+# i.e., preds are assumed to be for a specific method and subchallenge
+score.preds <- function(preds) {
+  # As described in Challenge here
+  # Overall score is computed by:
+  # 1. Computing correlation/RMSE independently for each dataset/cell type
+  # 2. Averaging over cell type for each dataset
+  # 3. Averaging over dataset
+  res <- 
+    ddply(preds, .variables = c("cell.type", "dataset.name"),
+          .fun = function(df) {
+            cor.p <- cor(df$prediction, df$measured, method="pearson")
+            cor.s <- cor(df$prediction, df$measured, method="spearman")
+            rmse <- sqrt(mean((df$prediction - df$measured)^2))
+            data.frame(cor.p = cor.p, cor.s = cor.s, rmse = rmse)
+          })
+  
+  means.across.cell.types <-
+    ddply(res, .variables = c("dataset.name"),
+          .fun = function(df) {
+            data.frame(cor.p = mean(df$cor.p), cor.s = mean(df$cor.s), rmse = mean(df$rmse))
+          })
+  
+  means.across.datasets <-
+    ddply(res, .variables = c("cell.type"),
+          .fun = function(df) {
+            data.frame(cor.p = mean(df$cor.p), cor.s = mean(df$cor.s), rmse = mean(df$rmse))
+          })
+  
+  overall <- 
+    data.frame(cor.p = mean(means.across.cell.types$cor.p),
+               cor.s = mean(means.across.cell.types$cor.s),
+               rmse = mean(means.across.cell.types$rmse))
+  
+  list(all = res, means.across.datasets = means.across.datasets, overall = overall)
+  
+}

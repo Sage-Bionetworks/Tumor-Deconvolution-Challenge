@@ -1,0 +1,106 @@
+---
+title: "include-all-cell-types-in-gold-standard"
+output: html_document
+---
+
+
+```{r}
+options(rlib_downstream_check = FALSE)
+suppressPackageStartupMessages(library(pacman)) 
+suppressPackageStartupMessages(p_load(plyr))
+suppressPackageStartupMessages(p_load(synapser))
+suppressPackageStartupMessages(p_load(reshape2))
+synLogin()
+```
+
+
+```{r}
+source("../../scripts/utils.R") # for aggregate_matrix
+source("deconv-utils.R")
+```
+
+```{r}
+# Add any missing cell types (from all.cell.types) to the data.frame df (assumed to be ground truth)
+# with frequency in the sample of zero.
+append.missing.cell.types <- function(df, all.cell.types, sample.id.col = "sample.id", cell.type.col = "cell.type", freq.col = "measured") {
+  other.cols <- colnames(df)
+  other.cols <- other.cols[!(other.cols %in% c(sample.id.col, cell.type.col, freq.col))]
+  df <- df[df[, cell.type.col] %in% all.cell.types, ]
+  aug.df <- ddply(df,
+                  .variables = other.cols,
+                  .fun = function(gt) {
+                     orig.rows <- nrow(gt) 
+                     wide.df <- acast(gt[, c(sample.id.col, cell.type.col, freq.col)],
+                                      as.formula(paste0(cell.type.col, " ~ ", sample.id.col)))
+                     wide.df[is.na(wide.df)] <- 0
+                     missing.cell.types <- all.cell.types[!(all.cell.types %in% rownames(wide.df))]
+                     if(length(missing.cell.types) > 0) {
+                       rows <- as.data.frame(matrix(data = 0, nrow=length(missing.cell.types), ncol=ncol(wide.df)))
+                       rownames(rows) <- missing.cell.types
+                       colnames(rows) <- colnames(wide.df)
+                       wide.df <- rbind(wide.df, rows)
+                     }
+                     ret.df <- melt(as.matrix(wide.df))
+                     colnames(ret.df) <- c(cell.type.col, sample.id.col, freq.col)
+                     ret.df <- ret.df[, c(sample.id.col, cell.type.col, freq.col)]
+                     # expected.rows <- orig.rows + ( length(unique(gt[, sample.id.col])) * length(missing.cell.types) )
+                     expected.rows <- ( length(unique(gt[, sample.id.col])) * length(all.cell.types) )
+                     print(c(orig.rows, expected.rows, nrow(ret.df)))
+                     stopifnot(expected.rows == nrow(ret.df))
+                     ret.df
+                  })
+  
+  aug.df
+}
+```
+
+```{r}
+wu.gs.parent.id <- "syn51121856"
+
+# syn51121866
+file <- "wu-fine-gold-standard.csv"
+df <- read.table(file, sep=",", header=TRUE)
+df <- append.missing.cell.types(df, fine_cell_types)
+file <- gsub(file, pattern=".csv", replacement="-all.csv")
+write.table(file = file, df, col.names=TRUE, row.names=FALSE, sep=",", quote=FALSE)
+cat(paste0("Storing ", file, " to synapse\n"))
+f <- File(file, parentId = wu.gs.parent.id, synapseStore = TRUE)
+synStore(f)
+
+# syn51121874
+file <- "wu-coarse-gold-standard.csv"
+df <- read.table(file, sep=",", header=TRUE)
+df <- append.missing.cell.types(df, coarse_cell_types)
+file <- gsub(file, pattern=".csv", replacement="-all.csv")
+write.table(file = file, df, col.names=TRUE, row.names=FALSE, sep=",", quote=FALSE)
+cat(paste0("Storing ", file, " to synapse\n"))
+f <- File(file, parentId = wu.gs.parent.id, synapseStore = TRUE)
+synStore(f)
+
+```
+
+```{r}
+pelka.gs.parent.id <- "syn50918679"
+
+# syn50918965
+file <- "pelka-fine-gold-standard.csv"
+df <- read.table(file, sep=",", header=TRUE)
+df <- append.missing.cell.types(df, fine_cell_types)
+file <- gsub(file, pattern=".csv", replacement="-all.csv")
+write.table(file = file, df, col.names=TRUE, row.names=FALSE, sep=",", quote=FALSE)
+cat(paste0("Storing ", file, " to synapse\n"))
+f <- File(file, parentId = pelka.gs.parent.id, synapseStore = TRUE)
+synStore(f)
+
+# syn50918973
+file <- "pelka-coarse-gold-standard.csv"
+df <- read.table(file, sep=",", header=TRUE)
+df <- append.missing.cell.types(df, coarse_cell_types)
+file <- gsub(file, pattern=".csv", replacement="-all.csv")
+write.table(file = file, df, col.names=TRUE, row.names=FALSE, sep=",", quote=FALSE)
+cat(paste0("Storing ", file, " to synapse\n"))
+f <- File(file, parentId = pelka.gs.parent.id, synapseStore = TRUE)
+synStore(f)
+
+```
+
