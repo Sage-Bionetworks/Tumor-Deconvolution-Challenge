@@ -28,6 +28,12 @@ res.all <- subset(res.all, submission == "1")
 # this defines methods.to.exclude
 source("../validation-analysis/methods-to-exclude.R")
 
+# Let's also exclude Aboensis IV, as it crashed on the fine-grained simulated cancer datasets
+# Error: Error in predict.randomForest(rf, testdata) : missing values in newdata
+# Maybe it was expecting all fine-grained Challenge cell types, but some were missing from each dataset.
+# Also exclude this from the cancer datasets
+methods.to.exclude <- c(methods.to.exclude, "Aboensis IV")
+
 flag <- res.all[,method.name.col] %in% methods.to.exclude
 cat(paste0("Excluding methods: ", paste(unique(res.all[flag, method.name.col]), collapse = ", "), "\n"))
 res.all <- res.all[!flag,]
@@ -69,7 +75,10 @@ obj <- synGet(synId, downloadFile=TRUE)
 tumor.res.all <- read.table(obj$path, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
 # I think the round field here is broken.
 # Instead, match these results by objectId to those above
+# This will effectively exclude Aboensis IV
 tumor.res.all <- subset(tumor.res.all, objectId %in% res.all$objectId)
+
+
 
 # Read in tumor predictions of comparator models
 synId <- "syn51273581"
@@ -463,6 +472,15 @@ g <- g + theme_combmatrix(combmatrix.panel.line.size=0)
 g <- g + facet_wrap(~ cell.type)
 g <- g + xlab("Dataset") + ylab("Pearson Correlation")
 
+g <- ggplot(all.scores, aes(y=Label.str, x=cor.p)) + geom_boxplot() 
+# g <- ggplot(all.scores, aes(x=Label, y=cor.p)) + geom_boxplot() 
+# g <- g + geom_jitter(width=0.1) 
+# g <- g + scale_x_upset(position = "top", sets = sets)
+g <- g + axis_combmatrix(sep = "-", levels = sets) + scale_y_discrete(position = "left")
+g <- g + theme_combmatrix(combmatrix.panel.line.size=0)
+g <- g + facet_wrap(~cell.type)
+g <- g + xlab("Dataset") + ylab("Pearson Correlation")
+
 png(paste0(figs.dir, "fig-cancer-validation", ".png"), width = 1 * 480, height = 1 * 480)                    
 print(g)
 d <- dev.off()
@@ -509,11 +527,11 @@ gs <- llply(nms,
                                                       cell.type.levels = cell.type.levels)
               g <- g + theme(plot.title = element_text(hjust = 0.5))
               g <- g + ggtitle(titles[[nm]])
-              png(paste0(figs.dir, "fig-cancer-validation-heatmap-", nm, ".png"), width = 1 * 480, height = 2 * 480)                    
+              png(paste0(figs.dir, "fig-cancer-validation-heatmap-", nm, ".png"), width = 2 * 480, height = 1 * 480)                    
               print(g)
               d <- dev.off()
               
-              pdf(paste0(figs.dir, "fig-cancer-validation-heatmap-", nm, ".pdf"), width = 1 * 7, height = 2 * 7)                    
+              pdf(paste0(figs.dir, "fig-cancer-validation-heatmap-", nm, ".pdf"), width = 2 * 7, height = 1 * 7)                    
               print(g)
               d <- dev.off()
               
