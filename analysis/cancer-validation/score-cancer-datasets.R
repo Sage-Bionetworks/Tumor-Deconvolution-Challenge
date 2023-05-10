@@ -7,10 +7,14 @@ suppressPackageStartupMessages(p_load(tidyverse))
 suppressPackageStartupMessages(p_load(ggupset))
 #devtools::install_github("krassowski/complex-upset")
 suppressPackageStartupMessages(p_load(ComplexUpset))
+suppressPackageStartupMessages(p_load(reshape2))
+suppressPackageStartupMessages(p_load(cowplot))
 
 set.seed(1234)
 
 synLogin()
+
+method.name.col <- "method.name"
 
 figs.dir <- "figs/"
 dir.create(figs.dir, showWarnings = FALSE)
@@ -20,6 +24,15 @@ synId <- "syn22320329"
 obj <- synGet(synId, downloadFile=TRUE)
 res.all <- read.table(obj$path, sep=",", header=TRUE, as.is=TRUE, stringsAsFactors=FALSE)
 res.all <- subset(res.all, submission == "1")
+
+# this defines methods.to.exclude
+source("../validation-analysis/methods-to-exclude.R")
+
+flag <- res.all[,method.name.col] %in% methods.to.exclude
+cat(paste0("Excluding methods: ", paste(unique(res.all[flag, method.name.col]), collapse = ", "), "\n"))
+res.all <- res.all[!flag,]
+
+comparator.methods <- unique(subset(res.all, comparator==TRUE)[, "method.name"])
 
 # The above results already have ground truth appended ('measured' col).
 # However, there were two versions of ground truth (and, of course, admixtures):
@@ -249,7 +262,7 @@ na.scores <-
 all.scores <- merge(all.scores, na.scores)
 all.scores <- subset(all.scores, na.scores == FALSE)
 
-tmp <- merge(all.scores, validation.metadata)
+all.scores <- merge(all.scores, validation.metadata)
 
 compute.stats_ <- function(df) {
   per.cell.mean <-
@@ -366,27 +379,45 @@ compute.stats <- function(df) {
   return(list("stats"=ret, "adj.df" = df))
 }
 
-ret <- compute.stats(tmp)
+
+ret <- compute.stats(all.scores)
 all.stats <- ret[["stats"]]
+colnames(all.stats)[colnames(all.stats) == "Pr(>|t|)"] <- "two.sided.pval"
 adj.df <- ret[["adj.df"]]
 adj.df <- adj.df[, !(colnames(adj.df) %in% c("Label"))]
 
+# Compute median across methods for all datasets
+median.stats <- 
+  ddply(adj.df,
+        .variables = c("cell.type", "dataset.name", "tumor.type", "distribution.type", "mixture.type", "immune.origin", "Label.str"),
+        .fun = function(df) {
+                 data.frame(cor.p = median(df$cor.p, na.rm=TRUE),
+                            cor.s = median(df$cor.s, na.rm=TRUE),
+                            rmse = median(df$rmse, na.rm=TRUE))
+        })
+
 write.table(file = paste0(figs.dir, "/cancer-validation-dataset-pvals.tsv"), all.stats, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+write.table(file = paste0(figs.dir, "/cancer-validation-median-correlations.tsv"), median.stats, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 write.table(file = paste0(figs.dir, "/cancer-validation-correlations.tsv"), adj.df, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
 
 # Pick out stats for Pelka, Wu, and overall.
 # We should only look at Pelka and Wu if overall is significant.
 overall.stats <- subset(all.stats, grepl(variable, pattern="F-statistic"))
-overall.stats <- overall.stats[, c("cell.type", "Estimate", "Pr(>|t|)")]
+overall.stats <- overall.stats[, c("cell.type", "Estimate", "two.sided.pval")]
 colnames(overall.stats) <- c("cell.type", "F.stat.estimate", "F.stat.p")
 
 all.dataset.stats <- subset(all.stats, grepl(variable, pattern="dataset.name"))
-p.val.col <- "Pr(>|t|)"
+p.val.col <- "two.sided.pval"
 p.val.col <- "one.sided.pval"
-all.dataset.stats$p.holm <- p.adjust(all.dataset.stats[,p.val.col], method="holm")
+all.dataset.stats$two.sided.pval.holm <- p.adjust(all.dataset.stats[,"two.sided.pval"], method="holm")
+all.dataset.stats$one.sided.pval.holm <- p.adjust(all.dataset.stats[,"one.sided.pval"], method="holm")
 wu.pelka.stats <- subset(all.dataset.stats, grepl(variable, pattern="Pelka") | grepl(variable, pattern="Wu"))
 non.wu.pelka.stats <- subset(all.dataset.stats, !grepl(variable, pattern="Pelka") & !grepl(variable, pattern="Wu"))
-sig.dataset.stats <- subset(all.dataset.stats, p.holm < 0.05)
+sig.dataset.stats <- subset(all.dataset.stats, two.sided.pval.holm < 0.05)
+
+write.table(file = paste0(figs.dir, "/cancer-validation-dataset-comparison-pvals.tsv"), all.dataset.stats, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
 
 wu.pelka.stats <- merge(wu.pelka.stats, overall.stats)
 wu.pelka.stats[, p.val.col] <- as.numeric(wu.pelka.stats[, p.val.col])
@@ -405,16 +436,6 @@ non.wu.pelka.stats$Estimate <- as.numeric(non.wu.pelka.stats$Estimate)
 
 
 all.stats <- merge(all.stats, overall.stats)
-all.stats[, p.val.col] <- as.numeric(all.stats[, p.val.col])
-flag <- all.stats[, p.val.col] < 0.05
-
-table(sig.dataset.stats$variable)
-table(subset(sig.dataset.stats, Estimate > 0)$variable)
-table(subset(sig.dataset.stats, Estimate < 0)$variable)
-
-flag <- wu.pelka.stats[, p.val.col] < 0.05
-flag <- wu.pelka.stats$p.holm < 0.05
-wu.pelka.stats[flag,c("cell.type", "variable", "Estimate", p.val.col)]
 
 
 # axis_combmatrix respects the order of levels, whereas scale_x_upset sorts the columns based on freq, etc.
@@ -424,17 +445,17 @@ validation.metadata <- validation.metadata[order(validation.metadata$immune.orig
 dataset.levels <- validation.metadata$dataset.name
 label.str.levels <- validation.metadata$Label.str
 
-tmp$dataset.name <- factor(tmp$dataset.name, levels = dataset.levels)
-tmp <- tmp[order(tmp$dataset.name),]
-tmp$Label.str <- factor(tmp$Label.str, levels = label.str.levels)
+all.scores$dataset.name <- factor(all.scores$dataset.name, levels = dataset.levels)
+all.scores <- all.scores[order(all.scores$dataset.name),]
+all.scores$Label.str <- factor(all.scores$Label.str, levels = label.str.levels)
 
 
 sets <- c("BRCA", "CRC", "Biological", "Random", "In Vitro", "In Silico", "Healthy", "Tumor")
 sets <- c("Healthy", "Tumor", "In Vitro", "In Silico", "BRCA", "CRC", "Biological", "Random")
 
-tmp <- rename.cell.types(tmp, from.col = "cell.type", to.col = "cell.type")
-g <- ggplot(tmp, aes(x=Label.str, y=cor.p)) + geom_boxplot() 
-# g <- ggplot(tmp, aes(x=Label, y=cor.p)) + geom_boxplot() 
+all.scores <- rename.cell.types(all.scores, from.col = "cell.type", to.col = "cell.type")
+g <- ggplot(all.scores, aes(x=Label.str, y=cor.p)) + geom_boxplot() 
+# g <- ggplot(all.scores, aes(x=Label, y=cor.p)) + geom_boxplot() 
 # g <- g + geom_jitter(width=0.1) 
 # g <- g + scale_x_upset(position = "top", sets = sets)
 g <- g + axis_combmatrix(sep = "-", levels = sets) + scale_x_discrete(position = "top")
@@ -447,6 +468,64 @@ print(g)
 d <- dev.off()
 
 pdf(paste0(figs.dir, "fig-cancer-validation", ".pdf"), width = 1 * 7, height = 1 * 7)                    
+print(g)
+d <- dev.off()
+
+titles <- list("wu" = "Wu (BRCA)", "pelka" = "Pelka (CRC)", "all" = "Merged Wu (BRCA) and Pelka (CRC)")
+
+all.scores <- all.scores[, !(colnames(all.scores) %in% "Label")]
+all.scores.wu <- subset(all.scores, dataset.name=="Wu")
+all.scores.pelka <- subset(all.scores, dataset.name=="Pelka")
+
+all.scores.cancer.merged <- rbind(all.scores.wu, all.scores.pelka)
+all.scores.cancer.merged <-
+  ddply(all.scores.cancer.merged,
+        .variables = c("method.name", "cell.type"),
+        .fun = function(df) {
+          data.frame(cor.p = mean(df$cor.p, na.rm=TRUE),
+                     cor.s = mean(df$cor.s, na.rm=TRUE),
+                     rmse = mean(df$rmse, na.rm=TRUE))
+        })
+
+write.table(file = paste0(figs.dir, "/cancer-validation-dataset-wu-scores.tsv"), all.scores.wu, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+write.table(file = paste0(figs.dir, "/cancer-validation-dataset-pelka-scores.tsv"), all.scores.pelka, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+write.table(file = paste0(figs.dir, "/cancer-validation-dataset-wu-pelka-merged-scores.tsv"), all.scores.cancer.merged, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
+
+results <- list("wu" = all.scores.wu, 
+                "pelka" = all.scores.pelka, 
+                "all" = all.scores.cancer.merged)
+
+nms <- names(titles)
+names(nms) <- nms
+
+gs <- llply(nms,
+            .fun = function(nm) {
+              cell.type.levels <- calculate.cell.type.levels(results[[nm]], id.var = "method.name", cell.type.var = "cell.type", cor.var = "cor.p")
+              g <- plot.cell.type.correlation.heatmap(results[[nm]], show.corr.text = TRUE,
+                                                      id.var = "method.name", cell.type.var = "cell.type", cor.var = "cor.p",
+                                                      ids.to.bold = comparator.methods,
+                                                      second.col.summary.fun = "mean",
+                                                      cell.type.levels = cell.type.levels)
+              g <- g + theme(plot.title = element_text(hjust = 0.5))
+              g <- g + ggtitle(titles[[nm]])
+              png(paste0(figs.dir, "fig-cancer-validation-heatmap-", nm, ".png"), width = 1 * 480, height = 2 * 480)                    
+              print(g)
+              d <- dev.off()
+              
+              pdf(paste0(figs.dir, "fig-cancer-validation-heatmap-", nm, ".pdf"), width = 1 * 7, height = 2 * 7)                    
+              print(g)
+              d <- dev.off()
+              
+              g
+            })
+
+g <- plot_grid(gs[[1]], gs[[2]], nrow=2, labels="AUTO")
+png(paste0(figs.dir, "fig-cancer-validation-heatmap-wu-and-pelka.png"), width = 2 * 480, height = 2 * 480)                    
+print(g)
+d <- dev.off()
+
+pdf(paste0(figs.dir, "fig-cancer-validation-heatmap-wu-and-pelka.pdf"), width = 2 * 7, height = 2 * 7)                    
 print(g)
 d <- dev.off()
 
