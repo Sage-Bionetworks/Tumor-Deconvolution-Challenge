@@ -16,21 +16,23 @@
 \newcommand{\oklepaj}{(} % non-extended bold font
 \robustify\mybf
 
+% pdflatex deconv-method-description-table.tex
+
 \begin{document}
 %\begin{table}
 \begin{threeparttable}
-\begin{tabular}{lcccccccccc}
+\begin{tabular}{lccccccccccc}
   %
     & \mc{\stackon{Function}{Objective}} & \mc{Solver}  
         & \mc{\stackon{Selection}{Marker}} & \mc{Value}
   & \mc{\stackon{Set}{Training}} & \mc{Normalization} & \mc{\stackon{Correction}{\stackon{Batch}{Training}}}
-  & \mc{\stackon{Correction}{\stackon{Batch}{Test}}} & \mc{Runtime} & \mc{Ref}
+  & \mc{\stackon{Correction}{\stackon{Batch}{Test}}} & \mc{\stackon{Runtime}{Coarse}} & \mc{\stackon{Runtime}{Fine}} & \mc{Ref}
   \\
   \midrule
 
   
-    \mybf CIBERSORT & \makecell{$\argmin_{\mathbf{\beta}, \nu, \epsilon} C \sum_m |a_m - \mathbf{s_m} \cdot \mathbf{\beta}|_\epsilon + \frac{1}{2} ||\beta||^2 + \nu \epsilon$} & \tt{svm} & \makecell{DE’ed, prioritized by fold change,\\not expressed in non-hematopoietic cells} & $\beta$ & Healthy & Quantile & Same platform (HGU133A) & & & 24655651 \\
-    \mybf CIBERSORTx & \makecell{$\argmin_{\mathbf{beta}, \nu, \epsilon} C \sum_m |a^*_m - \mathbf{s_m} \cdot \mathbf{\beta}|_\epsilon + \frac{1}{2} ||\beta||^2 + \nu \epsilon$} & \tt{svm} & \makecell{DE’ed, prioritized by fold change,\\not expressed in non-hematopoietic cells} & $\beta$ & \makecell{Healthy (immune subtypes), \\ Malignant (tumor/immune/stroma)} & Quantile (immune only)& \makecell{One platform for immune (HGU133A), \\ One dataset for tumor/immune/stroma} & \makecell{Re-optimizes $\beta$ w.r.t. a ComBat-corrected\\admixture matrix $A^*$.} & & 31061481 \\
+    \mybf CIBERSORT & \makecell{$\argmin_{\mathbf{\beta}, \nu, \epsilon} C \sum_m |a_m - \mathbf{s_m} \cdot \mathbf{\beta}|_\epsilon + \frac{1}{2} ||\beta||^2 + \nu \epsilon$} & \tt{svm} & \makecell{DE’ed, prioritized by fold change,\\not expressed in non-hematopoietic cells} & $\beta$ & Healthy & Quantile & Same platform (HGU133A) & & 133 & 131 & 24655651 \\
+    \mybf CIBERSORTx & \makecell{$\argmin_{\mathbf{beta}, \nu, \epsilon} C \sum_m |a^*_m - \mathbf{s_m} \cdot \mathbf{\beta}|_\epsilon + \frac{1}{2} ||\beta||^2 + \nu \epsilon$} & \tt{svm} & \makecell{DE’ed, prioritized by fold change,\\not expressed in non-hematopoietic cells} & $\beta$ & \makecell{Healthy (immune subtypes), \\ Malignant (tumor/immune/stroma)} & Quantile (immune only)& \makecell{One platform for immune (HGU133A), \\ One dataset for tumor/immune/stroma} & \makecell{Re-optimizes $\beta$ w.r.t. a ComBat-corrected\\admixture matrix $A^*$.} & 567 & 567 & 31061481 \\
     \mybf EPIC &
     $ \argmin_{
       \substack{%
@@ -39,8 +41,8 @@
         \phantom{\text{s.\,t.}}\, \sum_m \beta_m \le 1
       }
     } \sum_m w^{\rm EPIC}_m (a_m - s_i \beta)^2 $
-    & \tt{constrOptim} & \makecell{DE’ed, not expressed in non-hematopoietic tissues,\\similarly expressed in healthy and malignant tissues} & $\beta$ & Healthy & TPM & & \makecell{Re-normalized TPMs based on genes\\common to $S$ and test admixture} & & 29130882 \\
-    \mybf MCP-Counter & & & \makecell{DE’ed across  hierarchy of purified expression profiles,\\specific to cell type} & $\frac{1}{|M_c|} \sum_{m_c \in M_c} a_{m_c} $ & & fRMA & & NA & & 27765066 \\
+    & \tt{constrOptim} & \makecell{DE’ed, not expressed in non-hematopoietic tissues,\\similarly expressed in healthy and malignant tissues} & $\beta$ & Healthy & TPM & & \makecell{Re-normalized TPMs based on genes\\common to $S$ and test admixture} & 71 & 70 & 29130882 \\
+    \mybf MCP-Counter & & & \makecell{DE’ed across  hierarchy of purified expression profiles,\\specific to cell type} & $\frac{1}{|M_c|} \sum_{m_c \in M_c} a_{m_c} $ & & fRMA & & NA & 70 & 66 & 27765066 \\
     \mybf quanTIseq &
     $
     \argmin_{
@@ -49,13 +51,13 @@
         \text{s.\,t.}\, \sum_m \beta_m \le 1
       }
     } \sum_m (a_m - \mathbf{s_m} \cdot \mathbf{\beta})^2 $
-    & \tt{lsei} & \makecell{Correlated with random fractions in simulated admixtures,\\specific to cell type,\\expressed in tumors,\\not expressed in non-hematopoietic tissues,\\not very highly expressed} & $\beta$ & & TPM & & & & 31126321 \\
-    \mybf xCell & & & \makecell{DE’ed, specific to cell type,\\not expressed in carcinomas}& \makecell{ssGSEA mapped\\to linear scale} & & \makecell{FPKM (RNA-seq),\\RMA (microarray)} & \makecell{Markers determined independently\\in each training dataset} & & & 29141660 \\
+    & \tt{lsei} & \makecell{Correlated with random fractions in simulated admixtures,\\specific to cell type,\\expressed in tumors,\\not expressed in non-hematopoietic tissues,\\not very highly expressed} & $\beta$ & & TPM & & & 253 & 254 & 31126321 \\
+    \mybf xCell & & & \makecell{DE’ed, specific to cell type,\\not expressed in carcinomas}& \makecell{ssGSEA mapped\\to linear scale} & & \makecell{FPKM (RNA-seq),\\RMA (microarray)} & \makecell{Markers determined independently\\in each training dataset} & & 70 & 74 & 29141660 \\
 \hline    
-    \mybf Aginome-XMU & \makecell{DNN trained to predict random fractions\\in simulated admixtures} & & None & Fractions predicted by NN & \makecell{Healthy,\\Malignant} & \makecell{TPM,log,\\min-max scaling}& & & & 35510186 \\
-    \mybf Biogem & $\argmin_\beta \sum_m w_H(a_m - \vec{s_m}^T \vec{\beta})^2 (a_m - \vec{s_m}^T \vec{\beta})^2$ & rlm & & $\beta$ & \makecell{Healthy,\\Malignant}& TPM & & & & 30726743 \\
-    \mybf DA\_505 & $\argmin_\mathbf{b} (||\mathbf{p_c} - A_{M_c} \cdot \mathbf{b}||^2) + \lambda_2||\mathbf{b}||^2 + \lambda_1 ||\mathbf{b}||_1) $ & & \makecell{Identified by RF regression against\\random fractions in simulated admixtures} & $A_{M_c} \cdot \mathbf{b}$ & \makecell{Healthy,\\Malignant} & Rank-based & & & & \\
-    \mybf mitten\_TDC19 & & & \makecell{Correlated with random fractions\\in simulated admixtures} & $\sum_{m_c \in M_c} a_{m_c}$ & Healthy & TPM & & NA & & \\             
+    \mybf Aginome-XMU & \makecell{DNN trained to predict random fractions\\in simulated admixtures} & & None & Fractions predicted by NN & \makecell{Healthy,\\Malignant} & \makecell{TPM,log,\\min-max scaling}& & & 80 & 116 & 35510186 \\
+    \mybf Biogem & $\argmin_\beta \sum_m w_H(a_m - \vec{s_m}^T \vec{\beta})^2 (a_m - \vec{s_m}^T \vec{\beta})^2$ & rlm & & $\beta$ & \makecell{Healthy,\\Malignant}& TPM & & & 82 & 84 & 30726743 \\
+    \mybf DA\_505 & $\argmin_\mathbf{b} (||\mathbf{p_c} - A_{M_c} \cdot \mathbf{b}||^2) + \lambda_2||\mathbf{b}||^2 + \lambda_1 ||\mathbf{b}||_1) $ & & \makecell{Identified by RF regression against\\random fractions in simulated admixtures} & $A_{M_c} \cdot \mathbf{b}$ & \makecell{Healthy,\\Malignant} & Rank-based & & & 92 & 90 & \\
+    \mybf mitten\_TDC19 & & & \makecell{Correlated with random fractions\\in simulated admixtures} & $\sum_{m_c \in M_c} a_{m_c}$ & Healthy & TPM & & NA & 86 & 88 & \\             
     \midrule
 \end{tabular}
 %\caption*{$|e|_\epsilon \equiv 0 \text{if } |e| < \epsilon; |e| - \epsilon \text{otherwise}$ \\
