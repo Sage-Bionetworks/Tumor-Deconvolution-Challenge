@@ -139,6 +139,8 @@ if(!is.na(num.cores) && (num.cores > 1)) {
 }
 num.processes <- num.cores - 1
 
+start_time = Sys.time()
+
 ## Run CIBERSORTx on the data from the 'rerun-validation' / 'post-competitive' phase, i.e.,
 ## where the coarse- and fine-grained challenge use the same data.
 ## This is as opposed to the original competitive phase (against which the
@@ -408,7 +410,10 @@ file <- paste0(prefix, "-csx-all-gene-predictions-sum.tsv")
 write.table(file = file, csx.all.gene.res, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
 f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
-synStore(f)
+#synStore(f)
+
+end_time = Sys.time()
+print(end_time - start_time)
 
 cat("Exiting successfully\n")
 q(status=0)
