@@ -1,0 +1,1018 @@
+Warning messages:
+1: replacing previous import ‘ellipsis::check_dots_unnamed’ by ‘rlang::check_dots_unnamed’ when loading ‘hms’ 
+2: replacing previous import ‘ellipsis::check_dots_used’ by ‘rlang::check_dots_used’ when loading ‘hms’ 
+3: replacing previous import ‘ellipsis::check_dots_empty’ by ‘rlang::check_dots_empty’ when loading ‘hms’ 
+Run on a machine with Docker installed
+I ran on tdaws2: 10.23.19.191 in //home/bwhite/
+Welcome, Brian White!NULL
+Registering 11 cores.
+Downloading  [###############-----]75.61%   8.0MB/10.6MB (2.2MB/s) AA_symbol_val_tpm.csv.synapse_download_53004825     Downloading  [####################]100.00%   10.6MB/10.6MB (2.6MB/s) AA_symbol_val_tpm.csv.synapse_download_53004825 Done...    Downloading  [#####---------------]24.46%   2.6MB/10.6MB (1.9MB/s) AB_symbol_val_tpm.csv.synapse_download_53004833     Downloading  [####################]100.00%   10.6MB/10.6MB (3.2MB/s) AB_symbol_val_tpm.csv.synapse_download_53004833 Done...    Downloading  [##------------------]8.31%   1.4MB/17.4MB (827.5kB/s) AE_symbol_val_tpm.csv.synapse_download_53004857     Downloading  [###########---------]54.15%   9.4MB/17.4MB (2.5MB/s) AE_symbol_val_tpm.csv.synapse_download_53004857     Downloading  [####################]100.00%   17.4MB/17.4MB (2.8MB/s) AE_symbol_val_tpm.csv.synapse_download_53004857 Done...    Downloading  [#########-----------]45.87%   8.0MB/17.4MB (3.2MB/s) AF_symbol_val_tpm.csv.synapse_download_53004866     Downloading  [###########---------]54.13%   9.4MB/17.4MB (2.1MB/s) AF_symbol_val_tpm.csv.synapse_download_53004866     Downloading  [####################]100.00%   17.4MB/17.4MB (2.5MB/s) AF_symbol_val_tpm.csv.synapse_download_53004866 Done...    Downloading  [#####---------------]26.95%   2.0MB/7.4MB (2.9MB/s) hugo_tpm_DS1.csv     Downloading  [###########---------]53.90%   4.0MB/7.4MB (3.4MB/s) hugo_tpm_DS1.csv     Downloading  [################----]80.85%   6.0MB/7.4MB (3.6MB/s) hugo_tpm_DS1.csv     Downloading  [####################]100.00%   7.4MB/7.4MB (3.5MB/s) hugo_tpm_DS1.csv Done...    Downloading  [#####---------------]27.18%   2.0MB/7.4MB (2.9MB/s) hugo_tpm_DS2.csv     Downloading  [###########---------]54.36%   4.0MB/7.4MB (2.7MB/s) hugo_tpm_DS2.csv     Downloading  [################----]81.54%   6.0MB/7.4MB (2.7MB/s) hugo_tpm_DS2.csv     Downloading  [####################]100.00%   7.4MB/7.4MB (2.8MB/s) hugo_tpm_DS2.csv Done...    Downloading  [#########-----------]44.16%   2.0MB/4.5MB (2.3MB/s) hugo_tpm_DS3.csv     Downloading  [##################--]88.33%   4.0MB/4.5MB (2.2MB/s) hugo_tpm_DS3.csv     Downloading  [####################]100.00%   4.5MB/4.5MB (2.2MB/s) hugo_tpm_DS3.csv Done...    Downloading  [#########-----------]44.47%   2.0MB/4.5MB (1.9MB/s) hugo_tpm_DS4.csv     Downloading  [##################--]88.93%   4.0MB/4.5MB (1.9MB/s) hugo_tpm_DS4.csv     Downloading  [####################]100.00%   4.5MB/4.5MB (1.9MB/s) hugo_tpm_DS4.csv Done...    [1] "docker run -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-input:/src/data -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output:/src/outdir cibersortx/fractions --username brian.white@sagebase.org --token efd223f57902e9a25ace81427862aa8a --mixture AA_symbol_val_tpm.tsv --rmbatchBmode TRUE --perm 1 --verbose TRUE --QN FALSE"
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: AA_symbol_val_tpm.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: LM22.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/AA_symbol_val_tpm.tsv
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 518 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column B cells naive B cells memory Plasma cells T cells CD8 T cells CD4 naive T cells CD4 memory resting T cells CD4 memory activated T cells follicular helper T cells regulatory (Tregs) T cells gamma delta NK cells resting NK cells activated Monocytes Macrophages M0 Macrophages M1 Macrophages M2 Dendritic cells resting Dendritic cells activated Mast cells resting Mast cells activated Eosinophils Neutrophils P-value Correlation RMSE %Completed
+1 0.0518295 0 0 0.151137 0 0.358135 0.0185452 3.33333
+2 0.0171489 0 0 0.131252 0 0.291684 0.0272023 6.66667
+3 0.372 0 0 0.144404 0 0.198617 0.0358928 10
+4 0.197561 0 0 0.219836 0 0.314604 0.0143174 13.3333
+5 0.0883481 0 0 0.0890039 0.0302528 0.181935 0.119486 16.6667
+6 0.142998 0 0 0.107467 0 0.225831 0.0592882 20
+7 0.0691712 0 0 0.0887065 0.0462128 0.240428 0.056024 23.3333
+8 0.0589126 0 0 0.17567 0 0.329265 0.0102537 26.6667
+9 0.110114 0 0 0.13602 0 0.0901494 0.0595631 30
+10 0.304799 0 0 0.0960717 0.0596422 0.130695 0.0743345 33.3333
+11 0.151907 0 0 0.170232 0 0.226217 0.0762824 36.6667
+12 0.0649838 0 0 0.310553 0 0.169155 0.00646126 40
+13 0.165178 0 0 0.105021 0 0.181988 0.0287676 43.3333
+14 0.0777211 0 0 0.0765262 0 0.111703 0.0227951 46.6667
+15 0.0490616 0 0 0.0849775 0 0.305012 0.0499914 50
+16 0.166362 0 0 0.138022 0.0132265 0.176025 0.0340691 53.3333
+17 0.101757 0 0 0.0839602 0.237271 0.0430604 0.026841 56.6667
+18 0.106835 0 0.00781667 0.017829 0.0618446 0.248011 0.020091 60
+19 0.175531 0 0.00610016 0.035357 0.148499 0.143907 0.0321166 63.3333
+20 0.0999103 0 0.00479005 0.095865 0.0226247 0.136439 0.0115504 66.6667
+21 0.136717 0 0.00533244 0.0145983 0.0225785 0.17845 0.0372005 70
+22 0.0237477 0.00386581 0.00183737 0.059228 0.0310482 0.289277 0.028963 73.3333
+23 0.0967616 0 0.00227505 0.104668 0.249027 0.190671 0.0386436 76.6667
+24 0.0974525 0 0 0.213743 0.0606656 0.136464 0.0324632 80
+25 0.141684 0 0 0.0475066 0 0.205364 0.0281063 83.3333
+26 0.0354434 0 0 0.154007 0.144453 0.0806282 0.0410204 86.6667
+27 0.132276 0 0 0.0251544 0.00408715 0.195911 0.0429748 90
+28 0.0228211 0.00587321 0.000560711 0.0988473 0.124327 0.0344807 0.0374864 93.3333
+29 0.0775256 0 0 0.03447 0.0422613 0.121208 0.0273916 96.6667
+30 0.143885 0 0 0.137818 0 0.249304 0 100
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: AA_symbol_val_tpm.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: cibersort-sig-matrix-2l.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/AA_symbol_val_tpm.tsv
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 863 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column CD10 CD31 CD45 EPCAM P-value Correlation RMSE %Completed
+1 0.0204549 0.00442768 0.975117 0 0 0.770025 0.847277 3.33333
+2 0.00298268 0.0383719 0.958052 0.000593649 0 0.741004 0.857174 6.66667
+3 0.0482443 0.0349143 0.906617 0.010224 0 0.854922 0.822383 10
+4 0.00535115 0.00502376 0.989625 0 0 0.88781 0.815316 13.3333
+5 0.00326242 0.00149338 0.995244 0 0 0.785088 0.842654 16.6667
+6 0.0291967 0.00581858 0.960279 0.00470611 0 0.826705 0.832011 20
+7 0.00220673 0.0103564 0.985562 0.00187499 0 0.780003 0.845116 23.3333
+8 0.0111384 0.00199087 0.986625 0.000245979 0 0.76697 0.848058 26.6667
+9 0.00332964 0.00468091 0.991989 0 0 0.813644 0.835331 30
+10 0.0814472 0.00576029 0.893337 0.0194557 0 0.872866 0.79829 33.3333
+11 0.00875078 0.0133548 0.976447 0.0014474 0 0.855633 0.825669 36.6667
+12 0.0100454 0.0120622 0.967316 0.0105764 0 0.765058 0.850951 40
+13 0.003426 0.00349687 0.993077 0 0 0.818213 0.833964 43.3333
+14 0.00615465 0.0337349 0.96011 0 0 0.732161 0.859367 46.6667
+15 0.0187292 0.00307548 0.974942 0.00325356 0 0.774339 0.846548 50
+16 0.0028493 0.0380937 0.959057 0 0 0.805543 0.840336 53.3333
+17 0.000485702 0.00193255 0.997582 0 0 0.7839 0.842713 56.6667
+18 0.00634366 0.000637426 0.993019 0 0 0.794357 0.840325 60
+19 0.0489057 0.0107855 0.931686 0.008623 0 0.817337 0.830509 63.3333
+20 0.0026435 0.017948 0.979408 0 0 0.710226 0.86382 66.6667
+21 0.00697605 0.00529735 0.985839 0.00188711 0 0.826208 0.832631 70
+22 0.0278882 0.00327457 0.968837 0 0 0.720773 0.859456 73.3333
+23 0.0254518 0.0212601 0.949505 0.00378284 0 0.719744 0.861803 76.6667
+24 0.00333531 0.00333513 0.99333 0 0 0.741132 0.854578 80
+25 0.00423804 0.0144787 0.981283 0 0 0.808223 0.837936 83.3333
+26 0.0256248 0.0166744 0.957701 0 0 0.727509 0.859012 86.6667
+27 0.00350683 0.0025706 0.993923 0 0 0.792741 0.840743 90
+28 0.0466427 0.00302176 0.93925 0.011085 0 0.729944 0.854599 93.3333
+29 0 0.00155655 0.998443 0 0 0.759511 0.849162 96.6667
+30 0.0153821 0.00703276 0.976689 0.000896572 0 0.818461 0.834989 100
+[1] "docker run -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-input:/src/data -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output:/src/outdir cibersortx/fractions --username brian.white@sagebase.org --token efd223f57902e9a25ace81427862aa8a --mixture AB_symbol_val_tpm.tsv --rmbatchBmode TRUE --perm 1 --verbose TRUE --QN FALSE"
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: AB_symbol_val_tpm.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: LM22.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/AB_symbol_val_tpm.tsv
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 519 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column B cells naive B cells memory Plasma cells T cells CD8 T cells CD4 naive T cells CD4 memory resting T cells CD4 memory activated T cells follicular helper T cells regulatory (Tregs) T cells gamma delta NK cells resting NK cells activated Monocytes Macrophages M0 Macrophages M1 Macrophages M2 Dendritic cells resting Dendritic cells activated Mast cells resting Mast cells activated Eosinophils Neutrophils P-value Correlation RMSE %Completed
+1 0.306675 0 0.000301633 0.0612551 0 0.10876 0.108723 3.33333
+2 0.105577 0 8.6961e-05 0.114186 0.00481996 0.140682 0.117905 6.66667
+3 0.0691214 0 0 0.271635 0.0335796 0.105869 0.0914363 10
+4 0.01158 0 0 0.102011 0.0485299 0.066012 0.063217 13.3333
+5 0.0989829 0 0 0.19469 0.173023 0.0719736 0.079368 16.6667
+6 0.144864 0 0 0.157864 0.00990136 0.229911 0.0647206 20
+7 0.292772 0 0 0.131787 0 0.206557 0.0145321 23.3333
+8 0.280225 0 0 0.0147655 0 0.120125 0.038731 26.6667
+9 0.151613 0 0 0.0490529 0.0235859 0.159331 0.095498 30
+10 0.294228 0 0.000582554 0.100892 0 0.150589 0.127205 33.3333
+11 0.123601 0 0 0.121026 0 0.287671 0.0425291 36.6667
+12 0.0168063 0 0 0.226106 0 0.190168 0.154479 40
+13 0.119164 0 0 0.265751 0 0.289232 0.0334652 43.3333
+14 0.179894 0 0 0.107683 0.056817 0.232783 0.0288754 46.6667
+15 0.136344 0 0 0.12308 0.0136649 0.0461394 0.0715706 50
+16 0.0684137 0 0 0.0714977 0.00610538 0.158387 0.0317399 53.3333
+17 0.0536577 0 0 0.137879 0.0472956 0.0783241 0.0376633 56.6667
+18 0.160103 0 0.00643739 0.0313202 0.112265 0.25896 0.0518943 60
+19 0.130286 0 0.00682623 0.0861904 0.128579 0.123516 0.042011 63.3333
+20 0.0834166 0 0 0.110367 0.125184 0.193438 0.0272116 66.6667
+21 0.0879288 0 0.0029949 0.154083 0.16272 0.225796 0.0444438 70
+22 0.0134384 0.0127355 2.56542e-05 0.145879 0.0119228 0.146172 0.0523742 73.3333
+23 0.0804549 0 0 0.073023 0 0.475374 0.0492989 76.6667
+24 0.0615323 0 0.000726751 0.140871 0.0950046 0.187507 0.0391173 80
+25 0.160145 0 0.00487126 0.112179 0.0436261 0.286983 0.0222225 83.3333
+26 0.0591271 0 0.00286069 0.0124267 0 0.241833 0.0524297 86.6667
+27 0.206809 0 0.00765425 0.16789 0.17053 0.134932 0.0238493 90
+28 0.12563 0 0.000373374 0.125119 0.0615576 0.174361 0.0561709 93.3333
+29 0.138039 0 0 0.0943505 0.00830348 0.115075 0.0332677 96.6667
+30 0.0837218 0 0 0.078453 0 0.270513 0.0205279 100
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: AB_symbol_val_tpm.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: cibersort-sig-matrix-2l.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/AB_symbol_val_tpm.tsv
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 863 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column CD10 CD31 CD45 EPCAM P-value Correlation RMSE %Completed
+1 0.00608974 0.0495132 0.939637 0.00476004 0 0.907517 0.815082 3.33333
+2 0.0282047 0.00803669 0.896648 0.067111 0 0.797308 0.848604 6.66667
+3 0.00143083 0.00144516 0.995789 0.00133493 0 0.785054 0.842656 10
+4 0.0459693 0.0137653 0.920225 0.0200406 0 0.748102 0.851834 13.3333
+5 0.00383857 0.00132504 0.99358 0.00125632 0 0.793104 0.84072 16.6667
+6 0 0.00161816 0.971267 0.0271149 0 0.818079 0.837467 20
+7 0 0.0015929 0.996804 0.00160295 0 0.917554 0.806067 23.3333
+8 6.13793e-05 0.00125722 0.985612 0.0130699 0 0.908091 0.81079 26.6667
+9 0.000107136 0.00908924 0.990804 0 0 0.82358 0.832755 30
+10 0.0216055 0.0159202 0.877678 0.0847966 0 0.872876 0.83381 33.3333
+11 0.00072785 0.0119176 0.951692 0.0356621 0 0.809261 0.842257 36.6667
+12 0 0.000735345 0.999265 0 0 0.760826 0.848721 40
+13 0.0341809 0.00208886 0.952516 0.0112142 0 0.802751 0.838094 43.3333
+14 0.0496287 0.0133238 0.871005 0.0660421 0 0.802435 0.841766 46.6667
+15 0.00353387 0.00315784 0.990058 0.00325073 0 0.787262 0.84276 50
+16 0.0440683 0.00735142 0.910895 0.0376853 0 0.728199 0.859113 53.3333
+17 0.0201736 0.00556285 0.97346 0.000804025 0 0.723666 0.859693 56.6667
+18 0.0992358 0.0397729 0.837871 0.0231206 0 0.8259 0.802227 60
+19 0.00921692 0.0172595 0.956126 0.0173974 0 0.786179 0.846856 63.3333
+20 0.0264697 0.00346612 0.967901 0.00216307 0 0.727567 0.858126 66.6667
+21 0.0083109 0.0155538 0.969813 0.00632233 0 0.759225 0.852125 70
+22 0.0146076 0.0111385 0.971398 0.00285562 0 0.731988 0.858462 73.3333
+23 0.000598492 0.00138674 0.997118 0.0008964 0 0.780537 0.843701 76.6667
+24 0 0.00125006 0.998198 0.000551873 0 0.721873 0.859216 80
+25 0.00490805 0.00126293 0.992077 0.00175195 0 0.77652 0.845326 83.3333
+26 0.0193894 0.00174677 0.978059 0.000804555 0 0.745968 0.853537 86.6667
+27 0.0355043 0.0223241 0.940217 0.00195492 0 0.830417 0.830913 90
+28 0.0390584 0.00616246 0.910587 0.0441919 0 0.779386 0.847892 93.3333
+29 0.00254652 0.00212475 0.994392 0.000936351 0 0.776495 0.845093 96.6667
+30 0.00656525 0.00839503 0.983116 0.00192386 0 0.797361 0.84069 100
+[1] "docker run -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-input:/src/data -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output:/src/outdir cibersortx/fractions --username brian.white@sagebase.org --token efd223f57902e9a25ace81427862aa8a --mixture AE_symbol_val_tpm.tsv --rmbatchBmode TRUE --perm 1 --verbose TRUE --QN FALSE"
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: AE_symbol_val_tpm.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: LM22.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/AE_symbol_val_tpm.tsv
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 518 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column B cells naive B cells memory Plasma cells T cells CD8 T cells CD4 naive T cells CD4 memory resting T cells CD4 memory activated T cells follicular helper T cells regulatory (Tregs) T cells gamma delta NK cells resting NK cells activated Monocytes Macrophages M0 Macrophages M1 Macrophages M2 Dendritic cells resting Dendritic cells activated Mast cells resting Mast cells activated Eosinophils Neutrophils P-value Correlation RMSE %Completed
+1 0.0966814 0 0 0.164605 0.100248 0.114921 0.102297 2.5
+2 0.175945 0 0 0.0685882 0 0.15247 0.0280995 5
+3 0.131343 0 0 0.150588 0 0.24984 0.0866011 7.5
+4 0.198517 0 0 0.150362 0.10586 0.167846 0.0972959 10
+5 0.0643501 0 0 0.0780274 0 0.161435 0.0297626 12.5
+6 0.136708 0 0 0.131168 0.0282786 0.231094 0.0343664 15
+7 0.0892003 0 0.00470765 0.150818 0.0853005 0.213426 0.0514987 17.5
+8 0.0551123 0 0.00346324 0.0431874 0.0304849 0.48454 0.0206326 20
+9 0.0892244 0 0 0.10655 0 0.143352 0.112475 22.5
+10 0.0923691 0 0 0.20262 0 0.275312 0.0292523 25
+11 0.0677641 0 0 0.140654 0.120413 0.160449 0.141551 27.5
+12 0.0913299 0 0 0.0565781 0 0.256636 0.0261971 30
+13 0.0409101 0 0.00324604 0.0209388 0.0347292 0.477456 0.0452599 32.5
+14 0.0577063 0 0.00101724 0.0706216 0.0130322 0.164004 0.0379504 35
+15 0.134598 0 0.00377443 0.115394 0.18583 0.114171 0.0591722 37.5
+16 0.053886 0 0.000142113 0.0400467 0.0439923 0.141693 0.0493769 40
+17 0.177582 0 0 0.0452732 0.00947782 0.0573369 0.0727866 42.5
+18 0.0536758 0 0 0.119791 0 0.179002 0.0478515 45
+19 0.24484 0 0 0.132736 0.00830909 0.235001 0.0251151 47.5
+20 0.0585032 0 0 0.120617 0.166212 0.175404 0.0439352 50
+21 0.0903194 0 0 0.194828 0.0389897 0.177198 0.0578632 52.5
+22 0.0531859 0 0.0023473 0.0490542 0.0287184 0.413096 0.0705787 55
+23 0.0729453 0 0.00565835 0.0609693 0.184705 0.111218 0.0244251 57.5
+24 0.13462 0 0 0.202059 0 0.236095 0.0380106 60
+25 0.123467 0 0 0.11697 0 0.181936 0.116539 62.5
+26 0.209586 0 0 0.204817 0.0181539 0.166023 0.0148831 65
+27 0.0942817 0 0 0.0832061 0.153883 0.220573 0.0570517 67.5
+28 0.204763 0 0 0.118826 0.0014503 0.195666 0.101385 70
+29 0.130825 0 0.000426802 0.0854263 0 0.181178 0.0302086 72.5
+30 0.0634065 0 0.00407109 0.027441 0.114586 0.415126 0.0191117 75
+31 0.0837769 0 0 0.0989251 0.0325488 0.146338 0.0212534 77.5
+32 0.087802 0 0.00107943 0.237564 0.16696 0.079949 0.0420297 80
+33 0.0968248 0 0 0.0703591 0.0168349 0.178129 0.0422796 82.5
+34 0.0723578 0 0 0.14319 0 0.319084 0.0226539 85
+35 0.149507 0 0 0.105995 0.00665069 0.157296 0.0530977 87.5
+36 0.0894891 0 0 0.221701 0 0.200673 0.0631201 90
+37 0.197786 0 0.0107834 0.0472251 0.22749 0.283333 0.0260087 92.5
+38 0.20647 0 6.78019e-05 0.0622236 0 0.278042 0.0378086 95
+39 0.0678256 0 0 0.093088 0 0.122646 0.0348561 97.5
+40 0.115182 0 0 0.219357 0.0862023 0.0425841 0.0192851 100
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: AE_symbol_val_tpm.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: cibersort-sig-matrix-2l.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/AE_symbol_val_tpm.tsv
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 863 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column CD10 CD31 CD45 EPCAM P-value Correlation RMSE %Completed
+1 0.000789145 0.00176016 0.968052 0.0293986 0 0.77255 0.84983 2.5
+2 0.00143039 0.00242148 0.943346 0.052802 0 0.830417 0.838242 5
+3 0.00689178 0.0142043 0.678752 0.300152 0 0.683771 0.889364 7.5
+4 0.00226238 0.00424353 0.91943 0.0740636 0 0.812068 0.846043 10
+5 0.00118108 0.00782165 0.94183 0.0491675 0 0.738214 0.86168 12.5
+6 0.00354521 0.000215674 0.802787 0.193452 0 0.745674 0.87231 15
+7 0.00183659 0.00513562 0.941324 0.0517036 0 0.756394 0.857248 17.5
+8 0.0088733 0.00476642 0.917348 0.0690123 0 0.729702 0.866263 20
+9 0.00133573 0.00146447 0.728141 0.269058 0 0.672614 0.890748 22.5
+10 0.00528189 0.00597964 0.924901 0.0638377 0 0.782778 0.852538 25
+11 0.0276591 0.0313753 0.818501 0.122465 0 0.73656 0.870232 27.5
+12 0.00831524 0.00128501 0.901395 0.0890046 0 0.766852 0.859061 30
+13 0.00241322 0.00269433 0.960347 0.0345454 0 0.727271 0.862365 32.5
+14 0.00828113 0.00128989 0.788769 0.20166 0 0.680157 0.887481 35
+15 0.00252354 0.00165699 0.970513 0.0253065 0 0.761328 0.85238 37.5
+16 0.00151851 0.00221057 0.937284 0.0589866 0 0.712173 0.868771 40
+17 0.000775463 0.000956346 0.820415 0.177853 0 0.765186 0.866744 42.5
+18 0.00949876 0.0109613 0.891253 0.0882874 0 0.744536 0.865278 45
+19 0.00195817 0.00232005 0.945145 0.0505766 0 0.887177 0.823231 47.5
+20 0.00184128 0.00838049 0.920837 0.0689407 0 0.747428 0.86178 50
+21 0.0110792 0.00124056 0.756034 0.231646 0 0.699631 0.884444 52.5
+22 0.00310406 0.00284041 0.945066 0.0489896 0 0.726097 0.864413 55
+23 0.00432054 0.00389921 0.937229 0.0545513 0 0.746974 0.860049 57.5
+24 0.0147945 0.0291118 0.870566 0.0855275 0 0.805765 0.851673 60
+25 0.00129764 0.00138348 0.783727 0.213592 0 0.703813 0.882462 62.5
+26 0.000728302 0.00109069 0.959513 0.0386684 0 0.852927 0.830039 65
+27 0.0334966 0.00427093 0.879887 0.0823454 0 0.776471 0.854165 67.5
+28 0.00259761 0.00170677 0.940634 0.0550616 0 0.860838 0.830779 70
+29 0.000954293 0.00111556 0.799907 0.198023 0 0.726524 0.876665 72.5
+30 0.00193425 0.00207039 0.95014 0.0458557 0 0.724642 0.864242 75
+31 0.00438551 0.00264157 0.890671 0.102302 0 0.736616 0.867575 77.5
+32 0.040369 0.026396 0.851313 0.0819221 0 0.743137 0.862085 80
+33 0.00231171 0.00268975 0.962182 0.0328169 0 0.804975 0.84215 82.5
+34 0.00538802 0.000900995 0.766374 0.227337 0 0.700803 0.883901 85
+35 0.00421192 0.0151517 0.900437 0.080199 0 0.808934 0.848897 87.5
+36 0.0330073 0.00266067 0.905486 0.058846 0 0.796103 0.846478 90
+37 0.00660814 0.0070893 0.907181 0.0791212 0 0.799412 0.850503 92.5
+38 0.00253756 0.000918488 0.751684 0.24486 0 0.745705 0.874522 95
+39 0.00157902 0.000954466 0.950331 0.0471356 0 0.736491 0.861269 97.5
+40 0.00324359 0.00201142 0.941066 0.0536791 0 0.771476 0.853518 100
+[1] "docker run -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-input:/src/data -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output:/src/outdir cibersortx/fractions --username brian.white@sagebase.org --token efd223f57902e9a25ace81427862aa8a --mixture AF_symbol_val_tpm.tsv --rmbatchBmode TRUE --perm 1 --verbose TRUE --QN FALSE"
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: AF_symbol_val_tpm.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: LM22.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/AF_symbol_val_tpm.tsv
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 519 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column B cells naive B cells memory Plasma cells T cells CD8 T cells CD4 naive T cells CD4 memory resting T cells CD4 memory activated T cells follicular helper T cells regulatory (Tregs) T cells gamma delta NK cells resting NK cells activated Monocytes Macrophages M0 Macrophages M1 Macrophages M2 Dendritic cells resting Dendritic cells activated Mast cells resting Mast cells activated Eosinophils Neutrophils P-value Correlation RMSE %Completed
+1 0.0752162 0 0 0.279935 0 0.151086 0.041212 2.5
+2 0.053423 0 0 0.136829 0.104487 0.308558 0.0362659 5
+3 0.216081 0 0 0.104636 0 0.185114 0.0247188 7.5
+4 0.118155 0 0 0.208286 0.0922016 0.168559 0.0625429 10
+5 0.0725313 0 0 0.100094 0 0.244266 0.049447 12.5
+6 0.106707 0 0 0.0844971 0.0447074 0.445417 0.0325364 15
+7 0.135766 0 0.00830986 0.169238 0.254722 0.0992066 0.0389256 17.5
+8 0.0679829 0 0 0.0533159 0.0663267 0.231961 0.0533258 20
+9 0.127801 0 0 0.0795069 0.0156033 0.212253 0.0599578 22.5
+10 0.0716638 0 0 0.118058 0.0664922 0.240458 0.0361493 25
+11 0.251683 0 0 0.076527 0 0.141782 0.0631461 27.5
+12 0.125514 0 0 0.147875 0 0.22412 0.0135805 30
+13 0.164994 0 0 0.128511 0.0328494 0.129837 0.0496974 32.5
+14 0.0699697 0.00429334 0 0.0899472 0.00122816 0.136936 0.0331398 35
+15 0.112319 0 0.00719012 0.0838167 0.296456 0.22478 0.0189568 37.5
+16 0.0888395 0 0 0.117388 0 0.206327 0.0422928 40
+17 0.0954104 0 0 0.184138 0 0.240475 0.0518296 42.5
+18 0.0988926 0 0 0.161392 0 0.313457 0.0435325 45
+19 0.122321 0 0 0.115096 0.0079057 0.0826952 0.101076 47.5
+20 0.0967566 0 0 0.175255 0.0802678 0.264207 0.0139917 50
+21 0.137365 0 0.00319968 0.0743706 0.0301809 0.104601 0.0182732 52.5
+22 0.0436539 0 0.00200004 0.157623 0.0602968 0.440509 0.0314272 55
+23 0.135554 0 0.00861932 0.0905031 0.126375 0.213005 0.0227177 57.5
+24 0.10595 0 0 0.10501 0.0407442 0.354824 0.0441779 60
+25 0.230906 0 0 0.160675 0.0149018 0.236953 0.0202544 62.5
+26 0.0717091 0 0 0.0361766 0.00926614 0.166048 0.0694082 65
+27 0.11495 0 0 0.25107 0 0.239032 0.0531869 67.5
+28 0.085984 0 0 0.0573211 0.07247 0.150035 0.0840277 70
+29 0.0593766 0 0.00240488 0.0361212 0.075887 0.484606 0.0414372 72.5
+30 0.0873448 0 0 0.0664634 0 0.130931 0.0436292 75
+31 0.0776176 0 0 0.109127 0.0267579 0.117241 0.0404992 77.5
+32 0.189401 0 0.0073681 0.0919149 0.195448 0.144992 0.0303236 80
+33 0.0741017 0 0 0.195347 0.0206349 0.255938 0.0175282 82.5
+34 0.230487 0 0 0.116414 0.00689277 0.250834 0.0332467 85
+35 0.215446 0 0 0.171477 0.0521292 0.109573 0.0157506 87.5
+36 0.108232 0 0 0.103089 0.133564 0.242966 0.0674344 90
+37 0.113799 0 0 0.160929 0 0.356238 0.0510557 92.5
+38 0.0530216 0.00317424 0 0.0513849 0.0211063 0.120132 0.0328949 95
+39 0.133621 0 0.00834798 0.133358 0.266793 0.0889244 0.0167883 97.5
+40 0.0725961 0 0.000729648 0.0582618 0 0.475394 0.0462907 100
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: AF_symbol_val_tpm.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: cibersort-sig-matrix-2l.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/AF_symbol_val_tpm.tsv
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 863 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column CD10 CD31 CD45 EPCAM P-value Correlation RMSE %Completed
+1 0.000819603 0.00349519 0.844571 0.151114 0 0.743154 0.870063 2.5
+2 0.00389442 0.0019757 0.840748 0.153381 0 0.738855 0.871371 5
+3 0.00263893 0.00382207 0.672651 0.320888 0 0.689875 0.887326 7.5
+4 0.0278259 0.00785798 0.820461 0.143855 0 0.749393 0.867689 10
+5 0.00867378 0.00235907 0.824233 0.164735 0 0.722081 0.876255 12.5
+6 0.00304684 0.00201076 0.901564 0.093378 0 0.76515 0.859653 15
+7 0.00561088 0.00191313 0.809798 0.182678 0 0.70195 0.881689 17.5
+8 0.0305439 0.035565 0.590413 0.343478 0 0.657504 0.891803 20
+9 0.00357246 0.00263251 0.85066 0.143135 0 0.779267 0.861274 22.5
+10 0.00618567 0.00771871 0.846439 0.139657 0 0.739084 0.870889 25
+11 0.0133347 0.0346844 0.567631 0.38435 0 0.677657 0.888168 27.5
+12 0.00187059 0.00122952 0.927956 0.0689443 0 0.824531 0.84185 30
+13 0.0159758 0.00161883 0.578456 0.40395 0 0.627187 0.897913 32.5
+14 0.000713076 0.00332394 0.898302 0.0976606 0 0.761341 0.860909 35
+15 0.00276433 0.00630302 0.845347 0.145585 0 0.69188 0.881723 37.5
+16 0.0100684 0.0334024 0.8449 0.111629 0 0.752657 0.867046 40
+17 0.00319588 0.00171487 0.654203 0.340887 0 0.644612 0.896548 42.5
+18 0.000828833 0.00539728 0.879339 0.114435 0 0.789846 0.856039 45
+19 0.0114729 0.00783435 0.842144 0.138549 0 0.783786 0.860702 47.5
+20 0.00378371 0.0334042 0.817549 0.145263 0 0.75046 0.870102 50
+21 0.00280726 0.0105664 0.87139 0.115236 0 0.764297 0.862866 52.5
+22 0 0.00126686 0.881914 0.116819 0 0.700508 0.876867 55
+23 0.0281793 0.00212222 0.865083 0.104615 0 0.794465 0.852963 57.5
+24 0.0010083 0.00311508 0.688846 0.307031 0 0.671871 0.891133 60
+25 0.000361054 0.00166639 0.896372 0.101601 0 0.820837 0.846677 62.5
+26 0.0051889 0.00236466 0.871972 0.120474 0 0.746026 0.8671 65
+27 0.00227568 0.00449776 0.607876 0.38535 0 0.604067 0.903905 67.5
+28 0.00790839 0.00212099 0.88417 0.1058 0 0.785904 0.856352 70
+29 0.00177745 0.0175794 0.856464 0.12418 0 0.718073 0.874803 72.5
+30 0.00390331 0.00500911 0.862897 0.128191 0 0.729327 0.871807 75
+31 0.0103124 0.00370146 0.635199 0.350787 0 0.625053 0.900597 77.5
+32 0.00184227 0.0012341 0.902385 0.0945386 0 0.827427 0.844366 80
+33 0.0066289 0.00261242 0.854879 0.13588 0 0.724826 0.873445 82.5
+34 0.0180205 0.00339894 0.818522 0.160059 0 0.818647 0.853875 85
+35 0.00571903 0.000739143 0.744291 0.249251 0 0.756678 0.872459 87.5
+36 0.00114113 0.00478022 0.842586 0.151492 0 0.764548 0.865333 90
+37 0.00363103 0.00203611 0.676947 0.317386 0 0.664174 0.892796 92.5
+38 0.00466273 0.0168093 0.822506 0.156022 0 0.697496 0.881975 95
+39 0.00743044 0.00603373 0.893511 0.0930244 0 0.745356 0.865069 97.5
+40 0.0084157 0.00360634 0.900753 0.0872249 0 0.734504 0.866893 100
+[1] "docker run -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-input:/src/data -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output:/src/outdir cibersortx/fractions --username brian.white@sagebase.org --token efd223f57902e9a25ace81427862aa8a --mixture hugo_tpm_DS1.tsv --rmbatchBmode TRUE --perm 1 --verbose TRUE --QN FALSE"
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: hugo_tpm_DS1.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: LM22.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/hugo_tpm_DS1.tsv
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 520 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column B cells naive B cells memory Plasma cells T cells CD8 T cells CD4 naive T cells CD4 memory resting T cells CD4 memory activated T cells follicular helper T cells regulatory (Tregs) T cells gamma delta NK cells resting NK cells activated Monocytes Macrophages M0 Macrophages M1 Macrophages M2 Dendritic cells resting Dendritic cells activated Mast cells resting Mast cells activated Eosinophils Neutrophils P-value Correlation RMSE %Completed
+1 0.0798209 0 0.00140682 0.0691936 0 0.342474 0.0616112 3.33333
+2 0.116445 0 0 0.123377 0 0.343006 0.0423194 6.66667
+3 0.245355 0 0 0.0645563 0 0.220388 0.0353022 10
+4 0.0815101 0 0 0.133988 0 0.23559 0.0747504 13.3333
+5 0.0771085 0 0 0.0577681 0 0.409761 0.0275389 16.6667
+6 0.123419 0 0.000210051 0.159686 0 0.283808 0.0653316 20
+7 0.0933864 0 0 0.061878 0 0.179932 0.0414685 23.3333
+8 0.110014 0 0 0.110788 0 0.275501 0.0484419 26.6667
+9 0.0605113 0 0 0.309291 0 0.312343 0.0309193 30
+10 0.109989 0 0 0.0485639 0 0.438016 0.0626865 33.3333
+11 0.0802382 0 0 0.138745 0 0.110322 0.152854 36.6667
+12 0.105665 0 0 0.0846292 0 0.372025 0.0641376 40
+13 0.0976899 0 0.00188515 0.126873 0 0.186484 0.105296 43.3333
+14 0.108644 0 0 0.117609 0 0.27073 0.0488206 46.6667
+15 0.0972538 0 0 0.101004 0 0.254216 0.040294 50
+16 0.107389 0 0.00217423 0.0500118 0 0.243969 0.0744956 53.3333
+17 0.0918338 0 0.00205404 0.0383387 0 0.370979 0.0572308 56.6667
+18 0.0595354 0 0.00144747 0.0403976 0.000337685 0.200942 0.0703562 60
+19 0.116073 0 0 0.0409935 0 0.179909 0.0233441 63.3333
+20 0.111748 0 0 0.0989455 0 0.347156 0.0557482 66.6667
+21 0.112296 0 0.00151065 0.0438311 0.0877646 0.248561 0.0552938 70
+22 0.142046 0 0.00563174 0.121039 0 0.253683 0.047465 73.3333
+23 0.0877699 0 0.00768496 0.0271161 0.182282 0.20418 0.0584752 76.6667
+24 0.0431201 0.00359767 0 0.086787 0 0.35025 0.0555052 80
+25 0.251606 0 0 0.0511123 0.179896 0.162479 0.0426203 83.3333
+26 0.0810284 0 0.00527514 0.0665189 0.120718 0.174619 0.0414095 86.6667
+27 0.192582 0 0 0.0560454 0.0123174 0.279001 0.055636 90
+28 0.0820507 0 0 0.0342406 0.00456663 0.314974 0.0253365 93.3333
+29 0.0787255 0 0.00975753 0.0591678 0.00383415 0.272431 0.0503373 96.6667
+30 0.109731 0.00343955 0 0.0490597 0.0386799 0.345062 0.0298697 100
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: hugo_tpm_DS1.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: cibersort-sig-matrix-2l.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/hugo_tpm_DS1.tsv
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 863 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column CD10 CD31 CD45 EPCAM P-value Correlation RMSE %Completed
+1 0.00157345 0 0.255847 0.742579 0 0.500372 0.903981 3.33333
+2 0.014525 0 0.227398 0.758077 0 0.498363 0.902894 6.66667
+3 0.00340956 0 0.282656 0.713934 0 0.522456 0.899968 10
+4 0.00162678 0 0.362193 0.63618 0 0.524822 0.905774 13.3333
+5 0.00150356 0 0.290312 0.708184 0 0.508035 0.904508 16.6667
+6 0.00184917 0 0.305626 0.692525 0 0.504571 0.906689 20
+7 0.00484574 0 0.411303 0.583851 0 0.556949 0.901933 23.3333
+8 0.00168675 0 0.396674 0.60164 0 0.538651 0.905033 26.6667
+9 0.00120485 0.000186658 0.375745 0.622864 0 0.524715 0.906855 30
+10 0.00915869 0.0128413 0.363951 0.614049 0 0.554588 0.89953 33.3333
+11 0.00103274 0 0.454035 0.544933 0 0.578241 0.899948 36.6667
+12 0.00452891 0 0.464208 0.531263 0 0.575725 0.901634 40
+13 0.0158933 0 0.347121 0.636986 0 0.541166 0.900962 43.3333
+14 0.0015452 0 0.246739 0.751715 0 0.494272 0.905055 46.6667
+15 0.00132362 0 0.278876 0.719801 0 0.509077 0.903292 50
+16 0.00137936 0 0.327752 0.670869 0 0.496758 0.910446 53.3333
+17 0.00550594 0 0.319233 0.675261 0 0.502221 0.908588 56.6667
+18 0.00263437 0 0.392892 0.604474 0 0.512722 0.911261 60
+19 0.00519786 0 0.417823 0.576979 0 0.542073 0.90611 63.3333
+20 0.00307572 0 0.393946 0.602979 0 0.515366 0.910712 66.6667
+21 0.00425603 0.0105872 0.366013 0.619144 0 0.518548 0.908421 70
+22 0.00990966 0.00944979 0.336136 0.644504 0 0.524375 0.904768 73.3333
+23 0.00141449 0 0.547807 0.450778 0 0.59264 0.903194 76.6667
+24 0.00385028 0 0.475124 0.521026 0 0.551769 0.907944 80
+25 0.0015028 0.000136778 0.487226 0.511134 0 0.583355 0.901342 83.3333
+26 0.00361491 0 0.609504 0.386882 0 0.608127 0.90293 86.6667
+27 0.00208342 0 0.332275 0.665642 0 0.513054 0.906508 90
+28 0.000946177 0 0.370437 0.628617 0 0.505054 0.911419 93.3333
+29 0.00237505 0 0.283594 0.714031 0 0.479336 0.912043 96.6667
+30 0.00241261 0 0.354038 0.64355 0 0.503976 0.91058 100
+[1] "docker run -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-input:/src/data -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output:/src/outdir cibersortx/fractions --username brian.white@sagebase.org --token efd223f57902e9a25ace81427862aa8a --mixture hugo_tpm_DS2.tsv --rmbatchBmode TRUE --perm 1 --verbose TRUE --QN FALSE"
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: hugo_tpm_DS2.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: LM22.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/hugo_tpm_DS2.tsv
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 521 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column B cells naive B cells memory Plasma cells T cells CD8 T cells CD4 naive T cells CD4 memory resting T cells CD4 memory activated T cells follicular helper T cells regulatory (Tregs) T cells gamma delta NK cells resting NK cells activated Monocytes Macrophages M0 Macrophages M1 Macrophages M2 Dendritic cells resting Dendritic cells activated Mast cells resting Mast cells activated Eosinophils Neutrophils P-value Correlation RMSE %Completed
+1 0.0906178 0 0 0.116982 0 0.340944 0.0569458 3.33333
+2 0.114459 0 0 0.14979 0 0.268409 0.0364307 6.66667
+3 0.0854304 0 0 0.0760917 0.0284016 0.295099 0.0494673 10
+4 0.0664599 0 0 0.116518 0 0.177577 0.162975 13.3333
+5 0.0787648 0 0 0.120699 0 0.400989 0.0389951 16.6667
+6 0.138947 0 0 0.110962 0 0.357864 0.029396 20
+7 0.0869702 0 0 0.0639635 0 0.21675 0.0842677 23.3333
+8 0.0735187 0 0 0.0684944 0 0.266339 0.102422 26.6667
+9 0.0835194 0 0 0.0524396 0 0.336804 0.128094 30
+10 0.112994 0 0 0.0650733 0.0782838 0.270903 0.0676148 33.3333
+11 0.258151 0 0.00572902 0.159484 0 0.251718 0.0680844 36.6667
+12 0.0928661 0 0 0.116161 0 0.263673 0.0888461 40
+13 0.127175 0 0.000549422 0.0928259 0 0.322882 0.0773621 43.3333
+14 0.116923 0 0 0.182849 0 0.234736 0.113847 46.6667
+15 0.0937995 0 0 0.104417 0 0.310793 0.053492 50
+16 0.0795097 0 0 0.115476 0 0.386151 0.0391973 53.3333
+17 0.0880639 0 0.00218472 0.0441009 0 0.22799 0.0495681 56.6667
+18 0.0915439 0 0.00276355 0.0805529 0.189958 0.256599 0.0608165 60
+19 0.146835 0 0 0.0423266 0.00204035 0.240106 0.0749644 63.3333
+20 0.0806984 0 0 0.022943 0 0.336977 0.106802 66.6667
+21 0.116944 0 0.000753559 0.165982 0 0.323327 0.0528972 70
+22 0.180863 0 0 0.0639759 0.0101324 0.190952 0.0759992 73.3333
+23 0.114537 0 0.000978404 0.0390877 0.110975 0.191686 0.0375842 76.6667
+24 0.117681 0 0 0.0346919 0.0271732 0.219782 0.0311697 80
+25 0.0851916 0 0.00130242 0.103948 0 0.400894 0.0387847 83.3333
+26 0.0921974 0 0 0.113852 0 0.371977 0.0220858 86.6667
+27 0.108891 0 0 0.0216765 0.0428294 0.237905 0.0386063 90
+28 0.102509 0.00546014 0 0.0724996 0 0.191636 0.0303749 93.3333
+29 0.0732592 0 0 0.0746149 0 0.316118 0.0327093 96.6667
+30 0.113979 0 0 0.0452538 0.00991231 0.22664 0.0270934 100
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: hugo_tpm_DS2.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: cibersort-sig-matrix-2l.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/hugo_tpm_DS2.tsv
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 863 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column CD10 CD31 CD45 EPCAM P-value Correlation RMSE %Completed
+1 0.00147952 0 0.305575 0.692946 0 0.529237 0.899892 3.33333
+2 0.00122648 0 0.231854 0.76692 0 0.486456 0.906232 6.66667
+3 0.00133339 0.000233969 0.294657 0.703776 0 0.515207 0.902863 10
+4 0.00255571 0 0.352735 0.644709 0 0.533571 0.902803 13.3333
+5 0.00269017 0 0.389363 0.607947 0 0.555383 0.900318 16.6667
+6 0.00233698 0.00237084 0.277443 0.71785 0 0.513539 0.902103 20
+7 0.00136243 0 0.409541 0.589097 0 0.557249 0.901437 23.3333
+8 0.00141625 0.000841958 0.33118 0.666562 0 0.530746 0.901703 26.6667
+9 0.022011 0 0.258413 0.719576 0 0.539885 0.893494 30
+10 0.00087354 0 0.426047 0.57308 0 0.563839 0.901135 33.3333
+11 0.00318119 0.000864332 0.399756 0.596198 0 0.579447 0.895288 36.6667
+12 0.00206389 0 0.48037 0.517566 0 0.592889 0.898665 40
+13 0.0019077 0 0.395154 0.602938 0 0.549507 0.902216 43.3333
+14 0.00122601 9.51937e-05 0.184797 0.813881 0 0.48594 0.903001 46.6667
+15 0.00311181 0 0.236633 0.760255 0 0.504795 0.901274 50
+16 0.00230061 0.000180479 0.31754 0.679979 0 0.500802 0.908665 53.3333
+17 0.00153885 0 0.329583 0.668878 0 0.514177 0.905958 56.6667
+18 0.0123264 0 0.271519 0.716155 0 0.50964 0.903076 60
+19 0.0146061 0.000196314 0.311634 0.673563 0 0.527759 0.901473 63.3333
+20 0.00405226 0 0.41899 0.576958 0 0.54237 0.906052 66.6667
+21 0.000701318 0 0.418349 0.58095 0 0.532876 0.908056 70
+22 0.000751742 0 0.448094 0.551154 0 0.570757 0.901231 73.3333
+23 0.0112224 0.00148977 0.346138 0.64115 0 0.549522 0.898665 76.6667
+24 0.014491 0.000278131 0.412393 0.572838 0 0.555125 0.902908 80
+25 0.00198352 0.000242692 0.537285 0.460488 0 0.598444 0.901356 83.3333
+26 0.00235659 0 0.580649 0.416994 0 0.633963 0.896012 86.6667
+27 0.00522926 0.00020446 0.312763 0.681804 0 0.507496 0.906665 90
+28 0.00160445 0 0.298035 0.700361 0 0.495397 0.908608 93.3333
+29 0.00134761 0 0.329322 0.66933 0 0.506097 0.908077 96.6667
+30 0.00128441 0 0.361501 0.637215 0 0.515884 0.907997 100
+[1] "docker run -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-input:/src/data -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output:/src/outdir cibersortx/fractions --username brian.white@sagebase.org --token efd223f57902e9a25ace81427862aa8a --mixture hugo_tpm_DS3.tsv --rmbatchBmode TRUE --perm 1 --verbose TRUE --QN FALSE"
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: hugo_tpm_DS3.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: LM22.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/hugo_tpm_DS3.tsv
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 519 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column B cells naive B cells memory Plasma cells T cells CD8 T cells CD4 naive T cells CD4 memory resting T cells CD4 memory activated T cells follicular helper T cells regulatory (Tregs) T cells gamma delta NK cells resting NK cells activated Monocytes Macrophages M0 Macrophages M1 Macrophages M2 Dendritic cells resting Dendritic cells activated Mast cells resting Mast cells activated Eosinophils Neutrophils P-value Correlation RMSE %Completed
+1 0.047383 0 0 0.032644 0 0.0503007 0.0641495 5.55556
+2 0.129245 0 0 0.0573672 0 0.330346 0.129691 11.1111
+3 0.057197 0 0 0.257608 0 0.139014 0.146501 16.6667
+4 0.0216687 0 0 0.159853 0 0.261986 0.191377 22.2222
+5 0.0633965 0 0.000433723 0.0560826 0.0658663 0.123875 0.0683035 27.7778
+6 0.167431 0 0 0.0523292 0 0.308848 0.0504405 33.3333
+7 0.0612319 0 0 0.227386 0 0.278646 0.0432206 38.8889
+8 0.314261 0 0.00403406 0.0515812 0.0233481 0.171203 0.0770659 44.4444
+9 0.0297565 0 0 0.0112298 0.00597197 0.221886 0.055094 50
+10 0.308107 0.0350888 0.000824921 0.000221028 0 0.0741989 0.0313599 55.5556
+11 0.0825862 0 0.00609095 0.00762838 0 0.39164 0.0419186 61.1111
+12 0.0502364 0 0 0.0454547 0 0.244963 0.0862353 66.6667
+13 0.241868 0 0 0.0780087 0 0.253342 0.0738309 72.2222
+14 0.12547 0 0 0.22973 0 0.334612 0.0271131 77.7778
+15 0.0342622 0 0.000731407 0.0227148 0.0548648 0.297348 0.0675999 83.3333
+16 0.101297 0 0.0118631 0.0352911 0.324178 0.18947 0.0251086 88.8889
+17 0.051169 0 0.00217459 0.0711498 0 0.309059 0.0420374 94.4444
+18 0.0394464 0 0 0.0235638 0.0037372 0.0456254 0.0234852 100
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: hugo_tpm_DS3.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: cibersort-sig-matrix-2l.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/hugo_tpm_DS3.tsv
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 863 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column CD10 CD31 CD45 EPCAM P-value Correlation RMSE %Completed
+1 0.00245159 0.00912036 0.986032 0.00239609 0 0.700422 0.865978 5.55556
+2 0.0231479 0.100906 0.808935 0.0670109 0 0.749761 0.861148 11.1111
+3 0.00327215 0.00199741 0.992449 0.00228147 0 0.710674 0.862754 16.6667
+4 0.0207272 0.0254773 0.870513 0.0832827 0 0.702204 0.875352 22.2222
+5 0.0137678 0.00345631 0.908429 0.074347 0 0.748133 0.862299 27.7778
+6 0.0856756 0.0051943 0.87657 0.0325603 0 0.791303 0.822165 33.3333
+7 0 0.00385207 0.989246 0.00690212 0 0.782502 0.844237 38.8889
+8 0.000987235 0.00163493 0.997378 0 0 0.92524 0.80377 44.4444
+9 0.030989 0.00928912 0.951584 0.00813784 0 0.7404 0.855418 50
+10 0.00282585 0.0299859 0.963175 0.00401319 0 0.766962 0.850479 55.5556
+11 0.00193326 0.0018679 0.989177 0.0070219 0 0.679053 0.871417 61.1111
+12 0.0052235 0.00349498 0.981856 0.00942503 0 0.715238 0.862717 66.6667
+13 0.0120604 0.00311888 0.981115 0.00370526 0 0.846311 0.82746 72.2222
+14 0.0309382 0.0195938 0.836942 0.112526 0 0.756803 0.863568 77.7778
+15 0.00670526 0.0203466 0.968218 0.00472997 0 0.678774 0.87283 83.3333
+16 0.000714121 0.0012959 0.875045 0.122945 0 0.684492 0.881162 88.8889
+17 0.00233201 0.0215619 0.974425 0.00168072 0 0.689158 0.869643 94.4444
+18 0.00961995 0.0552105 0.869072 0.0660978 0 0.689045 0.877902 100
+[1] "docker run -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-input:/src/data -v /Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output:/src/outdir cibersortx/fractions --username brian.white@sagebase.org --token efd223f57902e9a25ace81427862aa8a --mixture hugo_tpm_DS4.tsv --rmbatchBmode TRUE --perm 1 --verbose TRUE --QN FALSE"
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: hugo_tpm_DS4.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: LM22.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/hugo_tpm_DS4.tsv
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 520 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/LM22.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column B cells naive B cells memory Plasma cells T cells CD8 T cells CD4 naive T cells CD4 memory resting T cells CD4 memory activated T cells follicular helper T cells regulatory (Tregs) T cells gamma delta NK cells resting NK cells activated Monocytes Macrophages M0 Macrophages M1 Macrophages M2 Dendritic cells resting Dendritic cells activated Mast cells resting Mast cells activated Eosinophils Neutrophils P-value Correlation RMSE %Completed
+1 0.035077 0 0 0.339945 0 0.308376 0.062215 5.55556
+2 0.0232302 0.000731941 1.09716e-06 0.0793371 0 0.112418 0.0768384 11.1111
+3 0.202231 0 0 0.0650002 0.0594445 0.400308 0.0537686 16.6667
+4 0.434323 0.0297975 0.0134057 0.00873207 0 0.091725 0.0413669 22.2222
+5 0.280111 0 0.00357711 0.0941069 0 0.125236 0.106479 27.7778
+6 0.0386045 0 0 0.0517479 0 0.418936 0.133254 33.3333
+7 0.051397 0 0 0.0914567 0 0.13175 0.124209 38.8889
+8 0.0469216 0 0 0.0985866 0 0.169123 0.17312 44.4444
+9 0.205528 0 0.00121104 0.242337 0 0.187464 0.0360437 50
+10 0.0369468 0 0.0023305 0.153428 0.0583889 0.435369 0.048143 55.5556
+11 0.110524 0 0.0122627 0.0265222 0.385378 0.142617 0.0170434 61.1111
+12 0.120417 0 0.00556495 0.0227657 0.0239621 0.147522 0.0180854 66.6667
+13 0.0441418 0 0.00120041 0.0493569 0.0113877 0.143687 0.0361819 72.2222
+14 0.10324 0 0.00383674 0.0121177 0.204457 0.293382 0.0325144 77.7778
+15 0.0670924 0 0.0113801 0.0019639 0 0.138456 0.0293402 83.3333
+16 0.338288 0 0 0.0698701 0.0102224 0.0796557 0.0159957 88.8889
+17 0.0743164 0 0 0.0449329 0 0.416074 0.0325052 94.4444
+18 0.0258272 0 0 0.0197038 0 0.116967 0.0201382 100
+>Running CIBERSORTxFractions...
+>[Options] username: brian.white@sagebase.org
+>[Options] token: efd223f57902e9a25ace81427862aa8a
+>[Options] mixture: hugo_tpm_DS4.tsv
+>[Options] rmbatchBmode: TRUE
+>[Options] perm: 1
+>[Options] verbose: TRUE
+>[Options] QN: FALSE
+>[Options] sigmatrix: cibersort-sig-matrix-2l.txt
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/data/hugo_tpm_DS4.tsv
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>Do B-mode batch correction
+>==================CIBERSORTx===================
+>Batch correction:.
+Read 863 items
+>Run CIBERSORTx on B-mode batch corrected mixtures.
+>=============CIBERSORTx Settings===============
+>Mixture file: /src/outdir//CIBERSORTx_Mixtures_Adjusted.txt
+>Signature matrix file: /src/data/cibersort-sig-matrix-2l.txt
+>Number of permutations set to: 1
+>Enable verbose output
+>==================CIBERSORTx===================
+P	100	%
+column CD10 CD31 CD45 EPCAM P-value Correlation RMSE %Completed
+1 0.00249361 0.0011089 0.993518 0.00287991 0 0.754036 0.85124 5.55556
+2 0.00148695 0.00138461 0.997128 0 0 0.723932 0.858767 11.1111
+3 0.0159113 0.00160807 0.972104 0.0103766 0 0.81136 0.837699 16.6667
+4 0.0066726 0.00394177 0.958932 0.0304534 0 0.902168 0.816731 22.2222
+5 0.00200423 0.001098 0.892455 0.104443 0 0.880249 0.832552 27.7778
+6 0.00353476 0.00145144 0.991639 0.00337487 0 0.710838 0.862816 33.3333
+7 0.00293956 0.00923089 0.973004 0.0148258 0 0.708035 0.865546 38.8889
+8 0.0515127 0.00412849 0.888337 0.0560215 0 0.755534 0.851444 44.4444
+9 0.000995515 0.0018545 0.995504 0.00164643 0 0.919041 0.805867 50
+10 0.00197835 0.0020305 0.840957 0.155035 0 0.670755 0.88674 55.5556
+11 0.0102501 0.0341504 0.950486 0.00511323 0 0.708883 0.866086 61.1111
+12 0.00281823 0.00123456 0.995083 0.000864051 0 0.61112 0.888231 66.6667
+13 0.0398434 0.00129608 0.937681 0.0211795 0 0.727065 0.85811 72.2222
+14 0.000932943 0.00087916 0.997783 0.000404475 0 0.782315 0.843134 77.7778
+15 0.00680953 0.000498165 0.991591 0.00110156 0 0.629249 0.883764 83.3333
+16 0.0116293 0.0472602 0.906002 0.0351089 0 0.847233 0.835798 88.8889
+17 0.00393226 0.00125344 0.892028 0.102786 0 0.707859 0.874266 94.4444
+18 0.00164444 0.006322 0.989259 0.00277476 0 0.691854 0.867954 100
+$AA
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/AA_symbol_val_tpm-lm22-CIBERSORTx_Adjusted.txt"
+
+$AB
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/AB_symbol_val_tpm-lm22-CIBERSORTx_Adjusted.txt"
+
+$AE
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/AE_symbol_val_tpm-lm22-CIBERSORTx_Adjusted.txt"
+
+$AF
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/AF_symbol_val_tpm-lm22-CIBERSORTx_Adjusted.txt"
+
+$DS1
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/hugo_tpm_DS1-lm22-CIBERSORTx_Adjusted.txt"
+
+$DS2
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/hugo_tpm_DS2-lm22-CIBERSORTx_Adjusted.txt"
+
+$DS3
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/hugo_tpm_DS3-lm22-CIBERSORTx_Adjusted.txt"
+
+$DS4
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/hugo_tpm_DS4-lm22-CIBERSORTx_Adjusted.txt"
+
+$AA
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/AA_symbol_val_tpm-fig-2l-CIBERSORTx_Adjusted.txt"
+
+$AB
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/AB_symbol_val_tpm-fig-2l-CIBERSORTx_Adjusted.txt"
+
+$AE
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/AE_symbol_val_tpm-fig-2l-CIBERSORTx_Adjusted.txt"
+
+$AF
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/AF_symbol_val_tpm-fig-2l-CIBERSORTx_Adjusted.txt"
+
+$DS1
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/hugo_tpm_DS1-fig-2l-CIBERSORTx_Adjusted.txt"
+
+$DS2
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/hugo_tpm_DS2-fig-2l-CIBERSORTx_Adjusted.txt"
+
+$DS3
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/hugo_tpm_DS3-fig-2l-CIBERSORTx_Adjusted.txt"
+
+$DS4
+[1] "/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/csx-output/hugo_tpm_DS4-fig-2l-CIBERSORTx_Adjusted.txt"
+
+Using sample.id as id variables
+Using sample.id as id variables
+Using sample.id as id variables
+Using sample.id as id variables
+Using sample.id as id variables
+Using sample.id as id variables
+Using sample.id as id variables
+Using sample.id as id variables
+Joining with `by = join_by(cibersort.cell.type)`
+Joining with `by = join_by(cibersort.cell.type)`
+  dataset.name sample.id          cell.type  prediction subchallenge
+1           AA    ISFRA1           NK.cells 0.039819174         fine
+2           AA    ISFRA1  endothelial.cells 0.004427679         fine
+3           AA    ISFRA1        fibroblasts 0.020454854         fine
+4           AA    ISFRA1        macrophages 0.002623108         fine
+5           AA    ISFRA1     memory.B.cells 0.000000000         fine
+6           AA    ISFRA1 memory.CD4.T.cells 0.183653521         fine
+  method.name
+1  CIBERSORTx
+2  CIBERSORTx
+3  CIBERSORTx
+4  CIBERSORTx
+5  CIBERSORTx
+6  CIBERSORTx
+Using sample.id as id variables
+Using sample.id as id variables
+Using sample.id as id variables
+Using sample.id as id variables
+Using sample.id as id variables
+Using sample.id as id variables
+Using sample.id as id variables
+Using sample.id as id variables
+Joining with `by = join_by(cibersort.cell.type)`
+Joining with `by = join_by(cibersort.cell.type)`
+  dataset.name sample.id          cell.type  prediction subchallenge
+1           AA    ISFRA1           NK.cells 0.079638348         fine
+2           AA    ISFRA1  endothelial.cells 0.004427679         fine
+3           AA    ISFRA1        fibroblasts 0.020454854         fine
+4           AA    ISFRA1        macrophages 0.007869323         fine
+5           AA    ISFRA1     memory.B.cells 0.000000000         fine
+6           AA    ISFRA1 memory.CD4.T.cells 0.367307042         fine
+  method.name
+1  CIBERSORTx
+2  CIBERSORTx
+3  CIBERSORTx
+4  CIBERSORTx
+5  CIBERSORTx
+6  CIBERSORTx
+Time difference of 10.77558 mins
+Exiting successfully

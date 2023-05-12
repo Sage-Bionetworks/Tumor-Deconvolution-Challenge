@@ -236,7 +236,8 @@ l_ply(csx.input.files,
                         csx.output.dir, "/", out.file))
       })
 
-
+# This is the end time used for csx-core-only.out
+# end_time = Sys.time()
 
 ## HERE
 
@@ -389,7 +390,7 @@ names(s2l.all.gene.res.files) <- datasets
 print(lm22.all.gene.res.files)
 print(s2l.all.gene.res.files)
 
-save.image(".Rdata.sv")
+# save.image(".Rdata.sv")
 
 csx.all.gene.res <- aggregate.cibersortx.results(datasets, lm22.all.gene.res.files, s2l.all.gene.res.files, summary.fun = mean)
 
@@ -409,11 +410,13 @@ print(head(csx.all.gene.res))
 file <- paste0(prefix, "-csx-all-gene-predictions-sum.tsv")
 write.table(file = file, csx.all.gene.res, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
-f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
-#synStore(f)
-
+# This is the end time used for csx.out	and csx-download-synapse-files.out
+# csx.out and csx-core-only.out were run _after_ the input files had already been downloaded from synapse
 end_time = Sys.time()
 print(end_time - start_time)
+
+f <- File(file, parentId = output.folder.synId, synapseStore = TRUE)
+synStore(f)
 
 cat("Exiting successfully\n")
 q(status=0)
