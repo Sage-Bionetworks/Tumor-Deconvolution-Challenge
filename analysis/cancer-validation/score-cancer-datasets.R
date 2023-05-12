@@ -424,7 +424,7 @@ all.dataset.stats$one.sided.pval.holm <- p.adjust(all.dataset.stats[,"one.sided.
 wu.pelka.stats <- subset(all.dataset.stats, grepl(variable, pattern="Pelka") | grepl(variable, pattern="Wu"))
 non.wu.pelka.stats <- subset(all.dataset.stats, !grepl(variable, pattern="Pelka") & !grepl(variable, pattern="Wu"))
 sig.dataset.stats <- subset(all.dataset.stats, two.sided.pval.holm < 0.05)
-
+print(sig.dataset.stats[order(sig.dataset.stats$variable),c("cell.type", "variable", "Estimate", "two.sided.pval.holm")])
 write.table(file = paste0(figs.dir, "/cancer-validation-dataset-comparison-pvals.tsv"), all.dataset.stats, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
 
