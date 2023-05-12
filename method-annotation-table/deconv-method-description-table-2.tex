@@ -1,0 +1,50 @@
+\documentclass[border=3mm,preview]{standalone}
+    \usepackage{siunitx}
+    \usepackage{array,booktabs}
+    \usepackage{stackengine}
+    \usepackage{etoolbox}
+    \usepackage{makecell}
+    %    \usepackage{caption}
+    \usepackage{caption, float, threeparttable}
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+    \usepackage[math]{iwona}% for test purposes only
+
+    \newcommand{\mc}[1]{\multicolumn{1}{c}{#1}} % non-extended bold font
+\newcommand{\mybf}{\fontseries{b}\selectfont} % non-extended bold font
+\newcommand{\oklepaj}{(} % non-extended bold font
+\robustify\mybf
+
+% pdflatex deconv-method-description-table.tex
+
+\begin{document}
+%\begin{table}
+\begin{threeparttable}
+\begin{tabular}{lcccccc}
+  %
+  & \mc{\stackon{Set}{Training}} & \mc{Normalization} & \mc{\stackon{Correction}{\stackon{Batch}{Training}}}
+  & \mc{\stackon{Correction}{\stackon{Batch}{Test}}} & \mc{\stackon{Runtime}{Coarse}} & \mc{\stackon{Runtime}{Fine}} 
+  \\
+  \midrule
+  \mybf CIBERSORT & Healthy & Quantile & Same platform (HGU133A) & & 133 & 131 \\
+  \mybf CIBERSORTx & \makecell{Healthy (immune subtypes), \\ Malignant (tumor/immune/stroma)} & Quantile (immune only)& \makecell{One platform for immune (HGU133A), \\ One dataset for tumor/immune/stroma} & \makecell{Re-optimizes $\beta$ w.r.t. a ComBat-corrected\\admixture matrix $A^*$.} & 567 & 567 \\
+  \mybf EPIC & Healthy & TPM & & \makecell{Re-normalized TPMs based on genes\\common to $S$ and test admixture} & 71 & 70 \\
+  \mybf MCP-Counter & & fRMA & & NA & 70 & 66 \\
+  \mybf quanTIseq & & TPM & & & 253 & 254 \\
+  \mybf xCell & & \makecell{FPKM (RNA-seq),\\RMA (microarray)} & \makecell{Markers determined independently\\in each training dataset} & & 70 & 74 \\
+  \hline    
+  \mybf Aginome-XMU & \makecell{Healthy,\\Malignant} & \makecell{TPM,log,\\min-max scaling}& & & 80 & 116 \\
+  \mybf Biogem & \makecell{Healthy,\\Malignant}& TPM & & & 82 & 84 \\
+  \mybf DA\_505 & \makecell{Healthy,\\Malignant} & Rank-based & & & 92 & 90 \\
+  \mybf mitten\_TDC19 & Healthy & TPM & & NA & 86 & 88 \\             
+  \midrule
+\end{tabular}
+%\caption*{$|e|_\epsilon \equiv 0 \text{if } |e| < \epsilon; |e| - \epsilon \text{otherwise}$ \\
+%  $w_H(e) \equiv 1 \text{if } |e| < k;  k/|e| \text{otherwise}$
+%}
+%  $|e|_\epsilon \equiv 0 \text{if } |e| < \epsilon; |e| - \epsilon \text{otherwise}$ 
+%  $w_H(e) \equiv 1 \text{if } |e| < k;  k/|e| \text{otherwise}$
+%\end{table}
+\end{threeparttable}
+\end{document}
