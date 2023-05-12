@@ -55,8 +55,12 @@ figs <-
        "figs17.pdf" = "analysis/specificity-analysis/figs/spillover-all-scores-fine-grained-round-1.pdf",
        "fig6.png" = "analysis/in-silico-admixtures/figs/sensitivity-spikein-and-summary.png",
        "fig6.pdf" = "analysis/in-silico-admixtures/figs/sensitivity-spikein-and-summary.pdf",
+       "figs18.png" = "analysis/cancer-validation/figs/fig-cancer-validation-heatmap-wu-and-pelka.png",
+       "figs18.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation-heatmap-wu-and-pelka.pdf",
+       "figs19.png" = "analysis/cancer-validation/figs/fig-cancer-validation-heatmap-all.png",
+       "figs19.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation-heatmap-all.pdf",
        "fig7.png" = "analysis/cancer-validation/figs/fig-cancer-validation.png",
-       "fig7.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation.pdf"       
+       "fig7.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation.pdf"
 
 )
 
