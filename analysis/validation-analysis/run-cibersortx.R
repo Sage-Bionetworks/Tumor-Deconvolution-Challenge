@@ -27,8 +27,8 @@ cat(paste0("I ran on tdaws2: 10.23.19.191 in //home/bwhite/\n"))
 
 ## At JAX (i.e., for Wu/BRCA and Pelka/CRC pseudobulk datasets)
 ## path=/Users/whitebr/work/sage/Tumor-Deconvolution-Challenge/analysis/validation-analysis/
-## token=
-## user=
+## token=efd223f57902e9a25ace81427862aa8a
+## user=brian.white@sagebase.org
 
 ## https://cibersortx.stanford.edu/activate.php?email=brian.white%40jax.org&key=01e7985500e3c40cc466c427d17777b9
 
