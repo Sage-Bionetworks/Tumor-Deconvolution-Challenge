@@ -68,7 +68,7 @@ final.timing.tbl <- final.timing.tbl[order(final.timing.tbl$method.name, final.t
 
 write.table(file="method-run-times.tsv", final.timing.tbl, row.names=FALSE, col.names=TRUE, quote=FALSE, sep="\t")
 
-final.timing.tbl$rounded <- round(final.timing.tbl$exec.time.seconds)
+final.timing.tbl$rounded <- round(as.numeric(final.timing.tbl$exec.time.seconds))
 
 # These are the results that go in the main text figure
 subset(final.timing.tbl, submission=="1" & method.name %in% c("CIBERSORT", "CIBERSORTx", "xCell", "Biogem", "MCP-counter", "mitten_TDC19", "Aginome-XMU", "DA_505", "quanTIseq", "EPIC"))

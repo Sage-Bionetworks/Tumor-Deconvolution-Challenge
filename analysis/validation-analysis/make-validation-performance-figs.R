@@ -303,10 +303,47 @@ title <- "Coarse-Grained (First Submission)"
 ##                                          g.bootstrap.coarse.spearman.round1, nrow=1, widths = c(3,1),
 ##                                          top = textGrob(title, gp = gpar(fontsize = 20)))
 
+rel_widths <- c(3,1.1,0.5,0.5)
+if(plot.spearman.distribution) {
+  rel_widths <- c(1,3,3,0.5,0.5)
+}
+
+if(plot.spearman.distribution) {
+#x.axis.1 <- get_x_axis(g.bootstrap.coarse.pearson.round1)
+#x.axis.2 <- get_x_axis(g.bootstrap.coarse.spearman.round1)
+#y.axis <- get_y_axis(g.bootstrap.coarse.pearson.round1)
+#g.pear <- g.bootstrap.coarse.pearson.round1 + theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank())
+#y.axis <- get_y_axis(g.pear)
+#g.pear <- g.pear + theme(axis.text.y = element_blank(), axis.title.y = element_blank(), axis.ticks.y = element_blank())
+#g.pear <- g.bootstrap.coarse.pearson.round1 + 
+#            theme(axis.text.y = element_blank(), axis.title.y = element_blank(), axis.ticks.y = element_blank(), axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank())
+#g.spear <- g.bootstrap.coarse.spearman.round1 + 
+#            theme(axis.text.y = element_blank(), axis.title.y = element_blank(), axis.ticks.y = element_blank(), axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank())
+##gA <- ggplotGrob(g.pear)
+##gB <- ggplotGrob(g.spear)
+##maxWidth = unit.pmax(gA$widths[2:3], gB$widths[2:3])
+### Set the widths
+##gA$widths[2:3] <- maxWidth
+##gB$widths[2:3] <- maxWidth
+## Arrange the four charts
+#grid.arrange(gA, gB, gC, gD, nrow=2)
+#grid.newpage()
+#grid.draw(cbind(ggplotGrob(g.pear), ggplotGrob(g.spear), size = "last"))
+#grid.draw(cbind(ggplotGrob(g.pear), ggplotGrob(g.spear), ggplotGrob(g.bootstrap.coarse.anno.round1), size = "last"))
+g.pear <- g.bootstrap.coarse.pearson.round1
+g.spear <- g.bootstrap.coarse.spearman.round1
+#g <- g.pear + g.spear
+#plot_grid(g, g.bootstrap.coarse.anno.round1, g.bootstrap.coarse.anno.legend.round1, nrow=1)
+#g <- g.pear + g.spear + g.bootstrap.coarse.anno.round1 + plot_layout(widths=c(4,4,1))
+#plot_grid(g, g.bootstrap.coarse.anno.legend.round1, nrow=1, rel_widths=c(9,1))
+
+plot_row <- g.pear + g.spear + g.bootstrap.coarse.anno.round1 + g.bootstrap.coarse.anno.legend.round1 + plot_layout(widths=c(4,4,1,1))
+} else {
 plot_row <- plot_grid(g.bootstrap.coarse.pearson.round1,
                       g.bootstrap.coarse.spearman.round1, 
                       g.bootstrap.coarse.anno.round1,
-                      g.bootstrap.coarse.anno.legend.round1, nrow=1, align="h", rel_widths = c(3,1.1,0.5,0.5))
+                      g.bootstrap.coarse.anno.legend.round1, nrow=1, align="h", rel_widths = rel_widths)
+}
 g.bootstrap.coarse.round1 <- plot_grid(textGrob(title, gp = gpar(fontsize = 20)), plot_row, ncol=1, rel_heights = c(0.1, 1))
 
 g.bootstrap.fine.pearson.round1 <- plots[["1"]][["barplots"]][["fine-pearson"]] +
@@ -335,10 +372,14 @@ title <- "Fine-Grained (First Submission)"
 ##                                        g.bootstrap.fine.spearman.round1, nrow=1, widths = c(3,1),
 ##                                        top = textGrob(title, gp = gpar(fontsize = 20)))
 
+if(plot.spearman.distribution) {
+plot_row <- g.bootstrap.fine.pearson.round1 + g.bootstrap.fine.spearman.round1 + g.bootstrap.fine.anno.round1 + g.bootstrap.fine.anno.legend.round1 + plot_layout(widths=c(4,4,1,1))
+} else {
 plot_row <- plot_grid(g.bootstrap.fine.pearson.round1,
                       g.bootstrap.fine.spearman.round1, 
                       g.bootstrap.fine.anno.round1,
-                      g.bootstrap.fine.anno.legend.round1, nrow=1, align="h", rel_widths = c(3,1.1,0.5,0.5))
+                      g.bootstrap.fine.anno.legend.round1, nrow=1, align="h", rel_widths = rel_widths)
+}
 g.bootstrap.fine.round1 <- plot_grid(textGrob(title, gp = gpar(fontsize = 20)), plot_row, ncol=1, rel_heights = c(0.1, 1))
 
 g.round.coarse <- g.score.vs.round[["coarse"]]
@@ -428,10 +469,15 @@ make.barplots <- function(plots, round,
     }
         
     title <- paste0("Coarse-Grained (", sub.title, ")")
+    if(plot.spearman.distribution) {
+      plot_row <- g.bootstrap.coarse.pearson + g.bootstrap.coarse.spearman
+      g.bootstrap.coarse <- plot_grid(textGrob(title, gp = gpar(fontsize = 20)), plot_row, ncol=1, rel_heights = c(0.1, 1))
+    } else {
     g.bootstrap.coarse <- grid.arrange(g.bootstrap.coarse.pearson,
                                        g.bootstrap.coarse.spearman, nrow=1, widths = c(3,1),
                                        top = textGrob(title, gp = gpar(fontsize = 20)))
-    
+    }
+
     g.bootstrap.fine.pearson <- plots[[round]][["barplots"]][["fine-pearson"]] +
         scale_y_continuous(limits = c(x.min.pearson.fine, x.max.pearson.fine), expand = c(0, 0))
     g.bootstrap.fine.spearman <- plots[[round]][["barplots"]][["fine-spearman"]] +
@@ -447,10 +493,14 @@ make.barplots <- function(plots, round,
     g.bootstrap.fine.spearman <- g.bootstrap.fine.spearman + ylab("Spearman\nCorrelation")
 
     title <- paste0("Fine-Grained (", sub.title, ")")        
+    if(plot.spearman.distribution) {
+      plot_row <- g.bootstrap.fine.pearson + g.bootstrap.fine.spearman
+      g.bootstrap.fine <- plot_grid(textGrob(title, gp = gpar(fontsize = 20)), plot_row, ncol=1, rel_heights = c(0.1, 1))
+    } else {
     g.bootstrap.fine <- grid.arrange(g.bootstrap.fine.pearson,
                                      g.bootstrap.fine.spearman, nrow=1, widths = c(3,1),
                                      top = textGrob(title, gp = gpar(fontsize = 20)))
-    
+    }
     return(list("coarse" = g.bootstrap.coarse, "fine" = g.bootstrap.fine))
 }
 

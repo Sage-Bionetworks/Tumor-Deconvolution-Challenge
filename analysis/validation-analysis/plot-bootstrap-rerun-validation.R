@@ -11,6 +11,7 @@ suppressPackageStartupMessages(p_load("parallel"))
 suppressPackageStartupMessages(p_load("reshape2"))
 
 suppressPackageStartupMessages(p_load("xlsx"))
+suppressPackageStartupMessages(p_load("patchwork"))
 
 source("../utils.R")
 
@@ -125,7 +126,7 @@ plot.bootstrap.analysis <-
     function(res, bootstrapped.scores, mean.boostrapped.scores, median.bootstrapped.scores,
              means.by.cell.type.method,
              means.over.dataset, method.anno.round,
-             postfix) {
+             postfix, plot.spearman.distribution = FALSE) {
 
         top.performers <- c("Aginome-XMU", "DA_505", "mitten_TDC19", "Biogem")
         comparator.methods <- unique(subset(res, comparator==TRUE)[, method.name.col])
@@ -186,8 +187,13 @@ print(table(bold.labels))
             # g1 <- g1 + scale_y_discrete(labels = function(x) bold.highlight(x, comparator.methods))
             # g1 <- g1 + theme(axis.text.y=element_markdown())
 
-            g2 <- ggplot(data = median.scores)
-            g2 <- g2 + geom_col(aes_string(x = method.name.col, y = "spearman"), fill = "#E69F00")
+            if(plot.spearman.distribution) {
+              g2 <- ggplot(data = scores, aes_string(x = method.name.col, y = "spearman"))
+              g2 <- g2 + geom_boxplotMod(fill = "#E69F00")
+            } else{
+              g2 <- ggplot(data = median.scores)
+              g2 <- g2 + geom_col(aes_string(x = method.name.col, y = "spearman"), fill = "#E69F00")
+            }
             g2 <- g2 + coord_flip()
             g2 <- g2 + xlab("Method")
             ## g2 <- g2 + ylab("Spearman Correlation")
@@ -196,7 +202,7 @@ print(table(bold.labels))
             g2 <- g2 + theme(text = element_text(size=18))    
             g2 <- g2 + theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
                              axis.ticks.y = element_blank())
-
+     
             tmp <- scores[, c(method.name.col, "Output", "Method")]            
             ret <- plot.anno.heatmap.with.multiple.legends(tmp, "method.name", c("Method", "Output"), c("Set3", "Set1"))
 
@@ -430,6 +436,8 @@ method.anno <- get.method.annotations()
 
 all.median.bootstrapped.scores <- list()
 
+plot.spearman.distribution <- TRUE
+
 for(round in rounds) {
     postfix <- paste0("-round-", round)
     cat(paste0("Doing round ", round, "\n"))
@@ -489,7 +497,7 @@ for(round in rounds) {
     plots[[round]] <- plot.bootstrap.analysis(res.round, bootstrapped.scores, mean.bootstrapped.scores, median.bootstrapped.scores,
                                               means.by.cell.type.method,
                                               means.over.dataset, method.anno.round,
-                                              postfix)
+                                              postfix, plot.spearman.distribution = plot.spearman.distribution)
     
     cat("Bayes factor resultes K <= 3 (or K <= 5) suggests a tie\n")
     for(sub.challenge in sub.challenges) {
