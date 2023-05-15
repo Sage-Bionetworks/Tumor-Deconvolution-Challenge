@@ -68,9 +68,9 @@ tbls <-
   list(
        "tables10.csv" = "training-sample-metadata/geo-expression-array-immune-cells.csv",
        "tables11.csv" = "training-sample-metadata/geo-rnaseq-immune-cells.csv",
-       "tablesX.tsv" = "analysis/timing/method-run-times.tsv",
-       "tables17.tsv" = "analysis/cancer-validation/figs/cancer-validation-correlations.tsv",
-       "tables18.tsv" = "analysis/cancer-validation/figs/cancer-validation-dataset-pvals.tsv"       
+       "tables12.tsv" = "analysis/timing/method-run-times.tsv",
+       "tables19.tsv" = "analysis/cancer-validation/figs/cancer-validation-correlations.tsv",
+       "tables20.tsv" = "analysis/cancer-validation/figs/cancer-validation-dataset-pvals.tsv"       
 )
 
 for(fig in names(figs)) {
