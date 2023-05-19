@@ -155,9 +155,18 @@ print(method.anno.round.sc)
             scores <- bootstrapped.scores[[sub.challenge]]
             median.scores <- median.bootstrapped.scores[[sub.challenge]]
 
+            median.scores[, method.name.col] <- as.character(median.scores[, method.name.col])
+            flag <- median.scores[, method.name.col] == "ensemble"
+            median.scores[flag, method.name.col] <- "consensus rank"
+
+            scores[, method.name.col] <- as.character(scores[, method.name.col])
+            flag <- scores[, method.name.col] == "ensemble"
+            scores[flag, method.name.col] <- "consensus rank"
+
+
             o <- order(median.scores$pearson)
             median.scores <- median.scores[o, ]
-            flag <- ( !is.na(scores$pearson) & !is.na(scores$spearman) ) | ( scores[,method.name.col] == "ensemble")
+            flag <- ( !is.na(scores$pearson) & !is.na(scores$spearman) ) | ( scores[,method.name.col] == "consensus rank")
             scores <- scores[flag, ] 
             scores[, method.name.col] <- factor(scores[, method.name.col], levels = median.scores[, method.name.col])
 
@@ -169,7 +178,7 @@ print(lvls)
 print(bold.labels)
 print(table(bold.labels))
 #            scores <- na.omit(scores)
-            flag <- ( !is.na(median.scores$pearson) & !is.na(median.scores$spearman) ) | ( median.scores[,method.name.col] == "ensemble")
+            flag <- ( !is.na(median.scores$pearson) & !is.na(median.scores$spearman) ) | ( median.scores[,method.name.col] == "consensus rank") | ( median.scores[,method.name.col] == "ensemble")
             median.scores[, method.name.col] <- factor(median.scores[, method.name.col], levels = median.scores[, method.name.col])
 #            median.scores <- na.omit(median.scores)
             median.scores <- median.scores[flag, ] 
@@ -392,7 +401,7 @@ print(lvls)
 print(y.bold.labels)
                       } else {
                           # Exclude ensemble, which has NAs for pearson
-                          flag <- !(df[, method.name.col] == "ensemble")
+                          flag <- !(df[, method.name.col] %in% c("consensus rank", "ensemble"))
                           ret <- plot.strip.plots(df[flag,], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor",
                                                 method.levels = method.levels[[entry]],
                                                 cell.type.levels = cell.type.levels[[entry]],
@@ -581,7 +590,7 @@ for(round in c("1")) {
         # tbl <- results[[round]][["mean.bootstrapped.scores"]][[sub.challenge]]
         tbl <- plots[[round]][["mean.bootstrapped.scores"]][[sub.challenge]]
         # Exclude the ensemble method
-        flag <- tbl[, method.name.col] == "ensemble"
+        flag <- tbl[, method.name.col] %in% c("consensus rank", "ensemble")
         tbl <- tbl[!flag, ]
 	tbl <- as.data.frame(table(na.omit(tbl$Method)))
 	colnames(tbl) <- c("Method", "Freq")
@@ -592,7 +601,7 @@ for(round in c("1")) {
 
         tbl <- plots[[round]][["mean.bootstrapped.scores"]][[sub.challenge]]
         # Exclude the ensemble method
-        flag <- tbl[, method.name.col] == "ensemble"
+        flag <- tbl[, method.name.col] %in%  c("consensus rank", "ensemble")
         cat(paste0("Excluded ensemble method: ", any(flag), "\n"))
         tbl <- tbl[!flag, ]
 	mean.tbl <- ddply(tbl, .variables = c("Output"),
