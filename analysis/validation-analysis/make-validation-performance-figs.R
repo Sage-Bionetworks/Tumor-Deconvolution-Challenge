@@ -407,11 +407,11 @@ d <- dev.off()
 
 g <- plot_grid(g.bootstrap.coarse.round1, g.bootstrap.fine.round1, labels = c("A", "B"))
 
-png(paste0(figs.dir, "fig-validation-round-1-performance", ".png"), width = 2 * 480)
+png(paste0(figs.dir, "fig-validation-round-1-performance", ".png"), width = 2.5 * 480)
 print(g)
 d <- dev.off()
 
-pdf(paste0(figs.dir, "fig-validation-round-1-performance", ".pdf"), width = 2 * 7)
+pdf(paste0(figs.dir, "fig-validation-round-1-performance", ".pdf"), width = 2.5 * 7)
 print(g)
 d <- dev.off()
 
