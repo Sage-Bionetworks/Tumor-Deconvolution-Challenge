@@ -405,6 +405,8 @@ median.stats <-
                             rmse = median(df$rmse, na.rm=TRUE))
         })
 
+stop("stop")
+
 write.table(file = paste0(figs.dir, "/cancer-validation-dataset-pvals.tsv"), all.stats, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 write.table(file = paste0(figs.dir, "/cancer-validation-median-correlations.tsv"), median.stats, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 write.table(file = paste0(figs.dir, "/cancer-validation-correlations.tsv"), adj.df, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
@@ -480,7 +482,96 @@ pdf(paste0(figs.dir, "fig-cancer-validation", ".pdf"), width = 1 * 7, height = 1
 print(g)
 d <- dev.off()
 
-titles <- list("wu" = "Wu (BRCA)", "pelka" = "Pelka (CRC)", "all" = "Merged Wu (BRCA) and Pelka (CRC)")
+all.scores.simplified <- all.scores
+all.scores.simplified <- rename.cell.types(all.scores.simplified, from.col = "cell.type", to.col = "cell.type")
+
+flag <- all.scores.simplified$dataset.name %in% c("Pelka", "Wu")
+all.scores.simplified[!flag,"dataset.name"] <- "Healthy"
+flag <- all.scores.simplified$dataset.name %in% c("Wu")
+all.scores.simplified[flag,"dataset.name"] <- "Wu (BRCA)"
+flag <- all.scores.simplified$dataset.name %in% c("Pelka")
+all.scores.simplified[flag,"dataset.name"] <- "Pelka (CRC)"
+all.scores.simplified <- 
+  ddply(all.scores.simplified, .variables = c("dataset.name", "method.name", "cell.type"),
+        .fun = function(df) {
+          data.frame(cor.p = mean(df$cor.p))
+        })
+
+# g <- plot.strip.plots(all.scores.simplified, id.var="method.name", cell.type.var="cell.type", var="cor.p")
+
+means <-
+  ddply(all.scores.simplified,
+        .variables = c("method.name", "cell.type"),
+        .fun = function(df) {
+          data.frame(cor.p = mean(df$cor.p))
+        })
+means$dataset.name <- "Mean"
+
+flag <- duplicated(all.scores.simplified[, c("method.name", "cell.type")], fromLast = TRUE) |
+  duplicated(all.scores.simplified[, c("method.name", "cell.type")], fromLast = FALSE) 
+means.of.repeated <-
+  ddply(all.scores.simplified[flag,],
+        .variables = c("method.name", "cell.type"),
+        .fun = function(df) {
+          data.frame(cor.p = mean(df$cor.p))
+        })
+means.of.repeated$dataset.name <- "Mean"
+
+cell.type.means <- ddply(means, .variables=c("cell.type"), .fun = function(df) data.frame(cor.p = mean(df$cor.p)))
+cell.type.means <- cell.type.means[order(cell.type.means$cor.p,decreasing=TRUE),]
+
+method.means <- ddply(means, .variables=c("method.name"), .fun = function(df) data.frame(cor.p = mean(df$cor.p)))
+method.means <- method.means[order(method.means$cor.p,decreasing=FALSE),]
+
+best.performing <-
+  ddply(means,
+        .variables = c("cell.type"),
+        .fun = function(df) {
+          df[which.max(df$cor.p),]
+        })
+
+subset.methods <- 
+  unique(c(get.comparators.cap(), best.performing$method.name, c("Aginome-XMU", "Biogem", "mitten_TDC19", "DA_505")))
+subset.methods <- subset.methods[!(subset.methods == "TIMER")]
+
+all.scores.simplified <- rbind(all.scores.simplified[, c("dataset.name", "method.name", "cell.type", "cor.p")],
+                               means.of.repeated[, c("dataset.name", "method.name", "cell.type", "cor.p")])
+
+all.scores.simplified$dataset.name <- factor(all.scores.simplified$dataset.name, levels = c("Healthy", "Pelka (CRC)", "Wu (BRCA)", "Mean"))
+# all.scores.simplified <- subset(all.scores.simplified, dataset.name == "Mean")
+
+all.scores.simplified$cell.type <- factor(all.scores.simplified$cell.type, levels = cell.type.means$cell.type)
+all.scores.simplified$method.name <- factor(all.scores.simplified$method.name, levels = method.means$method.name)
+# Append means
+
+df <- subset(all.scores.simplified, method.name %in% subset.methods)
+
+lvls <- levels(df[,method.name.col])
+lvls <- lvls[lvls %in% df[,method.name.col]]
+y.bold.labels <- ifelse(lvls %in% comparator.methods, yes = "bold", no = "plain")
+
+datasets <- as.character(unique(df$dataset.name))
+
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+g <- ggplot(data = df,
+            aes(x = cor.p, y = method.name, colour = dataset.name)) + facet_wrap(~ cell.type, nrow=3)
+g <- g + geom_point() + ylab("") + xlab("Pearson Correlation") + labs(colour = "Dataset")
+g <- g + theme(axis.text.y = element_text(face = y.bold.labels))
+g <- g + scale_color_manual(breaks = c(datasets[datasets != "Mean"], "Mean"),
+                            values=c(cbbPalette[2:length(datasets)], "#000000"))
+
+strip.text.sz <- 8 
+g <- g + theme(axis.text.y = element_text(size = 6), text = element_text(size=15), strip.text = element_text(size = strip.text.sz))
+g <- g + theme(axis.text.y = element_text(size = 12), axis.text.x = element_text(size = 15), strip.text = element_text(size = 15))
+g <- g +  theme(legend.position="top")
+
+png(paste0(figs.dir, "fig-cancer-validation-per-cell-type.png"), width = 2 * 480, height = 1 * 480)                    
+print(g)
+d <- dev.off()
+
+pdf(paste0(figs.dir, "fig-cancer-validation-per-cell-type.pdf"), width = 2 * 7, height = 1 * 7)                    
+print(g)
+d <- dev.off()
 
 all.scores <- all.scores[, !(colnames(all.scores) %in% "Label")]
 all.scores.wu <- subset(all.scores, dataset.name=="Wu")
