@@ -538,6 +538,16 @@ for(round in rounds) {
 
 }
 
+for(round in rounds) {
+  for(tbl.name in c("metric.sum.res", "metric.all.res")) {
+    for(sc in c("coarse", "fine")) {
+      tbl <- results[[round]][[tbl.name]][[sc]]
+      file <- paste0(figs.dir, "/sample-level-", round, "-", tbl.name, "-", sc, ".tsv")
+      write.table(file = file, tbl, row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)
+    }
+  }
+}
+
 ## Calculate difference relative to top-performer across each submission and each metric
 
 ## Exclude these two outliers, which are throwing off the stats
