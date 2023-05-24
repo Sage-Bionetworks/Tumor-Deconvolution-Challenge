@@ -66,7 +66,9 @@ get.method.annotations <- function() {
   synId <- "syn23395242"
   obj <- synGet(synId, downloadFile = TRUE)
   method.anno <- read.xlsx(obj$path, sheetIndex = 1)
-  
+  round.col <- "submission"
+  subchallenge.col <- "subchallenge"
+
   method.anno$method.type <- as.character(method.anno$method.type)
   method.anno$output.type <- as.character(method.anno$output.type)
   method.anno[, round.col] <- as.character(method.anno[, round.col])
