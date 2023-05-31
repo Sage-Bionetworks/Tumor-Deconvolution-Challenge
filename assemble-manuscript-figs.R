@@ -60,7 +60,11 @@ figs <-
        "figs19.png" = "analysis/cancer-validation/figs/fig-cancer-validation-heatmap-all.png",
        "figs19.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation-heatmap-all.pdf",
        "fig7.png" = "analysis/cancer-validation/figs/fig-cancer-validation.png",
-       "fig7.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation.pdf"
+       "fig7.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation.pdf",
+       "figs20.png" = "analysis/cancer-validation/figs/fig-cancer-validation-per-cell-type.png",
+       "figs20.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation-per-cell-type.pdf",
+       "fig8.png" = "analysis/summary-table/figs/binned-score-heatmap.png",
+       "fig8.pdf" = "analysis/summary-table/figs/binned-score-heatmap.pdf"
 
 )
 

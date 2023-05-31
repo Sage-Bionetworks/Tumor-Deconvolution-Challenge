@@ -1,0 +1,24 @@
+method.name	subchallenge	submission	exec.time.seconds	cut_bin	bin_number
+Aboensis IV	fine	1	83.299388	[65.9,86]	1
+Aginome-XMU	fine	1	115.60897	(86,156]	2
+Biogem	fine	1	84.266028	[65.9,86]	1
+Cancer_Decon	fine	1	1335.006829	(871,2.6e+04]	4
+CCB	fine	1	155.956475	(86,156]	2
+CIBERSORT	fine	1	131.21906	(86,156]	2
+CIBERSORTx	fine	1	566.56002	(156,871]	3
+D3Team	fine	1	6016.809488	(871,2.6e+04]	4
+DA_505	fine	1	89.87714	(86,156]	2
+EPIC	fine	1	70.335935	[65.9,86]	1
+ICTD	fine	1	1331.628156	(871,2.6e+04]	4
+IZI	fine	1	25975.57682	(871,2.6e+04]	4
+LeiliLab	fine	1	785.692263	(156,871]	3
+MCP-counter	fine	1	65.861102	[65.9,86]	1
+mitten_TDC19	fine	1	87.716293	(86,156]	2
+NPU	fine	1	79.744176	[65.9,86]	1
+Patrick	fine	1	747.932893	(156,871]	3
+quanTIseq	fine	1	253.534223	(156,871]	3
+REGGEN_LAB	fine	1	1357.344427	(871,2.6e+04]	4
+Rubbernecks	fine	1	237.667366	(156,871]	3
+TIMER	fine	1	131.571287	(86,156]	2
+Tonys Boys	fine	1	956.989077	(871,2.6e+04]	4
+xCell	fine	1	74.190179	[65.9,86]	1
