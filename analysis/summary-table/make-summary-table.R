@@ -130,7 +130,7 @@ coarse.spikein <- fill.in.nas(coarse.spikein, row.name = cell.type.col, col.name
 fine.spikein <- fill.in.nas(fine.spikein, row.name = cell.type.col, col.name = method.name.col, value.var = "lod")
 
 all.spikein <- rbind(coarse.spikein, fine.spikein)
-
+all.spikein <- subset(all.spikein, !(method.name %in% c("TIMER", "timer")))
 # Merge coarse and fine-grained results by taking the mean
 all.spikein <-
   ddply(all.spikein,
@@ -153,6 +153,7 @@ all.spikein[is.na(all.spikein[, "lod"]), "bin_number"] <- na.bin
 # specificity-analysis/figs/spillover-summary-round-1.tsv
 spillover.res <- read.table("../specificity-analysis/figs/spillover-summary-round-1.tsv", sep="\t", header=TRUE)
 spillover.res <- fill.in.nas(spillover.res, row.name = cell.type.col, col.name = method.name.col, value.var = "spillover")
+spillover.res <- subset(spillover.res, !(method.name %in% c("TIMER", "timer")))
 spillover.res <- 
   ddply(spillover.res,
         .variables = c("cell.type"),
@@ -187,6 +188,7 @@ sample.level.fine.bin <- bin.value(sample.level.fine.res, "Pearson", higher.is.b
 
 # Process run times
 timing.tbl <- read.table("../timing/method-run-times.tsv", sep="\t", header=TRUE)
+timing.tbl <- subset(timing.tbl, !(method.name %in% c("TIMER", "timer")))
 timing.coarse.raw <- subset(timing.tbl, (submission == 1) & (subchallenge == "coarse"))
 timing.fine.raw <- subset(timing.tbl, (submission == 1) & (subchallenge == "fine"))
 
@@ -277,6 +279,10 @@ names(colors) <- as.character(1:5)
 cat.colors <- cbbPalette[2:(1+length(unique(analysis.cols)))]
 cat.names <- c("Mean", "SD", "LoD", "Spillover", "Coarse", "Fine")
 names(cat.colors) <- cat.names
+row.labels <- rownames(all.bins[names(sorted.method.scores),])
+flag <- row.labels %in% get.comparators.cap()
+# Make the comparator methods bold
+row.labels[flag] <- paste0("**", row.labels[flag], "**")
 htmp <-
   Heatmap(all.bins[names(sorted.method.scores),], cluster_rows = FALSE, cluster_columns = FALSE, col = colors,
           name = "Bin",
@@ -288,7 +294,8 @@ htmp <-
           show_column_names = FALSE, 
           column_title_gp = gpar(fontsize = 8),
           column_names_gp = grid::gpar(fontsize = 8),
-          row_names_gp = grid::gpar(fontsize = 8))
+          row_names_gp = grid::gpar(fontsize = 8),
+          row_labels = gt_render(row.labels))
 png(paste0(figs.dir, "/", "binned-score-heatmap.png"))
 draw(htmp, merge_legend=TRUE)
 d <- dev.off()
