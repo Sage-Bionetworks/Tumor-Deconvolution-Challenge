@@ -231,10 +231,16 @@ bin.mats <-
 
 all.bins <- Reduce(function(...) merge(..., all=TRUE, by="method.name"), bin.mats)
 rownames(all.bins) <- all.bins$method.name
+all.bins.ignore.nas <- all.bins
 all.bins[is.na(all.bins)] <- na.bin
+all.bins.ignore.nas[is.na(all.bins.ignore.nas)] <- 0
 all.bins <- all.bins[, !(colnames(all.bins) == "method.name")]
+all.bins.ignore.nas <- all.bins.ignore.nas[, !(colnames(all.bins.ignore.nas) == "method.name")]
 
 sorted.method.scores <- sort(rowSums(all.bins))
+sorted.method.scores.ignore.nas <- sort(rowSums(all.bins.ignore.nas))
+
+sorted.scores <- sorted.method.scores.ignore.nas
 
 
 
@@ -279,12 +285,12 @@ names(colors) <- as.character(1:5)
 cat.colors <- cbbPalette[2:(1+length(unique(analysis.cols)))]
 cat.names <- c("Mean", "SD", "LoD", "Spillover", "Coarse", "Fine")
 names(cat.colors) <- cat.names
-row.labels <- rownames(all.bins[names(sorted.method.scores),])
+row.labels <- rownames(all.bins[names(sorted.scores),])
 flag <- row.labels %in% get.comparators.cap()
 # Make the comparator methods bold
 row.labels[flag] <- paste0("**", row.labels[flag], "**")
 htmp <-
-  Heatmap(all.bins[names(sorted.method.scores),], cluster_rows = FALSE, cluster_columns = FALSE, col = colors,
+  Heatmap(all.bins[names(sorted.scores),], cluster_rows = FALSE, cluster_columns = FALSE, col = colors,
           name = "Bin",
           column_split = factor(cell.type.cols, levels = unique(cell.type.cols)), column_title_rot = 45,
           top_annotation = HeatmapAnnotation(Category=factor(analysis.cols, levels = cat.names), 
@@ -312,6 +318,15 @@ colnames(all.bins.with.tot.scores)[1] <- "method.name"
 all.bins.with.tot.scores <- all.bins.with.tot.scores[order(all.bins.with.tot.scores$total.score, decreasing=FALSE),]
 
 write.table(file = paste0(figs.dir, "/", "binned-scores.tsv"), all.bins.with.tot.scores, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
+cols <- colnames(all.bins)
+tot.df <- data.frame("total.score" = as.numeric(sorted.method.scores.ignore.nas))
+rownames(tot.df) <- names(sorted.method.scores.ignore.nas)
+all.bins.with.tot.scores <- merge(all.bins, tot.df, by = "row.names")
+colnames(all.bins.with.tot.scores)[1] <- "method.name"
+all.bins.with.tot.scores <- all.bins.with.tot.scores[order(all.bins.with.tot.scores$total.score, decreasing=FALSE),]
+
+write.table(file = paste0(figs.dir, "/", "binned-scores-ignore-nas.tsv"), all.bins.with.tot.scores, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
 cat(paste("Exiting successfully\n"))
 q(status=0)
