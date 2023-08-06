@@ -24,15 +24,15 @@
 \begin{tabular}{lcccccc}
   %
   & \mc{\stackon{Set}{Training}} & \mc{Normalization} & \mc{\stackon{Correction}{\stackon{Batch}{Training}}}
-  & \mc{\stackon{Correction}{\stackon{Batch}{Test}}} & \mc{\stackon{Runtime}{Coarse}} & \mc{\stackon{Runtime}{Fine}} 
+  & \mc{\stackon{Correction}{\stackon{Batch}{Test}}} & \mc{\stackon{Runtime (s)}{Coarse}} & \mc{\stackon{Runtime (s)}{Fine}} 
   \\
   \midrule
   \mybf CIBERSORT & Healthy & Quantile & Same platform (HGU133A) & & 133 & 131 \\
-  \mybf CIBERSORTx & \makecell{Healthy (immune subtypes), \\ Malignant (tumor/immune/stroma)} & Quantile (immune only)& \makecell{One platform for immune (HGU133A), \\ One dataset for tumor/immune/stroma} & \makecell{Re-optimizes $\beta$ w.r.t. a ComBat-corrected\\admixture matrix $A^*$.} & 567 & 567 \\
-  \mybf EPIC & Healthy & TPM & & \makecell{Re-normalized TPMs based on genes\\common to $S$ and test admixture} & 71 & 70 \\
-  \mybf MCP-Counter & & fRMA & & NA & 70 & 66 \\
-  \mybf quanTIseq & & TPM & & & 253 & 254 \\
-  \mybf xCell & & \makecell{FPKM (RNA-seq),\\RMA (microarray)} & \makecell{Markers determined independently\\in each training dataset} & & 70 & 74 \\
+  \mybf CIBERSORTx & \makecell{Healthy (immune subtypes), \\ Malignant (tumor/immune/stroma)} & Quantile (immune only)& \makecell{One platform for immune (HGU133A), \\ One dataset for tumor/immune/stroma} & \makecell{Re-optimizes $\beta$ w.r.t. a ComBat-corrected\\admixture matrix} & 567 & 567 \\
+  \mybf EPIC & Healthy & TPM & & \makecell{Re-normalized TPMs based on genes\\common to reference and admixture} & 71 & 70 \\
+  \mybf MCP-Counter & Healthy & fRMA & & NA & 70 & 66 \\
+  \mybf quanTIseq & Healthy & TPM & & & 253 & 254 \\
+  \mybf xCell & Healthy & \makecell{FPKM (RNA-seq),\\RMA (microarray)} & \makecell{Markers determined independently\\in each training dataset} & & 70 & 74 \\
   \hline    
   \mybf Aginome-XMU & \makecell{Healthy,\\Malignant} & \makecell{TPM,log,\\min-max scaling}& & & 80 & 116 \\
   \mybf Biogem & \makecell{Healthy,\\Malignant}& TPM & & & 82 & 84 \\

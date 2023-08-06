@@ -12,6 +12,7 @@
     \usepackage[math]{iwona}% for test purposes only
 
     \newcommand{\mc}[1]{\multicolumn{1}{c}{#1}} % non-extended bold font
+    \newcommand{\com}[1]{}
 \newcommand{\mybf}{\fontseries{b}\selectfont} % non-extended bold font
 \newcommand{\oklepaj}{(} % non-extended bold font
 \robustify\mybf
@@ -19,44 +20,45 @@
 % pdflatex deconv-method-description-table.tex
 
 \begin{document}
-%\begin{table}
-\begin{threeparttable}
-\begin{tabular}{lccccc}
+\centering
+  \begin{threeparttable}
+\captionsetup{justification=centering}
+\begin{tabular}{lcccccc}
   %
-    & \mc{\stackon{Function}{Objective}} & \mc{Solver}  
+    & \mc{\stackon{Function}{Objective}} & \mc{\stackon{Type}{Deconvolution}} & \mc{Solver}  
         & \mc{\stackon{Selection}{Marker}} & \mc{Value}
   & \mc{Ref}
   \\
   \midrule
 
-  
-    \mybf CIBERSORT & \makecell{$\argmin_{\mathbf{\beta}, \nu, \epsilon} C \sum_m |a_m - \mathbf{s_m} \cdot \mathbf{\beta}|_\epsilon + \frac{1}{2} ||\beta||^2 + \nu \epsilon$} & \tt{svm} & \makecell{DE’ed, prioritized by fold change,\\not expressed in non-hematopoietic cells} & $\beta$ & 24655651 \\
-    \mybf CIBERSORTx & \makecell{$\argmin_{\mathbf{beta}, \nu, \epsilon} C \sum_m |a^*_m - \mathbf{s_m} \cdot \mathbf{\beta}|_\epsilon + \frac{1}{2} ||\beta||^2 + \nu \epsilon$} & \tt{svm} & \makecell{DE’ed, prioritized by fold change,\\not expressed in non-hematopoietic cells} & $\beta$ & 31061481 \\
+
+    \mybf CIBERSORT & \makecell{$\argmin_{\mathbf{\beta}, \nu, \epsilon} C \sum_m |{a}_m - \mathbf{s}_m \cdot \mathbf{\beta}|_\epsilon + \frac{1}{2} ||\mathbf{\beta}||^2 + \nu \epsilon$} & Reference & \tt{svm} & \makecell{Differentially-expressed (DE'ed),\\prioritized by fold change,\\not expressed in non-hematopoietic cells} & $\mathbf{\beta}^+$ & 13 \\
+    \mybf CIBERSORTx &   \makecell{$\argmin_{\mathbf{\beta}, \nu, \epsilon} C \sum_m |{a}^*_m - \mathbf{s}_m \cdot \mathbf{\beta}|_\epsilon + \frac{1}{2} ||\mathbf{\beta}||^2 + \nu \epsilon$} & Reference & \tt{svm} & \makecell{DE’ed, prioritized by fold change,\\not expressed in non-hematopoietic cells} & $\mathbf{\beta}^+$ & 29 \\
     \mybf EPIC &
     $ \argmin_{
       \substack{%
-        \beta \\
+        \mathbf{\beta} \\
         \text{s.\,t.}\, \beta_m \ge 0 \, \forall m \\
         \phantom{\text{s.\,t.}}\, \sum_m \beta_m \le 1
       }
-    } \sum_m w^{\rm EPIC}_m (a_m - s_i \beta)^2 $
-    & \tt{constrOptim} & \makecell{DE’ed, not expressed in non-hematopoietic tissues,\\similarly expressed in healthy and malignant tissues} & $\beta$ & 29130882 \\
-    \mybf MCP-Counter & & & \makecell{DE’ed across  hierarchy of purified expression profiles,\\specific to cell type} & $\frac{1}{|M_c|} \sum_{m_c \in M_c} a_{m_c} $ & 27765066 \\
+    } \sum_m w^{\rm EPIC}_m ({a}_m - \mathbf{s}_m \cdot \mathbf{\beta})^2 $
+    & Referene & \tt{constrOptim} & \makecell{DE’ed, not expressed in non-hematopoietic tissues,\\similarly expressed in healthy and malignant tissues} & $\mathbf{\beta}$ & 14 \\
+    \mybf MCP-Counter & & Enrichment & & \makecell{DE’ed across  hierarchy of purified expression profiles,\\specific to cell type} & $\frac{1}{|M_c|} \sum_{m \in M_c} a_{m} $ & 15 \\
     \mybf quanTIseq &
-    $
-    \argmin_{
-      \substack{
+    $ \argmin_{    
+      \substack{%
         \mathbf{\beta} \\
-        \text{s.\,t.}\, \sum_m \beta_m \le 1
+        \text{s.\,t.}\, \beta_m \ge 0 \, \forall m \\
+        \phantom{\text{s.\,t.}}\, \sum_m \beta_m \le 1
       }
-    } \sum_m (a_m - \mathbf{s_m} \cdot \mathbf{\beta})^2 $
-    & \tt{lsei} & \makecell{Correlated with random fractions in simulated admixtures,\\specific to cell type,\\expressed in tumors,\\not expressed in non-hematopoietic tissues,\\not very highly expressed} & $\beta$ & 31126321 \\
-    \mybf xCell & & & \makecell{DE’ed, specific to cell type,\\not expressed in carcinomas}& \makecell{ssGSEA mapped\\to linear scale} & 29141660 \\
+    } \sum_m ({a}_m - \mathbf{s_m} \cdot \mathbf{\beta})^2 $
+    & Reference & \tt{lsei} & \makecell{Correlated with random fractions in simulated admixtures,\\specific to cell type,\\expressed in tumors,\\not expressed in non-hematopoietic tissues,\\not very highly expressed} & $\mathbf{\beta}$ & 17 \\
+    \mybf xCell & & Enrichment & & \makecell{DE’ed, specific to cell type,\\not expressed in carcinomas}& \makecell{ssGSEA mapped\\to linear scale} & 18 \\
 \hline    
-    \mybf Aginome-XMU & \makecell{DNN trained to predict random fractions\\in simulated admixtures} & & None & Fractions predicted by NN & 35510186 \\
-    \mybf Biogem & $\argmin_\beta \sum_m w_H(a_m - \vec{s_m}^T \vec{\beta})^2 (a_m - \vec{s_m}^T \vec{\beta})^2$ & rlm & & $\beta$ & 30726743 \\
-    \mybf DA\_505 & $\argmin_\mathbf{b} (||\mathbf{p_c} - A_{M_c} \cdot \mathbf{b}||^2) + \lambda_2||\mathbf{b}||^2 + \lambda_1 ||\mathbf{b}||_1) $ & & \makecell{Identified by RF regression against\\random fractions in simulated admixtures} & $A_{M_c} \cdot \mathbf{b}$ & \\
-    \mybf mitten\_TDC19 & & & \makecell{Correlated with random fractions\\in simulated admixtures} & $\sum_{m_c \in M_c} a_{m_c}$ & \\
+    \mybf Aginome-XMU & \makecell{DNN trained to predict random fractions\\in simulated admixtures} & Other & & None & Fractions predicted by DNN & 30 \\
+    \mybf Biogem & $\argmin_\mathbf{\beta} \sum_m \left[ w_H({a}_m - \mathbf{s}_m \cdot \mathbf{\beta}) \right]^2 ({a}_m - \mathbf{s}_m \cdot \mathbf{\beta})^2$ & Reference & rlm & & $\mathbf{\beta}$ & 33 \\
+    \mybf DA\_505 & $\argmin_{\mathbf{b}_c} (||\mathbf{\tilde{p}}_c - \mathbf{\tilde{A}}_{M_c} \cdot \mathbf{b}_c||^2) + \lambda_2||\mathbf{b}_c||^2 + \lambda_1 ||\mathbf{b}_c||_1) $ & Other & & \makecell{Identified by RF regression against\\random fractions in simulated admixtures} & $\mathbf{A}_{M_c} \cdot \mathbf{b}_c$ & \\
+    \mybf mitten\_TDC19 & & Enrichment & & \makecell{Correlated with random fractions\\in simulated admixtures} & $\sum_{m \in M_c} a_{m}$ & \\
     \midrule
 \end{tabular}
 %\caption*{$|e|_\epsilon \equiv 0 \text{if } |e| < \epsilon; |e| - \epsilon \text{otherwise}$ \\
@@ -65,8 +67,34 @@
 %  $|e|_\epsilon \equiv 0 \text{if } |e| < \epsilon; |e| - \epsilon \text{otherwise}$ 
 %  $w_H(e) \equiv 1 \text{if } |e| < k;  k/|e| \text{otherwise}$
 %\end{table}
-\caption*{$|e|_\epsilon \equiv 0 \text{if } |e| < \epsilon; |e| - \epsilon \text{otherwise}$ \\
-$w_H(e) \equiv 1 \text{if } |e| < k;  k/|e| \text{otherwise}$}
+\caption*{
+  \begin{tabular}{p{0.33\linewidth}p{0.32\linewidth}p{0.33\linewidth}}
+    $M_c$\text{: set of markers for cell type} $c$ & $\mathbf{S}$\text{: marker} $\times$ \text{cell type signature matrix} & $w_H(e) \equiv 1 \text{if } |e| < k;   k/|e| \text{otherwise}$ \\
+    $\mathbf{A}_{M_c}, \mathbf{\tilde{A}}_{M_c}$\text{: input or simulated admixture matrices,} \text{    respectively, subset to markers for cell type} $c$ & $\mathbf{s}_m$\text{: expression vector for marker }$m$ \text{    across cell types}\text{ (i.e., column of }$\mathbf{S}$\text{)} &  $w^{\rm EPIC}_m$\text{: weight giving marker }$m$\text{ importance} \text{    relative to its variability} \\
+    $\mathbf{a}, \mathbf{a}^*$\text{: input or batch-corrected admixture} \text{    expression vector, respectively} & $\mathbf{\beta}^+ \equiv \left(\beta^+_0,\beta^+_1,\dots\right)$ \text{with }$\beta^+_{i} \equiv \max(\beta_i, 0)$ & $\mathbf{\tilde{p}}_{c}$\text{: vector of proportions of cell type }$c$ \text{    in simulated admixtures} \\
+    ${a}_m$\text{: expression for marker} $m$ \text{in admixture} $\mathbf{a}$ & $|e|_\epsilon \equiv 0$ \text{if} $|e| < \epsilon$\text{; }$|e| - \epsilon$ \text{otherwise} 
+  \end{tabular}
+}
 
-\end{threeparttable}
+\com{
+    \begin{tabular}{l}
+    $n_c$\text{: number of cell types} \\
+%%    $m$\text{: marker} \\
+    $\mathbf{a}$\text{: admixture expression vector} \\
+    ${a}_m$\text{: expression for marker} $m$ \text{in admixture} $\mathbf{a}$ \\
+    $\mathbf{S}$\text{: marker} $\times$ \text{cell type signature matrix}\\
+    $\mathbf{s}_m$\text{: expression vector for marker} $m$ \text{across cell types (i.e., column of }$\mathbf{S}$\text{)}\\
+%%    $\mathbf{\beta}$\text{: cell type coefficient vector} \\
+    $|e|_\epsilon \equiv 0$ \text{if} $|e| < \epsilon$\text{; }$|e| - \epsilon$ \text{otherwise} \\
+    $\mathbf{\beta}^+ \equiv \left(\beta^+_0,\beta^+_1,\dots\beta^+_{n_c-1}\right)$ \text{with }$\beta^+_{i} \equiv \max(\beta_i, 0)$ \\
+    $\mathbf{a}^*$\text{: batch-corrected admixture expression vector} \\    
+    $w^{\rm EPIC}_m$\text{: weight giving marker} $m$ \text{importance relative to its variability} \\
+    $M_c$\text{: set of markers for cell type} $c$ \\
+    $w_H(e) \equiv 1 \text{if } |e| < k;   k/|e| \text{otherwise}$ \\
+    $\mathbf{A}_{M_c}, \mathbf{\tilde{A}}_{M_c}$\text{: input or simulated admixture matrices, respectively, subset to markers for cell type} $c$ \\
+    $\mathbf{\tilde{p}}_{c}$\text{: vector of proportions of cell type} $c$ \text{in simulated admixtures}
+  \end{tabular}
+}
+
+  \end{threeparttable}
 \end{document}
