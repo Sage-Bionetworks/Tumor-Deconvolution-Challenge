@@ -269,10 +269,12 @@ print(table(bold.labels))
 
         cat(paste0("Plotting heatmaps\n"))
         heatmaps <- list()
+	spearman.heatmaps <- list()
         method.levels <- list()
         cell.type.levels <- list()
         for(sub.challenge in sub.challenges) {
-            means <- means.by.cell.type.method[[sub.challenge]][["pearson"]]
+	for(cor.type in c("pearson", "spearman")) {
+            means <- means.by.cell.type.method[[sub.challenge]][[cor.type]]
 
             method.levels[[sub.challenge]] <-
                 calculate.method.levels(means, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
@@ -294,14 +296,22 @@ print(table(bold.labels))
 print(unique(means[, method.name.col]))
 cat("levels\n")
 print(method.levels[[sub.challenge]])
+            cor.type.label <- "Pearson\nCorrelation"
+	    if(cor.type == "spearman") {
+	      cor.type.label <- "Spearman\nCorrelation"
+	    }
             g <- plot.cell.type.correlation.heatmap(means, show.corr.text = TRUE,
                                                     id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
                                                     second.col.summary.fun = "mean",
+						    cor.type.label = cor.type.label,
                                                     method.levels = method.levels[[sub.challenge]],
                                                     cell.type.levels = cell.type.levels[[sub.challenge]], ids.to.bold = comparator.methods)
 ##            g <- plot.cell.type.correlation.strip.plots(means, show.corr.text = TRUE, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
-            heatmaps[[sub.challenge]] <- g
-            
+            if(cor.type == "pearson") { 
+              heatmaps[[sub.challenge]] <- g
+            } else {
+              spearman.heatmaps[[sub.challenge]] <- g	    
+	    }
             title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
             round.text <- make.round.text(round)
             title <- paste0(title, " (", round.text, ")")
@@ -310,10 +320,12 @@ print(method.levels[[sub.challenge]])
             ## png(paste0(figs.dir, "rerun-validation-bootstrap-cell-heatmap-", sub.challenge, postfix, ".png"), width = 2 * 480)
             ## print(g)
             ## d <- dev.off()
-        }
-        
-        coarse.means <- means.by.cell.type.method[["coarse"]][["pearson"]]
-        fine.means <- means.by.cell.type.method[["fine"]][["pearson"]]        
+        } # for cor.type
+	}
+
+	for(cor.type in c("pearson", "spearman")) {
+        coarse.means <- means.by.cell.type.method[["coarse"]][[cor.type]]
+        fine.means <- means.by.cell.type.method[["fine"]][[cor.type]]        
         all.means <- rbind(coarse.means, fine.means)
 
         all.means <-
@@ -334,20 +346,33 @@ print(method.levels[[sub.challenge]])
                          exclude <- all(is.na(df$cor))
                          data.frame(exclude = exclude)
                        })
+cat(paste0("Exclude: ", cor.type, "\n"))
+print(exclude.method)
         if(any(exclude.method$exclude)) {
           all.means <- all.means[!(all.means[, method.name.col] %in% subset(exclude.method, exclude == TRUE)[, method.name.col]),]
           method.levels[["merged"]] <- 
             method.levels[["merged"]][!(method.levels[["merged"]] %in% subset(exclude.method, exclude == TRUE)[, method.name.col])]
         }
 
+        cor.type.label <- "Pearson\nCorrelation"
+	if(cor.type == "spearman") {
+	  cor.type.label <- "Spearman\nCorrelation"
+	}
+
         g <- plot.cell.type.correlation.heatmap(all.means, show.corr.text = TRUE,
                                                 id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
+						cor.type.label = cor.type.label,						
                                                 second.col.summary.fun = "mean",
                                                 method.levels = method.levels[["merged"]],
                                                 cell.type.levels = cell.type.levels[["merged"]], ids.to.bold = comparator.methods)
         merged.all.means <- all.means
-        heatmaps[["merged"]] <- g
-
+	if(cor.type == "pearson") { 
+          heatmaps[["merged"]] <- g
+        } else {
+          spearman.heatmaps[["merged"]] <- g	
+	}
+	} # for cor.type
+	
         cat("Creating merged means.over.dataset\n")
         coarse.means <- means.over.dataset[["coarse"]][["pearson"]]
         fine.means <- means.over.dataset[["fine"]][["pearson"]]        
@@ -429,6 +454,7 @@ print(y.bold.labels)
                          "barplots" = barplots,
                          "strip.plots" = strip.plots,
                          "heatmaps" = heatmaps,
+                         "spearman.heatmaps" = spearman.heatmaps,			 
 			 "merged.all.means" = merged.all.means)			 
 
         ret.list

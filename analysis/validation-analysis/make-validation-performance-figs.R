@@ -1,4 +1,10 @@
 
+g.spearman.heatmap.merged.round1 <- plots[["1"]][["spearman.heatmaps"]][["merged"]]
+png(paste0(figs.dir, "fig-validation-round-1-merged-spearman-heatmap.png"), width = 2 * 480)
+print(g.spearman.heatmap.merged.round1)
+d <- dev.off()
+cat("Done with spearman heatmap\n")
+
 ## Count number of participants and submissions
 ## Read in the rerun predicitons (i.e., where the coarse- and fine-grained datasets are the same)
 synId <- "syn22320329"
