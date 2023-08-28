@@ -40,24 +40,25 @@ source("deconv-utils.R")
 ```
 
 ```{r}
-# Flow for Pelka goes like this (create-pelka-crc-pseudobulk.Rmd):
-# Input is ENSG raw counts at cell level
-# -> read.and.process.dataset.into.pseudobulk -> {ensg,sym}.counts (Pelka-cluster level raw counts)
-# -> normalize counts to max count
-# -> create.in.silico.admixtures.from.pseudo.bulk
-# -> {ensg,sym}.cnts.pb (challenge-level admixtures)
-# -> cpm
-# -> {ensg,sym}.cpm.pb
-
 # Flow for Wu goes like this:
 # Input is symbol raw counts at cell level
-# -> create.pseudobulk
+# -> Determine frequency of sub-Challenge annotations with each patient, relative to only those cell types with challenge labels + cancer and to all cells (though we don’t report these results, as they are not consistent with how we defined the challenge admixtures). 
+# -> create.pseudobulk by summing counts of cells with same sub-Challenge label
 # -> coarse.pb.all, fine.pb.all, coarse.pb.challenge, fine.pb.challenge -> (challenge-level symbol pseudo bulk, i.e., pt_endothelial.cells; across all cells irrespective of whether or not in challenge and also only challenge cell types + cancer)
 # -> these go into raw.mats
-# -> translate.matrix -> sym.raw.mats
+# -> Drop genes not used in the Challenge
+# -> Drop the patients whose respective cells don't cluster with other the corresponding cell type from other patients. find.inconsistent.umap.cell.types: specifically, following a umap projection, if the most frequent annotation of a cell’s 10 nearest neighbors differs from it’s own annotation, it is considered problematic. This includes:
+# CID4513_B.cells
+# CID4461_monocytic.lineage
+# CID4523_endothelial.cells
+# CID4465_B.cells
+# So the respective patients are excluded
+#patients.to.exclude <- c("CID4513","CID4461","CID4523","CID4465") 
+# The UMAP is created based only on CPMs of “deconvolution” genes used in several published methods: CIBERSORT’s LM22, EPIC’s “TRef” and “BRef” signature genes, quantiseq’s TIL10 genes, and MCP-Counter.
+# -> translate.matrix from symbol to ensg using the same ensg to hugo symbol translation used in the challenge (syn22394938), where multiple ensg ids mapping to the same symbol are collapsed by summing them -> raw.ensg.mats
 # -> normalize counts to max count
 # -> norm.{ensg,sym}.raw.cnts
-# -> create.in.silico.admixtures.from.pseudo.bulk
+# -> create.in.silico.admixtures.from.pseudo.bulk using cell.type.freqs
 # -> {ensg,sym}.cnts.pb (challenge-level admixtures)
 # -> cpm
 # -> {ensg,sym}.cpm.pb
