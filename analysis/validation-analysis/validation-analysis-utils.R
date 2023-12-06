@@ -734,9 +734,9 @@ print(table(bold.labels))
 	for(cor.type in c("pearson", "spearman")) {
             means <- means.by.cell.type.method[[sub.challenge]][[cor.type]]
 
-            method.levels[[sub.challenge]] <-
+            method.levels[[paste0(sub.challenge, "-", cor.type)]] <-
                 calculate.method.levels(means, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
-            cell.type.levels[[sub.challenge]] <-
+            cell.type.levels[[paste0(sub.challenge, "-", cor.type)]] <-
                 calculate.cell.type.levels(means, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
             
             exclude.method <-
@@ -747,13 +747,13 @@ print(table(bold.labels))
                            })
             if(any(exclude.method$exclude)) {
               means <- means[!(means[, method.name.col] %in% subset(exclude.method, exclude == TRUE)[, method.name.col]),]
-              method.levels[[sub.challenge]] <- 
-                method.levels[[sub.challenge]][!(method.levels[[sub.challenge]] %in% subset(exclude.method, exclude == TRUE)[, method.name.col])]
+              method.levels[[paste0(sub.challenge, "-", cor.type)]] <- 
+                method.levels[[paste0(sub.challenge, "-", cor.type)]][!(method.levels[[paste0(sub.challenge, "-", cor.type)]] %in% subset(exclude.method, exclude == TRUE)[, method.name.col])]
             }
             cat("means\n")
 print(unique(means[, method.name.col]))
 cat("levels\n")
-print(method.levels[[sub.challenge]])
+print(method.levels[[paste0(sub.challenge, "-", cor.type)]])
             cor.type.label <- "Pearson\nCorrelation"
 	    if(cor.type == "spearman") {
 	      cor.type.label <- "Spearman\nCorrelation"
@@ -762,8 +762,8 @@ print(method.levels[[sub.challenge]])
                                                     id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
                                                     second.col.summary.fun = "mean",
 						    cor.type.label = cor.type.label,
-                                                    method.levels = method.levels[[sub.challenge]],
-                                                    cell.type.levels = cell.type.levels[[sub.challenge]], ids.to.bold = comparator.methods)
+                                                    method.levels = method.levels[[paste0(sub.challenge, "-", cor.type)]],
+                                                    cell.type.levels = cell.type.levels[[paste0(sub.challenge, "-", cor.type)]], ids.to.bold = comparator.methods)
 ##            g <- plot.cell.type.correlation.strip.plots(means, show.corr.text = TRUE, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
             if(cor.type == "pearson") { 
               heatmaps[[sub.challenge]] <- g
@@ -792,10 +792,10 @@ print(method.levels[[sub.challenge]])
                       data.frame(cor = summary.fun(df$cor))
                   })
 
-        method.levels[["merged"]] <-
+        method.levels[[paste0("merged", "-", cor.type)]] <-
             calculate.method.levels(all.means, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
 
-        cell.type.levels[["merged"]] <-
+        cell.type.levels[[paste0("merged", "-", cor.type)]] <-
             calculate.cell.type.levels(all.means, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
         
         exclude.method <-
@@ -808,8 +808,8 @@ cat(paste0("Exclude: ", cor.type, "\n"))
 print(exclude.method)
         if(any(exclude.method$exclude)) {
           all.means <- all.means[!(all.means[, method.name.col] %in% subset(exclude.method, exclude == TRUE)[, method.name.col]),]
-          method.levels[["merged"]] <- 
-            method.levels[["merged"]][!(method.levels[["merged"]] %in% subset(exclude.method, exclude == TRUE)[, method.name.col])]
+          method.levels[[paste0("merged", "-", cor.type)]] <- 
+            method.levels[[paste0("merged", "-", cor.type)]][!(method.levels[[paste0("merged", "-", cor.type)]] %in% subset(exclude.method, exclude == TRUE)[, method.name.col])]
         }
 
         cor.type.label <- "Pearson\nCorrelation"
@@ -821,8 +821,8 @@ print(exclude.method)
                                                 id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
 						cor.type.label = cor.type.label,						
                                                 second.col.summary.fun = "mean",
-                                                method.levels = method.levels[["merged"]],
-                                                cell.type.levels = cell.type.levels[["merged"]], ids.to.bold = comparator.methods)
+                                                method.levels = method.levels[[paste0("merged", "-", cor.type)]],
+                                                cell.type.levels = cell.type.levels[[paste0("merged", "-", cor.type)]], ids.to.bold = comparator.methods)
         merged.all.means <- all.means
 	if(cor.type == "pearson") { 
           heatmaps[["merged"]] <- g
@@ -852,16 +852,20 @@ print(exclude.method)
                       sub.challenge <- NA
                       df <- NULL
                       entry <- NULL
+                      lvl.entry <- NULL
                       if(grepl(nm, pattern="coarse")) {
                           entry <- "coarse"
+                          lvl.entry <- paste0(entry, "-pearson")
                           df <- means.over.dataset[[entry]][["pearson"]]
                       }
                       if(grepl(nm, pattern="fine")) {
                           entry <- "fine"
+                          lvl.entry <- paste0(entry, "-pearson")
                           df <- means.over.dataset[[entry]][["pearson"]]                          
                       }
                       if(grepl(nm, pattern="merged")) {
                           entry <- "merged"
+                          lvl.entry <- paste0(entry, "-pearson")
                           df <- all.means
                       }
 
@@ -869,8 +873,8 @@ print(exclude.method)
                       if(grepl(nm, pattern="priority")) {
                           flag <- df[, method.name.col] %in% priority.methods
                           ret <- plot.strip.plots(df[flag, ], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor",
-                                                method.levels = method.levels[[entry]],
-                                                cell.type.levels = cell.type.levels[[entry]],
+                                                method.levels = method.levels[[lvl.entry]],
+                                                cell.type.levels = cell.type.levels[[lvl.entry]],
                                                 label = "Pearson Correlation")
                           g <- ret[["g"]]
                           df <- ret[["df"]]
@@ -886,8 +890,8 @@ print(y.bold.labels)
                           # Exclude ensemble, which has NAs for pearson
                           flag <- !(df[, method.name.col] %in% c("consensus rank", "ensemble"))
                           ret <- plot.strip.plots(df[flag,], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor",
-                                                method.levels = method.levels[[entry]],
-                                                cell.type.levels = cell.type.levels[[entry]],
+                                                method.levels = method.levels[[lvl.entry]],
+                                                cell.type.levels = cell.type.levels[[lvl.entry]],
                                                 label = "Pearson Correlation")
                           g <- ret[["g"]]
                           df <- ret[["df"]]
