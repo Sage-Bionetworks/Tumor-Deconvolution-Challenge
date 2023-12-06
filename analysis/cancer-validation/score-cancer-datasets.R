@@ -479,15 +479,17 @@ sets <- c("Healthy", "Tumor", "In Vitro", "In Silico", "BRCA", "CRC", "Biologica
 all.scores <- rename.cell.types(all.scores, from.col = "cell.type", to.col = "cell.type")
 
 # Order cell types according to phenotype, rather than alphabetically
-cell.type.levels <- c(
-"B", "naive B", 
-"CD8 T", "naive CD8 T", "memory CD8 T", 
-"CD4 T", "naive CD4 T", "memory CD4 T", "Tregs", 
-"NK", "neutrophils", 
-"monocytic lineage", "monocytes", "myeloid DCs", "macrophages", 
-"endothelial", "fibroblasts")
+# No! Order by a quantitative metric
+#cell.type.levels <- c(
+#"B", "naive B", 
+#"CD8 T", "naive CD8 T", "memory CD8 T", 
+#"CD4 T", "naive CD4 T", "memory CD4 T", "Tregs", 
+#"NK", "neutrophils", 
+#"monocytic lineage", "monocytes", "myeloid DCs", "macrophages", 
+#"endothelial", "fibroblasts")
 
-all.scores$cell.type <- factor(all.scores$cell.type, levels = cell.type.levels)
+cell.type.levels <- calculate.cell.type.levels(all.scores, id.var = "method.name", cell.type.var = "cell.type", cor.var = "cor.p")
+all.scores$cell.type <- factor(all.scores$cell.type, levels = rev(cell.type.levels))
 g <- ggplot(all.scores, aes(x=Label.str, y=cor.p)) + geom_boxplot() 
 # g <- ggplot(all.scores, aes(x=Label, y=cor.p)) + geom_boxplot() 
 # g <- g + geom_jitter(width=0.1) 
@@ -543,6 +545,10 @@ means.of.repeated$dataset.name <- "Mean"
 cell.type.means <- ddply(means, .variables=c("cell.type"), .fun = function(df) data.frame(cor.p = mean(df$cor.p)))
 cell.type.means <- cell.type.means[order(cell.type.means$cor.p,decreasing=TRUE),]
 
+# No typo here -- order cell types by their max (over methods) of their means (over datasets)
+cell.type.maxs <- ddply(means, .variables=c("cell.type"), .fun = function(df) data.frame(cor.p = max(df$cor.p)))
+cell.type.maxs <- cell.type.maxs[order(cell.type.means$cor.p,decreasing=TRUE),]
+
 method.means <- ddply(means, .variables=c("method.name"), .fun = function(df) data.frame(cor.p = mean(df$cor.p)))
 method.means <- method.means[order(method.means$cor.p,decreasing=FALSE),]
 
@@ -563,7 +569,10 @@ all.scores.simplified <- rbind(all.scores.simplified[, c("dataset.name", "method
 all.scores.simplified$dataset.name <- factor(all.scores.simplified$dataset.name, levels = c("Healthy", "Pelka (CRC)", "Wu (BRCA)", "Mean"))
 # all.scores.simplified <- subset(all.scores.simplified, dataset.name == "Mean")
 
-all.scores.simplified$cell.type <- factor(all.scores.simplified$cell.type, levels = cell.type.means$cell.type)
+# Order cell types by their max (over methods) of their means (over datasets)
+# all.scores.simplified$cell.type <- factor(all.scores.simplified$cell.type, levels = cell.type.means$cell.type)
+all.scores.simplified$cell.type <- factor(all.scores.simplified$cell.type, levels = cell.type.maxs$cell.type)
+# Order methods by their mean (over cell type) of their means (over datasets)
 all.scores.simplified$method.name <- factor(all.scores.simplified$method.name, levels = method.means$method.name)
 # Append means
 
@@ -631,11 +640,13 @@ names(nms) <- nms
 gs <- llply(nms,
             .fun = function(nm) {
               cell.type.levels <- calculate.cell.type.levels(results[[nm]], id.var = "method.name", cell.type.var = "cell.type", cor.var = "cor.p")
+              method.levels <- calculate.method.levels(results[[nm]], id.var = "method.name", cell.type.var = "cell.type", cor.var = "cor.p")
               g <- plot.cell.type.correlation.heatmap(results[[nm]], show.corr.text = TRUE,
                                                       id.var = "method.name", cell.type.var = "cell.type", cor.var = "cor.p",
                                                       ids.to.bold = comparator.methods,
                                                       second.col.summary.fun = "mean",
-                                                      cell.type.levels = cell.type.levels)
+                                                      cell.type.levels = rev(cell.type.levels),
+                                                      method.levels = method.levels)
               g <- g + theme(plot.title = element_text(hjust = 0.5))
               g <- g + ggtitle(titles[[nm]])
               png(paste0(figs.dir, "fig-cancer-validation-heatmap-", nm, ".png"), width = 2 * 480, height = 1 * 480)                    
