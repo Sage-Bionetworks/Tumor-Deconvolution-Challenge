@@ -488,8 +488,29 @@ all.scores <- rename.cell.types(all.scores, from.col = "cell.type", to.col = "ce
 #"monocytic lineage", "monocytes", "myeloid DCs", "macrophages", 
 #"endothelial", "fibroblasts")
 
-cell.type.levels <- calculate.cell.type.levels(all.scores, id.var = "method.name", cell.type.var = "cell.type", cor.var = "cor.p")
+means.across.all.8.datasets <-
+  ddply(all.scores,
+        .variables = c("method.name", "cell.type"),
+        .fun = function(df) {
+          data.frame(cor.p = mean(df$cor.p))
+        })
+means.across.all.8.datasets$dataset.name <- "Mean"
+
+cell.type.maxs.across.all.8.datasets <- ddply(means.across.all.8.datasets, .variables=c("cell.type"), .fun = function(df) data.frame(cor.p = max(df$cor.p)))
+cell.type.maxs.across.all.8.datasets <- cell.type.maxs.across.all.8.datasets[order(cell.type.maxs.across.all.8.datasets$cor.p,decreasing=TRUE),]
+
+#method.means.across.all.8.datasets <- ddply(means.across.all.8.datasets, .variables=c("method.name"), .fun = function(df) data.frame(cor.p = mean(df$cor.p)))
+#method.means.across.all.8.datasets <- method.means.across.all.8.datasets[order(method.means.across.all.8.datasets$cor.p,decreasing=FALSE),]
+
+
+#cell.type.levels <- calculate.cell.type.levels(all.scores, id.var = "method.name", cell.type.var = "cell.type", cor.var = "cor.p")
+#print(cell.type.levels)
+cell.type.levels <- cell.type.maxs.across.all.8.datasets$cell.type
+#method.levels <- method.means.across.all.8.datasets$method.name
+
+
 all.scores$cell.type <- factor(all.scores$cell.type, levels = rev(cell.type.levels))
+#all.scores$method.name <- factor(all.scores$method.name, levels = method.levels)
 g <- ggplot(all.scores, aes(x=Label.str, y=cor.p)) + geom_boxplot() 
 # g <- ggplot(all.scores, aes(x=Label, y=cor.p)) + geom_boxplot() 
 # g <- g + geom_jitter(width=0.1) 
@@ -534,6 +555,8 @@ means$dataset.name <- "Mean"
 
 flag <- duplicated(all.scores.simplified[, c("method.name", "cell.type")], fromLast = TRUE) |
   duplicated(all.scores.simplified[, c("method.name", "cell.type")], fromLast = FALSE) 
+# For those cell types / methods for which we have results across multiple datassets, calculate the mean across those datasets.
+# We will only show the mean when there is more than one dataset. This does not impact the calculation of any stats.
 means.of.repeated <-
   ddply(all.scores.simplified[flag,],
         .variables = c("method.name", "cell.type"),
@@ -547,7 +570,7 @@ cell.type.means <- cell.type.means[order(cell.type.means$cor.p,decreasing=TRUE),
 
 # No typo here -- order cell types by their max (over methods) of their means (over datasets)
 cell.type.maxs <- ddply(means, .variables=c("cell.type"), .fun = function(df) data.frame(cor.p = max(df$cor.p)))
-cell.type.maxs <- cell.type.maxs[order(cell.type.means$cor.p,decreasing=TRUE),]
+cell.type.maxs <- cell.type.maxs[order(cell.type.maxs$cor.p,decreasing=TRUE),]
 
 method.means <- ddply(means, .variables=c("method.name"), .fun = function(df) data.frame(cor.p = mean(df$cor.p)))
 method.means <- method.means[order(method.means$cor.p,decreasing=FALSE),]
@@ -571,7 +594,7 @@ all.scores.simplified$dataset.name <- factor(all.scores.simplified$dataset.name,
 
 # Order cell types by their max (over methods) of their means (over datasets)
 # all.scores.simplified$cell.type <- factor(all.scores.simplified$cell.type, levels = cell.type.means$cell.type)
-all.scores.simplified$cell.type <- factor(all.scores.simplified$cell.type, levels = cell.type.maxs$cell.type)
+all.scores.simplified$cell.type <- factor(all.scores.simplified$cell.type, levels = rev(cell.type.maxs$cell.type))
 # Order methods by their mean (over cell type) of their means (over datasets)
 all.scores.simplified$method.name <- factor(all.scores.simplified$method.name, levels = method.means$method.name)
 # Append means
@@ -746,7 +769,7 @@ aginome.coarse.orig.scores <- score.preds(aginome.coarse.orig.preds)
 
 aginome.fine.orig.preds <- subset(fine.orig.preds, method.name == "Aginome-XMU")
 aginome.fine.orig.preds <- merge.predictions.and.ground.truth(aginome.fine.orig.preds, fine.gt)
-aginome.fine.orig.scores <- score.preds(aginome.fine.orig.preds)
+aginome.fine.orig.scores <- score.preds(aginome.fine.orig.preds
 
 stop("stop")
 
