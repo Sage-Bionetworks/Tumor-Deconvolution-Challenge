@@ -2,6 +2,35 @@ coarse.cell.types <-
   c("B.cells", "CD4.T.cells", "CD8.T.cells", "NK.cells", "neutrophils", "monocytic.lineage",
     "fibroblasts", "endothelial.cells")
 
+output.plot <- function(g, file.suffix, plot.types = c("pdf", "png", "svg"),
+            pdf.delta.width = 1, pdf.delta.height = 1,
+            png.delta.width = 1, png.delta.height = 1,
+            svg.delta.width = 1, svg.delta.height = 1) {
+  pdf.width <- 7
+  pdf.height <- 7
+  png.width <- 480
+  png.height <- 480
+  svg.width <- 7
+  svg.height <- 7
+
+  if("pdf" %in% plot.types) {
+    pdf(file = paste0(file.suffix, ".pdf"), width = pdf.width * pdf.delta.width, height = pdf.height * pdf.delta.height)
+    print(g)
+    d <- dev.off()
+  }
+  if("png" %in% plot.types) {
+    png(file = paste0(file.suffix, ".png"), width = png.width * png.delta.width, height = png.height * png.delta.height)
+    print(g)
+    d <- dev.off()
+  }
+  if("svg" %in% plot.types) {
+    svg(file = paste0(file.suffix, ".svg"), width = svg.width * svg.delta.width, height = svg.height * png.delta.height)
+    print(g)
+    d <- dev.off()
+  }
+}
+
+
 ## See https://stackoverflow.com/questions/27803710/ggplot2-divide-legend-into-two-columns-each-with-its-own-title
 plot.anno.heatmap.with.multiple.legends <-
     function(df, id.col, anno.columns, anno.pals) {
@@ -368,6 +397,18 @@ simplify.submitter.names <- function(df, col = "submitter") {
     }
     df
     
+}
+
+# ictd and cancer deconv were both submitted by the same group and
+# are essentially the same method. 
+# drop ICTD and rename Cancer_Deconv to ICTD
+correct.ictd.and.cancer.deconv <- function(df, col = "method.name") {
+  df[, col] <- as.character(df[, col])
+  flag <- !is.na(df[,col]) & (df[,col] == "ICTD")
+  df <- df[!flag,]
+  flag <- !is.na(df[,col]) & (df[,col] == "Cancer_Decon")
+  df[flag,col] <- "ICTD"
+  df
 }
 
 translate.submitterId <- function(submitterId) {
@@ -1137,7 +1178,7 @@ plot.cell.type.correlation.heatmap <- function(df, show.corr.text = FALSE, id.va
 ##    g <- g + scale_fill_gradient2(paste0(cor.type.label, "\nCorrelation"),
 ##                                  limits = c(-1,1), low = "red", high = "blue", mid = "white", na.value = "black")
     g <- g + scale_fill_gradient2(cor.type.label, limits = limits,
-                                  low = "red", high = "blue", mid = "white", na.value = "black")
+                                  low = "blue", high = "red", mid = "white", na.value = "black")
     ## g <- g + theme(text = element_text(size=20))
     g
 }

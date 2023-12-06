@@ -83,383 +83,6 @@ calculate.empirical.bayes <-
         n.num / (n.tot - n.num)
     }
 
-## Modified slightly from
-## https://stackoverflow.com/questions/53170465/how-to-make-a-base-r-style-boxplot-using-ggplot2
-geom_boxplotMod <- function(mapping = NULL, data = NULL, stat = "boxplot", 
-    position = "dodge2", ..., outlier.colour = NULL, outlier.color = NULL, 
-    outlier.fill = NULL, outlier.shape = 1, outlier.size = 1.5, 
-    outlier.stroke = 0.5, outlier.alpha = NULL, notch = FALSE, notchwidth = 0.5,
-    varwidth = FALSE, na.rm = FALSE, show.legend = NA, inherit.aes = TRUE,
-    linetype = "dashed") # to know how these come here use: args(geom_boxplot)
-    {
-    list(geom_boxplot(
-            mapping = mapping, data = data, stat = stat, position = position,
-            outlier.colour = outlier.colour, outlier.color = outlier.color, 
-            outlier.fill = outlier.fill, outlier.shape = outlier.shape, 
-            outlier.size = outlier.size, outlier.stroke = outlier.stroke, 
-            outlier.alpha = outlier.alpha, notch = notch, 
-            notchwidth = notchwidth, varwidth = varwidth, na.rm = na.rm, 
-            show.legend = show.legend, inherit.aes = inherit.aes, linetype = 
-            linetype, ...),
-        stat_boxplot(geom = "errorbar", aes(ymin = ..ymax..), width = 0.25),
-        #the width of the error-bar heads are decreased
-        stat_boxplot(geom = "errorbar", aes(ymax = ..ymin..), width = 0.25),
-        stat_boxplot(aes(ymin = ..lower.., ymax = ..upper..), ...)
-        )
-    }
-
-
-make.round.text <- function(round, round.str = "Round") {
-    round.text <- ""
-    if(round == "latest") {
-        round.text <- paste0("Latest ", round.str)
-    } else if (round == "1") {
-        round.text <- paste0(round.str, " 1")
-    } else {
-        round.text <- paste0("Latest ", round.str, " up to ", round.str, " ", round)
-    }
-    round.text
-}
-
-
-plot.bootstrap.analysis <-
-    function(res, bootstrapped.scores, mean.boostrapped.scores, median.bootstrapped.scores,
-             means.by.cell.type.method,
-             means.over.dataset, method.anno.round,
-             postfix, plot.spearman.distribution = FALSE) {
-
-        top.performers <- c("Aginome-XMU", "DA_505", "mitten_TDC19", "Biogem")
-        comparator.methods <- unique(subset(res, comparator==TRUE)[, method.name.col])
-	print(comparator.methods)
-        priority.methods <- unique(c(top.performers, unique(subset(res, comparator==TRUE)[, method.name.col])))
-
-        for(sub.challenge in sub.challenges) {
-            print(sub.challenge)
-            print(head(method.anno.round))
-	    print(method.anno.round)
-            print(subchallenge.col)
-            flag <- is.na(method.anno.round[, subchallenge.col]) | ( method.anno.round[, subchallenge.col] == sub.challenge )
-            print(flag)
-            method.anno.round.sc <- method.anno.round[flag, c(method.name.col, "Output", "Method")]
-print(method.anno.round.sc)
-            bootstrapped.scores[[sub.challenge]] <-
-                merge(bootstrapped.scores[[sub.challenge]], method.anno.round.sc, all.x = TRUE)
-            median.bootstrapped.scores[[sub.challenge]] <-
-                merge(median.bootstrapped.scores[[sub.challenge]], method.anno.round.sc, all.x = TRUE)
-            mean.bootstrapped.scores[[sub.challenge]] <-
-                merge(mean.bootstrapped.scores[[sub.challenge]], method.anno.round.sc, all.x = TRUE)
-        }
-        
-        barplots <- list()
-        for(sub.challenge in sub.challenges) {
-            scores <- bootstrapped.scores[[sub.challenge]]
-            median.scores <- median.bootstrapped.scores[[sub.challenge]]
-
-            median.scores[, method.name.col] <- as.character(median.scores[, method.name.col])
-            flag <- median.scores[, method.name.col] == "ensemble"
-            median.scores[flag, method.name.col] <- "consensus rank"
-
-            scores[, method.name.col] <- as.character(scores[, method.name.col])
-            flag <- scores[, method.name.col] == "ensemble"
-            scores[flag, method.name.col] <- "consensus rank"
-
-
-            o <- order(median.scores$pearson)
-            median.scores <- median.scores[o, ]
-            flag <- ( !is.na(scores$pearson) & !is.na(scores$spearman) ) | ( scores[,method.name.col] == "consensus rank")
-            scores <- scores[flag, ] 
-            scores[, method.name.col] <- factor(scores[, method.name.col], levels = median.scores[, method.name.col])
-
-            lvls <- levels(scores[,method.name.col]) 
-            lvls <- lvls[lvls %in% scores[, method.name.col]]
-            bold.labels <- ifelse(lvls %in% comparator.methods, yes = "bold", no = "plain")
-cat("scores[, method.name.col]\n")
-print(lvls)
-print(bold.labels)
-print(table(bold.labels))
-#            scores <- na.omit(scores)
-            flag <- ( !is.na(median.scores$pearson) & !is.na(median.scores$spearman) ) | ( median.scores[,method.name.col] == "consensus rank") | ( median.scores[,method.name.col] == "ensemble")
-            median.scores[, method.name.col] <- factor(median.scores[, method.name.col], levels = median.scores[, method.name.col])
-#            median.scores <- na.omit(median.scores)
-            median.scores <- median.scores[flag, ] 
-            
-
-            g1 <- ggplot(data = scores, aes_string(x = method.name.col, y = "pearson"))
-            g1 <- g1 + geom_boxplotMod(fill = "#56B4E9")
-            g1 <- g1 + coord_flip()
-            g1 <- g1 + xlab("Method")
-            ## g1 <- g1 + ylab("Pearson Correlation")
-            g1 <- g1 + ylab("Pearson")
-            g1 <- g1 + ylim(c(-0.25, 1))
-            g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20), axis.text.y = element_text(face = bold.labels))
-            # g1 <- g1 + theme(text = element_text(size=18), title = element_text(size = 20))
-            # g1 <- g1 + scale_y_discrete(labels = function(x) bold.highlight(x, comparator.methods))
-            # g1 <- g1 + theme(axis.text.y=element_markdown())
-
-            if(plot.spearman.distribution) {
-              g2 <- ggplot(data = scores, aes_string(x = method.name.col, y = "spearman"))
-              g2 <- g2 + geom_boxplotMod(fill = "#E69F00")
-            } else{
-              g2 <- ggplot(data = median.scores)
-              g2 <- g2 + geom_col(aes_string(x = method.name.col, y = "spearman"), fill = "#E69F00")
-            }
-            g2 <- g2 + coord_flip()
-            g2 <- g2 + xlab("Method")
-            ## g2 <- g2 + ylab("Spearman Correlation")
-            g2 <- g2 + ylab("Spearman")
-            g2 <- g2 + ylim(c(-0.25, 1))            
-            g2 <- g2 + theme(text = element_text(size=18))    
-            g2 <- g2 + theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
-                             axis.ticks.y = element_blank())
-     
-            tmp <- scores[, c(method.name.col, "Output", "Method")]            
-            ret <- plot.anno.heatmap.with.multiple.legends(tmp, "method.name", c("Method", "Output"), c("Set3", "Set1"))
-
-            full.plot <- ret[["full.plot"]]
-            for.first.legend <- ret[["legends"]][["Method"]]
-            for.second.legend <- ret[["legends"]][["Output"]]
-            
-            legs <- plot_grid(get_legend(for.first.legend), get_legend(for.second.legend), nrow = 2, align = "v", rel_heights = c(2,1))
-            
-            ## pg <- plot_grid(g1, g2, full.plot, legs, nrow=1, align="h", rel_widths = c(3,1,0.5,0.5))
-            
-            barplots[[paste0(sub.challenge,  "-pearson")]] <- g1
-            barplots[[paste0(sub.challenge,  "-spearman")]] <- g2            
-            barplots[[paste0(sub.challenge,  "-anno")]] <- full.plot
-            barplots[[paste0(sub.challenge,  "-legend")]] <- legs
-
-            title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
-            round.text <- make.round.text(round)            
-            title <- paste0(title, " (", round.text, ")")
-            ## png(paste0(figs.dir, "rerun-validation-score-box-and-barplots-", sub.challenge, postfix, ".png"), width = 2 * 480)
-            ## grid.arrange(g1, g2, nrow=1, widths = c(3, 1), top = textGrob(title, gp = gpar(fontsize = 25)))
-            ## d <- dev.off()
-        }
-
-##        ret.list <- list(
-##            "barplots" = barplots)
-##        return(ret.list)
-                    
-        
-        ## Spot check that the methods have the same scores for coarse- and fine-grained
-        ## NB: some methods may differ between coarse and fine-grained; pick several
-        ## baseline/comparator methods that we know to be the same
-        check.methods <- c("CIBERSORT", "MCP-counter", "CIBERSORTx")
-        check.methods <- sort(unique(c(as.character(means.by.cell.type.method[["coarse"]][["pearson"]][, method.name.col]),
-                                       as.character(means.by.cell.type.method[["fine"]][["pearson"]][, method.name.col]))))
-        for(meth in check.methods) {
-
-            res.coarse <- means.by.cell.type.method[["coarse"]][["pearson"]]
-            res.fine <- means.by.cell.type.method[["fine"]][["pearson"]]            
-            
-            meth.res.coarse <- res.coarse[res.coarse[, method.name.col] == meth, ]
-            meth.res.fine <- res.fine[res.fine[, method.name.col] == meth, ]            
-            m <- merge(meth.res.coarse, meth.res.fine, by = c(cell.type.col))
-            if(nrow(m) == 0) { next }
-            m$diff <- m$cor.x - m$cor.y
-            m <- m[!is.na(m$cor.x),]
-            eps <- 10^-4
-            cat(paste0(meth, " ", postfix, " max diff between coarse and fine-grained is: ", max(abs(m$diff)), "\n"))
-            flag <- abs(m$diff) > eps 
-            if(any(flag)) {
-                print(head(m[flag,,drop=F]))
-                cat(paste0("Max diff exceeded for ", meth, " ", postfix, ": ", max(abs(m$diff)), "\n"))
-            }
-        }
-
-        cat(paste0("Plotting heatmaps\n"))
-        heatmaps <- list()
-	spearman.heatmaps <- list()
-        method.levels <- list()
-        cell.type.levels <- list()
-        for(sub.challenge in sub.challenges) {
-	for(cor.type in c("pearson", "spearman")) {
-            means <- means.by.cell.type.method[[sub.challenge]][[cor.type]]
-
-            method.levels[[sub.challenge]] <-
-                calculate.method.levels(means, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
-            cell.type.levels[[sub.challenge]] <-
-                calculate.cell.type.levels(means, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
-            
-            exclude.method <-
-              ddply(means, .variables = c(method.name.col),
-                    .fun = function(df) {
-                             exclude <- all(is.na(df$cor))
-                             data.frame(exclude = exclude)
-                           })
-            if(any(exclude.method$exclude)) {
-              means <- means[!(means[, method.name.col] %in% subset(exclude.method, exclude == TRUE)[, method.name.col]),]
-              method.levels[[sub.challenge]] <- 
-                method.levels[[sub.challenge]][!(method.levels[[sub.challenge]] %in% subset(exclude.method, exclude == TRUE)[, method.name.col])]
-            }
-            cat("means\n")
-print(unique(means[, method.name.col]))
-cat("levels\n")
-print(method.levels[[sub.challenge]])
-            cor.type.label <- "Pearson\nCorrelation"
-	    if(cor.type == "spearman") {
-	      cor.type.label <- "Spearman\nCorrelation"
-	    }
-            g <- plot.cell.type.correlation.heatmap(means, show.corr.text = TRUE,
-                                                    id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
-                                                    second.col.summary.fun = "mean",
-						    cor.type.label = cor.type.label,
-                                                    method.levels = method.levels[[sub.challenge]],
-                                                    cell.type.levels = cell.type.levels[[sub.challenge]], ids.to.bold = comparator.methods)
-##            g <- plot.cell.type.correlation.strip.plots(means, show.corr.text = TRUE, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
-            if(cor.type == "pearson") { 
-              heatmaps[[sub.challenge]] <- g
-            } else {
-              spearman.heatmaps[[sub.challenge]] <- g	    
-	    }
-            title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
-            round.text <- make.round.text(round)
-            title <- paste0(title, " (", round.text, ")")
-            
-            g <- g + ggtitle(title)
-            ## png(paste0(figs.dir, "rerun-validation-bootstrap-cell-heatmap-", sub.challenge, postfix, ".png"), width = 2 * 480)
-            ## print(g)
-            ## d <- dev.off()
-        } # for cor.type
-	}
-
-	for(cor.type in c("pearson", "spearman")) {
-        coarse.means <- means.by.cell.type.method[["coarse"]][[cor.type]]
-        fine.means <- means.by.cell.type.method[["fine"]][[cor.type]]        
-        all.means <- rbind(coarse.means, fine.means)
-
-        all.means <-
-            ddply(all.means, .variables = c(method.name.col, cell.type.col),
-                  .fun = function(df) {
-                      data.frame(cor = summary.fun(df$cor))
-                  })
-
-        method.levels[["merged"]] <-
-            calculate.method.levels(all.means, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
-
-        cell.type.levels[["merged"]] <-
-            calculate.cell.type.levels(all.means, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
-        
-        exclude.method <-
-          ddply(all.means, .variables = c(method.name.col),
-                .fun = function(df) {
-                         exclude <- all(is.na(df$cor))
-                         data.frame(exclude = exclude)
-                       })
-cat(paste0("Exclude: ", cor.type, "\n"))
-print(exclude.method)
-        if(any(exclude.method$exclude)) {
-          all.means <- all.means[!(all.means[, method.name.col] %in% subset(exclude.method, exclude == TRUE)[, method.name.col]),]
-          method.levels[["merged"]] <- 
-            method.levels[["merged"]][!(method.levels[["merged"]] %in% subset(exclude.method, exclude == TRUE)[, method.name.col])]
-        }
-
-        cor.type.label <- "Pearson\nCorrelation"
-	if(cor.type == "spearman") {
-	  cor.type.label <- "Spearman\nCorrelation"
-	}
-
-        g <- plot.cell.type.correlation.heatmap(all.means, show.corr.text = TRUE,
-                                                id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
-						cor.type.label = cor.type.label,						
-                                                second.col.summary.fun = "mean",
-                                                method.levels = method.levels[["merged"]],
-                                                cell.type.levels = cell.type.levels[["merged"]], ids.to.bold = comparator.methods)
-        merged.all.means <- all.means
-	if(cor.type == "pearson") { 
-          heatmaps[["merged"]] <- g
-        } else {
-          spearman.heatmaps[["merged"]] <- g	
-	}
-	} # for cor.type
-	
-        cat("Creating merged means.over.dataset\n")
-        coarse.means <- means.over.dataset[["coarse"]][["pearson"]]
-        fine.means <- means.over.dataset[["fine"]][["pearson"]]        
-        all.means <- rbind(coarse.means, fine.means)
-
-        all.means <-
-            ddply(all.means, .variables = c(method.name.col, cell.type.col, "boot.i"),
-                  .fun = function(df) {
-                      data.frame(cor = summary.fun(df$cor))
-                  })
-
-        cat(paste0("Plotting strip plots\n"))
-        nms <- list("coarse" = "coarse", "fine" = "fine", "coarse-priority" = "coarse-priority", "fine-priority" = "fine-priority",
-                    "merged" = "merged", "merged-priority" = "merged-priority")
-        strip.plots <-
-            llply(nms,
-                  .parallel = FALSE,
-                  .fun = function(nm) {
-                      sub.challenge <- NA
-                      df <- NULL
-                      entry <- NULL
-                      if(grepl(nm, pattern="coarse")) {
-                          entry <- "coarse"
-                          df <- means.over.dataset[[entry]][["pearson"]]
-                      }
-                      if(grepl(nm, pattern="fine")) {
-                          entry <- "fine"
-                          df <- means.over.dataset[[entry]][["pearson"]]                          
-                      }
-                      if(grepl(nm, pattern="merged")) {
-                          entry <- "merged"
-                          df <- all.means
-                      }
-
-                      g <- NULL
-                      if(grepl(nm, pattern="priority")) {
-                          flag <- df[, method.name.col] %in% priority.methods
-                          ret <- plot.strip.plots(df[flag, ], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor",
-                                                method.levels = method.levels[[entry]],
-                                                cell.type.levels = cell.type.levels[[entry]],
-                                                label = "Pearson Correlation")
-                          g <- ret[["g"]]
-                          df <- ret[["df"]]
-                          lvls <- levels(df[,method.name.col])
-                          lvls <- lvls[lvls %in% df[,method.name.col]]
-                          y.bold.labels <- ifelse(lvls %in% comparator.methods, yes = "bold", no = "plain")
-print("here\n")
-print(comparator.methods)
-print(priority.methods)
-print(lvls)
-print(y.bold.labels)
-                      } else {
-                          # Exclude ensemble, which has NAs for pearson
-                          flag <- !(df[, method.name.col] %in% c("consensus rank", "ensemble"))
-                          ret <- plot.strip.plots(df[flag,], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor",
-                                                method.levels = method.levels[[entry]],
-                                                cell.type.levels = cell.type.levels[[entry]],
-                                                label = "Pearson Correlation")
-                          g <- ret[["g"]]
-                          df <- ret[["df"]]
-                          lvls <- levels(df[,method.name.col])
-                          lvls <- lvls[lvls %in% df[,method.name.col]]
-                          y.bold.labels <- ifelse(lvls %in% comparator.methods, yes = "bold", no = "plain")
-print("there\n")
-print(comparator.methods)
-print(lvls)
-print(y.bold.labels)
-
-
-                      }
-		      g <- g + theme(axis.text.y = element_text(face = y.bold.labels))
-		      # g <- g + scale_y_discrete(labels = function(x) bold.highlight(x, comparator.methods))
-                      # g <- g + theme(axis.text.y=element_markdown())
-                  })
-
-        ## "boxplots" = boxplots,
-        ret.list <- list("median.bootstrapped.scores" = median.bootstrapped.scores,
-                         "mean.bootstrapped.scores" = mean.bootstrapped.scores,
-                         "barplots" = barplots,
-                         "strip.plots" = strip.plots,
-                         "heatmaps" = heatmaps,
-                         "spearman.heatmaps" = spearman.heatmaps,			 
-			 "merged.all.means" = merged.all.means)			 
-
-        ret.list
-        
-}
 
 ## for(round in c("1", "2", "3", "latest")) {
 plots <- list()
@@ -472,6 +95,8 @@ method.anno <- get.method.annotations()
 all.median.bootstrapped.scores <- list()
 
 plot.spearman.distribution <- TRUE
+
+source("validation-analysis-utils.R")
 
 for(round in rounds) {
     postfix <- paste0("-round-", round)
@@ -762,13 +387,18 @@ g <- g + ylab("Pearson Correlation")
 g <- g + ggtitle("Merged Coarse- and Fine-Grained (First Submission)")
 g <- g + theme(plot.title = element_text(hjust = 0.5))
 
-png(paste0(figs.dir, "fig-validation-round-1-merged-mixture-distribution-effect.png"))
-print(g)
-d <- dev.off()
+file.suffix <- paste0(figs.dir, "fig-validation-round-1-merged-mixture-distribution-effect")
+output.plot(g, file.suffix, plot.types = c("pdf", "png"),
+            pdf.delta.width = 1, pdf.delta.height = 1,
+            png.delta.width = 1, png.delta.height = 1)
 
-pdf(paste0(figs.dir, "fig-validation-round-1-merged-mixture-distribution-effect.pdf"))
-print(g)
-d <- dev.off()
+#png(paste0(figs.dir, "fig-validation-round-1-merged-mixture-distribution-effect.png"))
+#print(g)
+#d <- dev.off()
+
+#pdf(paste0(figs.dir, "fig-validation-round-1-merged-mixture-distribution-effect.pdf"))
+#print(g)
+#d <- dev.off()
 
 file <- paste0(figs.dir, "rerun-validation-mixture-and-distribution-effects.tsv")
 write.table(file = file, lm.fits, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
@@ -822,13 +452,19 @@ if(FALSE) {
           .fun = function(subchallenge) {
               g <- g.score.vs.round[[subchallenge]]
               
-              png(paste0(figs.dir, "rerun-validation-bootstrap-pearson-vs-round-", subchallenge, ".png"))
-              print(g)
-              d <- dev.off()
+              file.suffix <- paste0(figs.dir, "rerun-validation-bootstrap-pearson-vs-round-", subchallenge)
+              output.plot(g, file.suffix, plot.types = c("pdf", "png"),
+                          pdf.delta.width = 1, pdf.delta.height = 1,
+                          png.delta.width = 1, png.delta.height = 1)
 
-              pdf(paste0(figs.dir, "rerun-validation-bootstrap-pearson-vs-round-", subchallenge, ".pdf"))
-              print(g)
-              d <- dev.off()
+
+              #png(paste0(figs.dir, "rerun-validation-bootstrap-pearson-vs-round-", subchallenge, ".png"))
+              #print(g)
+              #d <- dev.off()
+
+              #pdf(paste0(figs.dir, "rerun-validation-bootstrap-pearson-vs-round-", subchallenge, ".pdf"))
+              #print(g)
+              #d <- dev.off()
               
           })
 }

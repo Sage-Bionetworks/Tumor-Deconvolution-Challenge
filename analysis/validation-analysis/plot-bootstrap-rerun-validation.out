@@ -15,8 +15,8 @@ Doing round latest
 4         TRUE       FALSE       TRUE           FALSE    REG   Norm
 5         TRUE       FALSE      FALSE            TRUE    NMF  Score
 6        FALSE       FALSE       TRUE           FALSE    SUM  Score
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
 [1] "coarse"
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
@@ -263,7 +263,7 @@ scores[, method.name.col]
  [9] "jdroz"           "Patrick"         "CancerSysBio"    "D3Team"         
 [13] "ICTD"            "Cancer_Decon"    "CCB"             "IZI"            
 [17] "xCell"           "Aboensis IV"     "mitten_TDC19"    "Biogem"         
-[21] "DA_505"          "CIBERSORTx"      "Aginome-XMU"     "ensemble"       
+[21] "DA_505"          "CIBERSORTx"      "Aginome-XMU"     "consensus rank" 
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
 [10] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "plain"
 [19] "plain" "plain" "plain" "bold"  "plain" "plain"
@@ -271,10 +271,11 @@ bold.labels
  bold plain 
     2    22 
 scores[, method.name.col]
- [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "IZI"         
- [6] "REGGEN_LAB"   "Patrick"      "ICTD"         "Cancer_Decon" "D3Team"      
-[11] "Aboensis IV"  "CCB"          "Biogem"       "xCell"        "mitten_TDC19"
-[16] "DA_505"       "Aginome-XMU"  "ensemble"    
+ [1] "LeiliLab"       "NPU"            "Tonys Boys"     "Rubbernecks"   
+ [5] "IZI"            "REGGEN_LAB"     "Patrick"        "ICTD"          
+ [9] "Cancer_Decon"   "D3Team"         "Aboensis IV"    "CCB"           
+[13] "Biogem"         "xCell"          "mitten_TDC19"   "DA_505"        
+[17] "Aginome-XMU"    "consensus rank"
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
 [10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain" "plain"
 bold.labels
@@ -392,6 +393,22 @@ levels
 [21] "CIBERSORT"       "quanTIseq"       "Biogem"          "MCP-counter"    
 [25] "DA_505"          "CIBERSORTx"      "Aginome-XMU"    
 means
+ [1] "Aboensis IV"     "Aginome-XMU"     "Biogem"          "Cancer_Decon"   
+ [5] "CancerSysBio"    "CCB"             "CIBERSORT"       "CIBERSORTx"     
+ [9] "D3Team"          "DA_505"          "ensemble"        "EPIC"           
+[13] "HM159"           "ICTD"            "IZI"             "jbkcose"        
+[17] "jdroz"           "LeiliLab"        "MCP-counter"     "mitten_TDC19"   
+[21] "NPU"             "NYIT_glomerular" "Patrick"         "quanTIseq"      
+[25] "REGGEN_LAB"      "Rubbernecks"     "TJU"             "xCell"          
+levels
+ [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
+ [5] "NPU"             "NYIT_glomerular" "HM159"           "jdroz"          
+ [9] "Rubbernecks"     "D3Team"          "IZI"             "EPIC"           
+[13] "Patrick"         "CancerSysBio"    "mitten_TDC19"    "xCell"          
+[17] "CIBERSORT"       "Aboensis IV"     "quanTIseq"       "CCB"            
+[21] "ICTD"            "Cancer_Decon"    "DA_505"          "Biogem"         
+[25] "MCP-counter"     "Aginome-XMU"     "CIBERSORTx"      "ensemble"       
+means
  [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
  [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "EPIC"        
 [11] "ICTD"         "IZI"          "LeiliLab"     "MCP-counter"  "mitten_TDC19"
@@ -403,78 +420,155 @@ levels
 [11] "CIBERSORT"    "CCB"          "D3Team"       "Aboensis IV"  "xCell"       
 [16] "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"       "EPIC"        
 [21] "Aginome-XMU"  "MCP-counter" 
+means
+ [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
+ [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "ensemble"    
+[11] "EPIC"         "ICTD"         "IZI"          "LeiliLab"     "MCP-counter" 
+[16] "mitten_TDC19" "NPU"          "Patrick"      "quanTIseq"    "REGGEN_LAB"  
+[21] "Rubbernecks"  "Tonys Boys"   "xCell"       
+levels
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "REGGEN_LAB"  
+ [6] "IZI"          "quanTIseq"    "CIBERSORT"    "D3Team"       "ICTD"        
+[11] "Cancer_Decon" "Aboensis IV"  "CCB"          "Patrick"      "xCell"       
+[16] "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"       "Aginome-XMU" 
+[21] "ensemble"     "EPIC"         "MCP-counter" 
+Exclude: pearson
+       method.name exclude
+1      Aboensis IV   FALSE
+2      Aginome-XMU   FALSE
+3           Biogem   FALSE
+4     Cancer_Decon   FALSE
+5     CancerSysBio   FALSE
+6              CCB   FALSE
+7        CIBERSORT   FALSE
+8       CIBERSORTx   FALSE
+9           D3Team   FALSE
+10          DA_505   FALSE
+11        ensemble    TRUE
+12            EPIC   FALSE
+13           HM159   FALSE
+14            ICTD   FALSE
+15             IZI   FALSE
+16         jbkcose   FALSE
+17           jdroz   FALSE
+18        LeiliLab   FALSE
+19     MCP-counter   FALSE
+20    mitten_TDC19   FALSE
+21             NPU   FALSE
+22 NYIT_glomerular   FALSE
+23         Patrick   FALSE
+24       quanTIseq   FALSE
+25      REGGEN_LAB   FALSE
+26     Rubbernecks   FALSE
+27             TJU   FALSE
+28      Tonys Boys   FALSE
+29           xCell   FALSE
+Exclude: spearman
+       method.name exclude
+1      Aboensis IV   FALSE
+2      Aginome-XMU   FALSE
+3           Biogem   FALSE
+4     Cancer_Decon   FALSE
+5     CancerSysBio   FALSE
+6              CCB   FALSE
+7        CIBERSORT   FALSE
+8       CIBERSORTx   FALSE
+9           D3Team   FALSE
+10          DA_505   FALSE
+11        ensemble   FALSE
+12            EPIC   FALSE
+13           HM159   FALSE
+14            ICTD   FALSE
+15             IZI   FALSE
+16         jbkcose   FALSE
+17           jdroz   FALSE
+18        LeiliLab   FALSE
+19     MCP-counter   FALSE
+20    mitten_TDC19   FALSE
+21             NPU   FALSE
+22 NYIT_glomerular   FALSE
+23         Patrick   FALSE
+24       quanTIseq   FALSE
+25      REGGEN_LAB   FALSE
+26     Rubbernecks   FALSE
+27             TJU   FALSE
+28      Tonys Boys   FALSE
+29           xCell   FALSE
 Creating merged means.over.dataset
 Plotting strip plots
 ggplot'ing
 [1] "there\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
- [5] "NYIT_glomerular" "NPU"             "HM159"           "Rubbernecks"    
- [9] "jdroz"           "Patrick"         "CancerSysBio"    "EPIC"           
-[13] "D3Team"          "IZI"             "CCB"             "ICTD"           
-[17] "Cancer_Decon"    "xCell"           "Aboensis IV"     "mitten_TDC19"   
-[21] "CIBERSORT"       "quanTIseq"       "Biogem"          "MCP-counter"    
-[25] "DA_505"          "CIBERSORTx"      "Aginome-XMU"    
+ [5] "NPU"             "NYIT_glomerular" "HM159"           "jdroz"          
+ [9] "Rubbernecks"     "D3Team"          "IZI"             "EPIC"           
+[13] "Patrick"         "CancerSysBio"    "mitten_TDC19"    "xCell"          
+[17] "CIBERSORT"       "Aboensis IV"     "quanTIseq"       "CCB"            
+[21] "ICTD"            "Cancer_Decon"    "DA_505"          "Biogem"         
+[25] "MCP-counter"     "Aginome-XMU"     "CIBERSORTx"     
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
-[10] "plain" "plain" "bold"  "plain" "plain" "plain" "plain" "plain" "bold" 
-[19] "plain" "plain" "bold"  "bold"  "plain" "bold"  "plain" "bold"  "plain"
+[10] "plain" "plain" "bold"  "plain" "plain" "plain" "bold"  "bold"  "plain"
+[19] "bold"  "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "bold" 
 ggplot'ing
 [1] "there\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
- [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "IZI"         
- [6] "REGGEN_LAB"   "quanTIseq"    "ICTD"         "Cancer_Decon" "Patrick"     
-[11] "CIBERSORT"    "CCB"          "D3Team"       "Aboensis IV"  "xCell"       
-[16] "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"       "EPIC"        
-[21] "Aginome-XMU"  "MCP-counter" 
- [1] "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "plain"
-[10] "plain" "bold"  "plain" "plain" "plain" "bold"  "plain" "bold"  "plain"
-[19] "plain" "bold"  "plain" "bold" 
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "REGGEN_LAB"  
+ [6] "IZI"          "quanTIseq"    "CIBERSORT"    "D3Team"       "ICTD"        
+[11] "Cancer_Decon" "Aboensis IV"  "CCB"          "Patrick"      "xCell"       
+[16] "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"       "Aginome-XMU" 
+[21] "EPIC"         "MCP-counter" 
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "bold"  "plain"
+[10] "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "bold"  "plain"
+[19] "plain" "plain" "bold"  "bold" 
 ggplot'ing
 [1] "here\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
- [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
- [1] "EPIC"         "xCell"        "mitten_TDC19" "CIBERSORT"    "quanTIseq"   
- [6] "Biogem"       "MCP-counter"  "DA_505"       "CIBERSORTx"   "Aginome-XMU" 
- [1] "bold"  "bold"  "plain" "bold"  "bold"  "plain" "bold"  "plain" "bold" 
-[10] "plain"
+ [6] "MCP-counter"  "quanTIseq"    "xCell"        "EPIC"         "TIMER"       
+[11] "CIBERSORTx"  
+ [1] "EPIC"         "mitten_TDC19" "xCell"        "CIBERSORT"    "quanTIseq"   
+ [6] "DA_505"       "Biogem"       "MCP-counter"  "Aginome-XMU"  "CIBERSORTx"  
+ [1] "bold"  "plain" "bold"  "bold"  "bold"  "plain" "plain" "bold"  "plain"
+[10] "bold" 
 ggplot'ing
 [1] "here\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
- [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [6] "MCP-counter"  "quanTIseq"    "xCell"        "EPIC"         "TIMER"       
+[11] "CIBERSORTx"  
  [1] "quanTIseq"    "CIBERSORT"    "xCell"        "Biogem"       "CIBERSORTx"  
- [6] "mitten_TDC19" "DA_505"       "EPIC"         "Aginome-XMU"  "MCP-counter" 
- [1] "bold"  "bold"  "bold"  "plain" "bold"  "plain" "plain" "bold"  "plain"
+ [6] "mitten_TDC19" "DA_505"       "Aginome-XMU"  "EPIC"         "MCP-counter" 
+ [1] "bold"  "bold"  "bold"  "plain" "bold"  "plain" "plain" "plain" "bold" 
 [10] "bold" 
 ggplot'ing
 [1] "there\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
- [1] "jbkcose"         "LeiliLab"        "NPU"             "TJU"            
- [5] "Tonys Boys"      "NYIT_glomerular" "REGGEN_LAB"      "Rubbernecks"    
- [9] "HM159"           "IZI"             "Patrick"         "ICTD"           
-[13] "Cancer_Decon"    "CCB"             "quanTIseq"       "jdroz"          
-[17] "D3Team"          "Aboensis IV"     "CIBERSORT"       "xCell"          
-[21] "Biogem"          "EPIC"            "CancerSysBio"    "mitten_TDC19"   
-[25] "CIBERSORTx"      "DA_505"          "Aginome-XMU"     "MCP-counter"    
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
+ [1] "jbkcose"         "LeiliLab"        "NPU"             "Tonys Boys"     
+ [5] "TJU"             "REGGEN_LAB"      "NYIT_glomerular" "Rubbernecks"    
+ [9] "HM159"           "IZI"             "jdroz"           "D3Team"         
+[13] "CIBERSORT"       "Patrick"         "quanTIseq"       "ICTD"           
+[17] "Cancer_Decon"    "Aboensis IV"     "CCB"             "xCell"          
+[21] "Biogem"          "mitten_TDC19"    "EPIC"            "CIBERSORTx"     
+[25] "DA_505"          "Aginome-XMU"     "CancerSysBio"    "MCP-counter"    
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
-[10] "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain"
-[19] "bold"  "bold"  "plain" "bold"  "plain" "plain" "bold"  "plain" "plain"
+[10] "plain" "plain" "plain" "bold"  "plain" "bold"  "plain" "plain" "plain"
+[19] "plain" "bold"  "plain" "plain" "bold"  "bold"  "plain" "plain" "plain"
 [28] "bold" 
 ggplot'ing
 [1] "here\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
- [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
- [1] "quanTIseq"    "CIBERSORT"    "xCell"        "Biogem"       "EPIC"        
- [6] "mitten_TDC19" "CIBERSORTx"   "DA_505"       "Aginome-XMU"  "MCP-counter" 
- [1] "bold"  "bold"  "bold"  "plain" "bold"  "plain" "bold"  "plain" "plain"
+ [6] "MCP-counter"  "quanTIseq"    "xCell"        "EPIC"         "TIMER"       
+[11] "CIBERSORTx"  
+ [1] "CIBERSORT"    "quanTIseq"    "xCell"        "Biogem"       "mitten_TDC19"
+ [6] "EPIC"         "CIBERSORTx"   "DA_505"       "Aginome-XMU"  "MCP-counter" 
+ [1] "bold"  "bold"  "bold"  "plain" "plain" "bold"  "bold"  "plain" "plain"
 [10] "bold" 
 Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
 Top performer for Round latest in coarse sub-challenge: Aginome-XMU
@@ -534,8 +628,8 @@ Doing round 1
 4         TRUE       FALSE       TRUE           FALSE    REG   Norm
 5         TRUE       FALSE      FALSE            TRUE    NMF  Score
 6        FALSE       FALSE       TRUE           FALSE    SUM  Score
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
 [1] "coarse"
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
@@ -782,7 +876,7 @@ scores[, method.name.col]
  [9] "jdroz"           "Patrick"         "CancerSysBio"    "D3Team"         
 [13] "CCB"             "Aboensis IV"     "ICTD"            "Cancer_Decon"   
 [17] "xCell"           "mitten_TDC19"    "IZI"             "Biogem"         
-[21] "DA_505"          "Aginome-XMU"     "CIBERSORTx"      "ensemble"       
+[21] "DA_505"          "Aginome-XMU"     "CIBERSORTx"      "consensus rank" 
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
 [10] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "plain"
 [19] "plain" "plain" "plain" "plain" "bold"  "plain"
@@ -790,10 +884,11 @@ bold.labels
  bold plain 
     2    22 
 scores[, method.name.col]
- [1] "LeiliLab"     "Rubbernecks"  "NPU"          "Tonys Boys"   "REGGEN_LAB"  
- [6] "Patrick"      "Aboensis IV"  "CCB"          "ICTD"         "Cancer_Decon"
-[11] "Biogem"       "IZI"          "D3Team"       "xCell"        "DA_505"      
-[16] "mitten_TDC19" "Aginome-XMU"  "ensemble"    
+ [1] "LeiliLab"       "Rubbernecks"    "NPU"            "Tonys Boys"    
+ [5] "REGGEN_LAB"     "Patrick"        "Aboensis IV"    "CCB"           
+ [9] "ICTD"           "Cancer_Decon"   "Biogem"         "IZI"           
+[13] "D3Team"         "xCell"          "DA_505"         "mitten_TDC19"  
+[17] "Aginome-XMU"    "consensus rank"
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
 [10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain" "plain"
 bold.labels
@@ -920,6 +1015,22 @@ levels
 [21] "Biogem"          "CIBERSORT"       "DA_505"          "quanTIseq"      
 [25] "Aginome-XMU"     "MCP-counter"     "CIBERSORTx"     
 means
+ [1] "Aboensis IV"     "Aginome-XMU"     "Biogem"          "Cancer_Decon"   
+ [5] "CancerSysBio"    "CCB"             "CIBERSORT"       "CIBERSORTx"     
+ [9] "D3Team"          "DA_505"          "ensemble"        "EPIC"           
+[13] "HM159"           "ICTD"            "IZI"             "jbkcose"        
+[17] "jdroz"           "LeiliLab"        "MCP-counter"     "mitten_TDC19"   
+[21] "NPU"             "NYIT_glomerular" "Patrick"         "quanTIseq"      
+[25] "REGGEN_LAB"      "Rubbernecks"     "TJU"             "xCell"          
+levels
+ [1] "jbkcose"         "NYIT_glomerular" "TJU"             "REGGEN_LAB"     
+ [5] "LeiliLab"        "NPU"             "Rubbernecks"     "HM159"          
+ [9] "jdroz"           "D3Team"          "EPIC"            "IZI"            
+[13] "CCB"             "Patrick"         "CancerSysBio"    "mitten_TDC19"   
+[17] "xCell"           "Aboensis IV"     "DA_505"          "Aginome-XMU"    
+[21] "CIBERSORT"       "Biogem"          "quanTIseq"       "ICTD"           
+[25] "Cancer_Decon"    "MCP-counter"     "CIBERSORTx"      "ensemble"       
+means
  [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
  [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "EPIC"        
 [11] "ICTD"         "IZI"          "LeiliLab"     "MCP-counter"  "mitten_TDC19"
@@ -931,78 +1042,155 @@ levels
 [11] "Aboensis IV"  "Biogem"       "IZI"          "CIBERSORT"    "D3Team"      
 [16] "xCell"        "DA_505"       "mitten_TDC19" "CIBERSORTx"   "Aginome-XMU" 
 [21] "EPIC"         "MCP-counter" 
+means
+ [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
+ [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "ensemble"    
+[11] "EPIC"         "ICTD"         "IZI"          "LeiliLab"     "MCP-counter" 
+[16] "mitten_TDC19" "NPU"          "Patrick"      "quanTIseq"    "REGGEN_LAB"  
+[21] "Rubbernecks"  "Tonys Boys"   "xCell"       
+levels
+ [1] "LeiliLab"     "NPU"          "Rubbernecks"  "Tonys Boys"   "REGGEN_LAB"  
+ [6] "quanTIseq"    "CIBERSORT"    "CCB"          "IZI"          "Aboensis IV" 
+[11] "D3Team"       "Biogem"       "ICTD"         "Cancer_Decon" "Patrick"     
+[16] "DA_505"       "xCell"        "mitten_TDC19" "Aginome-XMU"  "CIBERSORTx"  
+[21] "ensemble"     "EPIC"         "MCP-counter" 
+Exclude: pearson
+       method.name exclude
+1      Aboensis IV   FALSE
+2      Aginome-XMU   FALSE
+3           Biogem   FALSE
+4     Cancer_Decon   FALSE
+5     CancerSysBio   FALSE
+6              CCB   FALSE
+7        CIBERSORT   FALSE
+8       CIBERSORTx   FALSE
+9           D3Team   FALSE
+10          DA_505   FALSE
+11        ensemble    TRUE
+12            EPIC   FALSE
+13           HM159   FALSE
+14            ICTD   FALSE
+15             IZI   FALSE
+16         jbkcose   FALSE
+17           jdroz   FALSE
+18        LeiliLab   FALSE
+19     MCP-counter   FALSE
+20    mitten_TDC19   FALSE
+21             NPU   FALSE
+22 NYIT_glomerular   FALSE
+23         Patrick   FALSE
+24       quanTIseq   FALSE
+25      REGGEN_LAB   FALSE
+26     Rubbernecks   FALSE
+27             TJU   FALSE
+28      Tonys Boys   FALSE
+29           xCell   FALSE
+Exclude: spearman
+       method.name exclude
+1      Aboensis IV   FALSE
+2      Aginome-XMU   FALSE
+3           Biogem   FALSE
+4     Cancer_Decon   FALSE
+5     CancerSysBio   FALSE
+6              CCB   FALSE
+7        CIBERSORT   FALSE
+8       CIBERSORTx   FALSE
+9           D3Team   FALSE
+10          DA_505   FALSE
+11        ensemble   FALSE
+12            EPIC   FALSE
+13           HM159   FALSE
+14            ICTD   FALSE
+15             IZI   FALSE
+16         jbkcose   FALSE
+17           jdroz   FALSE
+18        LeiliLab   FALSE
+19     MCP-counter   FALSE
+20    mitten_TDC19   FALSE
+21             NPU   FALSE
+22 NYIT_glomerular   FALSE
+23         Patrick   FALSE
+24       quanTIseq   FALSE
+25      REGGEN_LAB   FALSE
+26     Rubbernecks   FALSE
+27             TJU   FALSE
+28      Tonys Boys   FALSE
+29           xCell   FALSE
 Creating merged means.over.dataset
 Plotting strip plots
 ggplot'ing
 [1] "there\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "jbkcose"         "NYIT_glomerular" "TJU"             "REGGEN_LAB"     
- [5] "Rubbernecks"     "LeiliLab"        "NPU"             "HM159"          
- [9] "jdroz"           "Patrick"         "CancerSysBio"    "EPIC"           
-[13] "D3Team"          "CCB"             "ICTD"            "Cancer_Decon"   
-[17] "Aboensis IV"     "IZI"             "xCell"           "mitten_TDC19"   
-[21] "Biogem"          "CIBERSORT"       "DA_505"          "quanTIseq"      
-[25] "Aginome-XMU"     "MCP-counter"     "CIBERSORTx"     
+ [5] "LeiliLab"        "NPU"             "Rubbernecks"     "HM159"          
+ [9] "jdroz"           "D3Team"          "EPIC"            "IZI"            
+[13] "CCB"             "Patrick"         "CancerSysBio"    "mitten_TDC19"   
+[17] "xCell"           "Aboensis IV"     "DA_505"          "Aginome-XMU"    
+[21] "CIBERSORT"       "Biogem"          "quanTIseq"       "ICTD"           
+[25] "Cancer_Decon"    "MCP-counter"     "CIBERSORTx"     
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
-[10] "plain" "plain" "bold"  "plain" "plain" "plain" "plain" "plain" "plain"
-[19] "bold"  "plain" "plain" "bold"  "plain" "bold"  "plain" "bold"  "bold" 
+[10] "plain" "bold"  "plain" "plain" "plain" "plain" "plain" "bold"  "plain"
+[19] "plain" "plain" "bold"  "plain" "bold"  "plain" "plain" "bold"  "bold" 
 ggplot'ing
 [1] "there\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
- [1] "Rubbernecks"  "LeiliLab"     "NPU"          "Tonys Boys"   "REGGEN_LAB"  
- [6] "quanTIseq"    "CCB"          "ICTD"         "Cancer_Decon" "Patrick"     
-[11] "Aboensis IV"  "Biogem"       "IZI"          "CIBERSORT"    "D3Team"      
-[16] "xCell"        "DA_505"       "mitten_TDC19" "CIBERSORTx"   "Aginome-XMU" 
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
+ [1] "LeiliLab"     "NPU"          "Rubbernecks"  "Tonys Boys"   "REGGEN_LAB"  
+ [6] "quanTIseq"    "CIBERSORT"    "CCB"          "IZI"          "Aboensis IV" 
+[11] "D3Team"       "Biogem"       "ICTD"         "Cancer_Decon" "Patrick"     
+[16] "DA_505"       "xCell"        "mitten_TDC19" "Aginome-XMU"  "CIBERSORTx"  
 [21] "EPIC"         "MCP-counter" 
- [1] "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain"
-[10] "plain" "plain" "plain" "plain" "bold"  "plain" "bold"  "plain" "plain"
-[19] "bold"  "plain" "bold"  "bold" 
+ [1] "plain" "plain" "plain" "plain" "plain" "bold"  "bold"  "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "plain"
+[19] "plain" "bold"  "bold"  "bold" 
 ggplot'ing
 [1] "here\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
- [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
- [1] "EPIC"         "xCell"        "mitten_TDC19" "Biogem"       "CIBERSORT"   
- [6] "DA_505"       "quanTIseq"    "Aginome-XMU"  "MCP-counter"  "CIBERSORTx"  
- [1] "bold"  "bold"  "plain" "plain" "bold"  "plain" "bold"  "plain" "bold" 
+ [6] "MCP-counter"  "quanTIseq"    "xCell"        "EPIC"         "TIMER"       
+[11] "CIBERSORTx"  
+ [1] "EPIC"         "mitten_TDC19" "xCell"        "DA_505"       "Aginome-XMU" 
+ [6] "CIBERSORT"    "Biogem"       "quanTIseq"    "MCP-counter"  "CIBERSORTx"  
+ [1] "bold"  "plain" "bold"  "plain" "plain" "bold"  "plain" "bold"  "bold" 
 [10] "bold" 
 ggplot'ing
 [1] "here\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
- [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
- [1] "quanTIseq"    "Biogem"       "CIBERSORT"    "xCell"        "DA_505"      
- [6] "mitten_TDC19" "CIBERSORTx"   "Aginome-XMU"  "EPIC"         "MCP-counter" 
- [1] "bold"  "plain" "bold"  "bold"  "plain" "plain" "bold"  "plain" "bold" 
+ [6] "MCP-counter"  "quanTIseq"    "xCell"        "EPIC"         "TIMER"       
+[11] "CIBERSORTx"  
+ [1] "quanTIseq"    "CIBERSORT"    "Biogem"       "DA_505"       "xCell"       
+ [6] "mitten_TDC19" "Aginome-XMU"  "CIBERSORTx"   "EPIC"         "MCP-counter" 
+ [1] "bold"  "bold"  "plain" "plain" "bold"  "plain" "plain" "bold"  "bold" 
 [10] "bold" 
 ggplot'ing
 [1] "there\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
- [1] "jbkcose"         "Rubbernecks"     "NYIT_glomerular" "LeiliLab"       
- [5] "NPU"             "TJU"             "Tonys Boys"      "REGGEN_LAB"     
- [9] "HM159"           "CCB"             "Patrick"         "ICTD"           
-[13] "Cancer_Decon"    "quanTIseq"       "Aboensis IV"     "D3Team"         
-[17] "Biogem"          "jdroz"           "IZI"             "CIBERSORT"      
-[21] "xCell"           "EPIC"            "mitten_TDC19"    "DA_505"         
-[25] "CancerSysBio"    "Aginome-XMU"     "CIBERSORTx"      "MCP-counter"    
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
+ [1] "jbkcose"         "LeiliLab"        "NYIT_glomerular" "NPU"            
+ [5] "Rubbernecks"     "Tonys Boys"      "TJU"             "REGGEN_LAB"     
+ [9] "HM159"           "CCB"             "IZI"             "D3Team"         
+[13] "jdroz"           "Aboensis IV"     "Biogem"          "CIBERSORT"      
+[17] "Patrick"         "quanTIseq"       "ICTD"            "Cancer_Decon"   
+[21] "xCell"           "mitten_TDC19"    "DA_505"          "EPIC"           
+[25] "Aginome-XMU"     "CIBERSORTx"      "CancerSysBio"    "MCP-counter"    
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
-[10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain" "plain"
-[19] "plain" "bold"  "bold"  "bold"  "plain" "plain" "plain" "plain" "bold" 
+[10] "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "bold" 
+[19] "plain" "plain" "bold"  "plain" "plain" "bold"  "plain" "bold"  "plain"
 [28] "bold" 
 ggplot'ing
 [1] "here\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
- [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
- [1] "quanTIseq"    "Biogem"       "CIBERSORT"    "xCell"        "EPIC"        
- [6] "mitten_TDC19" "DA_505"       "Aginome-XMU"  "CIBERSORTx"   "MCP-counter" 
- [1] "bold"  "plain" "bold"  "bold"  "bold"  "plain" "plain" "plain" "bold" 
+ [6] "MCP-counter"  "quanTIseq"    "xCell"        "EPIC"         "TIMER"       
+[11] "CIBERSORTx"  
+ [1] "Biogem"       "CIBERSORT"    "quanTIseq"    "xCell"        "mitten_TDC19"
+ [6] "DA_505"       "EPIC"         "Aginome-XMU"  "CIBERSORTx"   "MCP-counter" 
+ [1] "plain" "bold"  "bold"  "bold"  "plain" "plain" "bold"  "plain" "bold" 
 [10] "bold" 
 Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
 Top performer for Round 1 in coarse sub-challenge: CIBERSORTx
@@ -1062,8 +1250,8 @@ Doing round 2
 4         TRUE       FALSE       TRUE           FALSE    REG   Norm
 5         TRUE       FALSE      FALSE            TRUE    NMF  Score
 6        FALSE       FALSE       TRUE           FALSE    SUM  Score
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
 [1] "coarse"
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
@@ -1310,7 +1498,7 @@ scores[, method.name.col]
  [9] "jdroz"           "Patrick"         "CancerSysBio"    "D3Team"         
 [13] "ICTD"            "mitten_TDC19"    "Cancer_Decon"    "CCB"            
 [17] "DA_505"          "xCell"           "Aboensis IV"     "IZI"            
-[21] "Biogem"          "CIBERSORTx"      "Aginome-XMU"     "ensemble"       
+[21] "Biogem"          "CIBERSORTx"      "Aginome-XMU"     "consensus rank" 
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
 [10] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "bold" 
 [19] "plain" "plain" "plain" "bold"  "plain" "plain"
@@ -1318,10 +1506,11 @@ bold.labels
  bold plain 
     2    22 
 scores[, method.name.col]
- [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "REGGEN_LAB"  
- [6] "Patrick"      "Aboensis IV"  "ICTD"         "Cancer_Decon" "IZI"         
-[11] "CCB"          "D3Team"       "Biogem"       "xCell"        "mitten_TDC19"
-[16] "DA_505"       "Aginome-XMU"  "ensemble"    
+ [1] "LeiliLab"       "NPU"            "Tonys Boys"     "Rubbernecks"   
+ [5] "REGGEN_LAB"     "Patrick"        "Aboensis IV"    "ICTD"          
+ [9] "Cancer_Decon"   "IZI"            "CCB"            "D3Team"        
+[13] "Biogem"         "xCell"          "mitten_TDC19"   "DA_505"        
+[17] "Aginome-XMU"    "consensus rank"
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
 [10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain" "plain"
 bold.labels
@@ -1444,6 +1633,22 @@ levels
 [21] "Aboensis IV"     "CIBERSORT"       "Biogem"          "quanTIseq"      
 [25] "MCP-counter"     "CIBERSORTx"      "Aginome-XMU"    
 means
+ [1] "Aboensis IV"     "Aginome-XMU"     "Biogem"          "Cancer_Decon"   
+ [5] "CancerSysBio"    "CCB"             "CIBERSORT"       "CIBERSORTx"     
+ [9] "D3Team"          "DA_505"          "ensemble"        "EPIC"           
+[13] "HM159"           "ICTD"            "IZI"             "jbkcose"        
+[17] "jdroz"           "LeiliLab"        "MCP-counter"     "mitten_TDC19"   
+[21] "NPU"             "NYIT_glomerular" "Patrick"         "quanTIseq"      
+[25] "REGGEN_LAB"      "Rubbernecks"     "TJU"             "xCell"          
+levels
+ [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
+ [5] "NPU"             "NYIT_glomerular" "HM159"           "jdroz"          
+ [9] "Rubbernecks"     "D3Team"          "EPIC"            "mitten_TDC19"   
+[13] "IZI"             "DA_505"          "Patrick"         "CancerSysBio"   
+[17] "xCell"           "CIBERSORT"       "Aboensis IV"     "quanTIseq"      
+[21] "CCB"             "ICTD"            "Cancer_Decon"    "Biogem"         
+[25] "MCP-counter"     "Aginome-XMU"     "CIBERSORTx"      "ensemble"       
+means
  [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
  [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "EPIC"        
 [11] "ICTD"         "IZI"          "LeiliLab"     "MCP-counter"  "mitten_TDC19"
@@ -1455,78 +1660,155 @@ levels
 [11] "CIBERSORT"    "CCB"          "IZI"          "D3Team"       "Biogem"      
 [16] "xCell"        "mitten_TDC19" "DA_505"       "CIBERSORTx"   "Aginome-XMU" 
 [21] "EPIC"         "MCP-counter" 
+means
+ [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
+ [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "ensemble"    
+[11] "EPIC"         "ICTD"         "IZI"          "LeiliLab"     "MCP-counter" 
+[16] "mitten_TDC19" "NPU"          "Patrick"      "quanTIseq"    "REGGEN_LAB"  
+[21] "Rubbernecks"  "Tonys Boys"   "xCell"       
+levels
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "REGGEN_LAB"  
+ [6] "quanTIseq"    "CIBERSORT"    "IZI"          "Aboensis IV"  "ICTD"        
+[11] "Cancer_Decon" "D3Team"       "Biogem"       "CCB"          "Patrick"     
+[16] "xCell"        "mitten_TDC19" "CIBERSORTx"   "DA_505"       "Aginome-XMU" 
+[21] "ensemble"     "EPIC"         "MCP-counter" 
+Exclude: pearson
+       method.name exclude
+1      Aboensis IV   FALSE
+2      Aginome-XMU   FALSE
+3           Biogem   FALSE
+4     Cancer_Decon   FALSE
+5     CancerSysBio   FALSE
+6              CCB   FALSE
+7        CIBERSORT   FALSE
+8       CIBERSORTx   FALSE
+9           D3Team   FALSE
+10          DA_505   FALSE
+11        ensemble    TRUE
+12            EPIC   FALSE
+13           HM159   FALSE
+14            ICTD   FALSE
+15             IZI   FALSE
+16         jbkcose   FALSE
+17           jdroz   FALSE
+18        LeiliLab   FALSE
+19     MCP-counter   FALSE
+20    mitten_TDC19   FALSE
+21             NPU   FALSE
+22 NYIT_glomerular   FALSE
+23         Patrick   FALSE
+24       quanTIseq   FALSE
+25      REGGEN_LAB   FALSE
+26     Rubbernecks   FALSE
+27             TJU   FALSE
+28      Tonys Boys   FALSE
+29           xCell   FALSE
+Exclude: spearman
+       method.name exclude
+1      Aboensis IV   FALSE
+2      Aginome-XMU   FALSE
+3           Biogem   FALSE
+4     Cancer_Decon   FALSE
+5     CancerSysBio   FALSE
+6              CCB   FALSE
+7        CIBERSORT   FALSE
+8       CIBERSORTx   FALSE
+9           D3Team   FALSE
+10          DA_505   FALSE
+11        ensemble   FALSE
+12            EPIC   FALSE
+13           HM159   FALSE
+14            ICTD   FALSE
+15             IZI   FALSE
+16         jbkcose   FALSE
+17           jdroz   FALSE
+18        LeiliLab   FALSE
+19     MCP-counter   FALSE
+20    mitten_TDC19   FALSE
+21             NPU   FALSE
+22 NYIT_glomerular   FALSE
+23         Patrick   FALSE
+24       quanTIseq   FALSE
+25      REGGEN_LAB   FALSE
+26     Rubbernecks   FALSE
+27             TJU   FALSE
+28      Tonys Boys   FALSE
+29           xCell   FALSE
 Creating merged means.over.dataset
 Plotting strip plots
 ggplot'ing
 [1] "there\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
- [5] "NYIT_glomerular" "NPU"             "HM159"           "Rubbernecks"    
- [9] "jdroz"           "Patrick"         "CancerSysBio"    "EPIC"           
-[13] "D3Team"          "CCB"             "ICTD"            "Cancer_Decon"   
-[17] "mitten_TDC19"    "DA_505"          "IZI"             "xCell"          
-[21] "Aboensis IV"     "CIBERSORT"       "Biogem"          "quanTIseq"      
-[25] "MCP-counter"     "CIBERSORTx"      "Aginome-XMU"    
+ [5] "NPU"             "NYIT_glomerular" "HM159"           "jdroz"          
+ [9] "Rubbernecks"     "D3Team"          "EPIC"            "mitten_TDC19"   
+[13] "IZI"             "DA_505"          "Patrick"         "CancerSysBio"   
+[17] "xCell"           "CIBERSORT"       "Aboensis IV"     "quanTIseq"      
+[21] "CCB"             "ICTD"            "Cancer_Decon"    "Biogem"         
+[25] "MCP-counter"     "Aginome-XMU"     "CIBERSORTx"     
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
-[10] "plain" "plain" "bold"  "plain" "plain" "plain" "plain" "plain" "plain"
-[19] "plain" "bold"  "plain" "bold"  "plain" "bold"  "bold"  "bold"  "plain"
+[10] "plain" "bold"  "plain" "plain" "plain" "plain" "plain" "bold"  "bold" 
+[19] "plain" "bold"  "plain" "plain" "plain" "plain" "bold"  "plain" "bold" 
 ggplot'ing
 [1] "there\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "REGGEN_LAB"  
- [6] "quanTIseq"    "ICTD"         "Cancer_Decon" "Patrick"      "Aboensis IV" 
-[11] "CIBERSORT"    "CCB"          "IZI"          "D3Team"       "Biogem"      
-[16] "xCell"        "mitten_TDC19" "DA_505"       "CIBERSORTx"   "Aginome-XMU" 
+ [6] "quanTIseq"    "CIBERSORT"    "IZI"          "Aboensis IV"  "ICTD"        
+[11] "Cancer_Decon" "D3Team"       "Biogem"       "CCB"          "Patrick"     
+[16] "xCell"        "mitten_TDC19" "CIBERSORTx"   "DA_505"       "Aginome-XMU" 
 [21] "EPIC"         "MCP-counter" 
- [1] "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain"
-[10] "plain" "bold"  "plain" "plain" "plain" "plain" "bold"  "plain" "plain"
-[19] "bold"  "plain" "bold"  "bold" 
+ [1] "plain" "plain" "plain" "plain" "plain" "bold"  "bold"  "plain" "plain"
+[10] "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "bold" 
+[19] "plain" "plain" "bold"  "bold" 
 ggplot'ing
 [1] "here\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
- [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [6] "MCP-counter"  "quanTIseq"    "xCell"        "EPIC"         "TIMER"       
+[11] "CIBERSORTx"  
  [1] "EPIC"         "mitten_TDC19" "DA_505"       "xCell"        "CIBERSORT"   
- [6] "Biogem"       "quanTIseq"    "MCP-counter"  "CIBERSORTx"   "Aginome-XMU" 
- [1] "bold"  "plain" "plain" "bold"  "bold"  "plain" "bold"  "bold"  "bold" 
-[10] "plain"
+ [6] "quanTIseq"    "Biogem"       "MCP-counter"  "Aginome-XMU"  "CIBERSORTx"  
+ [1] "bold"  "plain" "plain" "bold"  "bold"  "bold"  "plain" "bold"  "plain"
+[10] "bold" 
 ggplot'ing
 [1] "here\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
- [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [6] "MCP-counter"  "quanTIseq"    "xCell"        "EPIC"         "TIMER"       
+[11] "CIBERSORTx"  
  [1] "quanTIseq"    "CIBERSORT"    "Biogem"       "xCell"        "mitten_TDC19"
- [6] "DA_505"       "CIBERSORTx"   "Aginome-XMU"  "EPIC"         "MCP-counter" 
- [1] "bold"  "bold"  "plain" "bold"  "plain" "plain" "bold"  "plain" "bold" 
+ [6] "CIBERSORTx"   "DA_505"       "Aginome-XMU"  "EPIC"         "MCP-counter" 
+ [1] "bold"  "bold"  "plain" "bold"  "plain" "bold"  "plain" "plain" "bold" 
 [10] "bold" 
 ggplot'ing
 [1] "there\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
- [1] "jbkcose"         "LeiliLab"        "NPU"             "TJU"            
- [5] "Tonys Boys"      "NYIT_glomerular" "REGGEN_LAB"      "Rubbernecks"    
- [9] "HM159"           "Patrick"         "ICTD"            "Cancer_Decon"   
-[13] "CCB"             "quanTIseq"       "jdroz"           "Aboensis IV"    
-[17] "IZI"             "D3Team"          "CIBERSORT"       "Biogem"         
-[21] "xCell"           "mitten_TDC19"    "EPIC"            "DA_505"         
-[25] "CancerSysBio"    "CIBERSORTx"      "Aginome-XMU"     "MCP-counter"    
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
+ [1] "jbkcose"         "LeiliLab"        "NPU"             "Tonys Boys"     
+ [5] "TJU"             "REGGEN_LAB"      "NYIT_glomerular" "Rubbernecks"    
+ [9] "HM159"           "jdroz"           "IZI"             "CIBERSORT"      
+[13] "Patrick"         "quanTIseq"       "Aboensis IV"     "ICTD"           
+[17] "D3Team"          "Cancer_Decon"    "CCB"             "Biogem"         
+[21] "mitten_TDC19"    "xCell"           "DA_505"          "EPIC"           
+[25] "CIBERSORTx"      "Aginome-XMU"     "CancerSysBio"    "MCP-counter"    
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
-[10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain" "plain"
-[19] "bold"  "plain" "bold"  "plain" "bold"  "plain" "plain" "bold"  "plain"
+[10] "plain" "plain" "bold"  "plain" "bold"  "plain" "plain" "plain" "plain"
+[19] "plain" "plain" "plain" "bold"  "plain" "bold"  "bold"  "plain" "plain"
 [28] "bold" 
 ggplot'ing
 [1] "here\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
- [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
- [1] "quanTIseq"    "CIBERSORT"    "Biogem"       "xCell"        "mitten_TDC19"
- [6] "EPIC"         "DA_505"       "CIBERSORTx"   "Aginome-XMU"  "MCP-counter" 
- [1] "bold"  "bold"  "plain" "bold"  "plain" "bold"  "plain" "bold"  "plain"
+ [6] "MCP-counter"  "quanTIseq"    "xCell"        "EPIC"         "TIMER"       
+[11] "CIBERSORTx"  
+ [1] "CIBERSORT"    "quanTIseq"    "Biogem"       "mitten_TDC19" "xCell"       
+ [6] "DA_505"       "EPIC"         "CIBERSORTx"   "Aginome-XMU"  "MCP-counter" 
+ [1] "bold"  "bold"  "plain" "plain" "bold"  "plain" "bold"  "bold"  "plain"
 [10] "bold" 
 Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
 Top performer for Round 2 in coarse sub-challenge: Aginome-XMU
@@ -1586,8 +1868,8 @@ Doing round 3
 4         TRUE       FALSE       TRUE           FALSE    REG   Norm
 5         TRUE       FALSE      FALSE            TRUE    NMF  Score
 6        FALSE       FALSE       TRUE           FALSE    SUM  Score
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
 [1] "coarse"
        output.type      method.type  method.name subchallenge submission
 1            score          summary  Aboensis IV         <NA>       <NA>
@@ -1834,7 +2116,7 @@ scores[, method.name.col]
  [9] "jdroz"           "Patrick"         "CancerSysBio"    "D3Team"         
 [13] "ICTD"            "Cancer_Decon"    "CCB"             "IZI"            
 [17] "xCell"           "Aboensis IV"     "mitten_TDC19"    "Biogem"         
-[21] "DA_505"          "CIBERSORTx"      "Aginome-XMU"     "ensemble"       
+[21] "DA_505"          "CIBERSORTx"      "Aginome-XMU"     "consensus rank" 
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
 [10] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "plain"
 [19] "plain" "plain" "plain" "bold"  "plain" "plain"
@@ -1842,10 +2124,11 @@ bold.labels
  bold plain 
     2    22 
 scores[, method.name.col]
- [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "IZI"         
- [6] "REGGEN_LAB"   "Patrick"      "ICTD"         "Cancer_Decon" "D3Team"      
-[11] "Aboensis IV"  "CCB"          "Biogem"       "xCell"        "mitten_TDC19"
-[16] "DA_505"       "Aginome-XMU"  "ensemble"    
+ [1] "LeiliLab"       "NPU"            "Tonys Boys"     "Rubbernecks"   
+ [5] "IZI"            "REGGEN_LAB"     "Patrick"        "ICTD"          
+ [9] "Cancer_Decon"   "D3Team"         "Aboensis IV"    "CCB"           
+[13] "Biogem"         "xCell"          "mitten_TDC19"   "DA_505"        
+[17] "Aginome-XMU"    "consensus rank"
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
 [10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain" "plain"
 bold.labels
@@ -1963,6 +2246,22 @@ levels
 [21] "CIBERSORT"       "quanTIseq"       "Biogem"          "MCP-counter"    
 [25] "DA_505"          "CIBERSORTx"      "Aginome-XMU"    
 means
+ [1] "Aboensis IV"     "Aginome-XMU"     "Biogem"          "Cancer_Decon"   
+ [5] "CancerSysBio"    "CCB"             "CIBERSORT"       "CIBERSORTx"     
+ [9] "D3Team"          "DA_505"          "ensemble"        "EPIC"           
+[13] "HM159"           "ICTD"            "IZI"             "jbkcose"        
+[17] "jdroz"           "LeiliLab"        "MCP-counter"     "mitten_TDC19"   
+[21] "NPU"             "NYIT_glomerular" "Patrick"         "quanTIseq"      
+[25] "REGGEN_LAB"      "Rubbernecks"     "TJU"             "xCell"          
+levels
+ [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
+ [5] "NPU"             "NYIT_glomerular" "HM159"           "jdroz"          
+ [9] "Rubbernecks"     "D3Team"          "IZI"             "EPIC"           
+[13] "Patrick"         "CancerSysBio"    "mitten_TDC19"    "xCell"          
+[17] "CIBERSORT"       "Aboensis IV"     "quanTIseq"       "CCB"            
+[21] "ICTD"            "Cancer_Decon"    "DA_505"          "Biogem"         
+[25] "MCP-counter"     "Aginome-XMU"     "CIBERSORTx"      "ensemble"       
+means
  [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
  [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "EPIC"        
 [11] "ICTD"         "IZI"          "LeiliLab"     "MCP-counter"  "mitten_TDC19"
@@ -1974,78 +2273,155 @@ levels
 [11] "CIBERSORT"    "CCB"          "D3Team"       "Aboensis IV"  "xCell"       
 [16] "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"       "EPIC"        
 [21] "Aginome-XMU"  "MCP-counter" 
+means
+ [1] "Aboensis IV"  "Aginome-XMU"  "Biogem"       "Cancer_Decon" "CCB"         
+ [6] "CIBERSORT"    "CIBERSORTx"   "D3Team"       "DA_505"       "ensemble"    
+[11] "EPIC"         "ICTD"         "IZI"          "LeiliLab"     "MCP-counter" 
+[16] "mitten_TDC19" "NPU"          "Patrick"      "quanTIseq"    "REGGEN_LAB"  
+[21] "Rubbernecks"  "Tonys Boys"   "xCell"       
+levels
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "REGGEN_LAB"  
+ [6] "IZI"          "quanTIseq"    "CIBERSORT"    "D3Team"       "ICTD"        
+[11] "Cancer_Decon" "Aboensis IV"  "CCB"          "Patrick"      "xCell"       
+[16] "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"       "Aginome-XMU" 
+[21] "ensemble"     "EPIC"         "MCP-counter" 
+Exclude: pearson
+       method.name exclude
+1      Aboensis IV   FALSE
+2      Aginome-XMU   FALSE
+3           Biogem   FALSE
+4     Cancer_Decon   FALSE
+5     CancerSysBio   FALSE
+6              CCB   FALSE
+7        CIBERSORT   FALSE
+8       CIBERSORTx   FALSE
+9           D3Team   FALSE
+10          DA_505   FALSE
+11        ensemble    TRUE
+12            EPIC   FALSE
+13           HM159   FALSE
+14            ICTD   FALSE
+15             IZI   FALSE
+16         jbkcose   FALSE
+17           jdroz   FALSE
+18        LeiliLab   FALSE
+19     MCP-counter   FALSE
+20    mitten_TDC19   FALSE
+21             NPU   FALSE
+22 NYIT_glomerular   FALSE
+23         Patrick   FALSE
+24       quanTIseq   FALSE
+25      REGGEN_LAB   FALSE
+26     Rubbernecks   FALSE
+27             TJU   FALSE
+28      Tonys Boys   FALSE
+29           xCell   FALSE
+Exclude: spearman
+       method.name exclude
+1      Aboensis IV   FALSE
+2      Aginome-XMU   FALSE
+3           Biogem   FALSE
+4     Cancer_Decon   FALSE
+5     CancerSysBio   FALSE
+6              CCB   FALSE
+7        CIBERSORT   FALSE
+8       CIBERSORTx   FALSE
+9           D3Team   FALSE
+10          DA_505   FALSE
+11        ensemble   FALSE
+12            EPIC   FALSE
+13           HM159   FALSE
+14            ICTD   FALSE
+15             IZI   FALSE
+16         jbkcose   FALSE
+17           jdroz   FALSE
+18        LeiliLab   FALSE
+19     MCP-counter   FALSE
+20    mitten_TDC19   FALSE
+21             NPU   FALSE
+22 NYIT_glomerular   FALSE
+23         Patrick   FALSE
+24       quanTIseq   FALSE
+25      REGGEN_LAB   FALSE
+26     Rubbernecks   FALSE
+27             TJU   FALSE
+28      Tonys Boys   FALSE
+29           xCell   FALSE
 Creating merged means.over.dataset
 Plotting strip plots
 ggplot'ing
 [1] "there\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "jbkcose"         "LeiliLab"        "TJU"             "REGGEN_LAB"     
- [5] "NYIT_glomerular" "NPU"             "HM159"           "Rubbernecks"    
- [9] "jdroz"           "Patrick"         "CancerSysBio"    "EPIC"           
-[13] "D3Team"          "IZI"             "CCB"             "ICTD"           
-[17] "Cancer_Decon"    "xCell"           "Aboensis IV"     "mitten_TDC19"   
-[21] "CIBERSORT"       "quanTIseq"       "Biogem"          "MCP-counter"    
-[25] "DA_505"          "CIBERSORTx"      "Aginome-XMU"    
+ [5] "NPU"             "NYIT_glomerular" "HM159"           "jdroz"          
+ [9] "Rubbernecks"     "D3Team"          "IZI"             "EPIC"           
+[13] "Patrick"         "CancerSysBio"    "mitten_TDC19"    "xCell"          
+[17] "CIBERSORT"       "Aboensis IV"     "quanTIseq"       "CCB"            
+[21] "ICTD"            "Cancer_Decon"    "DA_505"          "Biogem"         
+[25] "MCP-counter"     "Aginome-XMU"     "CIBERSORTx"     
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
-[10] "plain" "plain" "bold"  "plain" "plain" "plain" "plain" "plain" "bold" 
-[19] "plain" "plain" "bold"  "bold"  "plain" "bold"  "plain" "bold"  "plain"
+[10] "plain" "plain" "bold"  "plain" "plain" "plain" "bold"  "bold"  "plain"
+[19] "bold"  "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "bold" 
 ggplot'ing
 [1] "there\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
- [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "IZI"         
- [6] "REGGEN_LAB"   "quanTIseq"    "ICTD"         "Cancer_Decon" "Patrick"     
-[11] "CIBERSORT"    "CCB"          "D3Team"       "Aboensis IV"  "xCell"       
-[16] "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"       "EPIC"        
-[21] "Aginome-XMU"  "MCP-counter" 
- [1] "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "plain"
-[10] "plain" "bold"  "plain" "plain" "plain" "bold"  "plain" "bold"  "plain"
-[19] "plain" "bold"  "plain" "bold" 
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
+ [1] "LeiliLab"     "NPU"          "Tonys Boys"   "Rubbernecks"  "REGGEN_LAB"  
+ [6] "IZI"          "quanTIseq"    "CIBERSORT"    "D3Team"       "ICTD"        
+[11] "Cancer_Decon" "Aboensis IV"  "CCB"          "Patrick"      "xCell"       
+[16] "Biogem"       "CIBERSORTx"   "mitten_TDC19" "DA_505"       "Aginome-XMU" 
+[21] "EPIC"         "MCP-counter" 
+ [1] "plain" "plain" "plain" "plain" "plain" "plain" "bold"  "bold"  "plain"
+[10] "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "bold"  "plain"
+[19] "plain" "plain" "bold"  "bold" 
 ggplot'ing
 [1] "here\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
- [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
- [1] "EPIC"         "xCell"        "mitten_TDC19" "CIBERSORT"    "quanTIseq"   
- [6] "Biogem"       "MCP-counter"  "DA_505"       "CIBERSORTx"   "Aginome-XMU" 
- [1] "bold"  "bold"  "plain" "bold"  "bold"  "plain" "bold"  "plain" "bold" 
-[10] "plain"
+ [6] "MCP-counter"  "quanTIseq"    "xCell"        "EPIC"         "TIMER"       
+[11] "CIBERSORTx"  
+ [1] "EPIC"         "mitten_TDC19" "xCell"        "CIBERSORT"    "quanTIseq"   
+ [6] "DA_505"       "Biogem"       "MCP-counter"  "Aginome-XMU"  "CIBERSORTx"  
+ [1] "bold"  "plain" "bold"  "bold"  "bold"  "plain" "plain" "bold"  "plain"
+[10] "bold" 
 ggplot'ing
 [1] "here\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
- [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
+ [6] "MCP-counter"  "quanTIseq"    "xCell"        "EPIC"         "TIMER"       
+[11] "CIBERSORTx"  
  [1] "quanTIseq"    "CIBERSORT"    "xCell"        "Biogem"       "CIBERSORTx"  
- [6] "mitten_TDC19" "DA_505"       "EPIC"         "Aginome-XMU"  "MCP-counter" 
- [1] "bold"  "bold"  "bold"  "plain" "bold"  "plain" "plain" "bold"  "plain"
+ [6] "mitten_TDC19" "DA_505"       "Aginome-XMU"  "EPIC"         "MCP-counter" 
+ [1] "bold"  "bold"  "bold"  "plain" "bold"  "plain" "plain" "plain" "bold" 
 [10] "bold" 
 ggplot'ing
 [1] "there\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
- [1] "jbkcose"         "LeiliLab"        "NPU"             "TJU"            
- [5] "Tonys Boys"      "NYIT_glomerular" "REGGEN_LAB"      "Rubbernecks"    
- [9] "HM159"           "IZI"             "Patrick"         "ICTD"           
-[13] "Cancer_Decon"    "CCB"             "quanTIseq"       "jdroz"          
-[17] "D3Team"          "Aboensis IV"     "CIBERSORT"       "xCell"          
-[21] "Biogem"          "EPIC"            "CancerSysBio"    "mitten_TDC19"   
-[25] "CIBERSORTx"      "DA_505"          "Aginome-XMU"     "MCP-counter"    
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
+ [1] "jbkcose"         "LeiliLab"        "NPU"             "Tonys Boys"     
+ [5] "TJU"             "REGGEN_LAB"      "NYIT_glomerular" "Rubbernecks"    
+ [9] "HM159"           "IZI"             "jdroz"           "D3Team"         
+[13] "CIBERSORT"       "Patrick"         "quanTIseq"       "ICTD"           
+[17] "Cancer_Decon"    "Aboensis IV"     "CCB"             "xCell"          
+[21] "Biogem"          "mitten_TDC19"    "EPIC"            "CIBERSORTx"     
+[25] "DA_505"          "Aginome-XMU"     "CancerSysBio"    "MCP-counter"    
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
-[10] "plain" "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain"
-[19] "bold"  "bold"  "plain" "bold"  "plain" "plain" "bold"  "plain" "plain"
+[10] "plain" "plain" "plain" "bold"  "plain" "bold"  "plain" "plain" "plain"
+[19] "plain" "bold"  "plain" "plain" "bold"  "bold"  "plain" "plain" "plain"
 [28] "bold" 
 ggplot'ing
 [1] "here\n"
-[1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
-[6] "xCell"      
+[1] "CIBERSORT"   "MCP-counter" "quanTIseq"   "xCell"       "EPIC"       
+[6] "TIMER"       "CIBERSORTx" 
  [1] "Aginome-XMU"  "DA_505"       "mitten_TDC19" "Biogem"       "CIBERSORT"   
- [6] "CIBERSORTx"   "EPIC"         "MCP-counter"  "quanTIseq"    "xCell"       
- [1] "quanTIseq"    "CIBERSORT"    "xCell"        "Biogem"       "EPIC"        
- [6] "mitten_TDC19" "CIBERSORTx"   "DA_505"       "Aginome-XMU"  "MCP-counter" 
- [1] "bold"  "bold"  "bold"  "plain" "bold"  "plain" "bold"  "plain" "plain"
+ [6] "MCP-counter"  "quanTIseq"    "xCell"        "EPIC"         "TIMER"       
+[11] "CIBERSORTx"  
+ [1] "CIBERSORT"    "quanTIseq"    "xCell"        "Biogem"       "mitten_TDC19"
+ [6] "EPIC"         "CIBERSORTx"   "DA_505"       "Aginome-XMU"  "MCP-counter" 
+ [1] "bold"  "bold"  "bold"  "plain" "plain" "bold"  "bold"  "plain" "plain"
 [10] "bold" 
 Bayes factor resultes K <= 3 (or K <= 5) suggests a tie
 Top performer for Round 3 in coarse sub-challenge: Aginome-XMU
@@ -2090,161 +2466,163 @@ Top performer for Round 3 in fine sub-challenge: Aginome-XMU
 14   Tonys Boys     Inf       Inf
 15          NPU     Inf       Inf
 16     LeiliLab     Inf       Inf
-There were 50 or more warnings (use warnings() to see the first 50)
-Round 1: 10 were top performer in at least one of the 17
+Round 1: 9 were top performer in at least one of the 17
 [1] "B"
-   method.name cell.type       cor       diff comparator.corr  comparator
-11        EPIC         B 0.9817921 0.01618365       0.9656084       xCell
-27       xCell         B 0.9656084 0.03888894       0.9267195  CIBERSORTx
-8   CIBERSORTx         B 0.9267195 0.04803116       0.8786883   CIBERSORT
-7    CIBERSORT         B 0.8786883 0.02951438       0.8491739   quanTIseq
-23   quanTIseq         B 0.8491739 0.26225441       0.5869195 MCP-counter
-18 MCP-counter         B 0.5869195 0.00000000       0.0000000            
+    method.name cell.type       cor       diff comparator.corr  comparator
+4  Cancer_Decon         B 0.9121334 0.01157475       0.9005586        EPIC
+12         EPIC         B 0.9005586 0.01742235       0.8831363       xCell
+28        xCell         B 0.8831363 0.04893498       0.8342013  CIBERSORTx
+8    CIBERSORTx         B 0.8342013 0.08432577       0.7498755   CIBERSORT
+7     CIBERSORT         B 0.7498755 0.07794356       0.6719320   quanTIseq
+24    quanTIseq         B 0.6719320 0.15621491       0.5157171 MCP-counter
+19  MCP-counter         B 0.5157171 0.00000000       0.0000000            
 [1] "CD4 T"
-   method.name cell.type       cor        diff comparator.corr  comparator
-27       xCell     CD4 T 0.8606141 0.001215399       0.8593987  CIBERSORTx
-8   CIBERSORTx     CD4 T 0.8593987 0.123999983       0.7353987   CIBERSORT
-7    CIBERSORT     CD4 T 0.7353987 0.038193482       0.6972053   quanTIseq
-23   quanTIseq     CD4 T 0.6972053 0.123301222       0.5739040        EPIC
-11        EPIC     CD4 T 0.5739040          NA              NA MCP-counter
-18 MCP-counter     CD4 T        NA 0.000000000       0.0000000            
+   method.name cell.type       cor       diff comparator.corr  comparator
+28       xCell     CD4 T 0.8421491 0.01715228       0.8249968  CIBERSORTx
+8   CIBERSORTx     CD4 T 0.8249968 0.12018259       0.7048142   CIBERSORT
+7    CIBERSORT     CD4 T 0.7048142 0.07503619       0.6297781   quanTIseq
+24   quanTIseq     CD4 T 0.6297781 0.09717436       0.5326037        EPIC
+12        EPIC     CD4 T 0.5326037         NA              NA MCP-counter
+19 MCP-counter     CD4 T        NA 0.00000000       0.0000000            
 [1] "CD8 T"
-   method.name cell.type       cor        diff comparator.corr  comparator
-23   quanTIseq     CD8 T 0.9361163 0.005607259       0.9305091 MCP-counter
-18 MCP-counter     CD8 T 0.9305091 0.052960891       0.8775482  CIBERSORTx
-8   CIBERSORTx     CD8 T 0.8775482 0.081700181       0.7958480       xCell
-27       xCell     CD8 T 0.7958480 0.015465241       0.7803828   CIBERSORT
-7    CIBERSORT     CD8 T 0.7803828 0.083262810       0.6971199        EPIC
-11        EPIC     CD8 T 0.6971199 0.000000000       0.0000000            
+   method.name cell.type       cor         diff comparator.corr  comparator
+24   quanTIseq     CD8 T 0.8730656 0.0005657319       0.8724998 MCP-counter
+19 MCP-counter     CD8 T 0.8724998 0.0846795175       0.7878203  CIBERSORTx
+8   CIBERSORTx     CD8 T 0.7878203 0.0823368370       0.7054835   CIBERSORT
+7    CIBERSORT     CD8 T 0.7054835 0.0106126440       0.6948708       xCell
+28       xCell     CD8 T 0.6948708 0.1402425119       0.5546283        EPIC
+12        EPIC     CD8 T 0.5546283 0.0000000000       0.0000000            
 [1] "endothelial"
    method.name   cell.type       cor        diff comparator.corr  comparator
-1  Aboensis IV endothelial 0.9819954 0.004652719       0.9773426       xCell
-28       xCell endothelial 0.9773426 0.001354224       0.9759884 MCP-counter
-18 MCP-counter endothelial 0.9759884 0.076848863       0.8991396  CIBERSORTx
-8   CIBERSORTx endothelial 0.8991396          NA              NA   CIBERSORT
+1  Aboensis IV endothelial 0.9006798 0.008355781       0.8923241 MCP-counter
+19 MCP-counter endothelial 0.8923241 0.005794240       0.8865298       xCell
+29       xCell endothelial 0.8865298 0.164399503       0.7221303  CIBERSORTx
+8   CIBERSORTx endothelial 0.7221303          NA              NA   CIBERSORT
 7    CIBERSORT endothelial        NA          NA              NA        EPIC
-11        EPIC endothelial        NA          NA              NA   quanTIseq
-23   quanTIseq endothelial        NA 0.000000000       0.0000000            
+12        EPIC endothelial        NA          NA              NA   quanTIseq
+24   quanTIseq endothelial        NA 0.000000000       0.0000000            
 [1] "fibroblasts"
    method.name   cell.type       cor        diff comparator.corr comparator
-18 MCP-counter fibroblasts 0.9825149 0.009897293       0.9726176 CIBERSORTx
-8   CIBERSORTx fibroblasts 0.9726176 0.360223313       0.6123943      xCell
-28       xCell fibroblasts 0.6123943          NA              NA  CIBERSORT
+19 MCP-counter fibroblasts 0.9370491 0.006987786       0.9300613 CIBERSORTx
+8   CIBERSORTx fibroblasts 0.9300613 0.475237694       0.4548236      xCell
+29       xCell fibroblasts 0.4548236          NA              NA  CIBERSORT
 7    CIBERSORT fibroblasts        NA          NA              NA       EPIC
-11        EPIC fibroblasts        NA          NA              NA  quanTIseq
-23   quanTIseq fibroblasts        NA 0.000000000       0.0000000           
+12        EPIC fibroblasts        NA          NA              NA  quanTIseq
+24   quanTIseq fibroblasts        NA 0.000000000       0.0000000           
 [1] "macrophages"
-   method.name   cell.type       cor       diff comparator.corr  comparator
-2  Aginome-XMU macrophages 0.6557472 0.07560992       0.5801373       xCell
-22       xCell macrophages 0.5801373 0.11337864       0.4667586  CIBERSORTx
-7   CIBERSORTx macrophages 0.4667586 0.01432603       0.4524326   quanTIseq
-18   quanTIseq macrophages 0.4524326 0.05820011       0.3942325   CIBERSORT
-6    CIBERSORT macrophages 0.3942325         NA              NA        EPIC
-10        EPIC macrophages        NA         NA              NA MCP-counter
-14 MCP-counter macrophages        NA 0.00000000       0.0000000            
+   method.name   cell.type       cor        diff comparator.corr  comparator
+10    ensemble macrophages 0.4997450 0.104230277       0.3955147   quanTIseq
+19   quanTIseq macrophages 0.3955147 0.007202348       0.3883123       xCell
+23       xCell macrophages 0.3883123 0.015705078       0.3726072  CIBERSORTx
+7   CIBERSORTx macrophages 0.3726072 0.142958263       0.2296490   CIBERSORT
+6    CIBERSORT macrophages 0.2296490          NA              NA        EPIC
+11        EPIC macrophages        NA          NA              NA MCP-counter
+15 MCP-counter macrophages        NA 0.000000000       0.0000000            
 [1] "memory CD4 T"
    method.name    cell.type       cor       diff comparator.corr  comparator
-9       DA_505 memory CD4 T 0.6208184 0.07688892       0.5439295  CIBERSORTx
-7   CIBERSORTx memory CD4 T 0.5439295 0.02146059       0.5224689   CIBERSORT
-6    CIBERSORT memory CD4 T 0.5224689 0.10530504       0.4171638       xCell
-22       xCell memory CD4 T 0.4171638         NA              NA        EPIC
-10        EPIC memory CD4 T        NA         NA              NA MCP-counter
-14 MCP-counter memory CD4 T        NA         NA              NA   quanTIseq
-18   quanTIseq memory CD4 T        NA 0.00000000       0.0000000            
+9       DA_505 memory CD4 T 0.5085094 0.03889085       0.4696186  CIBERSORTx
+7   CIBERSORTx memory CD4 T 0.4696186 0.02491833       0.4447003   CIBERSORT
+6    CIBERSORT memory CD4 T 0.4447003 0.09530332       0.3493969       xCell
+23       xCell memory CD4 T 0.3493969         NA              NA        EPIC
+11        EPIC memory CD4 T        NA         NA              NA MCP-counter
+15 MCP-counter memory CD4 T        NA         NA              NA   quanTIseq
+19   quanTIseq memory CD4 T        NA 0.00000000       0.0000000            
 [1] "memory CD8 T"
-    method.name    cell.type       cor     diff comparator.corr  comparator
-15 mitten_TDC19 memory CD8 T 0.8233991 0.426718       0.3966811       xCell
-22        xCell memory CD8 T 0.3966811       NA              NA   CIBERSORT
-6     CIBERSORT memory CD8 T        NA       NA              NA  CIBERSORTx
-7    CIBERSORTx memory CD8 T        NA       NA              NA        EPIC
-10         EPIC memory CD8 T        NA       NA              NA MCP-counter
-14  MCP-counter memory CD8 T        NA       NA              NA   quanTIseq
-18    quanTIseq memory CD8 T        NA 0.000000       0.0000000            
+    method.name    cell.type       cor      diff comparator.corr  comparator
+16 mitten_TDC19 memory CD8 T 0.6891547 0.3389872       0.3501675       xCell
+23        xCell memory CD8 T 0.3501675        NA              NA   CIBERSORT
+6     CIBERSORT memory CD8 T        NA        NA              NA  CIBERSORTx
+7    CIBERSORTx memory CD8 T        NA        NA              NA        EPIC
+11         EPIC memory CD8 T        NA        NA              NA MCP-counter
+15  MCP-counter memory CD8 T        NA        NA              NA   quanTIseq
+19    quanTIseq memory CD8 T        NA 0.0000000       0.0000000            
 [1] "monocytes"
-   method.name cell.type       cor        diff comparator.corr  comparator
-8       D3Team monocytes 0.7357983 0.004222461       0.7315758       xCell
-22       xCell monocytes 0.7315758 0.030601144       0.7009747  CIBERSORTx
-7   CIBERSORTx monocytes 0.7009747 0.043264005       0.6577107   CIBERSORT
-6    CIBERSORT monocytes 0.6577107 0.120718913       0.5369918        EPIC
-10        EPIC monocytes 0.5369918 0.087449522       0.4495422   quanTIseq
-18   quanTIseq monocytes 0.4495422          NA              NA MCP-counter
-14 MCP-counter monocytes        NA 0.000000000       0.0000000            
+   method.name cell.type       cor       diff comparator.corr  comparator
+23       xCell monocytes 0.7190324 0.04156097       0.6774714  CIBERSORTx
+7   CIBERSORTx monocytes 0.6774714 0.04148607       0.6359854   CIBERSORT
+6    CIBERSORT monocytes 0.6359854 0.18601937       0.4499660        EPIC
+11        EPIC monocytes 0.4499660 0.06357451       0.3863915   quanTIseq
+19   quanTIseq monocytes 0.3863915         NA              NA MCP-counter
+15 MCP-counter monocytes        NA 0.00000000       0.0000000            
 [1] "monocytic lineage"
    method.name         cell.type       cor        diff comparator.corr
-16       jdroz monocytic lineage 0.9522026 0.050740838       0.9014618
-8   CIBERSORTx monocytic lineage 0.9014618 0.068472797       0.8329890
-7    CIBERSORT monocytic lineage 0.8329890 0.011884838       0.8211042
-18 MCP-counter monocytic lineage 0.8211042 0.001027106       0.8200771
-23   quanTIseq monocytic lineage 0.8200771 0.345867028       0.4742100
-11        EPIC monocytic lineage 0.4742100 0.008522352       0.4656877
-27       xCell monocytic lineage 0.4656877 0.000000000       0.0000000
+10      DA_505 monocytic lineage 0.9090063 0.037850302       0.8711560
+8   CIBERSORTx monocytic lineage 0.8711560 0.079703192       0.7914528
+7    CIBERSORT monocytic lineage 0.7914528 0.004657083       0.7867958
+24   quanTIseq monocytic lineage 0.7867958 0.007681789       0.7791140
+19 MCP-counter monocytic lineage 0.7791140 0.269661602       0.5094524
+12        EPIC monocytic lineage 0.5094524 0.059284993       0.4501674
+28       xCell monocytic lineage 0.4501674 0.000000000       0.0000000
     comparator
-16  CIBERSORTx
+10  CIBERSORTx
 8    CIBERSORT
-7  MCP-counter
-18   quanTIseq
-23        EPIC
-11       xCell
-27            
+7    quanTIseq
+24 MCP-counter
+19        EPIC
+12       xCell
+28            
 [1] "myeloid DCs"
-   method.name   cell.type        cor       diff comparator.corr  comparator
-22       xCell myeloid DCs  0.8016710 0.18343434       0.6182367  CIBERSORTx
-7   CIBERSORTx myeloid DCs  0.6182367 0.08006791       0.5381688   CIBERSORT
-6    CIBERSORT myeloid DCs  0.5381688 0.05083889       0.4873299 MCP-counter
-14 MCP-counter myeloid DCs  0.4873299 0.67094957      -0.1836197   quanTIseq
-18   quanTIseq myeloid DCs -0.1836197         NA              NA        EPIC
-10        EPIC myeloid DCs         NA 0.00000000       0.0000000            
+   method.name   cell.type         cor        diff comparator.corr  comparator
+23       xCell myeloid DCs  0.74500911 0.207231462      0.53777765  CIBERSORTx
+7   CIBERSORTx myeloid DCs  0.53777765 0.004298314      0.53347934 MCP-counter
+15 MCP-counter myeloid DCs  0.53347934 0.087718065      0.44576127   CIBERSORT
+6    CIBERSORT myeloid DCs  0.44576127 0.530567186     -0.08480591   quanTIseq
+19   quanTIseq myeloid DCs -0.08480591          NA              NA        EPIC
+11        EPIC myeloid DCs          NA 0.000000000      0.00000000            
 [1] "naive B"
-   method.name cell.type       cor       diff comparator.corr  comparator
-22       xCell   naive B 0.9590377 0.03342909       0.9256086  CIBERSORTx
-7   CIBERSORTx   naive B 0.9256086 0.04693410       0.8786745   CIBERSORT
-6    CIBERSORT   naive B 0.8786745         NA              NA        EPIC
-10        EPIC   naive B        NA         NA              NA MCP-counter
-14 MCP-counter   naive B        NA         NA              NA   quanTIseq
-18   quanTIseq   naive B        NA 0.00000000       0.0000000            
+    method.name cell.type       cor       diff comparator.corr  comparator
+4  Cancer_Decon   naive B 0.9187334 0.02906299       0.8896704       xCell
+23        xCell   naive B 0.8896704 0.05720674       0.8324637  CIBERSORTx
+7    CIBERSORTx   naive B 0.8324637 0.08258816       0.7498755   CIBERSORT
+6     CIBERSORT   naive B 0.7498755         NA              NA        EPIC
+11         EPIC   naive B        NA         NA              NA MCP-counter
+15  MCP-counter   naive B        NA         NA              NA   quanTIseq
+19    quanTIseq   naive B        NA 0.00000000       0.0000000            
 [1] "naive CD4 T"
    method.name   cell.type       cor       diff comparator.corr  comparator
-9       DA_505 naive CD4 T 0.7735640 0.01400356       0.7595604  CIBERSORTx
-7   CIBERSORTx naive CD4 T 0.7595604 0.08523670       0.6743237   CIBERSORT
-6    CIBERSORT naive CD4 T 0.6743237 0.09851621       0.5758075       xCell
-22       xCell naive CD4 T 0.5758075         NA              NA        EPIC
-10        EPIC naive CD4 T        NA         NA              NA MCP-counter
-14 MCP-counter naive CD4 T        NA         NA              NA   quanTIseq
-18   quanTIseq naive CD4 T        NA 0.00000000       0.0000000            
+9       DA_505 naive CD4 T 0.5719315 0.05106269       0.5208688  CIBERSORTx
+7   CIBERSORTx naive CD4 T 0.5208688 0.07020354       0.4506653   CIBERSORT
+6    CIBERSORT naive CD4 T 0.4506653 0.06282248       0.3878428       xCell
+23       xCell naive CD4 T 0.3878428         NA              NA        EPIC
+11        EPIC naive CD4 T        NA         NA              NA MCP-counter
+15 MCP-counter naive CD4 T        NA         NA              NA   quanTIseq
+19   quanTIseq naive CD4 T        NA 0.00000000       0.0000000            
 [1] "naive CD8 T"
    method.name   cell.type       cor      diff comparator.corr  comparator
-1  Aboensis IV naive CD8 T 0.9102821 0.7579443       0.1523378       xCell
-22       xCell naive CD8 T 0.1523378        NA              NA   CIBERSORT
+9       DA_505 naive CD8 T 0.8206966 0.6151285       0.2055681       xCell
+23       xCell naive CD8 T 0.2055681        NA              NA   CIBERSORT
 6    CIBERSORT naive CD8 T        NA        NA              NA  CIBERSORTx
 7   CIBERSORTx naive CD8 T        NA        NA              NA        EPIC
-10        EPIC naive CD8 T        NA        NA              NA MCP-counter
-14 MCP-counter naive CD8 T        NA        NA              NA   quanTIseq
-18   quanTIseq naive CD8 T        NA 0.0000000       0.0000000            
+11        EPIC naive CD8 T        NA        NA              NA MCP-counter
+15 MCP-counter naive CD8 T        NA        NA              NA   quanTIseq
+19   quanTIseq naive CD8 T        NA 0.0000000       0.0000000            
 [1] "neutrophils"
-   method.name   cell.type       cor        diff comparator.corr comparator
-18 MCP-counter neutrophils 0.9984854 0.010515342       0.9879701  quanTIseq
-23   quanTIseq neutrophils 0.9879701 0.013437965       0.9745321       EPIC
-11        EPIC neutrophils 0.9745321 0.014354419       0.9601777      xCell
-28       xCell neutrophils 0.9601777 0.005740825       0.9544369 CIBERSORTx
-8   CIBERSORTx neutrophils 0.9544369 0.040075564       0.9143613  CIBERSORT
-7    CIBERSORT neutrophils 0.9143613 0.000000000       0.0000000           
+   method.name   cell.type       cor         diff comparator.corr  comparator
+3       Biogem neutrophils 0.9918646 0.0002461604       0.9916184 MCP-counter
+19 MCP-counter neutrophils 0.9916184 0.0207690488       0.9708494   quanTIseq
+24   quanTIseq neutrophils 0.9708494 0.0112718369       0.9595775       xCell
+29       xCell neutrophils 0.9595775 0.0098462309       0.9497313  CIBERSORTx
+8   CIBERSORTx neutrophils 0.9497313 0.0002146401       0.9495167        EPIC
+12        EPIC neutrophils 0.9495167 0.0347537275       0.9147629   CIBERSORT
+7    CIBERSORT neutrophils 0.9147629 0.0000000000       0.0000000            
 [1] "NK"
    method.name cell.type       cor        diff comparator.corr  comparator
-28       xCell        NK 0.9108232 0.018759439       0.8920637        EPIC
-11        EPIC        NK 0.8920637 0.026741932       0.8653218  CIBERSORTx
-8   CIBERSORTx        NK 0.8653218 0.043728905       0.8215929   CIBERSORT
-7    CIBERSORT        NK 0.8215929 0.001102095       0.8204908   quanTIseq
-23   quanTIseq        NK 0.8204908 0.007640890       0.8128499 MCP-counter
-18 MCP-counter        NK 0.8128499 0.000000000       0.0000000            
+11    ensemble        NK 0.8395463 0.029257451       0.8102889  CIBERSORTx
+8   CIBERSORTx        NK 0.8102889 0.016821918       0.7934670       xCell
+29       xCell        NK 0.7934670 0.005716052       0.7877509        EPIC
+12        EPIC        NK 0.7877509 0.052709207       0.7350417 MCP-counter
+19 MCP-counter        NK 0.7350417 0.002222890       0.7328188   quanTIseq
+24   quanTIseq        NK 0.7328188 0.038230490       0.6945883   CIBERSORT
+7    CIBERSORT        NK 0.6945883 0.000000000       0.0000000            
 [1] "Tregs"
    method.name cell.type       cor      diff comparator.corr  comparator
-22       xCell     Tregs 0.8518946 0.1102927       0.7416019   quanTIseq
-18   quanTIseq     Tregs 0.7416019 0.1946526       0.5469493  CIBERSORTx
-7   CIBERSORTx     Tregs 0.5469493 0.1988118       0.3481375   CIBERSORT
-6    CIBERSORT     Tregs 0.3481375        NA              NA        EPIC
-10        EPIC     Tregs        NA        NA              NA MCP-counter
-14 MCP-counter     Tregs        NA 0.0000000       0.0000000            
-Round 1: 10 were top performer in at least one of the 17
+23       xCell     Tregs 0.7777076 0.1351117       0.6425959   quanTIseq
+19   quanTIseq     Tregs 0.6425959 0.2222397       0.4203562  CIBERSORTx
+7   CIBERSORTx     Tregs 0.4203562 0.1691504       0.2512058   CIBERSORT
+6    CIBERSORT     Tregs 0.2512058        NA              NA        EPIC
+11        EPIC     Tregs        NA        NA              NA MCP-counter
+15 MCP-counter     Tregs        NA 0.0000000       0.0000000            
+Round 1: 9 were top performer in at least one of the 17
 Round 1 coarse method count:
    Method Freq
 1     DNN    1
@@ -2325,47 +2703,31 @@ P value adjustment method: BH
 [16] "mitten_TDC19" "Aginome-XMU" 
  [1] "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain" "plain"
 [10] "plain" "plain" "plain" "plain" "bold"  "plain" "plain" "plain"
-Warning messages:
-1: Vectorized input to `element_text()` is not officially supported.
-Results may be unexpected or may change in future versions of ggplot2. 
-2: Vectorized input to `element_text()` is not officially supported.
-Results may be unexpected or may change in future versions of ggplot2. 
+Done with spearman heatmap
 Annotated methods not in results: ensemble
 coarse 21 teams had 39
 fine 16 teams had 33
 [1] "CIBERSORT"   "CIBERSORTx"  "EPIC"        "MCP-counter" "quanTIseq"  
 [6] "TIMER"       "xCell"      
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-Scale for 'y' is already present. Adding another scale for 'y', which will
-replace the existing scale.
-There were 50 or more warnings (use warnings() to see the first 50)
 Exiting successfully
+-------------------------------------------------------------
+SUMNER/WINTER EPILOGUE
+-------------------------------------------------------------
+Job ID: 21379978
+Cluster: slurm_cluster
+User/Group: root/jaxuser
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 32
+CPU Utilized: 00:12:35
+CPU Efficiency: 3.75% of 05:36:00 core-walltime
+Job Wall-clock time: 00:10:30
+Memory Utilized: 2.71 GB
+Memory Efficiency: 0.54% of 500.00 GB
+-------------------------------------------------------------
+       JobID  User   State    CPUTime Exit     MaxRSS        NodeList  Partition                   ReqTRES              Submit               Start                 End    Elapsed 
+------------ ----- ------- ---------- ---- ---------- --------------- ---------- ------------------------- ------------------- ------------------- ------------------- ---------- 
+21379978     whit+ COMPLE+   05:36:00  0:0                  sumner020    compute billing=32,cpu=32,mem=51+ 2023-12-05T19:10:02 2023-12-05T19:10:19 2023-12-05T19:20:49   00:10:30 
+21379978.ba+       COMPLE+   05:36:00  0:0   2773.39M       sumner020                                      2023-12-05T19:10:19 2023-12-05T19:10:19 2023-12-05T19:20:49   00:10:30 
+21379978.ex+       COMPLE+   05:36:00  0:0      1.76M       sumner020                                      2023-12-05T19:10:19 2023-12-05T19:10:19 2023-12-05T19:20:49   00:10:30 
+-------------------------------------------------------------

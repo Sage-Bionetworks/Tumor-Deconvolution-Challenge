@@ -2,17 +2,28 @@ suppressPackageStartupMessages(library(pacman))
 suppressPackageStartupMessages(p_load(synapser))
 suppressPackageStartupMessages(p_load(plyr))
 suppressPackageStartupMessages(p_load(dplyr))
+if(!suppressPackageStartupMessages(require(rlang))) {
+  install.packages("rlang")
+}
+if(!suppressPackageStartupMessages(require(purrr))) {
+  install.packages("purrr")
+}
+suppressPackageStartupMessages(p_load(purrr))
 suppressPackageStartupMessages(p_load(ggplot2))
-suppressPackageStartupMessages(p_load(tidyverse))
-suppressPackageStartupMessages(p_load(ggupset))
-#devtools::install_github("krassowski/complex-upset")
-suppressPackageStartupMessages(p_load(ComplexUpset))
+# suppressPackageStartupMessages(p_load(tidyverse))
+suppressPackageStartupMessages(p_load(ggupset)) # for axis_combmatrix
+#if(!suppressPackageStartupMessages(require(ComplexUpset))) {
+#  devtools::install_github("krassowski/complex-upset")
+#}
+#suppressPackageStartupMessages(p_load(ComplexUpset))
 suppressPackageStartupMessages(p_load(reshape2))
 suppressPackageStartupMessages(p_load(cowplot))
 
 set.seed(1234)
 
 synLogin()
+
+cat(paste0("Run on JAX HPC with conda env r3\n"))
 
 method.name.col <- "method.name"
 
@@ -405,7 +416,6 @@ median.stats <-
                             rmse = median(df$rmse, na.rm=TRUE))
         })
 
-stop("stop")
 
 write.table(file = paste0(figs.dir, "/cancer-validation-dataset-pvals.tsv"), all.stats, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 write.table(file = paste0(figs.dir, "/cancer-validation-median-correlations.tsv"), median.stats, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
@@ -456,15 +466,28 @@ validation.metadata <- validation.metadata[order(validation.metadata$immune.orig
 dataset.levels <- validation.metadata$dataset.name
 label.str.levels <- validation.metadata$Label.str
 
+
 all.scores$dataset.name <- factor(all.scores$dataset.name, levels = dataset.levels)
 all.scores <- all.scores[order(all.scores$dataset.name),]
 all.scores$Label.str <- factor(all.scores$Label.str, levels = label.str.levels)
+
 
 
 sets <- c("BRCA", "CRC", "Biological", "Random", "In Vitro", "In Silico", "Healthy", "Tumor")
 sets <- c("Healthy", "Tumor", "In Vitro", "In Silico", "BRCA", "CRC", "Biological", "Random")
 
 all.scores <- rename.cell.types(all.scores, from.col = "cell.type", to.col = "cell.type")
+
+# Order cell types according to phenotype, rather than alphabetically
+cell.type.levels <- c(
+"B", "naive B", 
+"CD8 T", "naive CD8 T", "memory CD8 T", 
+"CD4 T", "naive CD4 T", "memory CD4 T", "Tregs", 
+"NK", "neutrophils", 
+"monocytic lineage", "monocytes", "myeloid DCs", "macrophages", 
+"endothelial", "fibroblasts")
+
+all.scores$cell.type <- factor(all.scores$cell.type, levels = cell.type.levels)
 g <- ggplot(all.scores, aes(x=Label.str, y=cor.p)) + geom_boxplot() 
 # g <- ggplot(all.scores, aes(x=Label, y=cor.p)) + geom_boxplot() 
 # g <- g + geom_jitter(width=0.1) 
@@ -484,7 +507,7 @@ d <- dev.off()
 
 all.scores.simplified <- all.scores
 all.scores.simplified <- rename.cell.types(all.scores.simplified, from.col = "cell.type", to.col = "cell.type")
-
+all.scores.simplified$dataset.name <- as.character(all.scores.simplified$dataset.name)
 flag <- all.scores.simplified$dataset.name %in% c("Pelka", "Wu")
 all.scores.simplified[!flag,"dataset.name"] <- "Healthy"
 flag <- all.scores.simplified$dataset.name %in% c("Wu")
@@ -574,6 +597,10 @@ print(g)
 d <- dev.off()
 
 all.scores <- all.scores[, !(colnames(all.scores) %in% "Label")]
+
+write.table(file = paste0(figs.dir, "/cancer-validation-dataset-all-scores.tsv"), all.scores, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
+
 all.scores.wu <- subset(all.scores, dataset.name=="Wu")
 all.scores.pelka <- subset(all.scores, dataset.name=="Pelka")
 
@@ -590,6 +617,8 @@ all.scores.cancer.merged <-
 write.table(file = paste0(figs.dir, "/cancer-validation-dataset-wu-scores.tsv"), all.scores.wu, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 write.table(file = paste0(figs.dir, "/cancer-validation-dataset-pelka-scores.tsv"), all.scores.pelka, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 write.table(file = paste0(figs.dir, "/cancer-validation-dataset-wu-pelka-merged-scores.tsv"), all.scores.cancer.merged, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
+titles <- list("wu" = "Wu (BRCA)", "pelka" = "Pelka (CRC)", "all" = "Merged Wu (BRCA) and Pelka (CRC)")
 
 
 results <- list("wu" = all.scores.wu, 

@@ -1,13 +1,15 @@
 Welcome, Brian White!NULL
+Run on JAX HPC with conda env r3
+Excluding methods: TIMER, Aboensis IV
 There were 28 warnings (use warnings() to see them)
 There were 50 or more warnings (use warnings() to see the first 50)
   method.name         cell.type method.cell.type.mean
-1 Aboensis IV           B.cells             0.9652585
-2 Aboensis IV       CD4.T.cells             0.6401138
-3 Aboensis IV       CD8.T.cells             0.8256377
-4 Aboensis IV endothelial.cells             0.9830153
-5 Aboensis IV       fibroblasts             0.8195190
-6 Aboensis IV       macrophages             0.4913030
+1 Aginome-XMU           B.cells             0.9518372
+2 Aginome-XMU       CD4.T.cells             0.7530578
+3 Aginome-XMU       CD8.T.cells             0.8519089
+4 Aginome-XMU endothelial.cells             0.8569890
+5 Aginome-XMU       fibroblasts             0.8456315
+6 Aginome-XMU       macrophages             0.7167267
 [1] "B.cells"
 B.cells: cor.p.method.adj ~ 0 + dataset.name
 [1] "CD4.T.cells"
@@ -42,32 +44,95 @@ neutrophils: cor.p.method.adj ~ 0 + dataset.name
 NK.cells: cor.p.method.adj ~ 0 + dataset.name
 [1] "regulatory.T.cells"
 regulatory.T.cells: cor.p.method.adj ~ 0 + dataset.name
-Warning messages:
-1: In setup_parallel() : No parallel backend registered
-2: executing %dopar% sequentially: no parallel backend registered 
-All Anovas are significant for Wu/Pelka datasets max pvalue: 0.000163840631998484
+There were 19 warnings (use warnings() to see them)
+                  cell.type          variable           Estimate
+45              fibroblasts    dataset.nameAA    0.1167764829422
+56              macrophages    dataset.nameAA -0.314016018707853
+145             neutrophils    dataset.nameAA 0.0872158012749815
+162      regulatory.T.cells    dataset.nameAA  0.155719517826506
+88                monocytes    dataset.nameAB   0.12192575064697
+58              macrophages    dataset.nameAE  0.198610478084114
+69       memory.CD4.T.cells    dataset.nameAE  0.166579482436891
+164      regulatory.T.cells    dataset.nameAE  -0.17054146202925
+59              macrophages    dataset.nameAF  0.159945840253755
+90                monocytes    dataset.nameAF -0.220704166244603
+112 myeloid.dendritic.cells    dataset.nameAF -0.247509575805018
+16              CD4.T.cells   dataset.nameDS1  0.116671884696108
+60              macrophages   dataset.nameDS1 -0.201905699335933
+71       memory.CD4.T.cells   dataset.nameDS1 -0.151094392598475
+135       naive.CD4.T.cells   dataset.nameDS1  0.187069744157131
+39        endothelial.cells   dataset.nameDS2 -0.132353996873863
+61              macrophages   dataset.nameDS2 -0.202738232616498
+92                monocytes   dataset.nameDS2 -0.161343671134174
+103       monocytic.lineage   dataset.nameDS2 -0.130366027214337
+136       naive.CD4.T.cells   dataset.nameDS2 -0.152347612339651
+7                   B.cells   dataset.nameDS3  0.114906556353959
+51              fibroblasts   dataset.nameDS3  0.114531673150647
+62              macrophages   dataset.nameDS3 -0.163767375484787
+93                monocytes   dataset.nameDS3  0.156488421080909
+157                NK.cells   dataset.nameDS3  0.155672364604649
+94                monocytes   dataset.nameDS4  0.296753676696347
+138       naive.CD4.T.cells   dataset.nameDS4  0.149883333833337
+158                NK.cells   dataset.nameDS4  0.101815706213389
+20              CD4.T.cells dataset.namePelka -0.158493857124945
+42        endothelial.cells dataset.namePelka -0.126890228750542
+64              macrophages dataset.namePelka  0.254052047121851
+149             neutrophils dataset.namePelka -0.190906380717109
+159                NK.cells dataset.namePelka -0.215510480383389
+65              macrophages    dataset.nameWu  0.354464308343134
+75       memory.CD4.T.cells    dataset.nameWu  0.248513733103303
+129           naive.B.cells    dataset.nameWu -0.202955083976035
+160                NK.cells    dataset.nameWu  -0.12714891116542
+    two.sided.pval.holm
+45         3.568693e-02
+56         7.435854e-12
+145        3.773297e-02
+162        3.255714e-02
+88         4.513846e-02
+58         6.797901e-05
+69         4.275252e-04
+164        8.680606e-03
+59         5.029419e-03
+90         8.801912e-08
+112        1.423842e-04
+16         4.001401e-02
+60         4.606319e-05
+71         2.796583e-03
+135        1.293496e-06
+39         3.445659e-03
+61         4.186384e-05
+92         4.631088e-04
+103        1.576228e-02
+136        2.463780e-04
+7          1.248276e-02
+51         4.513846e-02
+62         3.428867e-03
+93         8.619673e-04
+157        1.026250e-07
+94         1.889022e-13
+138        3.476669e-04
+158        4.911384e-03
+20         2.005248e-04
+42         6.961386e-03
+64         4.908529e-08
+149        5.627925e-11
+159        2.030829e-14
+65         1.381166e-14
+75         3.402503e-09
+129        1.004084e-04
+160        4.883092e-05
+All Anovas are significant for Wu/Pelka datasets max pvalue: -Inf
 Warning message:
-NAs introduced by coercion 
-
-   dataset.nameAA    dataset.nameAB    dataset.nameAE    dataset.nameAF 
-                2                 2                 1                 3 
-  dataset.nameDS1   dataset.nameDS2   dataset.nameDS3   dataset.nameDS4 
-                2                 6                 1                 1 
-dataset.namePelka    dataset.nameWu 
-                4                 2 
-< table of extent 0 >
-
-   dataset.nameAA    dataset.nameAB    dataset.nameAE    dataset.nameAF 
-                2                 2                 1                 3 
-  dataset.nameDS1   dataset.nameDS2   dataset.nameDS3   dataset.nameDS4 
-                2                 6                 1                 1 
-dataset.namePelka    dataset.nameWu 
-                4                 2 
-           cell.type          variable   Estimate one.sided.pval
-3        CD4.T.cells dataset.namePelka -0.1427426   2.198134e-06
-7  endothelial.cells dataset.namePelka -0.1227323   2.476448e-05
-22     naive.B.cells    dataset.nameWu -0.2029551   1.963598e-07
-23       neutrophils dataset.namePelka -0.1885630   7.361772e-15
-24          NK.cells dataset.namePelka -0.2010097   1.173294e-14
-25          NK.cells    dataset.nameWu -0.1159128   2.493720e-06
+In max(wu.pelka.stats$F.stat.p) :
+  no non-missing arguments to max; returning -Inf
+Warning message:
+Vectorized input to `element_text()` is not officially supported.
+Results may be unexpected or may change in future versions of ggplot2. 
+Warning messages:
+1: Vectorized input to `element_text()` is not officially supported.
+Results may be unexpected or may change in future versions of ggplot2. 
+2: Vectorized input to `element_text()` is not officially supported.
+Results may be unexpected or may change in future versions of ggplot2. 
+3: Vectorized input to `element_text()` is not officially supported.
+Results may be unexpected or may change in future versions of ggplot2. 
 Exiting successfully

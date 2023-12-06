@@ -1,8 +1,16 @@
 
 g.spearman.heatmap.merged.round1 <- plots[["1"]][["spearman.heatmaps"]][["merged"]]
-png(paste0(figs.dir, "fig-validation-round-1-merged-spearman-heatmap.png"), width = 2 * 480)
-print(g.spearman.heatmap.merged.round1)
-d <- dev.off()
+#png(paste0(figs.dir, "fig-validation-round-1-merged-spearman-heatmap.png"), width = 2 * 480)
+#print(g.spearman.heatmap.merged.round1)
+#d <- dev.off()
+
+file.suffix <- paste0(figs.dir, "fig-validation-round-1-merged-spearman-heatmap")
+output.plot(g.spearman.heatmap.merged.round1, file.suffix, plot.types = c("pdf", "png"),
+            pdf.delta.width = 2, pdf.delta.height = 1,
+            png.delta.width = 2, png.delta.height = 1)
+
+
+
 cat("Done with spearman heatmap\n")
 
 ## Count number of participants and submissions
@@ -121,13 +129,20 @@ g.heatmap.merged.round1 <- g.heatmap.merged.round1 + ggtitle("")
 # g <- plot_grid(g.strip.merged.round1.priority, g.heatmap.merged.round1, nrow = 2, labels = "AUTO")
 g <- plot_grid(g.heatmap.merged.round1, g.strip.merged.round1.priority, nrow = 2, labels = "AUTO")
 
-png(paste0(figs.dir, "fig-validation-round-1-strip-and-heatmap-merged-cell-type", ".png"), width = 2 * 480, height = 2 * 480)                    
-print(g)
-d <- dev.off()
+#png(paste0(figs.dir, "fig-validation-round-1-strip-and-heatmap-merged-cell-type", ".png"), width = 2 * 480, height = 2 * 480)                    
+#print(g)
+#d <- dev.off()
 
-pdf(paste0(figs.dir, "fig-validation-round-1-strip-and-heatmap-merged-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)                    
-print(g)
-d <- dev.off()
+#pdf(paste0(figs.dir, "fig-validation-round-1-strip-and-heatmap-merged-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)                    
+#print(g)
+#d <- dev.off()
+
+file.suffix <- paste0(figs.dir, "fig-validation-round-1-strip-and-heatmap-merged-cell-type")
+output.plot(g, file.suffix, plot.types = c("pdf", "png"),
+            pdf.delta.width = 2, pdf.delta.height = 2,
+            png.delta.width = 2, png.delta.height = 2)
+
+
 
 
 cardinal.to.ordinal <- function(num) {
@@ -151,13 +166,19 @@ if(all(c("2", "3") %in% rounds)) {
 
   g <- plot_grid(g.heatmap.merged.round2, g.heatmap.merged.round3, nrow = 2, labels = "AUTO")
 
-  png(paste0(figs.dir, "fig-validation-heatmap-rounds-2-and-3-merged-cell-type", ".png"), width = 2 * 480, height = 2 * 480)                    
-  print(g)
-  d <- dev.off()
+  #png(paste0(figs.dir, "fig-validation-heatmap-rounds-2-and-3-merged-cell-type", ".png"), width = 2 * 480, height = 2 * 480)                    
+  #print(g)
+  #d <- dev.off()
 
-  pdf(paste0(figs.dir, "fig-validation-heatmap-rounds-2-and-3-merged-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)                    
-  print(g)
-  d <- dev.off()
+  #pdf(paste0(figs.dir, "fig-validation-heatmap-rounds-2-and-3-merged-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)                    
+  #print(g)
+  #d <- dev.off()
+
+  file.suffix <- paste0(figs.dir, "fig-validation-heatmap-rounds-2-and-3-merged-cell-type")
+  output.plot(g, file.suffix, plot.types = c("pdf", "png"),
+              pdf.delta.width = 2, pdf.delta.height = 2,
+              png.delta.width = 2, png.delta.height = 2)
+
 }
 
 ## - coarse and fine grained heatmap round 1
@@ -176,13 +197,18 @@ l_ply(plot.rounds,
           g.fine <- g.fine + theme(plot.title = element_text(hjust = 0.5))
           
           g <- plot_grid(g.coarse, g.fine, nrow = 2, labels = "AUTO")
-          png(paste0(figs.dir, "fig-validation-heatmap-round-", rd, "-coarse-and-fine-cell-type", ".png"), width = 2 * 480, height = 2 * 480)
-          print(g)
-          d <- dev.off()
+          #png(paste0(figs.dir, "fig-validation-heatmap-round-", rd, "-coarse-and-fine-cell-type", ".png"), width = 2 * 480, height = 2 * 480)
+          #print(g)
+          #d <- dev.off()
 
-          pdf(paste0(figs.dir, "fig-validation-heatmap-round-", rd, "-coarse-and-fine-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)
-          print(g)
-          d <- dev.off()
+          #pdf(paste0(figs.dir, "fig-validation-heatmap-round-", rd, "-coarse-and-fine-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)
+          #print(g)
+          #d <- dev.off()
+          file.suffix <- paste0(figs.dir, "fig-validation-heatmap-round-", rd, "-coarse-and-fine-cell-type")
+          output.plot(g, file.suffix, plot.types = c("pdf", "png"),
+                      pdf.delta.width = 2, pdf.delta.height = 2,
+                      png.delta.width = 2, png.delta.height = 2)
+
           
       })
 
@@ -200,13 +226,19 @@ l_ply(plot.rounds,
                          plot.title = element_text(hjust = 0.5))
           g <- g + ggtitle(paste0("Merged Coarse- and Fine-Grained (", cardinal.to.ordinal(rd), " Submission)"))
           
-          png(paste0(figs.dir, "fig-validation-round-", rd, "-merged-strip-cell-type", ".png"), width = 2 * 480, height = 2 * 480)
-          print(g)
-          d <- dev.off()
+          #png(paste0(figs.dir, "fig-validation-round-", rd, "-merged-strip-cell-type", ".png"), width = 2 * 480, height = 2 * 480)
+          #print(g)
+          #d <- dev.off()
           
-          pdf(paste0(figs.dir, "fig-validation-round-", rd, "-merged-strip-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)
-          print(g)
-          d <- dev.off()
+          #pdf(paste0(figs.dir, "fig-validation-round-", rd, "-merged-strip-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)
+          #print(g)
+          #d <- dev.off()
+
+          file.suffix <- paste0(figs.dir, "fig-validation-round-", rd, "-merged-strip-cell-type")
+          output.plot(g, file.suffix, plot.types = c("pdf", "png"),
+                      pdf.delta.width = 2, pdf.delta.height = 2,
+                      png.delta.width = 2, png.delta.height = 2)
+
 
       })
 
@@ -231,15 +263,23 @@ l_ply(plot.rounds,
                            plot.title = element_text(hjust = 0.5))
           g2 <- g2 + ggtitle(paste0("Fine-Grained (", cardinal.to.ordinal(rd), " Submission)"))         
 
-          png(paste0(figs.dir, "fig-validation-round-", rd, "-coarse-and-fine-strip-cell-type", ".png"), width = 2 * 480, height = 2 * 480)
           g <- plot_grid(g1, g2, nrow = 2, labels = "AUTO")          
-          print(g)
-          d <- dev.off()
 
-          pdf(paste0(figs.dir, "fig-validation-round-", rd, "-coarse-and-fine-strip-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)
-          g <- plot_grid(g1, g2, nrow = 2, labels = "AUTO")          
-          print(g)
-          d <- dev.off()
+          #png(paste0(figs.dir, "fig-validation-round-", rd, "-coarse-and-fine-strip-cell-type", ".png"), width = 2 * 480, height = 2 * 480)
+          #g <- plot_grid(g1, g2, nrow = 2, labels = "AUTO")          
+          #print(g)
+          #d <- dev.off()
+
+          #pdf(paste0(figs.dir, "fig-validation-round-", rd, "-coarse-and-fine-strip-cell-type", ".pdf"), width = 2 * 7, height = 2 * 7)
+          #g <- plot_grid(g1, g2, nrow = 2, labels = "AUTO")          
+          #print(g)
+          #d <- dev.off()
+
+          file.suffix <- paste0(figs.dir, "fig-validation-round-", rd, "-coarse-and-fine-strip-cell-type")
+          output.plot(g, file.suffix, plot.types = c("pdf", "png"),
+                      pdf.delta.width = 2, pdf.delta.height = 2,
+                      png.delta.width = 2, png.delta.height = 2)
+
           
       })
 
@@ -279,6 +319,22 @@ x.min.spearman.fine <- x.mins[["1"]][["fine"]][["spearman"]]
 x.min.spearman.fine <- shift.limit(x.min.spearman.fine)
 x.max.spearman.fine <- x.maxs[["1"]][["fine"]][["spearman"]] 
 x.max.spearman.fine <- shift.limit(x.max.spearman.fine)
+
+x.min.spearman.fine <- -0.05
+
+# Set the coarse- and fine-grained limits to be the same and for pearson and spearman
+x.min <- min(x.min.pearson.coarse, x.min.spearman.coarse, x.min.pearson.fine, x.min.spearman.fine)
+x.max <- max(x.max.pearson.coarse, x.max.spearman.coarse, x.max.pearson.fine, x.max.spearman.fine)
+
+x.min.pearson.coarse <- x.min
+x.min.pearson.fine <- x.min
+x.min.spearman.coarse <- x.min
+x.min.spearman.fine <- x.min
+
+x.max.pearson.coarse <- x.max
+x.max.pearson.fine <- x.max
+x.max.spearman.coarse <- x.max
+x.max.spearman.fine <- x.max
 
 text.size <- 16
 title.size <- 18
@@ -403,45 +459,61 @@ g.round.fine <- g.round.fine +
 
 g <- plot_grid(g.bootstrap.coarse.round1, g.bootstrap.fine.round1, g.round.coarse, g.round.fine, labels = c("A", "B", "C", "D"))
 
-png(paste0(figs.dir, "fig-validation-round-1-performance-with-submssion", ".png"), width = 2 * 480, height = 2 * 480)
-print(g)
-d <- dev.off()
+#png(paste0(figs.dir, "fig-validation-round-1-performance-with-submssion", ".png"), width = 2 * 480, height = 2 * 480)
+#print(g)
+#d <- dev.off()
 
-pdf(paste0(figs.dir, "fig-validation-round-1-performance-with-submission", ".pdf"), width = 2 * 7, height = 2 * 7)
-print(g)
-d <- dev.off()
+#pdf(paste0(figs.dir, "fig-validation-round-1-performance-with-submission", ".pdf"), width = 2 * 7, height = 2 * 7)
+#print(g)
+#d <- dev.off()
+
+file.suffix <- paste0(figs.dir, "fig-validation-round-1-performance-with-submission")
+output.plot(g, file.suffix, plot.types = c("pdf", "png"),
+            pdf.delta.width = 2, pdf.delta.height = 2,
+            png.delta.width = 2, png.delta.height = 2)
 
 g <- plot_grid(g.bootstrap.coarse.round1, g.bootstrap.fine.round1, labels = c("A", "B"))
 
-png(paste0(figs.dir, "fig-validation-round-1-performance", ".png"), width = 2.5 * 480)
-print(g)
-d <- dev.off()
+#png(paste0(figs.dir, "fig-validation-round-1-performance", ".png"), width = 2.5 * 480)
+#print(g)
+#d <- dev.off()
 
-pdf(paste0(figs.dir, "fig-validation-round-1-performance", ".pdf"), width = 2.5 * 7)
-print(g)
-d <- dev.off()
+#pdf(paste0(figs.dir, "fig-validation-round-1-performance", ".pdf"), width = 2.5 * 7)
+#print(g)
+#d <- dev.off()
+
+file.suffix <- paste0(figs.dir, "fig-validation-round-1-performance")
+output.plot(g, file.suffix, plot.types = c("pdf", "png"),
+            pdf.delta.width = 2.5, pdf.delta.height = 1,
+            png.delta.width = 2.5, png.delta.height = 1)
+
 
 g <- plot_grid(g.round.coarse, g.round.fine, labels = c("A", "B"))
 
-png(paste0(figs.dir, "fig-validation-performance-across-rounds", ".png"), width = 2 * 480)
-print(g)
-d <- dev.off()
+#png(paste0(figs.dir, "fig-validation-performance-across-rounds", ".png"), width = 2 * 480)
+#print(g)
+#d <- dev.off()
 
-pdf(paste0(figs.dir, "fig-validation-performance-across-rounds", ".pdf"), width = 2 * 7)
-print(g)
-d <- dev.off()
+#pdf(paste0(figs.dir, "fig-validation-performance-across-rounds", ".pdf"), width = 2 * 7)
+#print(g)
+#d <- dev.off()
+
+file.suffix <- paste0(figs.dir, "fig-validation-performance-across-rounds")
+output.plot(g, file.suffix, plot.types = c("pdf", "png"),
+            pdf.delta.width = 2, pdf.delta.height = 1,
+            png.delta.width = 2, png.delta.height = 1)
 
 
 
-x.all.min.pearson.coarse <- min(unlist(lapply(x.mins, function(lst) lst[["coarse"]][["pearson"]])))
-x.all.max.pearson.coarse <- min(unlist(lapply(x.maxs, function(lst) lst[["coarse"]][["pearson"]])))
-x.all.min.spearman.coarse <- min(unlist(lapply(x.mins, function(lst) lst[["coarse"]][["spearman"]])))
-x.all.max.spearman.coarse <- min(unlist(lapply(x.maxs, function(lst) lst[["coarse"]][["spearman"]])))
+#x.all.min.pearson.coarse <- min(unlist(lapply(x.mins, function(lst) lst[["coarse"]][["pearson"]])))
+#x.all.max.pearson.coarse <- min(unlist(lapply(x.maxs, function(lst) lst[["coarse"]][["pearson"]])))
+#x.all.min.spearman.coarse <- min(unlist(lapply(x.mins, function(lst) lst[["coarse"]][["spearman"]])))
+#x.all.max.spearman.coarse <- min(unlist(lapply(x.maxs, function(lst) lst[["coarse"]][["spearman"]])))
 
-x.all.min.pearson.fine <- min(unlist(lapply(x.mins, function(lst) lst[["fine"]][["pearson"]])))
-x.all.max.pearson.fine <- min(unlist(lapply(x.maxs, function(lst) lst[["fine"]][["pearson"]])))
-x.all.min.spearman.fine <- min(unlist(lapply(x.mins, function(lst) lst[["fine"]][["spearman"]])))
-x.all.max.spearman.fine <- min(unlist(lapply(x.maxs, function(lst) lst[["fine"]][["spearman"]])))
+#x.all.min.pearson.fine <- min(unlist(lapply(x.mins, function(lst) lst[["fine"]][["pearson"]])))
+#x.all.max.pearson.fine <- min(unlist(lapply(x.maxs, function(lst) lst[["fine"]][["pearson"]])))
+#x.all.min.spearman.fine <- min(unlist(lapply(x.mins, function(lst) lst[["fine"]][["spearman"]])))
+#x.all.max.spearman.fine <- min(unlist(lapply(x.maxs, function(lst) lst[["fine"]][["spearman"]])))
 
 make.barplots <- function(plots, round,
                           x.min.pearson.coarse, x.max.pearson.coarse,
@@ -511,7 +583,7 @@ make.barplots <- function(plots, round,
 }
 
 
-x.min.spearman.fine <- -0.05
+#x.min.spearman.fine <- -0.05
 g1.barplots <- make.barplots(plots, "1",
                              x.min.pearson.coarse, x.max.pearson.coarse, x.min.pearson.fine, x.max.pearson.fine,                          
                              x.min.spearman.coarse, x.max.spearman.coarse, x.min.spearman.fine, x.max.spearman.fine)
@@ -533,10 +605,15 @@ g <- plot_grid(
     g2.barplots$coarse, g2.barplots$fine,
     g3.barplots$coarse, g3.barplots$fine, labels = "AUTO", nrow = 3)
 
-png(paste0(figs.dir, "fig-validation-all-performance", ".png"), width = 2 * 480, height = 3 * 480)
-print(g)
-d <- dev.off()
+#png(paste0(figs.dir, "fig-validation-all-performance", ".png"), width = 2 * 480, height = 3 * 480)
+#print(g)
+#d <- dev.off()
 
-pdf(paste0(figs.dir, "fig-validation-all-performance", ".pdf"), width = 2 * 7, height = 3 * 7)
-print(g)
-d <- dev.off()
+#pdf(paste0(figs.dir, "fig-validation-all-performance", ".pdf"), width = 2 * 7, height = 3 * 7)
+#print(g)
+#d <- dev.off()
+
+file.suffix <- paste0(figs.dir, "fig-validation-all-performance")
+output.plot(g, file.suffix, plot.types = c("pdf", "png"),
+            pdf.delta.width = 2, pdf.delta.height = 3,
+            png.delta.width = 2, png.delta.height = 3)

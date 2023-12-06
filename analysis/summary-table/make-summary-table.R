@@ -3,12 +3,11 @@ suppressPackageStartupMessages(p_load(synapser))
 suppressPackageStartupMessages(p_load(plyr))
 suppressPackageStartupMessages(p_load(dplyr))
 suppressPackageStartupMessages(p_load(ggplot2))
-suppressPackageStartupMessages(p_load(tidyverse))
-suppressPackageStartupMessages(p_load(ggupset))
-#devtools::install_github("krassowski/complex-upset")
-suppressPackageStartupMessages(p_load(ComplexUpset))
+# suppressPackageStartupMessages(p_load(tidyverse))
 suppressPackageStartupMessages(p_load(reshape2))
 suppressPackageStartupMessages(p_load(cowplot))
+# devtools::install_github("r-lib/xml2")
+suppressPackageStartupMessages(p_load(xml2))
 suppressPackageStartupMessages(p_load(ComplexHeatmap))
 suppressPackageStartupMessages(p_load(xlsx))
 
@@ -28,7 +27,10 @@ dir.create(figs.dir, showWarnings = FALSE)
 
 ## Read in the healthy and cancer predictions (created by score-cancer-datasets.R)
 all.res <- read.table("../cancer-validation/figs/cancer-validation-dataset-all-scores.tsv", sep="\t", header=TRUE)
-all.res <- all.res[!(all.res[, method.name.col] %in% c("TIMER", "timer")),]
+
+methods.to.exclude <- c("TIMER", "timer")
+all.res <- all.res[!(all.res[, method.name.col] %in% methods.to.exclude),]
+all.res <- correct.ictd.and.cancer.deconv(all.res, col = method.name.col)
 
 fill.in.nas <- function(mat, row.name, col.name, value.var) {
   ret <- melt(acast(mat, as.formula(paste0(row.name, "~", col.name)), value.var = value.var))
@@ -58,7 +60,9 @@ all.res <-
 
 # combine all the challenge validation datasets into a 'Healthy' dataset by taking the mean
 flag <- all.res$dataset.name %in% c("Pelka", "Wu")
+all.res$dataset.name <- as.character(all.res$dataset.name)
 all.res[!flag,"dataset.name"] <- "Healthy"
+
 #flag <- all.res$dataset.name %in% c("Wu")
 #all.res[flag,"dataset.name"] <- "Wu (BRCA)"
 #flag <- all.res$dataset.name %in% c("Pelka")
@@ -89,7 +93,6 @@ n.datasets.by.cell.type <-
         .fun = function(df) data.frame(n.datasets = nrow(df)))
 cell.types.to.exclude <- as.character(subset(n.datasets.by.cell.type, n.datasets==1)$cell.type)
 
-
 sd.all.res <- 
   ddply(subset(all.res, !(cell.type %in% cell.types.to.exclude)), .variables = c("method.name", "cell.type"),
         .fun = function(df) {
@@ -117,6 +120,7 @@ tbls <-
           file <- synGet(synId, downloadFile = TRUE)$path
           readRDS(file)
         })
+
 coarse.spikein <- subset(tbls[["sensitivity-analysis-results"]][["1"]]$res.matrices$coarse, mixture.type == "Random")
 fine.spikein <- subset(tbls[["sensitivity-analysis-results"]][["1"]]$res.matrices$fine, mixture.type == "Random")
 coarse.spikein$lod <- coarse.spikein$min.diff.prop * 100
@@ -143,7 +147,7 @@ all.spikein <-
   ddply(all.spikein,
         .variables = c("cell.type"),
         .fun = function(df) {
-          print(df[1,"cell.type"])
+          # print(df[1,"cell.type"])
           bin.value(df, "lod", higher.is.better = FALSE, nbins = nbins)
         })
 
@@ -211,6 +215,25 @@ for(nm in names(raw.bins)) {
   write.table(file = paste0(figs.dir, "/", "binned-score-", nm, ".tsv"), raw.bins[[nm]], sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 }
 
+all.bin.cutoffs <- 
+  ldply(raw.bins, .fun = function(df) {
+    cols <- c("cell.type", "cut_bin", "bin_number")
+    ret <- df[, cols[cols %in% colnames(df)]]
+    if(!("cell.type" %in% colnames(df))) {
+      ret <- cbind(cell.type = "NA", ret)
+    }
+    ret <- ret[, cols]
+    unique(ret)
+  })
+colnames(all.bin.cutoffs)[1] <- "evaluation"
+#all.bin.cutoffs <- all.bin.cutoffs[order(all.bin.cutoffs[, c("evaluation", "cell.type", "bin_number")]),]
+o <- order(all.bin.cutoffs$evaluation, all.bin.cutoffs$cell.type, all.bin.cutoffs$bin_number)
+all.bin.cutoffs <- all.bin.cutoffs[o, ]
+
+write.table(file = paste0(figs.dir, "/", "all-bin-limits.tsv"), all.bin.cutoffs, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
+
+                                                             
 nms <- names(raw.bins)
 names(nms) <- nms
 bin.mats <-
@@ -231,18 +254,71 @@ bin.mats <-
 
 all.bins <- Reduce(function(...) merge(..., all=TRUE, by="method.name"), bin.mats)
 rownames(all.bins) <- all.bins$method.name
-all.bins.ignore.nas <- all.bins
 all.bins[is.na(all.bins)] <- na.bin
-all.bins.ignore.nas[is.na(all.bins.ignore.nas)] <- 0
+
+cell.type.cols <- grep(colnames(all.bins), pattern="lod|mean|sd|spillover", value=TRUE)
+only.do.cell.type.cols <- FALSE
+if(only.do.cell.type.cols) {
+  all.bins <- all.bins[, c("method.name", cell.type.cols)]
+}
+
+# Create a table where NAs in any _cell type_ column are set to zero (i.e., will not)
+# contribute to score. 
+# First, do this for all methods
+all.bins.ignore.nas <- all.bins
+# Second, do this only for comparator methods
+comparators <- get.comparators.cap()
+comparators <- sort(comparators)
+all.bins.ignore.nas.comparator <- all.bins
+#all.bins.ignore.nas[is.na(all.bins.ignore.nas)] <- 0
+# Only ignore NAs in the cell type-specific columns
+#stop("stop")
+for(col in cell.type.cols) {
+  flag <- all.bins.ignore.nas[,col] == na.bin
+  all.bins.ignore.nas[flag,col] <- 0
+  flag <- (all.bins.ignore.nas.comparator[,col] == na.bin) & (rownames(all.bins.ignore.nas.comparator) %in% comparators)
+  all.bins.ignore.nas.comparator[flag,col] <- 0
+}
+# Also ignore NAs in the cross-sample comparison if the method would otherwise be comparable
+# across samples, but was not because not all cell types were reported.
+# But only do this for comparator methods. The logic is that contributed/participant methods
+# had the opportunity to retrain on all cell types.
+# Note the logical: NAs occur because not all cell types are reported and/or the method is scored-based.
+# Hence, if the method is not scored-based, we know the NA results from not all cell types being reported, and we
+# can ignore the NA
+method.annos <- get.method.annotations()
+method.annos <- unique(subset(method.annos, is.na(submission) | (submission==1))[, c("method.name", "output.type")])
+#method.annos <- subset(method.annos, method.name %in% comparators)
+#rownames(method.annos) <- method.annos$method.name
+#stopifnot(!any(duplicated(method.annos$method.name)))
+score.based.methods <- unique(subset(method.annos, output.type=="score")$method.name)
+for(col in c("sample_coarse", "sample_fine")) {
+  flag <- (all.bins.ignore.nas[,col] == na.bin) & !(rownames(all.bins.ignore.nas) %in% score.based.methods) & (rownames(all.bins.ignore.nas) %in% comparators)
+  all.bins.ignore.nas[flag,col] <- 0
+  flag <- (all.bins.ignore.nas.comparator[,col] == na.bin) & !(rownames(all.bins.ignore.nas.comparator) %in% score.based.methods) & (rownames(all.bins.ignore.nas) %in% comparators)
+  all.bins.ignore.nas.comparator[flag,col] <- 0
+}
+for(col in colnames(all.bins.ignore.nas)) { if(any(all.bins.ignore.nas[,col] == na.bin)) { print(col)}}
+for(col in colnames(all.bins.ignore.nas.comparator)) { if(any(all.bins.ignore.nas.comparator[,col] == na.bin)) { print(col)}}
+#all.bins.ignore.nas[all.bins.ignore.nas[,cell.type.cols] == na.bin, cell.type.cols] <- 0
+
+
 all.bins <- all.bins[, !(colnames(all.bins) == "method.name")]
 all.bins.ignore.nas <- all.bins.ignore.nas[, !(colnames(all.bins.ignore.nas) == "method.name")]
+all.bins.ignore.nas.comparator <- all.bins.ignore.nas.comparator[, !(colnames(all.bins.ignore.nas.comparator) == "method.name")]
+
+
 
 sorted.method.scores <- sort(rowSums(all.bins))
-sorted.method.scores.ignore.nas <- sort(rowSums(all.bins.ignore.nas))
+sorted.method.scores.ignore.nas <- sort(rowSums(all.bins.ignore.nas)/rowSums(all.bins.ignore.nas > 0))
+sorted.method.scores.ignore.nas.comparator <- sort(rowSums(all.bins.ignore.nas.comparator)/rowSums(all.bins.ignore.nas.comparator > 0))
 
-sorted.scores <- sorted.method.scores.ignore.nas
+sorted.scores <- sorted.method.scores
+
+sorted.methods.alpha <- sorted.scores[order(names(sorted.scores))]
 
 
+# stop("stop")
 
 cell.type.cols <- unlist(lapply(colnames(all.bins), function(str) strsplit(str, split="_")[[1]][1]))
 coarse.cell.types <- gsub(coarse.cell.types, pattern="\\.", replacement = " ")
@@ -254,16 +330,35 @@ coarse.cols <- cell.type.cols %in% coarse.cell.types
 fine.cols <- !(cell.type.cols %in% coarse.cell.types) & !(grepl(cell.type.cols, pattern="sample|timing"))
 
 coarse.cell.type.cols <- cell.type.cols[coarse.cols]
-coarse.bins <- all.bins[, coarse.cols]
-coarse.bins <- coarse.bins[, order(coarse.cell.type.cols)]
 coarse.analysis.cols <- unlist(lapply(colnames(coarse.bins), function(str) strsplit(str, split="_")[[1]][2]))
 
 fine.cell.type.cols <- cell.type.cols[fine.cols]
-fine.bins <- all.bins[, fine.cols]
-fine.bins <- fine.bins[, order(fine.cell.type.cols)]
 fine.analysis.cols <- unlist(lapply(colnames(fine.bins), function(str) strsplit(str, split="_")[[1]][2]))
 
-all.bins <- cbind(coarse.bins, fine.bins, all.bins[, c("sample_coarse", "sample_fine", "timing_coarse", "timing_fine")])
+coarse.bins <- all.bins[, coarse.cols]
+coarse.bins <- coarse.bins[, order(coarse.cell.type.cols)]
+fine.bins <- all.bins[, fine.cols]
+fine.bins <- fine.bins[, order(fine.cell.type.cols)]
+
+coarse.bins.ignore.nas <- all.bins.ignore.nas[, coarse.cols]
+coarse.bins.ignore.nas <- coarse.bins.ignore.nas[, order(coarse.cell.type.cols)]
+fine.bins.ignore.nas <- all.bins.ignore.nas[, fine.cols]
+fine.bins.ignore.nas <- fine.bins.ignore.nas[, order(fine.cell.type.cols)]
+
+coarse.bins.ignore.nas.comparator <- all.bins.ignore.nas.comparator[, coarse.cols]
+coarse.bins.ignore.nas.comparator <- coarse.bins.ignore.nas.comparator[, order(coarse.cell.type.cols)]
+fine.bins.ignore.nas.comparator <- all.bins.ignore.nas.comparator[, fine.cols]
+fine.bins.ignore.nas.comparator <- fine.bins.ignore.nas.comparator[, order(fine.cell.type.cols)]
+
+if(only.do.cell.type.cols) {
+  all.bins <- cbind(coarse.bins, fine.bins)
+  all.bins.ignore.nas <- cbind(coarse.bins.ignore.nas, fine.bins.ignore.nas)
+  all.bins.ignore.nas.comparator <- cbind(coarse.bins.ignore.nas.comparator, fine.bins.ignore.nas.comparator)
+} else {
+  all.bins <- cbind(coarse.bins, fine.bins, all.bins[, c("sample_coarse", "sample_fine", "timing_coarse", "timing_fine")])
+  all.bins.ignore.nas <- cbind(coarse.bins.ignore.nas, fine.bins.ignore.nas, all.bins.ignore.nas[, c("sample_coarse", "sample_fine", "timing_coarse", "timing_fine")])
+  all.bins.ignore.nas.comparator <- cbind(coarse.bins.ignore.nas.comparator, fine.bins.ignore.nas.comparator, all.bins.ignore.nas.comparator[, c("sample_coarse", "sample_fine", "timing_coarse", "timing_fine")])
+}
 cell.type.cols <- unlist(lapply(colnames(all.bins), function(str) strsplit(str, split="_")[[1]][1]))
 cell.type.cols <- gsub(cell.type.cols, pattern="\\.", replacement = " ")
 cell.type.cols[grepl(x=cell.type.cols, pattern="sample")] <- "Sample-level"
@@ -277,20 +372,58 @@ analysis.cols[analysis.cols == "spillover"] <- "Spillover"
 analysis.cols[analysis.cols == "coarse"] <- "Coarse"
 analysis.cols[analysis.cols == "fine"] <- "Fine"
 
+comparators <- comparators[comparators %in% names(sorted.scores)]
+
+num.nas.per.method <- rowSums(all.bins==5)
+# Note that some fine-grained methods do not report scores that are comparable
+# across cell types. This will lead to NAs.
+# Also, some crashed when we ran across the cancer data sets.
+#fine.grained.methods <- names(num.nas.per.method[num.nas.per.method<15])
+#fine.grained.methods <- fine.grained.methods[!(fine.grained.methods %in% comparators)]
+
+#coarse.grained.methods <- rownames(all.bins)
+#coarse.grained.methods <- coarse.grained.methods[!(coarse.grained.methods %in% c(comparators, fine.grained.methods))]
+
+num.nas.per.method.fine <- rowSums(fine.bins==5)
+coarse.grained.methods <- names(num.nas.per.method.fine[num.nas.per.method.fine == ncol(fine.bins)])
+fine.grained.methods <- fine.grained.methods[!(fine.grained.methods %in% c(comparators, coarse.grained.methods))]
+
+fine.grained.methods <- sort(fine.grained.methods)
+coarse.grained.methods <- sort(coarse.grained.methods)
+sorted.methods.by.class.alpha <- sorted.scores[c(comparators, fine.grained.methods, coarse.grained.methods)]
+
+
+
 cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 colors = c(cbbPalette[2:5], "#000000")
 library(RColorBrewer)
-colors <- c(rev(brewer.pal(n=4, name='RdBu')), "#000000")
-names(colors) <- as.character(1:5)
 cat.colors <- cbbPalette[2:(1+length(unique(analysis.cols)))]
 cat.names <- c("Mean", "SD", "LoD", "Spillover", "Coarse", "Fine")
+if(only.do.cell.type.cols) {
+  cat.names <- c("Mean", "SD", "LoD", "Spillover")
+}
 names(cat.colors) <- cat.names
-row.labels <- rownames(all.bins[names(sorted.scores),])
-flag <- row.labels %in% get.comparators.cap()
-# Make the comparator methods bold
-row.labels[flag] <- paste0("**", row.labels[flag], "**")
-htmp <-
-  Heatmap(all.bins[names(sorted.scores),], cluster_rows = FALSE, cluster_columns = FALSE, col = colors,
+
+name.order <- names(sorted.scores)
+
+make.heatmap <- function(data, name.order) {
+  row.labels <- rownames(data[name.order,])
+  flag <- row.labels %in% get.comparators.cap()
+  # Make the comparator methods bold
+  row.labels[flag] <- paste0("**", row.labels[flag], "**")
+  
+  colors <- c(rev(brewer.pal(n=4, name='RdBu')), "#000000")
+  names(colors) <- as.character(1:5)
+  
+  if(any(data == 0)) {
+    colors <- c(colors, "#FFFFFF")
+    data[data == 0] <- "NA"
+    names(colors) <- c(as.character(1:5),"NA")
+    print(colors)
+  }
+  
+  htmp <-
+  Heatmap(data[name.order,], cluster_rows = FALSE, cluster_columns = FALSE, col = colors,
           name = "Bin",
           column_split = factor(cell.type.cols, levels = unique(cell.type.cols)), column_title_rot = 45,
           top_annotation = HeatmapAnnotation(Category=factor(analysis.cols, levels = cat.names), 
@@ -302,32 +435,45 @@ htmp <-
           column_names_gp = grid::gpar(fontsize = 8),
           row_names_gp = grid::gpar(fontsize = 8),
           row_labels = gt_render(row.labels))
-png(paste0(figs.dir, "/", "binned-score-heatmap.png"))
-draw(htmp, merge_legend=TRUE)
-d <- dev.off()
+}
 
-pdf(paste0(figs.dir, "/", "binned-score-heatmap.pdf"))
-draw(htmp, merge_legend=TRUE)
-d <- dev.off()
+all.sorted.scores <- list("score-sorted-ignore-nas" = sorted.method.scores.ignore.nas,
+            "score-sorted-ignore-nas-comparator" = sorted.method.scores.ignore.nas.comparator,
+            "score-sorted" = sorted.scores,
+            "alpha" = sorted.methods.alpha,
+            "alpha-by-class" = sorted.methods.by.class.alpha)
 
-cols <- colnames(all.bins)
-tot.df <- data.frame("total.score" = as.numeric(sorted.method.scores))
-rownames(tot.df) <- names(sorted.method.scores)
-all.bins.with.tot.scores <- merge(all.bins, tot.df, by = "row.names")
-colnames(all.bins.with.tot.scores)[1] <- "method.name"
-all.bins.with.tot.scores <- all.bins.with.tot.scores[order(all.bins.with.tot.scores$total.score, decreasing=FALSE),]
+all.data <- list("score-sorted-ignore-nas" = all.bins.ignore.nas,
+                          "score-sorted-ignore-nas-comparator" = all.bins.ignore.nas.comparator,
+                          "score-sorted" = all.bins,
+                          "alpha" = all.bins,
+                          "alpha-by-class" = all.bins)
 
-write.table(file = paste0(figs.dir, "/", "binned-scores.tsv"), all.bins.with.tot.scores, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
-cols <- colnames(all.bins)
-tot.df <- data.frame("total.score" = as.numeric(sorted.method.scores.ignore.nas))
-rownames(tot.df) <- names(sorted.method.scores.ignore.nas)
-all.bins.with.tot.scores <- merge(all.bins, tot.df, by = "row.names")
-colnames(all.bins.with.tot.scores)[1] <- "method.name"
-all.bins.with.tot.scores <- all.bins.with.tot.scores[order(all.bins.with.tot.scores$total.score, decreasing=FALSE),]
+for(nm in names(all.sorted.scores)) {
+  htmp <- make.heatmap(all.data[[nm]], names(all.sorted.scores[[nm]]))
 
-write.table(file = paste0(figs.dir, "/", "binned-scores-ignore-nas.tsv"), all.bins.with.tot.scores, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+  png(paste0(figs.dir, "/", "binned-score-heatmap-", nm, ".png"))
+  draw(htmp, merge_legend=TRUE)
+  d <- dev.off()
+
+  pdf(paste0(figs.dir, "/", "binned-score-heatmap-", nm, ".pdf"))
+  draw(htmp, merge_legend=TRUE)
+  d <- dev.off()
+  
+  cols <- colnames(all.bins)
+  tot.df <- data.frame("total.score" = as.numeric(all.sorted.scores[[nm]]))
+  rownames(tot.df) <- names(all.sorted.scores[[nm]])
+  all.bins.with.tot.scores <- merge(all.bins, tot.df, by = "row.names")
+  colnames(all.bins.with.tot.scores)[1] <- "method.name"
+  all.bins.with.tot.scores <- all.bins.with.tot.scores[order(all.bins.with.tot.scores$total.score, decreasing=FALSE),]
+  
+  write.table(file = paste0(figs.dir, "/", "binned-scores-", nm, ".tsv"), all.bins.with.tot.scores, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+  
+}
+
 
 cat(paste("Exiting successfully\n"))
+stop("stop")
 q(status=0)
 
