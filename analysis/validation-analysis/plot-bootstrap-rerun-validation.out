@@ -2713,21 +2713,21 @@ Exiting successfully
 -------------------------------------------------------------
 SUMNER/WINTER EPILOGUE
 -------------------------------------------------------------
-Job ID: 21381795
+Job ID: 21381807
 Cluster: slurm_cluster
 User/Group: root/jaxuser
 State: COMPLETED (exit code 0)
 Nodes: 1
 Cores per node: 32
-CPU Utilized: 00:13:22
-CPU Efficiency: 3.64% of 06:06:56 core-walltime
-Job Wall-clock time: 00:11:28
-Memory Utilized: 2.70 GB
-Memory Efficiency: 0.54% of 500.00 GB
+CPU Utilized: 00:13:08
+CPU Efficiency: 3.62% of 06:02:40 core-walltime
+Job Wall-clock time: 00:11:20
+Memory Utilized: 2.75 GB
+Memory Efficiency: 0.55% of 500.00 GB
 -------------------------------------------------------------
        JobID  User   State    CPUTime Exit     MaxRSS        NodeList  Partition                   ReqTRES              Submit               Start                 End    Elapsed 
 ------------ ----- ------- ---------- ---- ---------- --------------- ---------- ------------------------- ------------------- ------------------- ------------------- ---------- 
-21381795     whit+ COMPLE+   06:06:56  0:0                  sumner105    compute billing=32,cpu=32,mem=51+ 2023-12-06T12:53:05 2023-12-06T12:53:06 2023-12-06T13:04:34   00:11:28 
-21381795.ba+       COMPLE+   06:06:56  0:0   2768.73M       sumner105                                      2023-12-06T12:53:06 2023-12-06T12:53:06 2023-12-06T13:04:34   00:11:28 
-21381795.ex+       COMPLE+   06:07:28  0:0      1.58M       sumner105                                      2023-12-06T12:53:06 2023-12-06T12:53:06 2023-12-06T13:04:35   00:11:29 
+21381807     whit+ COMPLE+   06:02:40  0:0                  sumner105    compute billing=32,cpu=32,mem=51+ 2023-12-06T13:13:45 2023-12-06T13:13:45 2023-12-06T13:25:05   00:11:20 
+21381807.ba+       COMPLE+   06:02:40  0:0   2811.11M       sumner105                                      2023-12-06T13:13:45 2023-12-06T13:13:45 2023-12-06T13:25:05   00:11:20 
+21381807.ex+       COMPLE+   06:03:12  0:0      1.76M       sumner105                                      2023-12-06T13:13:45 2023-12-06T13:13:45 2023-12-06T13:25:06   00:11:21 
 -------------------------------------------------------------

@@ -874,7 +874,7 @@ print(exclude.method)
                           flag <- df[, method.name.col] %in% priority.methods
                           ret <- plot.strip.plots(df[flag, ], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor",
                                                 method.levels = method.levels[[lvl.entry]],
-                                                cell.type.levels = cell.type.levels[[lvl.entry]],
+                                                cell.type.levels = rev(cell.type.levels[[lvl.entry]]),
                                                 label = "Pearson Correlation")
                           g <- ret[["g"]]
                           df <- ret[["df"]]
@@ -891,7 +891,7 @@ print(y.bold.labels)
                           flag <- !(df[, method.name.col] %in% c("consensus rank", "ensemble"))
                           ret <- plot.strip.plots(df[flag,], id.var = method.name.col, cell.type.var = cell.type.col, var = "cor",
                                                 method.levels = method.levels[[lvl.entry]],
-                                                cell.type.levels = cell.type.levels[[lvl.entry]],
+                                                cell.type.levels = rev(cell.type.levels[[lvl.entry]]),
                                                 label = "Pearson Correlation")
                           g <- ret[["g"]]
                           df <- ret[["df"]]
