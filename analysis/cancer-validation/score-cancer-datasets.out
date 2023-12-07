@@ -125,6 +125,12 @@ All Anovas are significant for Wu/Pelka datasets max pvalue: -Inf
 Warning message:
 In max(wu.pelka.stats$F.stat.p) :
   no non-missing arguments to max; returning -Inf
+ [1] "endothelial"       "B"                 "neutrophils"      
+ [4] "fibroblasts"       "monocytic lineage" "CD8 T"            
+ [7] "naive B"           "NK"                "naive CD8 T"      
+[10] "Tregs"             "CD4 T"             "memory CD8 T"     
+[13] "myeloid DCs"       "naive CD4 T"       "monocytes"        
+[16] "macrophages"       "memory CD4 T"     
 Warning message:
 Vectorized input to `element_text()` is not officially supported.
 Results may be unexpected or may change in future versions of ggplot2. 

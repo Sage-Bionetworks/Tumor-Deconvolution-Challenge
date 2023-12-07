@@ -506,6 +506,7 @@ cell.type.maxs.across.all.8.datasets <- cell.type.maxs.across.all.8.datasets[ord
 #cell.type.levels <- calculate.cell.type.levels(all.scores, id.var = "method.name", cell.type.var = "cell.type", cor.var = "cor.p")
 #print(cell.type.levels)
 cell.type.levels <- cell.type.maxs.across.all.8.datasets$cell.type
+print(cell.type.levels)
 #method.levels <- method.means.across.all.8.datasets$method.name
 
 
