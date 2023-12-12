@@ -330,15 +330,15 @@ coarse.cols <- cell.type.cols %in% coarse.cell.types
 fine.cols <- !(cell.type.cols %in% coarse.cell.types) & !(grepl(cell.type.cols, pattern="sample|timing"))
 
 coarse.cell.type.cols <- cell.type.cols[coarse.cols]
-coarse.analysis.cols <- unlist(lapply(colnames(coarse.bins), function(str) strsplit(str, split="_")[[1]][2]))
-
 fine.cell.type.cols <- cell.type.cols[fine.cols]
-fine.analysis.cols <- unlist(lapply(colnames(fine.bins), function(str) strsplit(str, split="_")[[1]][2]))
 
 coarse.bins <- all.bins[, coarse.cols]
 coarse.bins <- coarse.bins[, order(coarse.cell.type.cols)]
 fine.bins <- all.bins[, fine.cols]
 fine.bins <- fine.bins[, order(fine.cell.type.cols)]
+
+coarse.analysis.cols <- unlist(lapply(colnames(coarse.bins), function(str) strsplit(str, split="_")[[1]][2]))
+fine.analysis.cols <- unlist(lapply(colnames(fine.bins), function(str) strsplit(str, split="_")[[1]][2]))
 
 coarse.bins.ignore.nas <- all.bins.ignore.nas[, coarse.cols]
 coarse.bins.ignore.nas <- coarse.bins.ignore.nas[, order(coarse.cell.type.cols)]
@@ -386,6 +386,7 @@ num.nas.per.method <- rowSums(all.bins==5)
 
 num.nas.per.method.fine <- rowSums(fine.bins==5)
 coarse.grained.methods <- names(num.nas.per.method.fine[num.nas.per.method.fine == ncol(fine.bins)])
+fine.grained.methods <- rownames(all.bins)
 fine.grained.methods <- fine.grained.methods[!(fine.grained.methods %in% c(comparators, coarse.grained.methods))]
 
 fine.grained.methods <- sort(fine.grained.methods)
