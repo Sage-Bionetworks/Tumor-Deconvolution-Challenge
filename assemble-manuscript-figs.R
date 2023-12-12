@@ -63,8 +63,8 @@ figs <-
        "figs20.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation-legend-edited.pdf",
        "fig7.png" = "analysis/cancer-validation/figs/fig-cancer-validation-per-cell-type.png",
        "fig7.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation-per-cell-type.pdf",
-       "figs21.png" = "analysis/summary-table/figs/binned-score-heatmap.png",
-       "figs21.pdf" = "analysis/summary-table/figs/binned-score-heatmap.pdf"
+       "figs21.png" = "analysis/summary-table/figs/binned-score-heatmap-score-sorted-ignore-nas-comparator.png", 
+       "figs21.pdf" = "analysis/summary-table/figs/binned-score-heatmap-score-sorted-ignore-nas-comparator.pdf"
 
 )
 
