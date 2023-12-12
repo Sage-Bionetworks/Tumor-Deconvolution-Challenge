@@ -1,0 +1,336 @@
+evaluation	cell.type	cut_bin	bin_number
+lod	B	[0.3,2]	1
+lod	B	(2,3]	2
+lod	B	(3,24]	3
+lod	B	(24,100]	4
+lod	CD4 T	[6,10.2]	1
+lod	CD4 T	(10.2,13]	2
+lod	CD4 T	(13,25]	3
+lod	CD4 T	(25,100]	4
+lod	CD4 T	NA	5
+lod	CD8 T	[0.2,5]	1
+lod	CD8 T	(5,12]	2
+lod	CD8 T	(12,38]	3
+lod	CD8 T	(38,100]	4
+lod	endothelial	[0.9,2]	1
+lod	endothelial	(2,6.5]	2
+lod	endothelial	(6.5,16]	3
+lod	endothelial	(16,100]	4
+lod	endothelial	NA	5
+lod	fibroblasts	[0.235,2]	1
+lod	fibroblasts	(2,4]	2
+lod	fibroblasts	(4,7]	3
+lod	fibroblasts	(7,100]	4
+lod	fibroblasts	NA	5
+lod	macrophages	[8,17]	1
+lod	macrophages	(17,20]	2
+lod	macrophages	(20,33]	3
+lod	macrophages	(33,100]	4
+lod	macrophages	NA	5
+lod	memory CD4 T	[22,24]	1
+lod	memory CD4 T	(24,100]	2
+lod	memory CD4 T	NA	5
+lod	memory CD8 T	[5,14.2]	1
+lod	memory CD8 T	(14.2,25]	2
+lod	memory CD8 T	(25,100]	3
+lod	memory CD8 T	NA	5
+lod	monocytes	[0.6,7]	1
+lod	monocytes	(7,8.5]	2
+lod	monocytes	(8.5,26.5]	3
+lod	monocytes	(26.5,100]	4
+lod	monocytes	NA	5
+lod	monocytic lineage	[1,3.5]	1
+lod	monocytic lineage	(3.5,7]	2
+lod	monocytic lineage	(7,14.5]	3
+lod	monocytic lineage	(14.5,100]	4
+lod	myeloid DCs	[1,5.5]	1
+lod	myeloid DCs	(5.5,12]	2
+lod	myeloid DCs	(12,40]	3
+lod	myeloid DCs	(40,100]	4
+lod	myeloid DCs	NA	5
+lod	naive B	[0.5,2]	1
+lod	naive B	(2,3]	2
+lod	naive B	(3,6]	3
+lod	naive B	(6,100]	4
+lod	naive B	NA	5
+lod	naive CD4 T	[6,20]	1
+lod	naive CD4 T	(20,28]	2
+lod	naive CD4 T	(28,34]	3
+lod	naive CD4 T	(34,100]	4
+lod	naive CD4 T	NA	5
+lod	naive CD8 T	[0.8,4]	1
+lod	naive CD8 T	(4,15]	2
+lod	naive CD8 T	(15,21]	3
+lod	naive CD8 T	(21,100]	4
+lod	naive CD8 T	NA	5
+lod	neutrophils	[0.14,0.55]	1
+lod	neutrophils	(0.55,1.7]	2
+lod	neutrophils	(1.7,3]	3
+lod	neutrophils	(3,100]	4
+lod	neutrophils	NA	5
+lod	NK	[0.6,1.42]	1
+lod	NK	(1.42,2]	2
+lod	NK	(2,10]	3
+lod	NK	(10,100]	4
+lod	Tregs	[2,3.25]	1
+lod	Tregs	(3.25,6]	2
+lod	Tregs	(6,20.5]	3
+lod	Tregs	(20.5,100]	4
+lod	Tregs	NA	5
+mean	B	(0.902,0.953]	1
+mean	B	(0.817,0.902]	2
+mean	B	(0.399,0.817]	3
+mean	B	[0.0732,0.399]	4
+mean	B	NA	5
+mean	CD4 T	(0.713,0.816]	1
+mean	CD4 T	(0.623,0.713]	2
+mean	CD4 T	(0.438,0.623]	3
+mean	CD4 T	[-0.154,0.438]	4
+mean	CD4 T	NA	5
+mean	CD8 T	(0.791,0.9]	1
+mean	CD8 T	(0.706,0.791]	2
+mean	CD8 T	(0.441,0.706]	3
+mean	CD8 T	[-0.0175,0.441]	4
+mean	CD8 T	NA	5
+mean	endothelial	(0.879,0.974]	1
+mean	endothelial	(0.778,0.879]	2
+mean	endothelial	(0.404,0.778]	3
+mean	endothelial	[-0.401,0.404]	4
+mean	endothelial	NA	5
+mean	fibroblasts	(0.862,0.953]	1
+mean	fibroblasts	(0.798,0.862]	2
+mean	fibroblasts	(0.469,0.798]	3
+mean	fibroblasts	[-0.197,0.469]	4
+mean	fibroblasts	NA	5
+mean	macrophages	(0.739,0.82]	1
+mean	macrophages	(0.664,0.739]	2
+mean	macrophages	(0.582,0.664]	3
+mean	macrophages	[0.246,0.582]	4
+mean	macrophages	NA	5
+mean	memory CD4 T	(0.654,0.742]	1
+mean	memory CD4 T	(0.529,0.654]	2
+mean	memory CD4 T	(0.393,0.529]	3
+mean	memory CD4 T	[-0.041,0.393]	4
+mean	memory CD4 T	NA	5
+mean	memory CD8 T	(0.687,0.782]	1
+mean	memory CD8 T	(0.561,0.687]	2
+mean	memory CD8 T	(0.466,0.561]	3
+mean	memory CD8 T	[-0.00514,0.466]	4
+mean	memory CD8 T	NA	5
+mean	monocytes	(0.667,0.872]	1
+mean	monocytes	(0.616,0.667]	2
+mean	monocytes	(0.492,0.616]	3
+mean	monocytes	[0.0589,0.492]	4
+mean	monocytes	NA	5
+mean	monocytic lineage	(0.83,0.937]	1
+mean	monocytic lineage	(0.736,0.83]	2
+mean	monocytic lineage	(0.588,0.736]	3
+mean	monocytic lineage	[-0.361,0.588]	4
+mean	monocytic lineage	NA	5
+mean	myeloid DCs	(0.486,0.76]	1
+mean	myeloid DCs	(0.412,0.486]	2
+mean	myeloid DCs	(0.206,0.412]	3
+mean	myeloid DCs	[-0.0221,0.206]	4
+mean	myeloid DCs	NA	5
+mean	naive B	(0.797,0.829]	1
+mean	naive B	(0.758,0.797]	2
+mean	naive B	(0.716,0.758]	3
+mean	naive B	[0.193,0.716]	4
+mean	naive B	NA	5
+mean	naive CD4 T	(0.691,0.795]	1
+mean	naive CD4 T	(0.584,0.691]	2
+mean	naive CD4 T	(0.475,0.584]	3
+mean	naive CD4 T	[-0.00592,0.475]	4
+mean	naive CD4 T	NA	5
+mean	naive CD8 T	(0.81,0.91]	1
+mean	naive CD8 T	(0.612,0.81]	2
+mean	naive CD8 T	(0.286,0.612]	3
+mean	naive CD8 T	[0.0512,0.286]	4
+mean	naive CD8 T	NA	5
+mean	neutrophils	(0.921,0.954]	1
+mean	neutrophils	(0.705,0.921]	2
+mean	neutrophils	(0.582,0.705]	3
+mean	neutrophils	[-0.132,0.582]	4
+mean	neutrophils	NA	5
+mean	NK	(0.783,0.906]	1
+mean	NK	(0.644,0.783]	2
+mean	NK	(0.357,0.644]	3
+mean	NK	[0.0191,0.357]	4
+mean	NK	NA	5
+mean	Tregs	(0.804,0.893]	1
+mean	Tregs	(0.568,0.804]	2
+mean	Tregs	(0.396,0.568]	3
+mean	Tregs	[-0.0183,0.396]	4
+mean	Tregs	NA	5
+sample_coarse	NA	(0.587,0.721]	1
+sample_coarse	NA	(0.546,0.587]	2
+sample_coarse	NA	(0.221,0.546]	3
+sample_coarse	NA	[-0.199,0.221]	4
+sample_fine	NA	(0.363,0.585]	1
+sample_fine	NA	(0.271,0.363]	2
+sample_fine	NA	(0.15,0.271]	3
+sample_fine	NA	[0.0656,0.15]	4
+sd	B	[0.0209,0.0481]	1
+sd	B	(0.0481,0.0998]	2
+sd	B	(0.0998,0.147]	3
+sd	B	(0.147,0.258]	4
+sd	B	NA	5
+sd	CD4 T	[0.0671,0.148]	1
+sd	CD4 T	(0.148,0.169]	2
+sd	CD4 T	(0.169,0.217]	3
+sd	CD4 T	(0.217,0.5]	4
+sd	CD4 T	NA	5
+sd	CD8 T	[0.0322,0.0738]	1
+sd	CD8 T	(0.0738,0.123]	2
+sd	CD8 T	(0.123,0.179]	3
+sd	CD8 T	(0.179,0.491]	4
+sd	CD8 T	NA	5
+sd	endothelial	[0.0222,0.0461]	1
+sd	endothelial	(0.0461,0.0834]	2
+sd	endothelial	(0.0834,0.223]	3
+sd	endothelial	(0.223,0.574]	4
+sd	endothelial	NA	5
+sd	fibroblasts	[0.0159,0.0591]	1
+sd	fibroblasts	(0.0591,0.0896]	2
+sd	fibroblasts	(0.0896,0.208]	3
+sd	fibroblasts	(0.208,0.473]	4
+sd	fibroblasts	NA	5
+sd	macrophages	[0.14,0.165]	1
+sd	macrophages	(0.165,0.198]	2
+sd	macrophages	(0.198,0.279]	3
+sd	macrophages	(0.279,0.476]	4
+sd	macrophages	NA	5
+sd	memory CD4 T	[0.0243,0.115]	1
+sd	memory CD4 T	(0.115,0.228]	2
+sd	memory CD4 T	(0.228,0.31]	3
+sd	memory CD4 T	(0.31,0.407]	4
+sd	memory CD4 T	NA	5
+sd	memory CD8 T	[0.0149,0.0986]	1
+sd	memory CD8 T	(0.0986,0.137]	2
+sd	memory CD8 T	(0.137,0.262]	3
+sd	memory CD8 T	(0.262,0.68]	4
+sd	memory CD8 T	NA	5
+sd	monocytes	[0.0266,0.0859]	1
+sd	monocytes	(0.0859,0.143]	2
+sd	monocytes	(0.143,0.199]	3
+sd	monocytes	(0.199,0.323]	4
+sd	monocytes	NA	5
+sd	monocytic lineage	[0.0242,0.0744]	1
+sd	monocytic lineage	(0.0744,0.162]	2
+sd	monocytic lineage	(0.162,0.219]	3
+sd	monocytic lineage	(0.219,0.427]	4
+sd	monocytic lineage	NA	5
+sd	myeloid DCs	[0.0458,0.117]	1
+sd	myeloid DCs	(0.117,0.167]	2
+sd	myeloid DCs	(0.167,0.216]	3
+sd	myeloid DCs	(0.216,0.446]	4
+sd	myeloid DCs	NA	5
+sd	naive B	[0.107,0.126]	1
+sd	naive B	(0.126,0.145]	2
+sd	naive B	(0.145,0.229]	3
+sd	naive B	(0.229,0.34]	4
+sd	naive B	NA	5
+sd	neutrophils	[0.000555,0.076]	1
+sd	neutrophils	(0.076,0.21]	2
+sd	neutrophils	(0.21,0.299]	3
+sd	neutrophils	(0.299,0.473]	4
+sd	neutrophils	NA	5
+sd	NK	[0.0114,0.103]	1
+sd	NK	(0.103,0.14]	2
+sd	NK	(0.14,0.22]	3
+sd	NK	(0.22,0.436]	4
+sd	NK	NA	5
+sd	Tregs	[0.0543,0.0767]	1
+sd	Tregs	(0.0767,0.127]	2
+sd	Tregs	(0.127,0.2]	3
+sd	Tregs	(0.2,0.284]	4
+sd	Tregs	NA	5
+spillover	B	[0.00437,0.0352]	1
+spillover	B	(0.0352,0.0754]	2
+spillover	B	(0.0754,0.178]	3
+spillover	B	(0.178,0.715]	4
+spillover	CD4 T	[0.0389,0.105]	1
+spillover	CD4 T	(0.105,0.161]	2
+spillover	CD4 T	(0.161,0.222]	3
+spillover	CD4 T	(0.222,0.756]	4
+spillover	CD4 T	NA	5
+spillover	CD8 T	[0.00157,0.0416]	1
+spillover	CD8 T	(0.0416,0.136]	2
+spillover	CD8 T	(0.136,0.319]	3
+spillover	CD8 T	(0.319,0.715]	4
+spillover	endothelial	[0.00144,0.0193]	1
+spillover	endothelial	(0.0193,0.0594]	2
+spillover	endothelial	(0.0594,0.201]	3
+spillover	endothelial	(0.201,0.657]	4
+spillover	endothelial	NA	5
+spillover	fibroblasts	[0.000785,0.0129]	1
+spillover	fibroblasts	(0.0129,0.0697]	2
+spillover	fibroblasts	(0.0697,0.123]	3
+spillover	fibroblasts	(0.123,0.568]	4
+spillover	fibroblasts	NA	5
+spillover	macrophages	[0.05,0.0967]	1
+spillover	macrophages	(0.0967,0.12]	2
+spillover	macrophages	(0.12,0.179]	3
+spillover	macrophages	(0.179,0.471]	4
+spillover	macrophages	NA	5
+spillover	memory CD4 T	[0.0306,0.153]	1
+spillover	memory CD4 T	(0.153,0.215]	2
+spillover	memory CD4 T	(0.215,0.234]	3
+spillover	memory CD4 T	(0.234,0.475]	4
+spillover	memory CD4 T	NA	5
+spillover	memory CD8 T	[2.95e-07,0.0813]	1
+spillover	memory CD8 T	(0.0813,0.127]	2
+spillover	memory CD8 T	(0.127,0.186]	3
+spillover	memory CD8 T	(0.186,0.329]	4
+spillover	memory CD8 T	NA	5
+spillover	monocytes	[0.00565,0.0334]	1
+spillover	monocytes	(0.0334,0.0845]	2
+spillover	monocytes	(0.0845,0.14]	3
+spillover	monocytes	(0.14,0.217]	4
+spillover	monocytes	NA	5
+spillover	monocytic lineage	[0.0036,0.0258]	1
+spillover	monocytic lineage	(0.0258,0.0619]	2
+spillover	monocytic lineage	(0.0619,0.107]	3
+spillover	monocytic lineage	(0.107,0.495]	4
+spillover	myeloid DCs	[0.033,0.0822]	1
+spillover	myeloid DCs	(0.0822,0.173]	2
+spillover	myeloid DCs	(0.173,0.27]	3
+spillover	myeloid DCs	(0.27,0.411]	4
+spillover	myeloid DCs	NA	5
+spillover	naive B	[0.00406,0.0233]	1
+spillover	naive B	(0.0233,0.058]	2
+spillover	naive B	(0.058,0.0848]	3
+spillover	naive B	(0.0848,0.223]	4
+spillover	naive B	NA	5
+spillover	naive CD4 T	[0.0626,0.0998]	1
+spillover	naive CD4 T	(0.0998,0.153]	2
+spillover	naive CD4 T	(0.153,0.245]	3
+spillover	naive CD4 T	(0.245,0.509]	4
+spillover	naive CD4 T	NA	5
+spillover	naive CD8 T	[0.067,0.0796]	1
+spillover	naive CD8 T	(0.0796,0.176]	2
+spillover	naive CD8 T	(0.176,0.258]	3
+spillover	naive CD8 T	(0.258,0.404]	4
+spillover	naive CD8 T	NA	5
+spillover	neutrophils	[0.000197,0.0109]	1
+spillover	neutrophils	(0.0109,0.0306]	2
+spillover	neutrophils	(0.0306,0.208]	3
+spillover	neutrophils	(0.208,0.555]	4
+spillover	neutrophils	NA	5
+spillover	NK	[0.00679,0.0325]	1
+spillover	NK	(0.0325,0.0531]	2
+spillover	NK	(0.0531,0.124]	3
+spillover	NK	(0.124,0.688]	4
+spillover	Tregs	[0.0298,0.085]	1
+spillover	Tregs	(0.085,0.145]	2
+spillover	Tregs	(0.145,0.177]	3
+spillover	Tregs	(0.177,0.529]	4
+spillover	Tregs	NA	5
+timing_coarse	NA	[69.7,83.4]	1
+timing_coarse	NA	(83.4,133]	2
+timing_coarse	NA	(133,757]	3
+timing_coarse	NA	(757,1.14e+04]	4
+timing_fine	NA	[65.9,85.1]	1
+timing_fine	NA	(85.1,197]	2
+timing_fine	NA	(197,914]	3
+timing_fine	NA	(914,2.6e+04]	4
