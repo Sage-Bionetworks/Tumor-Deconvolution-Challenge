@@ -252,9 +252,39 @@ bin.mats <-
           ret
         })
 
+# Order by phenotypes
+cell.type.levels <- c(
+    "B.cells",
+    "memory.B.cells",
+    "naive.B.cells",
+    "CD4.T.cells",
+    "memory.CD4.T.cells",
+    "naive.CD4.T.cells",
+#    "regulatory.T.cells",
+    "Tregs",
+    "CD8.T.cells",
+    "memory.CD8.T.cells",
+    "naive.CD8.T.cells",
+    "NK.cells",
+    "neutrophils",
+    "monocytic.lineage",
+    "monocytes",
+#    "myeloid.dendritic.cells",
+    "myeloid.DCs",    
+    "macrophages",
+    "endothelial.cells",
+    "fibroblasts"
+)
+
+cell.type.cols <- gsub(cell.type.levels, pattern=".cells", replacement="")
+
+cell.type.cols <- as.vector(t(outer(cell.type.cols, c("_mean", "_sd", "_lod", "_spillover"), FUN="paste0")))
+
 all.bins <- Reduce(function(...) merge(..., all=TRUE, by="method.name"), bin.mats)
 rownames(all.bins) <- all.bins$method.name
 all.bins[is.na(all.bins)] <- na.bin
+cell.type.cols <- cell.type.cols[(cell.type.cols %in% colnames(all.bins))]
+colnames(all.bins) <- c("method.name", cell.type.cols, "sample_coarse", "sample_fine", "timing_coarse", "timing_fine")
 
 cell.type.cols <- grep(colnames(all.bins), pattern="lod|mean|sd|spillover", value=TRUE)
 only.do.cell.type.cols <- FALSE
@@ -320,6 +350,9 @@ sorted.methods.alpha <- sorted.scores[order(names(sorted.scores))]
 
 # stop("stop")
 
+if(FALSE) {
+# The following code separates coarse and fine-grained cell types and orders alphabetically within each.
+# Instead order by phenotypes
 cell.type.cols <- unlist(lapply(colnames(all.bins), function(str) strsplit(str, split="_")[[1]][1]))
 coarse.cell.types <- gsub(coarse.cell.types, pattern="\\.", replacement = " ")
 coarse.cell.types <- gsub(coarse.cell.types, pattern=" cells", replacement = "")
@@ -359,6 +392,15 @@ if(only.do.cell.type.cols) {
   all.bins.ignore.nas <- cbind(coarse.bins.ignore.nas, fine.bins.ignore.nas, all.bins.ignore.nas[, c("sample_coarse", "sample_fine", "timing_coarse", "timing_fine")])
   all.bins.ignore.nas.comparator <- cbind(coarse.bins.ignore.nas.comparator, fine.bins.ignore.nas.comparator, all.bins.ignore.nas.comparator[, c("sample_coarse", "sample_fine", "timing_coarse", "timing_fine")])
 }
+} # end if(FALSE)
+
+if(only.do.cell.type.cols) {
+  exclude.cols <- c("sample_coarse", "sample_fine", "timing_coarse", "timing_fine")
+  all.bins <- all.bins[, !(colnames(all.bins) %in% exclude.cols)]
+  all.bins.ignore.nas <- all.bins.ignore.nas[, !(colnames(all.bins.ignore.nas) %in% exclude.cols)]
+  all.bins.ignore.nas.comparator <- all.bins.ignore.nas.comparator[, !(colnames(all.bins.ignore.nas.comparator) %in% exclude.cols)]    
+}
+
 cell.type.cols <- unlist(lapply(colnames(all.bins), function(str) strsplit(str, split="_")[[1]][1]))
 cell.type.cols <- gsub(cell.type.cols, pattern="\\.", replacement = " ")
 cell.type.cols[grepl(x=cell.type.cols, pattern="sample")] <- "Sample-level"
