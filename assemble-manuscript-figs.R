@@ -59,14 +59,18 @@ figs <-
        "figs18.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation-heatmap-wu-and-pelka.pdf",
        "figs19.png" = "analysis/cancer-validation/figs/fig-cancer-validation-heatmap-all.png",
        "figs19.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation-heatmap-all.pdf",
-       "figs20.png" = "analysis/cancer-validation/figs/fig-cancer-validation.png",
-       "figs20.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation.pdf",
+       "figs20.png" = "analysis/cancer-validation/figs/fig-cancer-validation-legend-edited.png",
+       "figs20.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation-legend-edited.pdf",
        "fig7.png" = "analysis/cancer-validation/figs/fig-cancer-validation-per-cell-type.png",
        "fig7.pdf" = "analysis/cancer-validation/figs/fig-cancer-validation-per-cell-type.pdf",
-       "fig8.png" = "analysis/summary-table/figs/binned-score-heatmap.png",
-       "fig8.pdf" = "analysis/summary-table/figs/binned-score-heatmap.pdf"
+       "figs21.png" = "analysis/summary-table/figs/binned-score-heatmap.png",
+       "figs21.pdf" = "analysis/summary-table/figs/binned-score-heatmap.pdf"
 
 )
+
+# NB: the fig-cancer-validation-legend-edited.pdf created from fig-cancer-validation.pdf via inkscape
+# and then converted to png with
+# convert fig-cancer-validation-legend-edited.pdf fig-cancer-validation-legend-edited.png
 
 tbls <-
   list(
