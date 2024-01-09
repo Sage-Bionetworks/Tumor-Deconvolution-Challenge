@@ -200,7 +200,7 @@ median.bootstrapped.scores <-
                  df <- ddply(df,
                              .variables = c(method.name.col),
                              .fun = function(tmp) {
-                                      data.frame(pearson = summary.fun(tmp$pearson), spearman = summary.fun(tmp$spearman), rmse = summary.fun(tmp$rmse))
+                                      data.frame(pearson = summary.fun(tmp$pearson), spearman = summary.fun(tmp$spearman), rmse = summary.fun(tmp$rmse), pearson.fc = summary.fun(tmp$pearson.fc))
                               })
                  o <- order(df$pearson, decreasing = TRUE)
                  df <- df[o,]
@@ -271,5 +271,84 @@ png("fig2-my-xcell.png", width = 2.5 * 480, height = 1 * 480)
 print(g)
 d <- dev.off()
 
+# Plot the pearson fold changes as well
+
+g.bootstrap.coarse.pearson.fc.round1 <- plots[["1"]][["barplots"]][["coarse-pearson.fc"]] 
+g.bootstrap.coarse.pearson.fc.round1 <- g.bootstrap.coarse.pearson.fc.round1 + ylab("Fold Change\n(Pearson)") +
+    theme(axis.title.y = element_blank())
+g.bootstrap.fine.pearson.fc.round1 <- plots[["1"]][["barplots"]][["fine-pearson.fc"]] 
+g.bootstrap.fine.pearson.fc.round1 <- g.bootstrap.fine.pearson.fc.round1 + ylab("Fold Change\n(Pearson)") +
+    theme(axis.title.y = element_blank())
+
+g.bootstrap.coarse.pearson.fc.round1 <- g.bootstrap.coarse.pearson.fc.round1 + theme(axis.text.y = element_blank(), axis.title.y = element_blank(), axis.ticks.y = element_blank())
+g.bootstrap.fine.pearson.fc.round1 <- g.bootstrap.fine.pearson.fc.round1 + theme(axis.text.y = element_blank(), axis.title.y = element_blank(), axis.ticks.y = element_blank())
+
+title <- "Coarse-Grained (First Submission)"
+plot_row <- 
+  g.bootstrap.coarse.pearson.round1 + g.bootstrap.coarse.spearman.round1 + g.bootstrap.coarse.pearson.fc.round1 + g.bootstrap.coarse.anno.round1 + g.bootstrap.coarse.anno.legend.round1 + plot_layout(widths=c(4,4,4,1,1))
+g.bootstrap.coarse.round1 <- plot_grid(textGrob(title, gp = gpar(fontsize = 20)), plot_row, ncol=1, rel_heights = c(0.1, 1))
+
+title <- "Fine-Grained (First Submission)"
+plot_row <- 
+  g.bootstrap.fine.pearson.round1 + g.bootstrap.fine.spearman.round1 + g.bootstrap.fine.pearson.fc.round1 + g.bootstrap.fine.anno.round1 + g.bootstrap.fine.anno.legend.round1 + plot_layout(widths=c(4,4,4,1,1))
+g.bootstrap.fine.round1 <- plot_grid(textGrob(title, gp = gpar(fontsize = 20)), plot_row, ncol=1, rel_heights = c(0.1, 1))
+
+g <- plot_grid(g.bootstrap.coarse.round1, g.bootstrap.fine.round1, labels = c("A", "B"))
+
+png("fig2-my-xcell-with-fold-change.png", width = 3 * 480, height = 1 * 480)
+print(g)
+d <- dev.off()
+
+
 cat("Exiting successfully\n")
 q(status=0)
+
+head(subset(boot.res[["bootstrapped.cors"]][["coarse"]], method.name=="Aginome-XMU" & cell.type == "B"))
+
+# Aginome has some negative values -- what is the fold change across positive and negative?
+ds.name <- "AA"
+boot <- 1
+ct <- "B"
+mn <- "Aginome-XMU"
+sb <- subset(boot.res[["res.round"]], dataset.name == ds.name & method.name == mn & cell.type == ct & submission == 1)
+
+mn <- "CIBERSORTx"
+sb <- subset(boot.res[["res.round"]], dataset.name == ds.name & method.name == mn & cell.type == ct & submission == 1)
+
+# CIBERSORTx has all positive values, but the correlation is still poor.
+# Note that the measured values aren't spaced very far apart -- as we would have (e.g., by decades)
+# to see fold change.
+
+df <- sb
+
+
+pred <- sb$prediction
+measured <- sb$measured
+o <- order(measured, decreasing=FALSE)
+eps <- 10^-5
+gt.ordered <- measured[o] + eps
+# NB: the ordering is established by the _ground truth_ values and applied to those
+# values and the predicted values
+pred.ordered <- pred[o] + eps
+gt.fc <- unlist(lapply(2:length(gt.ordered), function(indx) gt.ordered[indx]/gt.ordered[indx-1]))
+pred.fc <- unlist(lapply(2:length(pred.ordered), function(indx) pred.ordered[indx]/pred.ordered[indx-1]))
+val <- cor(pred.fc, gt.fc, method = "pearson")
+
+df <- data.frame(prediction = pred.fc, measured = gt.fc)
+
+library(ggpubr) 
+
+# Draw the scatterplot of measured vs predicted and of measured fold change vs predicted fold change
+g1 <- ggplot(sb, aes(x=measured, y=prediction)) + geom_point() + stat_cor(method = "pearson", label.x = min(sb$measured)*1.1, label.y = max(sb$prediction)*0.9, size=10)
+g1 <- g1 + theme(text = element_text(size=18))
+g1 <- g1 + xlab("Measured") + ylab("Predicted")
+
+g2 <- ggplot(df, aes(x=measured, y=prediction)) + geom_point() + stat_cor(method = "pearson", label.x = min(df$measured)*1.1, label.y = max(df$prediction)*0.9, size=10)
+g2 <- g2 + theme(text = element_text(size=18))
+g2 <- g2 + xlab("Measured Fold Change") + ylab("Predicted Fold Change")
+
+g <- plot_grid(g1, g2, labels=c("A","B"))
+
+png("correlation-vs-fold-change.png", width = 2 * 480)
+print(g)
+d <- dev.off()

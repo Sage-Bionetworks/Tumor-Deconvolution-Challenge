@@ -487,6 +487,39 @@ output.plot(g, file.suffix, plot.types = c("pdf", "png"),
             pdf.delta.width = 2.5, pdf.delta.height = 1,
             png.delta.width = 2.5, png.delta.height = 1)
 
+g.bootstrap.coarse.pearson.fc.round1 <- plots[["1"]][["barplots"]][["coarse-pearson.fc"]] +
+    scale_y_continuous(limits = c(x.min.pearson.coarse, x.max.pearson.coarse), expand = c(0, 0))
+g.bootstrap.coarse.pearson.fc.round1 <- g.bootstrap.coarse.pearson.fc.round1 + ylab("Fold Change\n(Pearson)") +
+    theme(axis.title.y = element_blank())
+g.bootstrap.coarse.pearson.fc.round1 <- g.bootstrap.coarse.pearson.fc.round1 + 
+    theme(text = element_text(size=text.size), title = element_text(size=title.size), axis.text.x = element_text(angle = 45, hjust = 1))
+g.bootstrap.fine.pearson.fc.round1 <- plots[["1"]][["barplots"]][["fine-pearson.fc"]] +
+    scale_y_continuous(limits = c(x.min.pearson.fine, x.max.pearson.fine), expand = c(0, 0))
+g.bootstrap.fine.pearson.fc.round1 <- g.bootstrap.fine.pearson.fc.round1 + ylab("Fold Change\n(Pearson)") +
+    theme(axis.title.y = element_blank())
+g.bootstrap.fine.pearson.fc.round1 <- g.bootstrap.fine.pearson.fc.round1 + 
+    theme(text = element_text(size=text.size), title = element_text(size=title.size), axis.text.x = element_text(angle = 45, hjust = 1))
+
+g.bootstrap.coarse.pearson.fc.round1 <- g.bootstrap.coarse.pearson.fc.round1 + theme(axis.text.y = element_blank(), axis.title.y = element_blank(), axis.ticks.y = element_blank())
+g.bootstrap.fine.pearson.fc.round1 <- g.bootstrap.fine.pearson.fc.round1 + theme(axis.text.y = element_blank(), axis.title.y = element_blank(), axis.ticks.y = element_blank())
+
+title <- "Coarse-Grained (First Submission)"
+plot_row <- 
+  g.bootstrap.coarse.pearson.round1 + g.bootstrap.coarse.spearman.round1 + g.bootstrap.coarse.pearson.fc.round1 + g.bootstrap.coarse.anno.round1 + g.bootstrap.coarse.anno.legend.round1 + plot_layout(widths=c(4,4,4,1,1))
+g.bootstrap.coarse.round1 <- plot_grid(textGrob(title, gp = gpar(fontsize = 20)), plot_row, ncol=1, rel_heights = c(0.1, 1))
+
+title <- "Fine-Grained (First Submission)"
+plot_row <- 
+  g.bootstrap.fine.pearson.round1 + g.bootstrap.fine.spearman.round1 + g.bootstrap.fine.pearson.fc.round1 + g.bootstrap.fine.anno.round1 + g.bootstrap.fine.anno.legend.round1 + plot_layout(widths=c(4,4,4,1,1))
+g.bootstrap.fine.round1 <- plot_grid(textGrob(title, gp = gpar(fontsize = 20)), plot_row, ncol=1, rel_heights = c(0.1, 1))
+
+g <- plot_grid(g.bootstrap.coarse.round1, g.bootstrap.fine.round1, labels = c("A", "B"))
+
+file.suffix <- paste0(figs.dir, "fig-validation-round-1-performance-with-fold-change")
+output.plot(g, file.suffix, plot.types = c("pdf", "png"),
+            pdf.delta.width = 3.25, pdf.delta.height = 1,
+            png.delta.width = 3.25, png.delta.height = 1)
+
 
 g <- plot_grid(g.round.coarse, g.round.fine, labels = c("A", "B"))
 
