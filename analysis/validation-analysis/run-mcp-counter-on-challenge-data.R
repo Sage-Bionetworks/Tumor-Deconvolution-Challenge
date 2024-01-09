@@ -188,7 +188,7 @@ median.bootstrapped.scores <-
                  df <- ddply(df,
                              .variables = c(method.name.col),
                              .fun = function(tmp) {
-                                      data.frame(pearson = summary.fun(tmp$pearson), spearman = summary.fun(tmp$spearman), rmse = summary.fun(tmp$rmse))
+                                      data.frame(pearson = summary.fun(tmp$pearson), spearman = summary.fun(tmp$spearman), rmse = summary.fun(tmp$rmse), pearson.fc = summary.fun(tmp$pearson.fc))
                               })
                  o <- order(df$pearson, decreasing = TRUE)
                  df <- df[o,]

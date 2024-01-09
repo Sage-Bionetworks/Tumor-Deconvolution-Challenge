@@ -54,7 +54,7 @@ Calculating bootstrap correlations
 [1] "Tonys Boys"
 [1] "xCell"
 [1] "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"     
-[6] "spearman"     "rmse"        
+[6] "spearman"     "rmse"         "pearson.fc"  
   method.name boot.i dataset.name         cell.type   pearson  spearman
 1 Aboensis IV      1           AA                 B 0.9929538 0.9751144
 2 Aboensis IV      1           AA             CD4 T 0.2387196 0.2967425
@@ -62,13 +62,13 @@ Calculating bootstrap correlations
 4 Aboensis IV      1           AA       endothelial 0.9936583 0.9860418
 5 Aboensis IV      1           AA       fibroblasts 0.9870985 0.9629630
 6 Aboensis IV      1           AA monocytic lineage 0.8218499 0.8184355
-      rmse
-1 1.308757
-2 1.000256
-3 1.243513
-4 1.445868
-5 1.399180
-6 1.255212
+      rmse  pearson.fc
+1 1.308757  0.53631565
+2 1.000256  0.03632864
+3 1.243513  0.07775859
+4 1.445868 -0.21630687
+5 1.399180  0.19824875
+6 1.255212  0.17909335
 Calculating bootstrapped scores
 Calculating mean bootstrapped scores
 Calculating mean by cell type
@@ -169,7 +169,7 @@ Calculating bootstrap correlations
 [1] "Tonys Boys"
 [1] "xCell"
 [1] "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"     
-[6] "spearman"     "rmse"        
+[6] "spearman"     "rmse"         "pearson.fc"  
   method.name boot.i dataset.name         cell.type   pearson  spearman
 1 Aboensis IV      1           AA                 B 0.9927278 0.9724362
 2 Aboensis IV      1           AA             CD4 T 0.2547069 0.3601071
@@ -177,13 +177,13 @@ Calculating bootstrap correlations
 4 Aboensis IV      1           AA       endothelial 0.9953057 0.9864885
 5 Aboensis IV      1           AA       fibroblasts 0.9873701 0.9647479
 6 Aboensis IV      1           AA monocytic lineage 0.8109230 0.8059369
-       rmse
-1 1.3121712
-2 0.9924913
-3 1.1831160
-4 1.4802742
-5 1.3930012
-6 1.2369181
+       rmse  pearson.fc
+1 1.3121712  0.53991182
+2 0.9924913  0.02951928
+3 1.1831160  0.37015024
+4 1.4802742 -0.17989751
+5 1.3930012  0.18220142
+6 1.2369181  0.18163300
 Calculating bootstrapped scores
 Calculating mean bootstrapped scores
 Calculating mean by cell type
@@ -284,7 +284,7 @@ Calculating bootstrap correlations
 [1] "Tonys Boys"
 [1] "xCell"
 [1] "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"     
-[6] "spearman"     "rmse"        
+[6] "spearman"     "rmse"         "pearson.fc"  
   method.name boot.i dataset.name         cell.type   pearson  spearman
 1 Aboensis IV      1           AA                 B 0.9929538 0.9751144
 2 Aboensis IV      1           AA             CD4 T 0.2547069 0.3601071
@@ -292,13 +292,13 @@ Calculating bootstrap correlations
 4 Aboensis IV      1           AA       endothelial 0.9953057 0.9864885
 5 Aboensis IV      1           AA       fibroblasts 0.9871655 0.9629630
 6 Aboensis IV      1           AA monocytic lineage 0.8218499 0.8184355
-       rmse
-1 1.3087570
-2 0.9924913
-3 1.2435128
-4 1.4802742
-5 1.3966730
-6 1.2552116
+       rmse  pearson.fc
+1 1.3087570  0.53631565
+2 0.9924913  0.02951928
+3 1.2435128  0.07775859
+4 1.4802742 -0.17989751
+5 1.3966730  0.18943187
+6 1.2552116  0.17909335
 Calculating bootstrapped scores
 Calculating mean bootstrapped scores
 Calculating mean by cell type
@@ -399,7 +399,7 @@ Calculating bootstrap correlations
 [1] "Tonys Boys"
 [1] "xCell"
 [1] "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"     
-[6] "spearman"     "rmse"        
+[6] "spearman"     "rmse"         "pearson.fc"  
   method.name boot.i dataset.name         cell.type   pearson  spearman
 1 Aboensis IV      1           AA                 B 0.9929538 0.9751144
 2 Aboensis IV      1           AA             CD4 T 0.2547069 0.3601071
@@ -407,13 +407,13 @@ Calculating bootstrap correlations
 4 Aboensis IV      1           AA       endothelial 0.9953057 0.9864885
 5 Aboensis IV      1           AA       fibroblasts 0.9871655 0.9629630
 6 Aboensis IV      1           AA monocytic lineage 0.8218499 0.8184355
-       rmse
-1 1.3087570
-2 0.9924913
-3 1.2435128
-4 1.4802742
-5 1.3966730
-6 1.2552116
+       rmse  pearson.fc
+1 1.3087570  0.53631565
+2 0.9924913  0.02951928
+3 1.2435128  0.07775859
+4 1.4802742 -0.17989751
+5 1.3966730  0.18943187
+6 1.2552116  0.17909335
 Calculating bootstrapped scores
 Calculating mean bootstrapped scores
 Calculating mean by cell type
@@ -462,9 +462,9 @@ Top performer for Round latest in fine sub-challenge: Aginome-XMU
 15          NPU     Inf       Inf
 16     LeiliLab     Inf       Inf
 Storing bootstrap-validation-results.rds to synapse
-################################################## Uploading file to Synapse storage ##################################################Uploading [--------------------]0.00%   0.0bytes/351.8MB  bootstrap-validation-results.rds     Uploading [--------------------]2.27%   8.0MB/351.8MB (290.2kB/s) bootstrap-validation-results.rds     Uploading [#-------------------]4.55%   16.0MB/351.8MB (580.4kB/s) bootstrap-validation-results.rds     Uploading [#-------------------]6.82%   24.0MB/351.8MB (870.6kB/s) bootstrap-validation-results.rds     Uploading [##------------------]9.10%   32.0MB/351.8MB (1.1MB/s) bootstrap-validation-results.rds     Uploading [##------------------]11.37%   40.0MB/351.8MB (1.4MB/s) bootstrap-validation-results.rds     Uploading [###-----------------]13.65%   48.0MB/351.8MB (1.7MB/s) bootstrap-validation-results.rds     Uploading [###-----------------]15.92%   56.0MB/351.8MB (2.0MB/s) bootstrap-validation-results.rds     Uploading [####----------------]18.19%   64.0MB/351.8MB (2.3MB/s) bootstrap-validation-results.rds     Uploading [####----------------]20.47%   72.0MB/351.8MB (2.6MB/s) bootstrap-validation-results.rds     Uploading [#####---------------]22.74%   80.0MB/351.8MB (2.8MB/s) bootstrap-validation-results.rds     Uploading [#####---------------]25.02%   88.0MB/351.8MB (3.1MB/s) bootstrap-validation-results.rds     Uploading [#####---------------]27.29%   96.0MB/351.8MB (3.4MB/s) bootstrap-validation-results.rds     Uploading [######--------------]29.56%   104.0MB/351.8MB (3.7MB/s) bootstrap-validation-results.rds     Uploading [######--------------]31.84%   112.0MB/351.8MB (4.0MB/s) bootstrap-validation-results.rds     Uploading [#######-------------]34.11%   120.0MB/351.8MB (4.3MB/s) bootstrap-validation-results.rds     Uploading [#######-------------]36.39%   128.0MB/351.8MB (4.5MB/s) bootstrap-validation-results.rds     Uploading [########------------]38.66%   136.0MB/351.8MB (4.8MB/s) bootstrap-validation-results.rds     Uploading [########------------]40.94%   144.0MB/351.8MB (5.1MB/s) bootstrap-validation-results.rds     Uploading [#########-----------]43.21%   152.0MB/351.8MB (5.4MB/s) bootstrap-validation-results.rds     Uploading [#########-----------]45.48%   160.0MB/351.8MB (5.7MB/s) bootstrap-validation-results.rds     Uploading [##########----------]47.76%   168.0MB/351.8MB (6.0MB/s) bootstrap-validation-results.rds     Uploading [##########----------]50.03%   176.0MB/351.8MB (6.2MB/s) bootstrap-validation-results.rds     Uploading [##########----------]52.31%   184.0MB/351.8MB (6.5MB/s) bootstrap-validation-results.rds     Uploading [###########---------]54.58%   192.0MB/351.8MB (6.8MB/s) bootstrap-validation-results.rds     Uploading [###########---------]56.85%   200.0MB/351.8MB (7.1MB/s) bootstrap-validation-results.rds     Uploading [############--------]59.06%   207.8MB/351.8MB (7.4MB/s) bootstrap-validation-results.rds     Uploading [############--------]61.34%   215.8MB/351.8MB (7.6MB/s) bootstrap-validation-results.rds     Uploading [#############-------]63.61%   223.8MB/351.8MB (7.9MB/s) bootstrap-validation-results.rds     Uploading [#############-------]65.89%   231.8MB/351.8MB (8.2MB/s) bootstrap-validation-results.rds     Uploading [##############------]68.16%   239.8MB/351.8MB (8.5MB/s) bootstrap-validation-results.rds     Uploading [##############------]70.44%   247.8MB/351.8MB (8.8MB/s) bootstrap-validation-results.rds     Uploading [###############-----]72.71%   255.8MB/351.8MB (9.1MB/s) bootstrap-validation-results.rds     Uploading [###############-----]74.98%   263.8MB/351.8MB (9.3MB/s) bootstrap-validation-results.rds     Uploading [###############-----]77.26%   271.8MB/351.8MB (9.6MB/s) bootstrap-validation-results.rds     Uploading [################----]79.53%   279.8MB/351.8MB (9.9MB/s) bootstrap-validation-results.rds     Uploading [################----]81.81%   287.8MB/351.8MB (10.2MB/s) bootstrap-validation-results.rds     Uploading [#################---]84.08%   295.8MB/351.8MB (10.5MB/s) bootstrap-validation-results.rds     Uploading [#################---]86.35%   303.8MB/351.8MB (10.8MB/s) bootstrap-validation-results.rds     Uploading [##################--]88.63%   311.8MB/351.8MB (11.0MB/s) bootstrap-validation-results.rds     Uploading [##################--]90.90%   319.8MB/351.8MB (11.3MB/s) bootstrap-validation-results.rds     Uploading [###################-]93.18%   327.8MB/351.8MB (11.6MB/s) bootstrap-validation-results.rds     Uploading [###################-]95.45%   335.8MB/351.8MB (11.9MB/s) bootstrap-validation-results.rds     Uploading [####################]97.73%   343.8MB/351.8MB (12.2MB/s) bootstrap-validation-results.rds     Uploading [####################]100.00%   351.8MB/351.8MB (12.5MB/s) bootstrap-validation-results.rds Done...    File: bootstrap-validation-results.rds (syn22951683)
-  md5=da9184adae6aa46e398a6a77d5222da7
-  fileSize=368863912
+################################################## Uploading file to Synapse storage ##################################################Uploading [--------------------]0.00%   0.0bytes/467.0MB  bootstrap-validation-results.rds     Uploading [--------------------]1.71%   8.0MB/467.0MB (167.3kB/s) bootstrap-validation-results.rds     Uploading [#-------------------]3.43%   16.0MB/467.0MB (334.6kB/s) bootstrap-validation-results.rds     Uploading [#-------------------]5.14%   24.0MB/467.0MB (501.8kB/s) bootstrap-validation-results.rds     Uploading [#-------------------]6.85%   32.0MB/467.0MB (669.1kB/s) bootstrap-validation-results.rds     Uploading [##------------------]8.57%   40.0MB/467.0MB (836.4kB/s) bootstrap-validation-results.rds     Uploading [##------------------]10.28%   48.0MB/467.0MB (1003.7kB/s) bootstrap-validation-results.rds     Uploading [##------------------]11.99%   56.0MB/467.0MB (1.1MB/s) bootstrap-validation-results.rds     Uploading [###-----------------]13.70%   64.0MB/467.0MB (1.3MB/s) bootstrap-validation-results.rds     Uploading [###-----------------]15.42%   72.0MB/467.0MB (1.5MB/s) bootstrap-validation-results.rds     Uploading [###-----------------]17.13%   80.0MB/467.0MB (1.6MB/s) bootstrap-validation-results.rds     Uploading [####----------------]18.84%   88.0MB/467.0MB (1.8MB/s) bootstrap-validation-results.rds     Uploading [####----------------]20.56%   96.0MB/467.0MB (2.0MB/s) bootstrap-validation-results.rds     Uploading [####----------------]22.27%   104.0MB/467.0MB (2.1MB/s) bootstrap-validation-results.rds     Uploading [#####---------------]23.98%   112.0MB/467.0MB (2.3MB/s) bootstrap-validation-results.rds     Uploading [#####---------------]25.70%   120.0MB/467.0MB (2.5MB/s) bootstrap-validation-results.rds     Uploading [#####---------------]27.41%   128.0MB/467.0MB (2.6MB/s) bootstrap-validation-results.rds     Uploading [######--------------]29.12%   136.0MB/467.0MB (2.8MB/s) bootstrap-validation-results.rds     Uploading [######--------------]30.83%   144.0MB/467.0MB (2.9MB/s) bootstrap-validation-results.rds     Uploading [#######-------------]32.55%   152.0MB/467.0MB (3.1MB/s) bootstrap-validation-results.rds     Uploading [#######-------------]34.26%   160.0MB/467.0MB (3.3MB/s) bootstrap-validation-results.rds     Uploading [#######-------------]35.97%   168.0MB/467.0MB (3.4MB/s) bootstrap-validation-results.rds     Uploading [########------------]37.69%   176.0MB/467.0MB (3.6MB/s) bootstrap-validation-results.rds     Uploading [########------------]39.40%   184.0MB/467.0MB (3.8MB/s) bootstrap-validation-results.rds     Uploading [########------------]41.11%   192.0MB/467.0MB (3.9MB/s) bootstrap-validation-results.rds     Uploading [#########-----------]42.83%   200.0MB/467.0MB (4.1MB/s) bootstrap-validation-results.rds     Uploading [#########-----------]44.54%   208.0MB/467.0MB (4.2MB/s) bootstrap-validation-results.rds     Uploading [#########-----------]46.25%   216.0MB/467.0MB (4.4MB/s) bootstrap-validation-results.rds     Uploading [##########----------]47.96%   224.0MB/467.0MB (4.6MB/s) bootstrap-validation-results.rds     Uploading [##########----------]49.68%   232.0MB/467.0MB (4.7MB/s) bootstrap-validation-results.rds     Uploading [##########----------]51.39%   240.0MB/467.0MB (4.9MB/s) bootstrap-validation-results.rds     Uploading [###########---------]53.10%   248.0MB/467.0MB (5.1MB/s) bootstrap-validation-results.rds     Uploading [###########---------]54.82%   256.0MB/467.0MB (5.2MB/s) bootstrap-validation-results.rds     Uploading [###########---------]56.53%   264.0MB/467.0MB (5.4MB/s) bootstrap-validation-results.rds     Uploading [############--------]58.24%   272.0MB/467.0MB (5.6MB/s) bootstrap-validation-results.rds     Uploading [############--------]59.96%   280.0MB/467.0MB (5.7MB/s) bootstrap-validation-results.rds     Uploading [############--------]61.67%   288.0MB/467.0MB (5.9MB/s) bootstrap-validation-results.rds     Uploading [#############-------]63.38%   296.0MB/467.0MB (6.0MB/s) bootstrap-validation-results.rds     Uploading [#############-------]65.09%   304.0MB/467.0MB (6.2MB/s) bootstrap-validation-results.rds     Uploading [#############-------]66.81%   312.0MB/467.0MB (6.4MB/s) bootstrap-validation-results.rds     Uploading [##############------]68.52%   320.0MB/467.0MB (6.5MB/s) bootstrap-validation-results.rds     Uploading [##############------]70.23%   328.0MB/467.0MB (6.7MB/s) bootstrap-validation-results.rds     Uploading [##############------]71.95%   336.0MB/467.0MB (6.9MB/s) bootstrap-validation-results.rds     Uploading [###############-----]73.66%   344.0MB/467.0MB (7.0MB/s) bootstrap-validation-results.rds     Uploading [###############-----]75.37%   352.0MB/467.0MB (7.2MB/s) bootstrap-validation-results.rds     Uploading [###############-----]77.09%   360.0MB/467.0MB (7.4MB/s) bootstrap-validation-results.rds     Uploading [################----]78.80%   368.0MB/467.0MB (7.5MB/s) bootstrap-validation-results.rds     Uploading [################----]80.51%   376.0MB/467.0MB (7.7MB/s) bootstrap-validation-results.rds     Uploading [################----]82.23%   384.0MB/467.0MB (7.8MB/s) bootstrap-validation-results.rds     Uploading [#################---]83.94%   392.0MB/467.0MB (8.0MB/s) bootstrap-validation-results.rds     Uploading [#################---]85.65%   400.0MB/467.0MB (8.2MB/s) bootstrap-validation-results.rds     Uploading [#################---]87.36%   408.0MB/467.0MB (8.3MB/s) bootstrap-validation-results.rds     Uploading [##################--]89.08%   416.0MB/467.0MB (8.5MB/s) bootstrap-validation-results.rds     Uploading [##################--]89.72%   419.0MB/467.0MB (8.6MB/s) bootstrap-validation-results.rds     Uploading [##################--]91.43%   427.0MB/467.0MB (8.7MB/s) bootstrap-validation-results.rds     Uploading [###################-]93.15%   435.0MB/467.0MB (8.9MB/s) bootstrap-validation-results.rds     Uploading [###################-]94.86%   443.0MB/467.0MB (9.0MB/s) bootstrap-validation-results.rds     Uploading [###################-]96.57%   451.0MB/467.0MB (9.2MB/s) bootstrap-validation-results.rds     Uploading [####################]98.29%   459.0MB/467.0MB (9.4MB/s) bootstrap-validation-results.rds     Uploading [####################]100.00%   467.0MB/467.0MB (9.5MB/s) bootstrap-validation-results.rds Done...    File: bootstrap-validation-results.rds (syn22951683)
+  md5=19d75b8b43a87e1e5e331151e391468b
+  fileSize=489696676
   contentType=application/octet-stream
   externalURL=None
   cacheDir=
@@ -475,16 +475,16 @@ properties:
   concreteType=org.sagebionetworks.repo.model.FileEntity
   createdBy=3346401
   createdOn=2020-10-04T19:38:39.922Z
-  dataFileHandleId=90946884
-  etag=5061c138-7218-4868-bb8b-0b40494726cc
+  dataFileHandleId=132153703
+  etag=cc3ab553-8f83-4eb2-a836-ca95c75adf2c
   id=syn22951683
   isLatestVersion=True
   modifiedBy=3346401
-  modifiedOn=2022-03-23T08:27:04.379Z
+  modifiedOn=2024-01-08T23:30:27.222Z
   name=bootstrap-validation-results.rds
   parentId=syn22320184
-  versionLabel=6
-  versionNumber=6
+  versionLabel=7
+  versionNumber=7
 annotations:
   executed=['https://github.com/Sage-Bionetworks/Tumor-Deconvolution-Challenge/blob/master/analysis//validation-analysis/perform-bootstrap-rerun-validation-analysis.R']
 
@@ -492,21 +492,21 @@ Exiting successfully
 -------------------------------------------------------------
 SUMNER/WINTER EPILOGUE
 -------------------------------------------------------------
-Job ID: 13851243
+Job ID: 21627167
 Cluster: slurm_cluster
 User/Group: root/jaxuser
 State: COMPLETED (exit code 0)
 Nodes: 1
-Cores per node: 16
-CPU Utilized: 13:09:04
-CPU Efficiency: 18.60% of 2-22:41:52 core-walltime
-Job Wall-clock time: 04:25:07
-Memory Utilized: 59.19 GB
-Memory Efficiency: 11.84% of 500.00 GB
+Cores per node: 32
+CPU Utilized: 17:27:28
+CPU Efficiency: 35.66% of 2-00:57:04 core-walltime
+Job Wall-clock time: 01:31:47
+Memory Utilized: 147.72 GB
+Memory Efficiency: 29.54% of 500.00 GB
 -------------------------------------------------------------
        JobID  User   State    CPUTime Exit     MaxRSS        NodeList  Partition                   ReqTRES              Submit               Start                 End    Elapsed 
 ------------ ----- ------- ---------- ---- ---------- --------------- ---------- ------------------------- ------------------- ------------------- ------------------- ---------- 
-13851243     whit+ COMPLE+ 2-22:41:52  0:0                  sumner017    compute billing=16,cpu=16,mem=51+ 2022-03-23T00:01:40 2022-03-23T00:01:58 2022-03-23T04:27:05   04:25:07 
-13851243.ba+       COMPLE+ 2-22:41:52  0:0  60605.52M       sumner017                                      2022-03-23T00:01:58 2022-03-23T00:01:58 2022-03-23T04:27:05   04:25:07 
-13851243.ex+       COMPLE+ 2-22:41:52  0:0      1.76M       sumner017                                      2022-03-23T00:01:58 2022-03-23T00:01:58 2022-03-23T04:27:05   04:25:07 
+21627167     whit+ COMPLE+ 2-00:57:04  0:0                  sumner035    compute billing=32,cpu=32,mem=51+ 2024-01-08T16:58:25 2024-01-08T16:58:41 2024-01-08T18:30:28   01:31:47 
+21627167.ba+       COMPLE+ 2-00:57:04  0:0 151270.03M       sumner035                                      2024-01-08T16:58:41 2024-01-08T16:58:41 2024-01-08T18:30:28   01:31:47 
+21627167.ex+       COMPLE+ 2-00:57:04  0:0      1.76M       sumner035                                      2024-01-08T16:58:41 2024-01-08T16:58:41 2024-01-08T18:30:28   01:31:47 
 -------------------------------------------------------------

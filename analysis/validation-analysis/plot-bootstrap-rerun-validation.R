@@ -120,7 +120,7 @@ for(round in rounds) {
                   df <- ddply(df,
                               .variables = c(method.name.col),
                               .fun = function(tmp) {
-                                  data.frame(pearson = summary.fun(tmp$pearson), spearman = summary.fun(tmp$spearman), rmse = summary.fun(tmp$rmse))
+                                  data.frame(pearson = summary.fun(tmp$pearson), spearman = summary.fun(tmp$spearman), rmse = summary.fun(tmp$rmse), pearson.fc = summary.fun(tmp$pearson.fc))
                               })
                   o <- order(df$pearson, decreasing = TRUE)
                   df <- df[o,]
@@ -292,7 +292,7 @@ for(round in rounds) {
 
 # rounds <- list("1" = "1", "2" = "2", "3" = "3")
 names(rounds) <- rounds
-metrics <- list("pearson" = "pearson", "spearman" = "spearman", "rmse" = "rmse")
+metrics <- list("pearson" = "pearson", "spearman" = "spearman", "rmse" = "rmse", "pearson.fc" = "pearson.fc")
 lm.fits <- ldply(rounds,
              .fun = function(round) {
                  ret2 <- ldply(sub.challenges,

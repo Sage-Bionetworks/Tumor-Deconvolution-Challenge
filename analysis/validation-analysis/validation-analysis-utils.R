@@ -271,14 +271,14 @@ if(FALSE) {
                                                         tmp <- unique(df.in[, c(sample.id.col, measured.col)])
                                                         tmp[, sample.id.col] <- paste0(df.in[1, dataset.name.col], "-", tmp[, sample.id.col])
                                                         cons <- merge(cons, tmp)
-                                                        ret <- data.frame(method.name = "ensemble", pearson = NA, rmse = NA, spearman = cor(cons$cons.rank, cons[, measured.col]))
-                                                        colnames(ret) <- c(method.name.col, "pearson", "rmse", "spearman")
+                                                        ret <- data.frame(method.name = "ensemble", pearson = NA, rmse = NA, spearman = cor(cons$cons.rank, cons[, measured.col]), pearson.fc = NA)
+                                                        colnames(ret) <- c(method.name.col, "pearson", "rmse", "spearman", "pearson.fc")
                                                         ret
                                                       })
                                      })
-        # "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"   "spearman"     "rmse" 
+        # "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"   "spearman"     "rmse" "pearson.fc"
                                    colnames(ret.i)[1] <- "boot.i"
-                                   ret.i <- ret.i[, c(method.name.col, "boot.i", dataset.name.col, cell.type.col, "pearson", "spearman", "rmse")]
+                                   ret.i <- ret.i[, c(method.name.col, "boot.i", dataset.name.col, cell.type.col, "pearson", "spearman", "rmse", "pearson.fc")]
                                    ret.i 
                             })
         cat(paste0("Calculating bootstrap correlations\n"))
@@ -328,7 +328,7 @@ if(FALSE) {
                                                                                  if(any(is.na(df.ct[,2]))) {
                                                                                      print(df.ct)
                                                                                  }
-                                                                                 mts <- c("pearson", "spearman", "rmse")
+                                                                                 mts <- c("pearson", "spearman", "rmse", "pearson.fc")
                                                                                  names(mts) <- mts
                                                                                  vals <- llply(mts,
                                                                                                .fun = function(comp.method) {
@@ -347,8 +347,25 @@ if(FALSE) {
                                                                                                    if(comp.method %in% c("pearson", "spearman")) {
                                                                                                        val <- cor(pred, measured,
                                                                                                                   method = comp.method)
-                                                                                                   } else {
+                                                                                                   } else if(comp.method == "pearson.fc") {
+                                                                                                       # calculate the pearson correlation of log fold changes (across successive samples)
+                                                                                                       # 1. Order the samples based on the their ground truth values g1 < g2 < … < gn (i.e., measured)
+                                                                                                       # 2. Compute ground truth fold changes g2/g1, g3/g2, …, gn/gn-1
+                                                                                                       # 3. Compute prediction fold changes p2/p1, p3/p2, …, pn/pn-1
+                                                                                                       # 4. Compute the pearson correlation of these two vectors
+                                                                                                       o <- order(measured, decreasing=FALSE)
+                                                                                                       eps <- 10^-5
+                                                                                                       gt.ordered <- measured[o] + eps
+                                                                                                       # NB: the ordering is established by the _ground truth_ values and applied to those
+                                                                                                       # values and the predicted values
+                                                                                                       pred.ordered <- pred[o] + eps
+                                                                                                       gt.fc <- unlist(lapply(2:length(gt.ordered), function(indx) gt.ordered[indx]/gt.ordered[indx-1]))
+                                                                                                       pred.fc <- unlist(lapply(2:length(pred.ordered), function(indx) pred.ordered[indx]/pred.ordered[indx-1]))
+                                                                                                       val <- cor(pred.fc, gt.fc, method = "pearson")
+                                                                                                   } else if(comp.method == "rmse") {
                                                                                                        val <- sqrt(mean((pred-measured)^2))
+                                                                                                   } else {
+                                                                                                       stop(paste0("Unknown method ", comp.method, "\n"))
                                                                                                    }
                                                                                                    val
                                                                                                })
@@ -371,7 +388,7 @@ if(FALSE) {
         }
 
         print(colnames(bootstrapped.cors[[1]]))
-        # "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"   "spearman"     "rmse" 
+        # "method.name"  "boot.i"       "dataset.name" "cell.type"    "pearson"   "spearman"     "rmse" "pearson.fc"
         print(head(bootstrapped.cors[[1]]))
 
         cat(paste0("Calculating bootstrapped scores\n"))
@@ -386,13 +403,13 @@ if(FALSE) {
                       df <- ddply(df,
                                   .variables = c(method.id.col, dataset.name.col, "boot.i"),
                                   .fun = function(tmp) {
-                                      data.frame(pearson = mean(tmp$pearson), spearman = mean(tmp$spearman), rmse = mean(tmp$rmse))
+                                      data.frame(pearson = mean(tmp$pearson), spearman = mean(tmp$spearman), rmse = mean(tmp$rmse), pearson.fc = mean(tmp$pearson.fc))
                                   })
                       ## Average over dataset (within method and bootstrap sample)
                       df <- ddply(df,
                                   .variables = c(method.id.col, "boot.i"),
                                   .fun = function(tmp) {
-                                      data.frame(pearson = mean(tmp$pearson), spearman = mean(tmp$spearman), rmse = mean(tmp$rmse))
+                                      data.frame(pearson = mean(tmp$pearson), spearman = mean(tmp$spearman), rmse = mean(tmp$rmse), pearson.fc = mean(tmp$pearson.fc))
                                   })
                       df
                   })
@@ -405,7 +422,7 @@ if(FALSE) {
                       df <- ddply(df,
                                   .variables = c(method.id.col),
                                   .fun = function(tmp) {
-                                      data.frame(pearson = mean(tmp$pearson), spearman = mean(tmp$spearman), rmse = mean(tmp$rmse))
+                                      data.frame(pearson = mean(tmp$pearson), spearman = mean(tmp$spearman), rmse = mean(tmp$rmse), pearson.fc = mean(tmp$pearson.fc))
                                   })
                       o <- order(df$pearson, decreasing = TRUE)
                       df <- df[o,]
@@ -415,7 +432,7 @@ if(FALSE) {
         means.over.dataset <-
             llply(bootstrapped.cors,
                   .fun = function(df) {
-                      methods <- c("pearson", "spearman", "rmse")
+                      methods <- c("pearson", "spearman", "rmse", "pearson.fc")
                       na.rm <- FALSE
                       names(methods) <- methods
                       res <- llply(methods,
@@ -431,7 +448,7 @@ if(FALSE) {
         means.over.bootstrap <-
             llply(bootstrapped.cors,
                   .fun = function(df) {
-                      methods <- c("pearson", "spearman", "rmse")
+                      methods <- c("pearson", "spearman", "rmse", "pearson.fc")
                       na.rm <- FALSE
                       names(methods) <- methods
                       res <- llply(methods,
@@ -449,7 +466,7 @@ if(FALSE) {
             means.by.cell.type.method <-
                 llply(bootstrapped.cors,
                       .fun = function(df) {
-                          methods <- c("pearson", "spearman", "rmse")
+                          methods <- c("pearson", "spearman", "rmse", "pearson.fc")
                           na.rm <- FALSE
                           names(methods) <- methods
                           res <- llply(methods,
@@ -471,7 +488,7 @@ if(FALSE) {
         means.by.cell.type.method <-
                 llply(means.over.dataset,
                       .fun = function(df) {
-                          methods <- c("pearson", "spearman", "rmse")
+                          methods <- c("pearson", "spearman", "rmse", "pearson.fc")
                           na.rm <- FALSE
                           names(methods) <- methods
                           res <- llply(methods,
@@ -669,6 +686,19 @@ print(table(bold.labels))
             g2 <- g2 + theme(text = element_text(size=18))    
             g2 <- g2 + theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
                              axis.ticks.y = element_blank())
+
+            g3 <- ggplot(data = scores, aes_string(x = method.name.col, y = "pearson.fc"))
+            g3 <- g3 + geom_boxplotMod(fill = "#56B4E9")
+            g3 <- g3 + coord_flip()
+            g3 <- g3 + xlab("Method")
+            ## g3 <- g3 + ylab("Pearson Correlation")
+            g3 <- g3 + ylab("Pearson (Fold Change)")
+            g3 <- g3 + ylim(c(-0.25, 1))
+            g3 <- g3 + theme(text = element_text(size=18), title = element_text(size = 20), axis.text.y = element_text(face = bold.labels))
+            # g3 <- g3 + theme(text = element_text(size=18), title = element_text(size = 20))
+            # g3 <- g3 + scale_y_discrete(labels = function(x) bold.highlight(x, comparator.methods))
+            # g3 <- g3 + theme(axis.text.y=element_markdown())
+            
      
             tmp <- scores[, c(method.name.col, "Output", "Method")]            
             ret <- plot.anno.heatmap.with.multiple.legends(tmp, "method.name", c("Method", "Output"), c("Set3", "Set1"))
@@ -683,6 +713,7 @@ print(table(bold.labels))
             
             barplots[[paste0(sub.challenge,  "-pearson")]] <- g1
             barplots[[paste0(sub.challenge,  "-spearman")]] <- g2            
+            barplots[[paste0(sub.challenge,  "-pearson.fc")]] <- g3            
             barplots[[paste0(sub.challenge,  "-anno")]] <- full.plot
             barplots[[paste0(sub.challenge,  "-legend")]] <- legs
 
@@ -728,10 +759,11 @@ print(table(bold.labels))
         cat(paste0("Plotting heatmaps\n"))
         heatmaps <- list()
 	spearman.heatmaps <- list()
+	pearson.fc.heatmaps <- list()
         method.levels <- list()
         cell.type.levels <- list()
         for(sub.challenge in sub.challenges) {
-	for(cor.type in c("pearson", "spearman")) {
+	for(cor.type in c("pearson", "spearman", "pearson.fc")) {
             means <- means.by.cell.type.method[[sub.challenge]][[cor.type]]
 
             method.levels[[paste0(sub.challenge, "-", cor.type)]] <-
@@ -758,6 +790,9 @@ print(method.levels[[paste0(sub.challenge, "-", cor.type)]])
 	    if(cor.type == "spearman") {
 	      cor.type.label <- "Spearman\nCorrelation"
 	    }
+	    if(cor.type == "pearson.fc") {
+	      cor.type.label <- "Pearson Correlation\n(Fold Change)"
+	    }
             g <- plot.cell.type.correlation.heatmap(means, show.corr.text = TRUE,
                                                     id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
                                                     second.col.summary.fun = "mean",
@@ -767,9 +802,13 @@ print(method.levels[[paste0(sub.challenge, "-", cor.type)]])
 ##            g <- plot.cell.type.correlation.strip.plots(means, show.corr.text = TRUE, id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor")
             if(cor.type == "pearson") { 
               heatmaps[[sub.challenge]] <- g
-            } else {
+            } else if(cor.type == "spearman") {
               spearman.heatmaps[[sub.challenge]] <- g	    
-	    }
+	    } else if(cor.type == "pearson.fc") {
+              pearson.fc.heatmaps[[sub.challenge]] <- g
+            } else {
+              stop(paste0("Unknown cor.type ", cor.type, "\n"))
+            }
             title <- paste0(firstup(sub.challenge), "-Grained Sub-Challenge")
             round.text <- make.round.text(round)
             title <- paste0(title, " (", round.text, ")")
@@ -781,7 +820,7 @@ print(method.levels[[paste0(sub.challenge, "-", cor.type)]])
         } # for cor.type
 	}
 
-	for(cor.type in c("pearson", "spearman")) {
+	for(cor.type in c("pearson", "spearman", "pearson.fc")) {
         coarse.means <- means.by.cell.type.method[["coarse"]][[cor.type]]
         fine.means <- means.by.cell.type.method[["fine"]][[cor.type]]        
         all.means <- rbind(coarse.means, fine.means)
@@ -816,6 +855,9 @@ print(exclude.method)
 	if(cor.type == "spearman") {
 	  cor.type.label <- "Spearman\nCorrelation"
 	}
+	if(cor.type == "pearson.fc") {
+	  cor.type.label <- "Pearson Correlation\n(Fold Change)"
+	}
 
         g <- plot.cell.type.correlation.heatmap(all.means, show.corr.text = TRUE,
                                                 id.var = method.name.col, cell.type.var = cell.type.col, cor.var = "cor",
@@ -826,9 +868,13 @@ print(exclude.method)
         merged.all.means <- all.means
 	if(cor.type == "pearson") { 
           heatmaps[["merged"]] <- g
-        } else {
+        } else if(cor.type == "spearman") {
           spearman.heatmaps[["merged"]] <- g	
-	}
+	} else if(cor.type == "pearson.fc") {
+          pearson.fc.heatmaps[["merged"]] <- g
+        } else {
+          stop(paste0("Unknown cor.type ", cor.type, "\n"))
+        }
 	} # for cor.type
 	
         cat("Creating merged means.over.dataset\n")
@@ -917,6 +963,7 @@ print(y.bold.labels)
                          "strip.plots" = strip.plots,
                          "heatmaps" = heatmaps,
                          "spearman.heatmaps" = spearman.heatmaps,			 
+                         "pearson.fc.heatmaps" = pearson.fc.heatmaps,			 
 			 "merged.all.means" = merged.all.means)			 
 
         ret.list
