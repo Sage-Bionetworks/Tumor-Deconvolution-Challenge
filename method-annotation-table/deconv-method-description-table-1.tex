@@ -7,6 +7,7 @@
     %    \usepackage{caption}
     \usepackage{caption, float, threeparttable}
 \usepackage{amsmath}
+\usepackage{upgreek}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
     \usepackage[math]{iwona}% for test purposes only
@@ -17,7 +18,7 @@
 \newcommand{\oklepaj}{(} % non-extended bold font
 \robustify\mybf
 
-% pdflatex deconv-method-description-table.tex
+% pdflatex deconv-method-description-table-1.tex
 
 \begin{document}
 \centering
@@ -32,31 +33,31 @@
   \midrule
 
 
-    \mybf CIBERSORT & \makecell{$\argmin_{\mathbf{\beta}, \nu, \epsilon} C \sum_m |{a}_m - \mathbf{s}_m \cdot \mathbf{\beta}|_\epsilon + \frac{1}{2} ||\mathbf{\beta}||^2 + \nu \epsilon$} & Reference & \tt{svm} & \makecell{Differentially-expressed (DE'ed),\\prioritized by fold change,\\not expressed in non-hematopoietic cells} & $\mathbf{\beta}^+$ & 13 \\
-    \mybf CIBERSORTx &   \makecell{$\argmin_{\mathbf{\beta}, \nu, \epsilon} C \sum_m |{a}^*_m - \mathbf{s}_m \cdot \mathbf{\beta}|_\epsilon + \frac{1}{2} ||\mathbf{\beta}||^2 + \nu \epsilon$} & Reference & \tt{svm} & \makecell{DE’ed, prioritized by fold change,\\not expressed in non-hematopoietic cells} & $\mathbf{\beta}^+$ & 29 \\
+    \mybf CIBERSORT & \makecell{$\argmin_{\mathbf{\upbeta}, \nu, \epsilon} C \sum_m |{a}_m - \mathbf{s}_m \cdot \mathbf{\upbeta}|_\epsilon + \frac{1}{2} ||\mathbf{\upbeta}||^2 + \nu \epsilon$} & Reference & \tt{svm} & \makecell{Differentially-expressed (DE'ed),\\prioritized by fold change,\\not expressed in non-hematopoietic cells} & $\mathbf{\upbeta}^+$ & 13 \\
+    \mybf CIBERSORTx &   \makecell{$\argmin_{\mathbf{\upbeta}, \nu, \epsilon} C \sum_m |{a}^*_m - \mathbf{s}_m \cdot \mathbf{\upbeta}|_\epsilon + \frac{1}{2} ||\mathbf{\upbeta}||^2 + \nu \epsilon$} & Reference & \tt{svm} & \makecell{DE’ed, prioritized by fold change,\\not expressed in non-hematopoietic cells} & $\mathbf{\upbeta}^+$ & 29 \\
     \mybf EPIC &
     $ \argmin_{
       \substack{%
-        \mathbf{\beta} \\
-        \text{s.\,t.}\, \beta_m \ge 0 \, \forall m \\
-        \phantom{\text{s.\,t.}}\, \sum_m \beta_m \le 1
+        \mathbf{\upbeta} \\
+        \text{s.\,t.}\, \upbeta_m \ge 0 \, \forall m \\
+        \phantom{\text{s.\,t.}}\, \sum_m \upbeta_m \le 1
       }
-    } \sum_m w^{\rm EPIC}_m ({a}_m - \mathbf{s}_m \cdot \mathbf{\beta})^2 $
-    & Referene & \tt{constrOptim} & \makecell{DE’ed, not expressed in non-hematopoietic tissues,\\similarly expressed in healthy and malignant tissues} & $\mathbf{\beta}$ & 14 \\
+    } \sum_m w^{\rm EPIC}_m ({a}_m - \mathbf{s}_m \cdot \mathbf{\upbeta})^2 $
+    & Referene & \tt{constrOptim} & \makecell{DE’ed, not expressed in non-hematopoietic tissues,\\similarly expressed in healthy and malignant tissues} & $\mathbf{\upbeta}$ & 14 \\
     \mybf MCP-Counter & & Enrichment & & \makecell{DE’ed across  hierarchy of purified expression profiles,\\specific to cell type} & $\frac{1}{|M_c|} \sum_{m \in M_c} a_{m} $ & 15 \\
     \mybf quanTIseq &
     $ \argmin_{    
       \substack{%
-        \mathbf{\beta} \\
-        \text{s.\,t.}\, \beta_m \ge 0 \, \forall m \\
-        \phantom{\text{s.\,t.}}\, \sum_m \beta_m \le 1
+        \mathbf{\upbeta} \\
+        \text{s.\,t.}\, \upbeta_m \ge 0 \, \forall m \\
+        \phantom{\text{s.\,t.}}\, \sum_m \upbeta_m \le 1
       }
-    } \sum_m ({a}_m - \mathbf{s_m} \cdot \mathbf{\beta})^2 $
-    & Reference & \tt{lsei} & \makecell{Correlated with random fractions in simulated admixtures,\\specific to cell type,\\expressed in tumors,\\not expressed in non-hematopoietic tissues,\\not very highly expressed} & $\mathbf{\beta}$ & 17 \\
+    } \sum_m ({a}_m - \mathbf{s_m} \cdot \mathbf{\upbeta})^2 $
+    & Reference & \tt{lsei} & \makecell{Correlated with random fractions in simulated admixtures,\\specific to cell type,\\expressed in tumors,\\not expressed in non-hematopoietic tissues,\\not very highly expressed} & $\mathbf{\upbeta}$ & 17 \\
     \mybf xCell & & Enrichment & & \makecell{DE’ed, specific to cell type,\\not expressed in carcinomas}& \makecell{ssGSEA mapped\\to linear scale} & 18 \\
 \hline    
     \mybf Aginome-XMU & \makecell{DNN trained to predict random fractions\\in simulated admixtures} & Other & & None & Fractions predicted by DNN & 30 \\
-    \mybf Biogem & $\argmin_\mathbf{\beta} \sum_m \left[ w_H({a}_m - \mathbf{s}_m \cdot \mathbf{\beta}) \right]^2 ({a}_m - \mathbf{s}_m \cdot \mathbf{\beta})^2$ & Reference & rlm & & $\mathbf{\beta}$ & 33 \\
+    \mybf Biogem & $\argmin_\mathbf{\upbeta} \sum_m \left[ w_H({a}_m - \mathbf{s}_m \cdot \mathbf{\upbeta}) \right]^2 ({a}_m - \mathbf{s}_m \cdot \mathbf{\upbeta})^2$ & Reference & rlm & & $\mathbf{\upbeta}$ & 33 \\
     \mybf DA\_505 & $\argmin_{\mathbf{b}_c} (||\mathbf{\tilde{p}}_c - \mathbf{\tilde{A}}_{M_c} \cdot \mathbf{b}_c||^2) + \lambda_2||\mathbf{b}_c||^2 + \lambda_1 ||\mathbf{b}_c||_1) $ & Other & & \makecell{Identified by RF regression against\\random fractions in simulated admixtures} & $\mathbf{A}_{M_c} \cdot \mathbf{b}_c$ & \\
     \mybf mitten\_TDC19 & & Enrichment & & \makecell{Correlated with random fractions\\in simulated admixtures} & $\sum_{m \in M_c} a_{m}$ & \\
     \midrule
@@ -71,7 +72,7 @@
   \begin{tabular}{p{0.33\linewidth}p{0.32\linewidth}p{0.33\linewidth}}
     $M_c$\text{: set of markers for cell type} $c$ & $\mathbf{S}$\text{: marker} $\times$ \text{cell type signature matrix} & $w_H(e) \equiv 1 \text{if } |e| < k;   k/|e| \text{otherwise}$ \\
     $\mathbf{A}_{M_c}, \mathbf{\tilde{A}}_{M_c}$\text{: input or simulated admixture matrices,} \text{    respectively, subset to markers for cell type} $c$ & $\mathbf{s}_m$\text{: expression vector for marker }$m$ \text{    across cell types}\text{ (i.e., column of }$\mathbf{S}$\text{)} &  $w^{\rm EPIC}_m$\text{: weight giving marker }$m$\text{ importance} \text{    relative to its variability} \\
-    $\mathbf{a}, \mathbf{a}^*$\text{: input or batch-corrected admixture} \text{    expression vector, respectively} & $\mathbf{\beta}^+ \equiv \left(\beta^+_0,\beta^+_1,\dots\right)$ \text{with }$\beta^+_{i} \equiv \max(\beta_i, 0)$ & $\mathbf{\tilde{p}}_{c}$\text{: vector of proportions of cell type }$c$ \text{    in simulated admixtures} \\
+    $\mathbf{a}, \mathbf{a}^*$\text{: input or batch-corrected admixture} \text{    expression vector, respectively} & $\mathbf{\upbeta}^+ \equiv \left(\upbeta^+_0,\upbeta^+_1,\dots\right)$ \text{with }$\upbeta^+_{i} \equiv \max(\upbeta_i, 0)$ & $\mathbf{\tilde{p}}_{c}$\text{: vector of proportions of cell type }$c$ \text{    in simulated admixtures} \\
     ${a}_m$\text{: expression for marker} $m$ \text{in admixture} $\mathbf{a}$ & $|e|_\epsilon \equiv 0$ \text{if} $|e| < \epsilon$\text{; }$|e| - \epsilon$ \text{otherwise} 
   \end{tabular}
 }
@@ -84,9 +85,9 @@
     ${a}_m$\text{: expression for marker} $m$ \text{in admixture} $\mathbf{a}$ \\
     $\mathbf{S}$\text{: marker} $\times$ \text{cell type signature matrix}\\
     $\mathbf{s}_m$\text{: expression vector for marker} $m$ \text{across cell types (i.e., column of }$\mathbf{S}$\text{)}\\
-%%    $\mathbf{\beta}$\text{: cell type coefficient vector} \\
+%%    $\mathbf{\upbeta}$\text{: cell type coefficient vector} \\
     $|e|_\epsilon \equiv 0$ \text{if} $|e| < \epsilon$\text{; }$|e| - \epsilon$ \text{otherwise} \\
-    $\mathbf{\beta}^+ \equiv \left(\beta^+_0,\beta^+_1,\dots\beta^+_{n_c-1}\right)$ \text{with }$\beta^+_{i} \equiv \max(\beta_i, 0)$ \\
+    $\mathbf{\upbeta}^+ \equiv \left(\upbeta^+_0,\upbeta^+_1,\dots\upbeta^+_{n_c-1}\right)$ \text{with }$\upbeta^+_{i} \equiv \max(\upbeta_i, 0)$ \\
     $\mathbf{a}^*$\text{: batch-corrected admixture expression vector} \\    
     $w^{\rm EPIC}_m$\text{: weight giving marker} $m$ \text{importance relative to its variability} \\
     $M_c$\text{: set of markers for cell type} $c$ \\
