@@ -381,19 +381,21 @@ compute.stats <- function(df) {
             lm.fit <- lm(mdl, data=df.ct)
             sm <- summary(lm.fit)
             cf <- coef(sm)
+	    # Add the 2.5-97.5% confidence interval
+	    cf <- cbind(cb, confint(lm.fit))
             
             # One-sided p-values are discussed here:
             # https://stats.stackexchange.com/questions/325354/if-and-how-to-use-one-tailed-testing-in-multiple-regression
             
             # For H1: beta < 0
-            cf <- cbind(cf, "one.sided.pval" = unlist(lapply(as.numeric(cf[, 3]), function(x) pt(x, lm.fit$df, lower = TRUE))))
+            cf <- cbind(cf, "dof" = lm.fit$df, "one.sided.pval" = unlist(lapply(as.numeric(cf[, 3]), function(x) pt(x, lm.fit$df, lower = TRUE))))
 
             #flag <- grepl(rownames(cf), pattern="type") | grepl(rownames(cf), pattern="dataset") | grepl(rownames(cf), pattern="method")
             #ret.df <- cf[flag,]
             ret.df <- as.data.frame(cf)
             ret.df <- cbind(variable = rownames(ret.df), ret.df)
             pval <- pf(sm$fstatistic[1],sm$fstatistic[2],sm$fstatistic[3],lower.tail=FALSE)
-            ret.df <- rbind(ret.df, c("F-statistic", as.numeric(sm$fstatistic[1]), NA, NA, pval))
+            ret.df <- rbind(ret.df, c("F-statistic", as.numeric(sm$fstatistic[1]), NA, NA, NA, pval))
             ret.df
           })
   return(list("stats"=ret, "adj.df" = df))
