@@ -44,7 +44,9 @@ neutrophils: cor.p.method.adj ~ 0 + dataset.name
 NK.cells: cor.p.method.adj ~ 0 + dataset.name
 [1] "regulatory.T.cells"
 regulatory.T.cells: cor.p.method.adj ~ 0 + dataset.name
-There were 19 warnings (use warnings() to see them)
+Warning messages:
+1: In setup_parallel() : No parallel backend registered
+2: executing %dopar% sequentially: no parallel backend registered 
                   cell.type          variable           Estimate
 45              fibroblasts    dataset.nameAA    0.1167764829422
 56              macrophages    dataset.nameAA -0.314016018707853
@@ -121,10 +123,7 @@ There were 19 warnings (use warnings() to see them)
 75         3.402503e-09
 129        1.004084e-04
 160        4.883092e-05
-All Anovas are significant for Wu/Pelka datasets max pvalue: -Inf
-Warning message:
-In max(wu.pelka.stats$F.stat.p) :
-  no non-missing arguments to max; returning -Inf
+All Anovas are  significant for Wu/Pelka datasets max pvalue: 0.000368091067002601
  [1] "endothelial"       "B"                 "neutrophils"      
  [4] "fibroblasts"       "monocytic lineage" "CD8 T"            
  [7] "naive B"           "NK"                "naive CD8 T"      

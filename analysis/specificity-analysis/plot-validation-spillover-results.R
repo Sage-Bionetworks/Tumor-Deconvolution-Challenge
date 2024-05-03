@@ -12,6 +12,7 @@ suppressPackageStartupMessages(p_load(xlsx))
 suppressPackageStartupMessages(p_load(reshape2))
 suppressPackageStartupMessages(p_load(cowplot))
 suppressPackageStartupMessages(p_load(ggbeeswarm))
+suppressPackageStartupMessages(p_load(data.table))
 
 ## spillover -- cell type x to cell type y != x
 ##  - deconv (cibersort, epic, quantiseq); heatmap of fractions
@@ -872,6 +873,15 @@ print(c(round, round.text))
                      "spillover.summary.plot" = g, "spillover.method.summary.plots" = g.methods)
     return(ret.list)
 }
+
+ofile <- "source-data-fig-5.csv.gz"
+fwrite(res[!(colnames(res) %in% c("objectId", "submitterId", "repo_name"))], file = ofile, sep=",", quote=FALSE)
+
+# Confirm we can read back in
+tmp <- fread(ofile)
+rm(tmp)
+gc()
+
 
 results <- list()
 rounds <- c("1", "2", "3", "latest")

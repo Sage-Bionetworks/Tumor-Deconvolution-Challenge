@@ -11,6 +11,7 @@ suppressPackageStartupMessages(p_load("foreach"))
 suppressPackageStartupMessages(p_load("parallel"))
 
 suppressPackageStartupMessages(p_load("xlsx"))
+suppressPackageStartupMessages(p_load("data.table"))
 
 source("../utils.R")
 
@@ -467,6 +468,14 @@ do.sample.level.analysis <-
 
 rounds <- c("1", "2", "3")
 names(rounds) <- rounds
+
+ofile <- "source-data-fig-4.csv.gz"
+fwrite(res.all[, !(colnames(res.all) %in% c("objectId", "submitterId", "repo_name", "revised.orig.ratio"))], file=ofile, sep=",", quote=FALSE)
+
+# Confirm we can read it back
+tmp <- fread(ofile)
+rm(tmp)
+gc()
 
 results <- list()
 for(round in rounds) {

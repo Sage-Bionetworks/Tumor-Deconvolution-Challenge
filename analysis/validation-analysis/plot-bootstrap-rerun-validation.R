@@ -12,6 +12,7 @@ suppressPackageStartupMessages(p_load("reshape2"))
 
 suppressPackageStartupMessages(p_load("xlsx"))
 suppressPackageStartupMessages(p_load("patchwork"))
+suppressPackageStartupMessages(p_load("data.table"))
 
 source("../utils.R")
 
@@ -34,6 +35,27 @@ num.processes <- num.cores - 1
 synId <- "syn22951683"
 obj <- synGet(synId, downloadFile=TRUE)
 results <- readRDS(obj$path)
+
+# Condense all of the bootstrap correlations as Source Data for
+# Figures 2 and 3 and Supp Figures S5-S15
+all.correlations <-
+  ldply(results[c("1","2","3")],
+        .fun = function(results.submission) {
+                 results.subchallenge <- ldply(results.submission[["bootstrapped.cors"]])
+                 colnames(results.subchallenge)[1] <- "sub.challenge"
+                 results.subchallenge
+               })
+colnames(all.correlations)[1] <- "submission"
+colnames(all.correlations)[colnames(all.correlations) == "boot.i"] <- "bootstrap.index"
+fwrite(all.correlations, file="source-data-figs-2-3.csv.gz", quote=FALSE, sep=",")
+
+# Confirm that we can read the results back in
+tmp <- fread("source-data-figs-2-3.csv.gz")
+
+# We don't need these files. We just wanted to output the data in a convenient format.
+rm(tmp)
+rm(all.correlations)
+gc()
 
 subchallenge.col <- "subchallenge"
 measured.col <- "measured"

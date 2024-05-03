@@ -14,6 +14,7 @@ suppressPackageStartupMessages(p_load(data.table))
 suppressPackageStartupMessages(p_load(ggpubr))
 suppressPackageStartupMessages(p_load(ggbeeswarm))
 suppressPackageStartupMessages(p_load(cowplot))
+suppressPackageStartupMessages(p_load(data.table))
 
 ## sensitivity / spike-in analysis
 
@@ -63,6 +64,22 @@ my.format2 <- function(x) {
     ifelse(x < 1, formatC(x, format="f", digits=2, drop0trailing = TRUE),
            round(x))))
 }
+
+all.res <-
+  ldply(tbls[["sensitivity-analysis-results"]][c("1","2","3")],
+        .fun = function(tbl.round) tbl.round$res
+       )
+all.res <- all.res[, !(colnames(all.res) == ".id")]
+
+
+ofile <- "source-data-fig-6.csv.gz"
+fwrite(all.res, file=ofile, sep=",", quote=FALSE)
+
+# Confirm that we can read back the results
+tmp <- fread(ofile)
+rm(tmp)
+rm(all.res)
+gc()
 
 summary.plots <- list()
 rounds <- c("1", "2", "3", "latest")

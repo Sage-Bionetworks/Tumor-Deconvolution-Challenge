@@ -18,6 +18,8 @@ suppressPackageStartupMessages(p_load(ggupset)) # for axis_combmatrix
 #suppressPackageStartupMessages(p_load(ComplexUpset))
 suppressPackageStartupMessages(p_load(reshape2))
 suppressPackageStartupMessages(p_load(cowplot))
+suppressPackageStartupMessages(p_load(effectsize))
+suppressPackageStartupMessages(p_load(data.table))
 
 set.seed(1234)
 
@@ -381,9 +383,15 @@ compute.stats <- function(df) {
             lm.fit <- lm(mdl, data=df.ct)
             sm <- summary(lm.fit)
             cf <- coef(sm)
-	    # Add the 2.5-97.5% confidence interval
-	    cf <- cbind(cb, confint(lm.fit))
+	    ## Add the 2.5-97.5% confidence interval for the coefficients in the model
+	    #cf <- merge(cf, confint(lm.fit), by = "row.names", all.x=TRUE)
+            cf <- cbind(cf, confint(lm.fit))
+
+            # See for effect size https://stats.stackexchange.com/questions/71816/calculating-effect-size-for-variables-in-a-multiple-regression-in-r
+            # Compute effect sizes using partial eta squared -- this only gives an effect size for each factor, not each level of that factor
+            # es <- as.data.frame(eta_squared(lm.fit, partial=TRUE))
             
+
             # One-sided p-values are discussed here:
             # https://stats.stackexchange.com/questions/325354/if-and-how-to-use-one-tailed-testing-in-multiple-regression
             
@@ -395,7 +403,8 @@ compute.stats <- function(df) {
             ret.df <- as.data.frame(cf)
             ret.df <- cbind(variable = rownames(ret.df), ret.df)
             pval <- pf(sm$fstatistic[1],sm$fstatistic[2],sm$fstatistic[3],lower.tail=FALSE)
-            ret.df <- rbind(ret.df, c("F-statistic", as.numeric(sm$fstatistic[1]), NA, NA, NA, pval))
+            ret.df$variable <- as.character(ret.df$variable)
+            ret.df <- rbind(ret.df, c("F-statistic", as.numeric(sm$fstatistic[1]), NA, NA, pval, NA, NA, lm.fit$df, NA))
             ret.df
           })
   return(list("stats"=ret, "adj.df" = df))
@@ -405,6 +414,7 @@ compute.stats <- function(df) {
 ret <- compute.stats(all.scores)
 all.stats <- ret[["stats"]]
 colnames(all.stats)[colnames(all.stats) == "Pr(>|t|)"] <- "two.sided.pval"
+#write.table(file="all-stats.tsv", all.stats, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 adj.df <- ret[["adj.df"]]
 adj.df <- adj.df[, !(colnames(adj.df) %in% c("Label"))]
 
@@ -421,8 +431,12 @@ median.stats <-
 
 write.table(file = paste0(figs.dir, "/cancer-validation-dataset-pvals.tsv"), all.stats, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 write.table(file = paste0(figs.dir, "/cancer-validation-median-correlations.tsv"), median.stats, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+# NB: adj.df has an extra column cor.p.method.adj with method.cell.type.mean subtracted off from cor.p
 write.table(file = paste0(figs.dir, "/cancer-validation-correlations.tsv"), adj.df, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
+# The above will also be the source data
+ofile <- "source-data-fig-7.csv.gz"
+fwrite(adj.df, file=ofile, sep=",", quote=FALSE)
 
 # Pick out stats for Pelka, Wu, and overall.
 # We should only look at Pelka and Wu if overall is significant.
@@ -446,8 +460,9 @@ wu.pelka.stats <- merge(wu.pelka.stats, overall.stats)
 wu.pelka.stats[, p.val.col] <- as.numeric(wu.pelka.stats[, p.val.col])
 wu.pelka.stats$F.stat.p <- as.numeric(wu.pelka.stats$F.stat.p)
 wu.pelka.stats$Estimate <- as.numeric(wu.pelka.stats$Estimate)
-stopifnot(all(wu.pelka.stats$F.stat.p < 0.05))
-cat(paste0("All Anovas are significant for Wu/Pelka datasets max pvalue: ", max(wu.pelka.stats$F.stat.p), "\n"))
+all.sig <- all(wu.pelka.stats$F.stat.p < 0.05)
+stopifnot(all.sig)
+cat(paste0("All Anovas are ", ifelse(all.sig, "", "not"), " significant for Wu/Pelka datasets max pvalue: ", max(wu.pelka.stats$F.stat.p), "\n"))
 
 non.wu.pelka.stats <- merge(non.wu.pelka.stats, overall.stats)
 non.wu.pelka.stats[, p.val.col] <- as.numeric(non.wu.pelka.stats[, p.val.col])
@@ -457,6 +472,7 @@ non.wu.pelka.stats$Estimate <- as.numeric(non.wu.pelka.stats$Estimate)
 #stopifnot(all(non.wu.pelka.stats$F.stat.p < 0.05))
 #cat(paste0("All Anovas are significant for non Wu/Pelka max pvalue: ", max(non.wu.pelka.stats$F.stat.p), "\n"))
 
+#write.table(file="wu-pelka-stats.tsv", wu.pelka.stats, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE)
 
 all.stats <- merge(all.stats, overall.stats)
 
@@ -633,7 +649,9 @@ d <- dev.off()
 
 all.scores <- all.scores[, !(colnames(all.scores) %in% "Label")]
 
+# This is the raw form of the data without means subtracted off
 write.table(file = paste0(figs.dir, "/cancer-validation-dataset-all-scores.tsv"), all.scores, sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
 
 
 all.scores.wu <- subset(all.scores, dataset.name=="Wu")
