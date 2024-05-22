@@ -75,6 +75,10 @@ all.res <- all.res[, !(colnames(all.res) == ".id")]
 ofile <- "source-data-fig-6.csv.gz"
 fwrite(all.res, file=ofile, sep=",", quote=FALSE)
 
+
+ofile <- "source-data-fig-6-pvals.csv.gz"
+fwrite(pvals, file=ofile, sep=",", quote=FALSE)
+
 # Confirm that we can read back the results
 tmp <- fread(ofile)
 rm(tmp)
@@ -213,6 +217,7 @@ plot.spikein.predictions <- function(df.ds) {
     cmps <- cmps[cmps$group1 == "0",]
     display.p.cutoff <- 0.1
     display.p.cutoff <- 0.01
+    all.cmps <- cmps
     cmps <- cmps[cmps$p < display.p.cutoff,]
 
     my_comparisons <-
@@ -234,7 +239,7 @@ plot.spikein.predictions <- function(df.ds) {
     g <- g + theme(axis.text.x = element_text(angle = 45, hjust = 1))
     xlab <- paste0(fix.string(ct), " Spike-in (%)")
     g <- g + xlab(xlab) + ylab("Score")
-    g
+    return(list("g" = g, "cmps" = all.cmps))
 }
 
 expts.to.plot <-
@@ -271,7 +276,9 @@ for(round in rounds) {
                   ct <- as.character(df[1, cell.type.col])
                   sc <- as.character(df[1, subchallenge.col])
                   mx <- as.character(df[1, mixture.col])
-                  g <- plot.spikein.predictions(df)
+                  res.pred <- plot.spikein.predictions(df)
+                  g <- res.pred[["g"]]
+                  cmps <- res.pred[["cmps"]]
                   g <- g + ggtitle(paste0(mn, ": ", ct, "\n", firstup(sc), "-Grained Sub-Challenge (", mx, " Admixtures)"))
                   o.file <- paste0(figs.dir, "/", "sensitivity-spikein-", make.names(mn), "-",
                                    make.names(ct), "-", sc, "-", mx, "-round-", round, ".png")
@@ -284,15 +291,43 @@ for(round in rounds) {
                   pdf(o.file, width = 2 * 7)
                   print(g)
                   d <- dev.off()
-                  return(g)
+                  #return(g)
+                  return(list("g" = g, "cmps" = cmps))
 
               })
 }
 
 
+all.round1.res <- tbls[["sensitivity-analysis-results"]][["1"]]$res
+
+pvals <- ddply(all.round1.res, .variables = c(subchallenge.col),
+              .fun = function(res.sc) {
+                  ddply(res.sc,
+                        .variables = c(cell.type.col, dataset.name.col, method.name.col, mixture.col),
+                        .parallel = FALSE,
+                        .fun = function(df) {
+                            if(all(is.na(df$prediction))) {
+                                return(data.frame(min.diff.prop = NA))
+                            }
+                            if(any(is.na(df$prediction))) {
+                                print(df)
+                                stop("Was not expecting some NA and some not\n")
+                            }
+
+                            df <- df[order(df$measured),,drop=F]
+                            sci <- formatC(as.numeric(as.character(df$measured)), format="e", digits=2)
+                            df$measured <- factor(sci, levels = unique(sci))
+
+                            cmps <- as.data.frame(compare_means(prediction ~ measured,  data = df))
+                            cmps <- cmps[cmps$group1 == "0.00e+00",]
+                          })
+                        })
+
+
+
 o.file <- paste0(figs.dir, "/", "sensitivity-spikein-and-summary.png")
 png(o.file, width = 2 * 480, height = 2 * 480)
-g1 <- spike.in.plots[["1"]][["Aginome-XMU.CD4 T.coarse.Random"]]
+g1 <- spike.in.plots[["1"]][["Aginome-XMU.CD4 T.coarse.Random"]][["g"]]
 g1 <- g1 + theme(text = element_text(size=15))
 g2 <- summary.plots[["1"]][["coarse"]][["Random"]]
 # Add an empty title so that the fig label does not run into the axis text
